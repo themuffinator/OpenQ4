@@ -594,9 +594,12 @@ Called before deleting the object and at the start of LoadResource()
 */
 void idSoundSample_OpenAL::FreeData()
 {
-	if( buffers.Num() > 0 )
+	if( buffers.Num() > 0 || openalBuffer != 0 )
 	{
 		soundSystemLocal.StopVoicesWithSample( ( idSoundSample* )this );
+	}
+	if( buffers.Num() > 0 )
+	{
 		for( int i = 0; i < buffers.Num(); i++ )
 		{
 			FreeBuffer( buffers[i].buffer );
@@ -612,19 +615,25 @@ void idSoundSample_OpenAL::FreeData()
 	playBegin = 0;
 	playLength = 0;
 
-	if( alIsBuffer( openalBuffer ) )
+	if( openalBuffer != 0 )
 	{
-		CheckALErrors();
-
-		alDeleteBuffers( 1, &openalBuffer );
-		if( CheckALErrors() != AL_NO_ERROR )
-		{
-			common->Error( "idSoundSample_OpenAL::FreeData: error unloading data from OpenAL hardware buffer" );
-		}
-		else
+		if( soundSystemLocal.hardware.openalContext == NULL || alcGetCurrentContext() != soundSystemLocal.hardware.openalContext )
 		{
 			openalBuffer = 0;
+			return;
 		}
+
+		alGetError(); // clear any existing error
+		if( alIsBuffer( openalBuffer ) )
+		{
+			alDeleteBuffers( 1, &openalBuffer );
+			ALenum err = alGetError();
+			if( err != AL_NO_ERROR && err != AL_INVALID_NAME )
+			{
+				common->Warning( "idSoundSample_OpenAL::FreeData: error unloading OpenAL buffer (0x%x)", err );
+			}
+		}
+		openalBuffer = 0;
 	}
 }
 

@@ -201,13 +201,13 @@ public:
 	virtual void				Shutdown( void );
 	virtual void				Reload( bool force );
 
-// RAVEN BEGIN
-// jscott: precache any guide (template) files
+	// RAVEN BEGIN
+	// jscott: precache any guide (template) files
 	virtual void				ParseGuides(void);
 	virtual	void				ShutdownGuides(void) { }
-	virtual bool				EvaluateGuide(idStr& name, idLexer* src, idStr& definition) { return false; }
-	virtual bool				EvaluateInlineGuide(idStr& name, idStr& definition) { return false; }
-// RAVEN END
+	virtual bool				EvaluateGuide(idStr& name, idLexer* src, idStr& definition);
+	virtual bool				EvaluateInlineGuide(idStr& name, idStr& definition);
+	// RAVEN END
 
 	virtual void				BeginLevelLoad();
 	virtual void				EndLevelLoad();
@@ -650,7 +650,7 @@ idStr idDeclFile::PreprocessGuides(const char* text, int textLength) {
 	idLexer src;
 	idToken	token, token2;
 
-	idStr finalBuffer = "";
+	idStr generatedDecls = "";
 
 	src.LoadMemory(text, textLength, "", 0);
 	src.SetFlags(DECL_LEXER_FLAGS);
@@ -686,26 +686,80 @@ idStr idDeclFile::PreprocessGuides(const char* text, int textLength) {
 			newDecl += "\n";
 			newDecl += guide->body;
 			
-			src.ExpectTokenString("(");
-			for (int i = 0; i < guide->parms.Num(); i++ )
-			{
-				src.ReadToken(&token);
-				newDecl.Replace(guide->parms[i].c_str(), token);
-			}
-			src.ExpectTokenString(")");
+				src.ExpectTokenString("(");
+				idList<idStr> args;
+				while ( src.ReadToken( &token ) ) {
+					if ( token == ")" ) {
+						break;
+					}
+					if ( token == "," ) {
+						continue;
+					}
+					args.Append( token );
+				}
+				if ( args.Num() != guide->parms.Num() ) {
+					common->Warning( "Guide '%s' expects %d parms but got %d in %s", guide->name.c_str(), guide->parms.Num(), args.Num(), name.c_str() );
+				}
+				for ( int i = 0; i < guide->parms.Num() && i < args.Num(); i++ ) {
+					newDecl.Replace( guide->parms[i].c_str(), args[i].c_str() );
+				}
 
-			newDecl += "\n";
+				newDecl += "\n";
 
-			finalBuffer += newDecl;
+				generatedDecls += newDecl;
 		}
 	}
 
-	finalBuffer += text;
+	// Comment out guide invocations line-by-line so we don't clobber material names
+	// that legitimately contain "guide" in the path.
+	idStr filteredText;
+	filteredText.Empty();
 
-	finalBuffer.Replace("inlineGuide", "// inlineGuide"); // todo support me, corpse burn
-	finalBuffer.Replace("guide", "// guide");
+	const char* ptr = text;
+	const char* end = text + textLength;
+	while (ptr < end) {
+		const char* lineStart = ptr;
+		while (ptr < end && *ptr != '\n') {
+			ptr++;
+		}
+		const char* lineEnd = ptr; // points at '\n' or end
+		int lineLen = (int)(lineEnd - lineStart);
+
+		// Skip leading whitespace to detect guide tokens
+		const char* s = lineStart;
+		while (s < lineEnd && (*s == ' ' || *s == '\t' || *s == '\r')) {
+			s++;
+		}
+
+		bool isComment = (s + 1 < lineEnd && s[0] == '/' && s[1] == '/');
+		bool isGuideLine = false;
+		if (!isComment && s < lineEnd) {
+			// Check inlineGuide first (longer token)
+			if ((lineEnd - s) >= 10 && idStr::Icmpn(s, "inlineGuide", 10) == 0) {
+				isGuideLine = true;
+			} else if ((lineEnd - s) >= 5 && idStr::Icmpn(s, "guide", 5) == 0) {
+				isGuideLine = true;
+			}
+		}
+
+		if (isGuideLine) {
+			filteredText.Append("// ");
+		}
+		if (lineLen > 0) {
+			filteredText.Append(lineStart, lineLen);
+		}
+		if (ptr < end && *ptr == '\n') {
+			filteredText.Append('\n');
+			ptr++;
+		}
+	}
+
+	idStr finalBuffer = generatedDecls;
+	finalBuffer += filteredText;
+
 	return finalBuffer;
 }
+
 
 /*
 ================
@@ -728,10 +782,6 @@ int idDeclFile::LoadAndParse() {
 	idDeclLocal *newDecl;
 	bool		reparse;
 
-// jmarshall: quake 4 guide support
-	bool		canUseGuides = strstr(fileName, ".mtr");
-// jmarshall end
-
 	// load the text
 	common->DPrintf( "...loading '%s'\n", fileName.c_str() );
 	length = fileSystem->ReadFile( fileName, (void **)&buffer, &timestamp );
@@ -739,23 +789,8 @@ int idDeclFile::LoadAndParse() {
 		common->FatalError( "couldn't load %s", fileName.c_str() );
 		return 0;
 	}
-
-// jmarshall: quake 4 guide support
-	idStr finalPreprocessedBuffer;
-
-	if (!canUseGuides)
-	{
-		finalPreprocessedBuffer = buffer;
-	}
-	else
-	{
-		finalPreprocessedBuffer = PreprocessGuides(buffer, length);
-	}
-
-	//fileSystem->WriteFile(va("generated/%s", fileName.c_str()), finalPreprocessedBuffer.c_str(), finalPreprocessedBuffer.Length());
-
+	idStr finalPreprocessedBuffer = buffer;
 	Mem_Free(buffer);
-// jmarshall end
 
 	if ( !src.LoadMemory(finalPreprocessedBuffer.c_str(), finalPreprocessedBuffer.Length(), fileName ) ) {
 		common->Error( "Couldn't parse %s", fileName.c_str() );
@@ -768,9 +803,7 @@ int idDeclFile::LoadAndParse() {
 	}
 
 	src.SetFlags( DECL_LEXER_FLAGS );
-// jmarshall
 	checksum = MD5_BlockChecksum(finalPreprocessedBuffer.c_str(), finalPreprocessedBuffer.Length());
-// jmarshall end
 	fileSize = length;
 
 	// scan through, identifying each individual declaration
@@ -782,6 +815,15 @@ int idDeclFile::LoadAndParse() {
 		// parse the decl type name
 		if ( !src.ReadToken( &token ) ) {
 			break;
+		}
+
+		bool guide = false;
+		if ( token.Icmp( "guide" ) == 0 ) {
+			guide = true;
+			if ( !src.ReadToken( &token ) ) {
+				src.Warning( "Type without definition at end of file" );
+				break;
+			}
 		}
 
 		declType_t identifiedType = DECL_MAX_TYPES;
@@ -838,20 +880,31 @@ int idDeclFile::LoadAndParse() {
 
 		name = token;
 
-		// make sure there's a '{'
-		if ( !src.ReadToken( &token ) ) {
-			src.Warning( "Type without definition at end of file" );
-			break;
-		}
-		if ( token != "{" ) {
-			src.Warning( "Expecting '{' but found '%s'", token.c_str() );
-			continue;
-		}
-		src.UnreadToken( &token );
+		idStr guideDefinition;
+		bool usedGuideDefinition = false;
+		if ( guide ) {
+			if ( !declManagerLocal.EvaluateGuide( name, &src, guideDefinition ) ) {
+				continue;
+			}
+			declManagerLocal.EvaluateInlineGuide( name, guideDefinition );
+			usedGuideDefinition = true;
+			size = guideDefinition.Length();
+		} else {
+			// make sure there's a '{'
+			if ( !src.ReadToken( &token ) ) {
+				src.Warning( "Type without definition at end of file" );
+				break;
+			}
+			if ( token != "{" ) {
+				src.Warning( "Expecting '{' but found '%s'", token.c_str() );
+				continue;
+			}
+			src.UnreadToken( &token );
 
-		// now take everything until a matched closing brace
-		src.SkipBracedSection();
-		size = src.GetFileOffset() - startMarker;
+			// now take everything until a matched closing brace
+			src.SkipBracedSection();
+			size = src.GetFileOffset() - startMarker;
+		}
 
 		// look it up, possibly getting a newly created default decl
 		reparse = false;
@@ -880,7 +933,11 @@ int idDeclFile::LoadAndParse() {
 			newDecl->textSource = NULL;
 		}
 
-		newDecl->SetTextLocal(finalPreprocessedBuffer.c_str() + startMarker, size );
+		if ( usedGuideDefinition ) {
+			newDecl->SetTextLocal( guideDefinition.c_str(), size );
+		} else {
+			newDecl->SetTextLocal( finalPreprocessedBuffer.c_str() + startMarker, size );
+		}
 		newDecl->sourceFile = this;
 		newDecl->sourceTextOffset = startMarker;
 		newDecl->sourceTextLength = size;
@@ -948,6 +1005,7 @@ void idDeclManagerLocal::Init( void ) {
 	RegisterDeclType( "sound",				DECL_SOUND,			idDeclAllocator<idSoundShader> );
 	RegisterDeclType( "entityDef",			DECL_ENTITYDEF,		idDeclAllocator<idDeclEntityDef> );
 	RegisterDeclType( "mapDef",				DECL_MAPDEF,		idDeclAllocator<idDeclEntityDef> );
+	RegisterDeclType( "export",				DECL_MODELEXPORT,	idDeclAllocator<idDecl> );
 
 // jmarshall: Raven Decl Support
 	RegisterDeclType(  "materialType",		DECL_MATERIALTYPE,  idDeclAllocator<rvDeclMatType>);
@@ -974,7 +1032,7 @@ void idDeclManagerLocal::Init( void ) {
 	RegisterDeclFolder( "skins",			".skin",			DECL_SKIN );
 	RegisterDeclFolder( "sound",			".sndshd",			DECL_SOUND );
 
-// jmarshall: Raven Decl Support
+	// jmarshall: Raven Decl Support
 	RegisterDeclFolder("materials/types",	".mtt",				DECL_MATERIALTYPE);
 	RegisterDeclFolder("lipsync",			".lipsync",			DECL_LIPSYNC);
 	RegisterDeclFolder("playbacks",			".playback",		DECL_PLAYBACK);
@@ -1114,7 +1172,9 @@ void idDeclManagerLocal::ParseGuides(void) {
 					{
 						break;
 					}
-
+					if ( token == "," ) {
+						continue;
+					}
 					guide.parms.Append(token);
 				}
 
@@ -1135,6 +1195,138 @@ void idDeclManagerLocal::ParseGuides(void) {
 }
 
 // jmarshall end
+
+// Quake 4 guide evaluation helpers
+static rvGuideTemplate *FindGuideTemplate( idList<rvGuideTemplate> &guides, const char *name, bool inlineOnly ) {
+	for ( int i = 0; i < guides.Num(); i++ ) {
+		if ( guides[i].name.Icmp( name ) == 0 ) {
+			if ( !inlineOnly || guides[i].inlineGuide ) {
+				return &guides[i];
+			}
+		}
+	}
+	return NULL;
+}
+
+static void StripGuideBraces( idStr &definition ) {
+	int first = definition.Find( '{' );
+	if ( first == -1 ) {
+		return;
+	}
+	int last = -1;
+	for ( int i = definition.Length() - 1; i > first; --i ) {
+		if ( definition[i] == '}' ) {
+			last = i;
+			break;
+		}
+	}
+	if ( last <= first ) {
+		return;
+	}
+	definition = definition.Mid( first + 1, last - first - 1 );
+}
+
+static bool ExpandGuideTemplate( rvGuideTemplate *guide, idLexer *src, idStr &definition, const char *declName, bool stripBraces ) {
+	idToken token;
+	idList<idStr> args;
+
+	if ( !src->ExpectTokenString( "(" ) ) {
+		return false;
+	}
+	while ( src->ReadToken( &token ) ) {
+		if ( token == ")" ) {
+			break;
+		}
+		if ( token == "," ) {
+			continue;
+		}
+		args.Append( token );
+	}
+
+	if ( args.Num() != guide->parms.Num() ) {
+		src->Warning( "Guide '%s' expects %d parms but got %d in '%s'", guide->name.c_str(), guide->parms.Num(), args.Num(), declName );
+	}
+
+	definition = guide->body;
+	if ( stripBraces ) {
+		StripGuideBraces( definition );
+	}
+
+	for ( int i = 0; i < guide->parms.Num() && i < args.Num(); i++ ) {
+		definition.Replace( guide->parms[i].c_str(), args[i].c_str() );
+	}
+
+	return true;
+}
+
+bool idDeclManagerLocal::EvaluateGuide( idStr &name, idLexer *src, idStr &definition ) {
+	idToken guideName;
+	if ( !src->ReadToken( &guideName ) ) {
+		return false;
+	}
+
+	rvGuideTemplate *guide = FindGuideTemplate( guides, guideName.c_str(), false );
+	if ( !guide ) {
+		src->Warning( "Guide name '%s' not found in '%s'", guideName.c_str(), name.c_str() );
+		src->SkipRestOfLine();
+		return false;
+	}
+
+	return ExpandGuideTemplate( guide, src, definition, name.c_str(), false );
+}
+
+bool idDeclManagerLocal::EvaluateInlineGuide( idStr &name, idStr &definition ) {
+	bool replaced = false;
+	while ( true ) {
+		idLexer lexer;
+		if ( !lexer.LoadMemory( definition.c_str(), definition.Length(), name.c_str() ) ) {
+			return replaced;
+		}
+		lexer.SetFlags( DECL_LEXER_FLAGS );
+
+		idToken token;
+		int tokenStart = 0;
+		bool found = false;
+		while ( !lexer.EndOfFile() ) {
+			tokenStart = lexer.GetFileOffset();
+			if ( !lexer.ReadToken( &token ) ) {
+				break;
+			}
+			if ( token.Icmp( "inlineGuide" ) == 0 ) {
+				found = true;
+				break;
+			}
+		}
+		if ( !found ) {
+			break;
+		}
+
+		idToken guideName;
+		if ( !lexer.ReadToken( &guideName ) ) {
+			break;
+		}
+		rvGuideTemplate *guide = FindGuideTemplate( guides, guideName.c_str(), true );
+		if ( !guide ) {
+			lexer.Warning( "Guide name '%s' not found in '%s'", guideName.c_str(), name.c_str() );
+			return replaced;
+		}
+
+		idStr expanded;
+		if ( !ExpandGuideTemplate( guide, &lexer, expanded, name.c_str(), true ) ) {
+			return replaced;
+		}
+
+		int tokenEnd = lexer.GetFileOffset();
+		int replaceLen = tokenEnd - tokenStart;
+
+		idStr prefix = definition.Mid( 0, tokenStart );
+		idStr suffix = definition.Mid( tokenEnd, definition.Length() - tokenEnd );
+		definition = prefix + expanded + suffix;
+		replaced = true;
+	}
+
+	return replaced;
+}
 
 /*
 ===================

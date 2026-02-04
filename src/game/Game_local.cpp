@@ -475,7 +475,9 @@ void idGameLocal::Init( void ) {
 // RAVEN END
 	// register game specific decl types
 	declManager->RegisterDeclType( "model",				DECL_MODELDEF,		idDeclAllocator<idDeclModelDef> );
-	declManager->RegisterDeclType( "export",			DECL_MODELEXPORT,	idDeclAllocator<idDecl> );
+	if ( declManager->GetDeclTypeFromName( "export" ) == DECL_MAX_TYPES ) {
+		declManager->RegisterDeclType( "export",		DECL_MODELEXPORT,	idDeclAllocator<idDecl> );
+	}
 
 // RAVEN BEGIN
 // rjohnson: camera is now contained in a def for frame commands

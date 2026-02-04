@@ -553,25 +553,6 @@ gfx/lights/flashlight
 	}
 }
 
-// jmarshall - fail case for guide parsing, they used guide in the name of a material. Seems special case. This material name should just be fixed. 
-//gfx/lights/rocketlauncher/guide
-//{
-//	lightFalloffImage	_noFalloff
-//
-//	noShadows
-//	
-//	{
-//		map	gfx/lights/rocketguide.tga
-////		map	gfx/lights/flashlight5.tga
-//		highQuality
-//		zeroClamp
-//		colored
-////		red 	bathroomtable[ time * 3.33 ] * Parm0
-////		green 	bathroomtable[ time * 3.33 ] * Parm1
-////		blue 	bathroomtable[ time * 3.33 ] * Parm2
-//	}
-//}
-// jmarshall end
 
 gfx/lights/flashlight_spectrum
 {

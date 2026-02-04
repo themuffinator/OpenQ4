@@ -21,7 +21,10 @@
         "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Quake 4",
         "+set",
         "fs_savepath",
-        "${env:USERPROFILE}\\Saved Games\\OpenQ4"
+        "${env:USERPROFILE}\\Saved Games\\OpenQ4",
+        "+set",
+        "fs_devpath",
+        "${workspaceFolder}"
       ],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",

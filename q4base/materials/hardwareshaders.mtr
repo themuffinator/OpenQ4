@@ -236,23 +236,140 @@ hs/DepthImage
 ////// Begin Depth Sprites replacements here!
 /////////////////////////////////////////////////////////////////////
 
-guide gfx/effects/smoke/smoke_alpha_depth depthSpriteAlphaBlend( "gfx/effects/smoke/alpha.tga","gfx/effects/depth/alpha_depth.tga", 120 )
+gfx/effects/smoke/smoke_alpha_depth
+{
+	qer_editorimage gfx/effects/smoke/alpha.tga
 
-guide gfx/effects/smoke/cloud_alpha_depth depthSpriteAlphaBlend( "gfx/effects/smoke/cloud_alpha.tga", "gfx/effects/depth/cloud_alpha_depth.tga", 60 )
-												 			
-guide gfx/effects/smoke/cloud_alpha_depth2 depthSpriteAlphaBlend( "gfx/effects/smoke/cloud_alpha.tga", "gfx/effects/depth/cloud_alpha_depth.tga", 120 )
+	noShadows
+	translucent
+	noSelfShadow
 
-guide gfx/effects/weapons/muzzleflash2_depth depthSpriteAdditive( "gfx/effects/weapons/mflash2_machinegun.tga", "gfx/effects/depth/mflash2_machinegun_depth.tga", 40 )
+	{
+		blend			blend
+		vertexColor
+		map				gfx/effects/smoke/alpha.tga
+	}
+}
 
-guide gfx/effects/particles_shapes/dirt3_depth depthSpriteAlphaBlend( "gfx/effects/particles_shapes/dirt3.tga", "gfx/effects/depth/dirt3_depth.tga", 200 )
-												 			
-guide gfx/effects/particles_shapes/dirt2_depth depthSpriteAlphaBlend( "gfx/effects/particles_shapes/dirt2.tga", "gfx/effects/depth/dirt2_depth.tga", 100 )											 			
+gfx/effects/smoke/cloud_alpha_depth
+{
+	qer_editorimage gfx/effects/smoke/cloud_alpha.tga
 
-guide gfx/effects/smoke/steam_alpha_depth depthSpriteAlphaBlend( "gfx/effects/smoke/steam_alpha.tga", "gfx/effects/depth/steam_alpha_depth.tga", 40 )		
+	noShadows
+	translucent
+	noSelfShadow
 
-guide gfx/effects/smoke/steam_white_depth depthSpriteAlphaBlend( "gfx/effects/smoke/white_alpha.tga", "gfx/effects/depth/steam_white_depth.tga", 60 )	
+	{
+		blend			blend
+		vertexColor
+		map				gfx/effects/smoke/cloud_alpha.tga
+	}
+}
 
-guide gfx/effects/energy_sparks/bombard_focus_depth depthSpriteAdditive( "gfx/effects/energy_sparks/focus_beam.tga", "gfx/effects/depth/focus_beam_depth.tga", 100 )
+gfx/effects/smoke/cloud_alpha_depth2
+{
+	qer_editorimage gfx/effects/smoke/cloud_alpha.tga
+
+	noShadows
+	translucent
+	noSelfShadow
+
+	{
+		blend			blend
+		vertexColor
+		map				gfx/effects/smoke/cloud_alpha.tga
+	}
+}
+
+gfx/effects/weapons/muzzleflash2_depth
+{
+	qer_editorimage gfx/effects/weapons/mflash2_machinegun.tga
+
+	noShadows
+	translucent
+	noSelfShadow
+
+	{
+		blend			GL_ONE, GL_ONE
+		vertexColor
+		map				gfx/effects/weapons/mflash2_machinegun.tga
+	}
+}
+
+gfx/effects/particles_shapes/dirt3_depth
+{
+	qer_editorimage gfx/effects/particles_shapes/dirt3.tga
+
+	noShadows
+	translucent
+	noSelfShadow
+
+	{
+		blend			blend
+		vertexColor
+		map				gfx/effects/particles_shapes/dirt3.tga
+	}
+}
+
+gfx/effects/particles_shapes/dirt2_depth
+{
+	qer_editorimage gfx/effects/particles_shapes/dirt2.tga
+
+	noShadows
+	translucent
+	noSelfShadow
+
+	{
+		blend			blend
+		vertexColor
+		map				gfx/effects/particles_shapes/dirt2.tga
+	}
+}
+
+gfx/effects/smoke/steam_alpha_depth
+{
+	qer_editorimage gfx/effects/smoke/steam_alpha.tga
+
+	noShadows
+	translucent
+	noSelfShadow
+
+	{
+		blend			blend
+		vertexColor
+		map				gfx/effects/smoke/steam_alpha.tga
+	}
+}
+
+gfx/effects/smoke/steam_white_depth
+{
+	qer_editorimage gfx/effects/smoke/white_alpha.tga
+
+	noShadows
+	translucent
+	noSelfShadow
+
+	{
+		blend			blend
+		vertexColor
+		map				gfx/effects/smoke/white_alpha.tga
+	}
+}
+
+gfx/effects/energy_sparks/bombard_focus_depth
+{
+	qer_editorimage gfx/effects/energy_sparks/focus_beam.tga
+
+	noShadows
+	translucent
+	noSelfShadow
+
+	{
+		blend			GL_ONE, GL_ONE
+		vertexColor
+		map				gfx/effects/energy_sparks/focus_beam.tga
+	}
+}
 
 /////////////////////////////////////////////////////////////////////
 ////// End Depth Sprites replacements here!

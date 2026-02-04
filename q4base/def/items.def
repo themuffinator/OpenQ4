@@ -131,7 +131,7 @@ entityDef bot_itemtable {
 	"WEAPONINDEX_PROXLAUNCHER"		"12"
 	"WEAPONINDEX_CHAINGUN"			"13"
 
-};
+}
 
 entityDef item_triggersize_SP {
 	"triggerSize"		"32"
@@ -447,7 +447,7 @@ entityDef item_armor_small
 	"editor_ignore"			"0"
 	"simple_icon_scale"		"32.0"
 
-	modelindex"			"MODELINDEX_ARMORSHARD"
+	"modelindex"			"MODELINDEX_ARMORSHARD"
 }
 
 

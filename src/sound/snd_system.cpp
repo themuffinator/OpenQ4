@@ -124,6 +124,12 @@ void idSoundSystemLocal::Restart()
 			}
 		}
 	}
+	// Free sample buffers while OpenAL is still active
+	for( int i = 0; i < samples.Num(); i++ )
+	{
+		samples[i]->FreeData();
+	}
+	FreeStreamBuffers();
 	// Shutdown sound hardware
 	hardware.Shutdown();
 	// Reinitialize sound hardware
@@ -216,10 +222,10 @@ idSoundSystemLocal::Shutdown
 */
 void idSoundSystemLocal::Shutdown()
 {
-	hardware.Shutdown();
-	FreeStreamBuffers();
 	samples.DeleteContents( true );
 	sampleHash.Free();
+	FreeStreamBuffers();
+	hardware.Shutdown();
 }
 
 /*
