@@ -16,6 +16,13 @@ OpenQ4 is an open-source, drop-in engine replacement for Quake 4.
 - Modernize rendering, audio, and platform support while preserving Quake 4 behavior.
 - Keep documentation current as significant changes land.
 
+**Audio**
+- WAV and Ogg Vorbis (`.ogg`) assets are supported (Ogg decoded via stb_vorbis).
+
+**Assets**
+- This repository is engine-only and does not ship game assets (audio, textures, or media).
+- Users must supply their own Quake 4 game data (e.g., `q4base` PK4s) to run the game.
+
 **Rules**
 - Always strive for binary compatibility with original Quake 4 game modules (DLLs).
 - Preserve behavior expected by the Quake 4 SDK and shipped game data.
@@ -33,3 +40,4 @@ OpenQ4 is an open-source, drop-in engine replacement for Quake 4.
 - Robert Backebans.
 - id Software.
 - Raven Software.
+- Sean Barrett (stb_vorbis).

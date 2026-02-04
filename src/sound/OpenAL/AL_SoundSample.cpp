@@ -30,6 +30,11 @@ If you have questions concerning this license or the applicable additional terms
 */
 
 #include "../snd_local.h"
+#include <cstdlib>
+
+#define STB_VORBIS_HEADER_ONLY
+#include "stb_vorbis.c"
+#undef STB_VORBIS_HEADER_ONLY
 
 extern idCVar s_useCompression;
 extern idCVar s_noSound;
@@ -220,10 +225,24 @@ void idSoundSample_OpenAL::LoadResource()
 		generatedName.Append( sampleName );
 
 		{
-			sampleName.SetFileExtension(".wav");
+			idStr ext;
+			sampleName.ExtractFileExtension( ext );
+			ext.ToLower();
+
+			idStr wavName = sampleName;
+			wavName.SetFileExtension( ".wav" );
+
+			idStr oggName = sampleName;
+			oggName.SetFileExtension( ".ogg" );
+
 			generatedName.SetFileExtension( ".idwav" );
+
+			loaded = LoadOgg( oggName );
+			if( !loaded )
+			{
+				loaded = LoadGeneratedSample( generatedName ) || LoadWav( wavName );
+			}
 		}
-		loaded = LoadGeneratedSample( generatedName ) || LoadWav( sampleName );
 
 		if( loaded )
 		{
@@ -513,6 +532,96 @@ bool idSoundSample_OpenAL::LoadWav( const idStr& filename )
 
 	// sanity check...
 	assert( buffers[buffers.Num() - 1].numSamples == playBegin + playLength );
+
+	return true;
+}
+
+/*
+========================
+idSoundSample_OpenAL::LoadOgg
+========================
+*/
+bool idSoundSample_OpenAL::LoadOgg( const idStr& filename )
+{
+	idFileLocal fileIn( fileSystem->OpenFileRead( filename ) );
+	if( fileIn == NULL )
+	{
+		return false;
+	}
+
+	const int fileLen = fileIn->Length();
+	if( fileLen <= 0 )
+	{
+		return false;
+	}
+
+	byte* fileData = ( byte* )Mem_Alloc( fileLen );
+	if( fileData == NULL )
+	{
+		return false;
+	}
+
+	const int bytesRead = fileIn->Read( fileData, fileLen );
+	if( bytesRead != fileLen )
+	{
+		Mem_Free( fileData );
+		return false;
+	}
+
+	timestamp = fileIn->Timestamp();
+
+	idStr ampName = filename;
+	ampName.SetFileExtension( "amp" );
+	LoadAmplitude( ampName );
+
+	int channels = 0;
+	int sampleRate = 0;
+	short* decoded = NULL;
+	const int samplesPerChannel = stb_vorbis_decode_memory( fileData, fileLen, &channels, &sampleRate, &decoded );
+
+	Mem_Free( fileData );
+
+	if( samplesPerChannel <= 0 || decoded == NULL )
+	{
+		if( decoded != NULL )
+		{
+			free( decoded );
+		}
+		idLib::Warning( "LoadOgg( %s ) : failed to decode Ogg Vorbis", filename.c_str() );
+		MakeDefault();
+		return false;
+	}
+
+	if( channels < 1 || channels > 2 )
+	{
+		free( decoded );
+		idLib::Warning( "LoadOgg( %s ) : unsupported channel count %d", filename.c_str(), channels );
+		MakeDefault();
+		return false;
+	}
+
+	memset( &format, 0, sizeof( format ) );
+	format.basic.formatTag = idWaveFile::FORMAT_PCM;
+	format.basic.numChannels = ( uint16 )channels;
+	format.basic.samplesPerSec = sampleRate;
+	format.basic.bitsPerSample = 16;
+	format.basic.blockSize = format.basic.numChannels * format.basic.bitsPerSample / 8;
+	format.basic.avgBytesPerSec = format.basic.samplesPerSec * format.basic.blockSize;
+
+	playBegin = 0;
+	playLength = samplesPerChannel;
+
+	totalBufferSize = samplesPerChannel * channels * sizeof( int16 );
+
+	buffers.SetNum( 1 );
+	buffers[0].bufferSize = totalBufferSize;
+	buffers[0].numSamples = playLength;
+	buffers[0].buffer = AllocBuffer( totalBufferSize, GetName() );
+
+	memcpy( buffers[0].buffer, decoded, totalBufferSize );
+	buffers[0].buffer = GPU_CONVERT_CPU_TO_CPU_CACHED_READONLY_ADDRESS( buffers[0].buffer );
+
+	free( decoded );
 
 	return true;
 }

@@ -823,6 +823,9 @@
     <ClCompile Include="E:\Repositories\OpenQ4\src\external\glew\glew.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\external\stb_vorbis\stb_vorbis.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="E:\Repositories\OpenQ4\src\game\Actor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

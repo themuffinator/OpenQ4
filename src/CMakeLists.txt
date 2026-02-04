@@ -113,6 +113,7 @@ file(GLOB Q4GAME_WEAPON_SOURCES game/weapon/*.cpp)
 # External 
 file(GLOB EXTERNAL_GLEW_INCLUDES external/glew/*.h)
 file(GLOB EXTERNAL_GLEW_SOURCES  external/glew/*.c)
+file(GLOB EXTERNAL_STB_VORBIS_SOURCES external/stb_vorbis/stb_vorbis.c)
 
 # Quake 4 Game Coded Source Groups
 source_group("game-quake4" FILES Q4GAME)
@@ -217,6 +218,7 @@ set(QUAKE4_SOURCES
 		${ENGINE_UI_SOURCES}
 
 		${EXTERNAL_GLEW_SOURCES}
+		${EXTERNAL_STB_VORBIS_SOURCES}
 
 		${Q4GAME}
 		${Q4GAME_AI_SOURCES}
@@ -249,5 +251,5 @@ endif()
 add_executable(OpenQ4 ${QUAKE4_SOURCES})
 target_precompile_headers(OpenQ4 PRIVATE idLib/precompiled.h)
 target_link_libraries(OpenQ4 opengl32.lib Dbghelp.lib Iphlpapi.lib dinput8.lib Winmm.lib dxguid.lib ws2_32.lib ${PROJECT_SOURCE_DIR}/external/openal-soft/lib/win64/openal32.lib)
-target_include_directories(OpenQ4 PRIVATE "external/openal-soft/include")
+target_include_directories(OpenQ4 PRIVATE "external/openal-soft/include" "external/stb_vorbis")
 set_target_properties(OpenQ4 PROPERTIES OUTPUT_NAME "OpenQ4" LINK_FLAGS "/STACK:16777216,16777216 /SUBSYSTEM:WINDOWS /PDB:\"OpenQ4.pdb\"")
