@@ -29,6 +29,8 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "../snd_local.h"
 
+extern idCVar s_warnOnMissingSamples;
+
 idCVar s_skipHardwareSets( "s_skipHardwareSets", "0", CVAR_BOOL, "Do all calculation, but skip XA2 calls" );
 idCVar s_debugHardware( "s_debugHardware", "0", CVAR_BOOL, "Print a message any time a hardware voice changes" );
 
@@ -262,7 +264,9 @@ void idSoundVoice_OpenAL::Start( int offsetMS, int ssFlags )
 
 	if( leadinSample->IsDefault() )
 	{
-		idLib::Warning( "Starting defaulted sound sample %s", leadinSample->GetName() );
+		if ( s_warnOnMissingSamples.GetBool() ) {
+			idLib::Warning( "Starting defaulted sound sample %s", leadinSample->GetName() );
+		}
 	}
 
 	bool flicker = ( ssFlags & SSF_NO_FLICKER ) == 0;

@@ -933,16 +933,40 @@ int idParser::Directive_include( void ) {
 	if ( token.type == TT_STRING ) {
 		script = new idLexer;
 		// try relative to the current file
-		path = scriptstack->GetFileName();
-		path.StripFilename();
-// RAVEN BEGIN
-// jscott: avoid the leading slash
-		if( path.Length() )
-		{
-			path += "/";
+		idStr basePath = scriptstack->GetFileName();
+		basePath.BackSlashesToSlashes();
+		basePath.StripFilename();
+
+		// Normalize to a game-relative path to avoid absolute OS/pk4 paths in includes.
+		idStr relBase = basePath;
+		int pakPos = relBase.Find( ".pk4/" );
+		if ( pakPos >= 0 ) {
+			relBase = relBase.Mid( pakPos + 5, relBase.Length() - ( pakPos + 5 ) );
+		} else {
+			const char *rel = idLib::fileSystem->OSPathToRelativePath( relBase );
+			if ( rel && rel[0] ) {
+				relBase = rel;
+			}
 		}
-// RAVEN END
-		path += token;
+
+		relBase.StripTrailing( '/' );
+		relBase.StripTrailing( '\\' );
+
+		idStr tokenStr = token.c_str();
+		tokenStr.BackSlashesToSlashes();
+
+		if ( relBase.Length() ) {
+			relBase += "/";
+			// Avoid duplicate prefixes when the include already starts with the base path.
+			if ( idStr::Icmpn( tokenStr, relBase, relBase.Length() ) == 0 ) {
+				path = tokenStr;
+			} else {
+				path = relBase + tokenStr;
+			}
+		} else {
+			path = tokenStr;
+		}
+
 		if ( !script->LoadFile( path, OSPath ) ) {
 			// try absolute path
 			path = token;

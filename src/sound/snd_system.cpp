@@ -37,6 +37,7 @@ idCVar s_useOpenAL( "s_useOpenAL", "1", CVAR_ARCHIVE | CVAR_BOOL, "use OpenAL au
 idCVar s_deviceName( "s_deviceName", "", CVAR_ARCHIVE, "OpenAL device name override" );
 idCVar s_useEAXReverb( "s_useEAXReverb", "1", CVAR_ARCHIVE | CVAR_BOOL, "use EAX reverb if available" );
 idCVar s_numberOfSpeakers( "s_numberOfSpeakers", "6", CVAR_ARCHIVE | CVAR_INTEGER, "number of speakers (2 or 6)" );
+idCVar s_warnOnMissingSamples( "s_warnOnMissingSamples", "0", CVAR_ARCHIVE | CVAR_BOOL, "warn when falling back to default sound samples" );
 
 #ifdef ID_RETAIL
 	idCVar s_useCompression( "s_useCompression", "1", CVAR_BOOL, "Use compressed sound files (mp3/xma)" );

@@ -2300,7 +2300,17 @@ bool idWindow::ParseRegEntry(const char *name, idParser *src) {
 	idWinFloat *varf;
 	idWinStr *vars;
 	if (!src->ReadToken(&tok)) {
-		common->Warning("ParseRegEntry: No value for %s - file %s line %d\n", name, src->GetFileName(), src->GetLineNum());
+		if ( var ) {
+			idWinBool *boolVar = dynamic_cast<idWinBool*>(var);
+			if ( boolVar ) {
+				*boolVar = true;
+			}
+		} else {
+			idWinBool *boolVar = new idWinBool();
+			*boolVar = true;
+			boolVar->SetName( work );
+			definedVars.Append( boolVar );
+		}
 		return true;
 	}
 

@@ -272,6 +272,7 @@ E:\Repositories\OpenQ4\src\ui\UserInterface.cpp;E:\Repositories\OpenQ4\build_deb
 E:\Repositories\OpenQ4\src\ui\Window.cpp;E:\Repositories\OpenQ4\build_debug\OpenQ4.dir\Debug\Window.obj
 E:\Repositories\OpenQ4\src\ui\Winvar.cpp;E:\Repositories\OpenQ4\build_debug\OpenQ4.dir\Debug\Winvar.obj
 E:\Repositories\OpenQ4\src\external\glew\glew.c;E:\Repositories\OpenQ4\build_debug\OpenQ4.dir\Debug\glew.obj
+E:\Repositories\OpenQ4\src\external\stb_vorbis\stb_vorbis.c;E:\Repositories\OpenQ4\build_debug\OpenQ4.dir\Debug\stb_vorbis.obj
 E:\Repositories\OpenQ4\src\game\Actor.cpp;E:\Repositories\OpenQ4\build_debug\OpenQ4.dir\Debug\Actor.obj
 E:\Repositories\OpenQ4\src\game\AF.cpp;E:\Repositories\OpenQ4\build_debug\OpenQ4.dir\Debug\AF.obj
 E:\Repositories\OpenQ4\src\game\AFEntity.cpp;E:\Repositories\OpenQ4\build_debug\OpenQ4.dir\Debug\AFEntity.obj

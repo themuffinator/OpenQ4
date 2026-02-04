@@ -107,7 +107,7 @@ events:
       The output was:
       0
       MSBuild version 18.3.0-preview-26055-07+fb775842a for .NET Framework
-      Build started 04/02/2026 18:52:06.
+      Build started 04/02/2026 23:20:37.
       
       Project "E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\4.2.0-rc2\\CompilerIdC\\CompilerIdC.vcxproj" on node 1 (default targets).
       PrepareForBuild:
@@ -136,7 +136,7 @@ events:
           0 Warning(s)
           0 Error(s)
       
-      Time Elapsed 00:00:00.81
+      Time Elapsed 00:00:00.63
       
       
       Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.exe"
@@ -1162,7 +1162,7 @@ events:
       The output was:
       0
       MSBuild version 18.3.0-preview-26055-07+fb775842a for .NET Framework
-      Build started 04/02/2026 18:52:07.
+      Build started 04/02/2026 23:20:38.
       
       Project "E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\4.2.0-rc2\\CompilerIdCXX\\CompilerIdCXX.vcxproj" on node 1 (default targets).
       PrepareForBuild:
@@ -1191,7 +1191,7 @@ events:
           0 Warning(s)
           0 Error(s)
       
-      Time Elapsed 00:00:00.59
+      Time Elapsed 00:00:00.49
       
       
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
@@ -1281,9 +1281,9 @@ events:
       - "C:/Program Files/CMake/bin/"
       - "C:/Program Files/CMake/sbin/"
       - "C:/Program Files/CMake/"
-      - "C:/Program Files (x86)/OpenQ4/bin/"
-      - "C:/Program Files (x86)/OpenQ4/sbin/"
-      - "C:/Program Files (x86)/OpenQ4/"
+      - "C:/Program Files/OpenQ4/bin/"
+      - "C:/Program Files/OpenQ4/sbin/"
+      - "C:/Program Files/OpenQ4/"
     searched_directories:
       - "C:/Program Files/PowerShell/7/rc.com"
       - "C:/Program Files/PowerShell/7/rc.exe"
@@ -1456,15 +1456,15 @@ events:
       - "C:/Program Files/CMake/rc.com"
       - "C:/Program Files/CMake/rc.exe"
       - "C:/Program Files/CMake/rc"
-      - "C:/Program Files (x86)/OpenQ4/bin/rc.com"
-      - "C:/Program Files (x86)/OpenQ4/bin/rc.exe"
-      - "C:/Program Files (x86)/OpenQ4/bin/rc"
-      - "C:/Program Files (x86)/OpenQ4/sbin/rc.com"
-      - "C:/Program Files (x86)/OpenQ4/sbin/rc.exe"
-      - "C:/Program Files (x86)/OpenQ4/sbin/rc"
-      - "C:/Program Files (x86)/OpenQ4/rc.com"
-      - "C:/Program Files (x86)/OpenQ4/rc.exe"
-      - "C:/Program Files (x86)/OpenQ4/rc"
+      - "C:/Program Files/OpenQ4/bin/rc.com"
+      - "C:/Program Files/OpenQ4/bin/rc.exe"
+      - "C:/Program Files/OpenQ4/bin/rc"
+      - "C:/Program Files/OpenQ4/sbin/rc.com"
+      - "C:/Program Files/OpenQ4/sbin/rc.exe"
+      - "C:/Program Files/OpenQ4/sbin/rc"
+      - "C:/Program Files/OpenQ4/rc.com"
+      - "C:/Program Files/OpenQ4/rc.exe"
+      - "C:/Program Files/OpenQ4/rc"
     found: false
     search_context:
       ENV{PATH}:
@@ -1524,12 +1524,12 @@ events:
         - "C:\\Users\\djdac\\AppData\\Local\\Pandoc\\"
         - "C:\\Users\\djdac\\.dotnet\\tools"
         - "c:\\Users\\djdac\\.vscode-insiders\\extensions\\openai.chatgpt-0.4.69-win32-x64\\bin\\windows-x86_64"
-      CMAKE_INSTALL_PREFIX: "C:/Program Files (x86)/OpenQ4"
+      CMAKE_INSTALL_PREFIX: "C:/Program Files/OpenQ4"
       CMAKE_SYSTEM_PREFIX_PATH:
         - "C:/Program Files"
         - "C:/Program Files (x86)"
         - "C:/Program Files/CMake"
-        - "C:/Program Files (x86)/OpenQ4"
+        - "C:/Program Files/OpenQ4"
   -
     kind: "try_compile-v1"
     backtrace:
@@ -1539,8 +1539,8 @@ events:
     checks:
       - "Detecting C compiler ABI info"
     directories:
-      source: "E:/Repositories/OpenQ4/build_debug/CMakeFiles/CMakeScratch/TryCompile-m9nn3h"
-      binary: "E:/Repositories/OpenQ4/build_debug/CMakeFiles/CMakeScratch/TryCompile-m9nn3h"
+      source: "E:/Repositories/OpenQ4/build_debug/CMakeFiles/CMakeScratch/TryCompile-j07ket"
+      binary: "E:/Repositories/OpenQ4/build_debug/CMakeFiles/CMakeScratch/TryCompile-j07ket"
     cmakeVariables:
       CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
       CMAKE_C_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
@@ -1549,33 +1549,33 @@ events:
       variable: "CMAKE_C_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'E:/Repositories/OpenQ4/build_debug/CMakeFiles/CMakeScratch/TryCompile-m9nn3h'
+        Change Dir: 'E:/Repositories/OpenQ4/build_debug/CMakeFiles/CMakeScratch/TryCompile-j07ket'
         
-        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/18/Insiders/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_00d21.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=18.0 /v:n
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/18/Insiders/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_c5a52.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=18.0 /v:n
         MSBuild version 18.3.0-preview-26055-07+fb775842a for .NET Framework
-        Build started 04/02/2026 18:52:09.
+        Build started 04/02/2026 23:20:39.
         
-        Project "E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\CMakeScratch\\TryCompile-m9nn3h\\cmTC_00d21.vcxproj" on node 1 (default targets).
+        Project "E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\CMakeScratch\\TryCompile-j07ket\\cmTC_c5a52.vcxproj" on node 1 (default targets).
         PrepareForBuild:
           Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
-          Creating directory "E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\CMakeScratch\\TryCompile-m9nn3h\\Debug\\".
-          Creating directory "cmTC_00d21.dir\\Debug\\cmTC_00d21.tlog\\".
+          Creating directory "E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\CMakeScratch\\TryCompile-j07ket\\Debug\\".
+          Creating directory "cmTC_c5a52.dir\\Debug\\cmTC_c5a52.tlog\\".
         InitializeBuildStatus:
-          Creating "cmTC_00d21.dir\\Debug\\cmTC_00d21.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
-          Touching "cmTC_00d21.dir\\Debug\\cmTC_00d21.tlog\\unsuccessfulbuild".
+          Creating "cmTC_c5a52.dir\\Debug\\cmTC_c5a52.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+          Touching "cmTC_c5a52.dir\\Debug\\cmTC_c5a52.tlog\\unsuccessfulbuild".
         ClCompile:
-          C:\\Program Files\\Microsoft Visual Studio\\18\\Insiders\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_00d21.dir\\Debug\\\\" /Fd"cmTC_00d21.dir\\Debug\\vc145.pdb" /external:W3 /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.2\\Modules\\CMakeCCompilerABI.c"
+          C:\\Program Files\\Microsoft Visual Studio\\18\\Insiders\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_c5a52.dir\\Debug\\\\" /Fd"cmTC_c5a52.dir\\Debug\\vc145.pdb" /external:W3 /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.2\\Modules\\CMakeCCompilerABI.c"
           Microsoft (R) C/C++ Optimizing Compiler Version 19.50.35723 for x64
           Copyright (C) Microsoft Corporation.  All rights reserved.
-          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_00d21.dir\\Debug\\\\" /Fd"cmTC_00d21.dir\\Debug\\vc145.pdb" /external:W3 /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.2\\Modules\\CMakeCCompilerABI.c"
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_c5a52.dir\\Debug\\\\" /Fd"cmTC_c5a52.dir\\Debug\\vc145.pdb" /external:W3 /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.2\\Modules\\CMakeCCompilerABI.c"
           CMakeCCompilerABI.c
         Link:
-          C:\\Program Files\\Microsoft Visual Studio\\18\\Insiders\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\link.exe /OUT:"E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\CMakeScratch\\TryCompile-m9nn3h\\Debug\\cmTC_00d21.exe" /INCREMENTAL /ILK:"cmTC_00d21.dir\\Debug\\cmTC_00d21.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:/Repositories/OpenQ4/build_debug/CMakeFiles/CMakeScratch/TryCompile-m9nn3h/Debug/cmTC_00d21.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"E:/Repositories/OpenQ4/build_debug/CMakeFiles/CMakeScratch/TryCompile-m9nn3h/Debug/cmTC_00d21.lib" /MACHINE:X64  /machine:x64 cmTC_00d21.dir\\Debug\\CMakeCCompilerABI.obj
-          cmTC_00d21.vcxproj -> E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\CMakeScratch\\TryCompile-m9nn3h\\Debug\\cmTC_00d21.exe
+          C:\\Program Files\\Microsoft Visual Studio\\18\\Insiders\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\link.exe /OUT:"E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\CMakeScratch\\TryCompile-j07ket\\Debug\\cmTC_c5a52.exe" /INCREMENTAL /ILK:"cmTC_c5a52.dir\\Debug\\cmTC_c5a52.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:/Repositories/OpenQ4/build_debug/CMakeFiles/CMakeScratch/TryCompile-j07ket/Debug/cmTC_c5a52.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"E:/Repositories/OpenQ4/build_debug/CMakeFiles/CMakeScratch/TryCompile-j07ket/Debug/cmTC_c5a52.lib" /MACHINE:X64  /machine:x64 cmTC_c5a52.dir\\Debug\\CMakeCCompilerABI.obj
+          cmTC_c5a52.vcxproj -> E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\CMakeScratch\\TryCompile-j07ket\\Debug\\cmTC_c5a52.exe
         FinalizeBuildStatus:
-          Deleting file "cmTC_00d21.dir\\Debug\\cmTC_00d21.tlog\\unsuccessfulbuild".
-          Touching "cmTC_00d21.dir\\Debug\\cmTC_00d21.tlog\\cmTC_00d21.lastbuildstate".
-        Done Building Project "E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\CMakeScratch\\TryCompile-m9nn3h\\cmTC_00d21.vcxproj" (default targets).
+          Deleting file "cmTC_c5a52.dir\\Debug\\cmTC_c5a52.tlog\\unsuccessfulbuild".
+          Touching "cmTC_c5a52.dir\\Debug\\cmTC_c5a52.tlog\\cmTC_c5a52.lastbuildstate".
+        Done Building Project "E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\CMakeScratch\\TryCompile-j07ket\\cmTC_c5a52.vcxproj" (default targets).
         
         Build succeeded.
             0 Warning(s)
@@ -1621,8 +1621,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "E:/Repositories/OpenQ4/build_debug/CMakeFiles/CMakeScratch/TryCompile-vtl8i2"
-      binary: "E:/Repositories/OpenQ4/build_debug/CMakeFiles/CMakeScratch/TryCompile-vtl8i2"
+      source: "E:/Repositories/OpenQ4/build_debug/CMakeFiles/CMakeScratch/TryCompile-pudd8b"
+      binary: "E:/Repositories/OpenQ4/build_debug/CMakeFiles/CMakeScratch/TryCompile-pudd8b"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /W3 /GR /EHsc"
       CMAKE_CXX_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
@@ -1632,39 +1632,39 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'E:/Repositories/OpenQ4/build_debug/CMakeFiles/CMakeScratch/TryCompile-vtl8i2'
+        Change Dir: 'E:/Repositories/OpenQ4/build_debug/CMakeFiles/CMakeScratch/TryCompile-pudd8b'
         
-        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/18/Insiders/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_f2a2a.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=18.0 /v:n
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/18/Insiders/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_5193e.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=18.0 /v:n
         MSBuild version 18.3.0-preview-26055-07+fb775842a for .NET Framework
-        Build started 04/02/2026 18:52:10.
+        Build started 04/02/2026 23:20:40.
         
-        Project "E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\CMakeScratch\\TryCompile-vtl8i2\\cmTC_f2a2a.vcxproj" on node 1 (default targets).
+        Project "E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\CMakeScratch\\TryCompile-pudd8b\\cmTC_5193e.vcxproj" on node 1 (default targets).
         PrepareForBuild:
           Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
-          Creating directory "E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\CMakeScratch\\TryCompile-vtl8i2\\Debug\\".
-          Creating directory "cmTC_f2a2a.dir\\Debug\\cmTC_f2a2a.tlog\\".
+          Creating directory "E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\CMakeScratch\\TryCompile-pudd8b\\Debug\\".
+          Creating directory "cmTC_5193e.dir\\Debug\\cmTC_5193e.tlog\\".
         InitializeBuildStatus:
-          Creating "cmTC_f2a2a.dir\\Debug\\cmTC_f2a2a.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
-          Touching "cmTC_f2a2a.dir\\Debug\\cmTC_f2a2a.tlog\\unsuccessfulbuild".
+          Creating "cmTC_5193e.dir\\Debug\\cmTC_5193e.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+          Touching "cmTC_5193e.dir\\Debug\\cmTC_5193e.tlog\\unsuccessfulbuild".
         ClCompile:
-          C:\\Program Files\\Microsoft Visual Studio\\18\\Insiders\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GR /Fo"cmTC_f2a2a.dir\\Debug\\\\" /Fd"cmTC_f2a2a.dir\\Debug\\vc145.pdb" /external:W3 /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.2\\Modules\\CMakeCXXCompilerABI.cpp"
+          C:\\Program Files\\Microsoft Visual Studio\\18\\Insiders\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GR /Fo"cmTC_5193e.dir\\Debug\\\\" /Fd"cmTC_5193e.dir\\Debug\\vc145.pdb" /external:W3 /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.2\\Modules\\CMakeCXXCompilerABI.cpp"
           Microsoft (R) C/C++ Optimizing Compiler Version 19.50.35723 for x64
           Copyright (C) Microsoft Corporation.  All rights reserved.
-          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GR /Fo"cmTC_f2a2a.dir\\Debug\\\\" /Fd"cmTC_f2a2a.dir\\Debug\\vc145.pdb" /external:W3 /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.2\\Modules\\CMakeCXXCompilerABI.cpp"
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GR /Fo"cmTC_5193e.dir\\Debug\\\\" /Fd"cmTC_5193e.dir\\Debug\\vc145.pdb" /external:W3 /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.2\\Modules\\CMakeCXXCompilerABI.cpp"
           CMakeCXXCompilerABI.cpp
         Link:
-          C:\\Program Files\\Microsoft Visual Studio\\18\\Insiders\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\link.exe /OUT:"E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\CMakeScratch\\TryCompile-vtl8i2\\Debug\\cmTC_f2a2a.exe" /INCREMENTAL /ILK:"cmTC_f2a2a.dir\\Debug\\cmTC_f2a2a.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:/Repositories/OpenQ4/build_debug/CMakeFiles/CMakeScratch/TryCompile-vtl8i2/Debug/cmTC_f2a2a.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"E:/Repositories/OpenQ4/build_debug/CMakeFiles/CMakeScratch/TryCompile-vtl8i2/Debug/cmTC_f2a2a.lib" /MACHINE:X64  /machine:x64 cmTC_f2a2a.dir\\Debug\\CMakeCXXCompilerABI.obj
-          cmTC_f2a2a.vcxproj -> E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\CMakeScratch\\TryCompile-vtl8i2\\Debug\\cmTC_f2a2a.exe
+          C:\\Program Files\\Microsoft Visual Studio\\18\\Insiders\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\link.exe /OUT:"E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\CMakeScratch\\TryCompile-pudd8b\\Debug\\cmTC_5193e.exe" /INCREMENTAL /ILK:"cmTC_5193e.dir\\Debug\\cmTC_5193e.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:/Repositories/OpenQ4/build_debug/CMakeFiles/CMakeScratch/TryCompile-pudd8b/Debug/cmTC_5193e.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"E:/Repositories/OpenQ4/build_debug/CMakeFiles/CMakeScratch/TryCompile-pudd8b/Debug/cmTC_5193e.lib" /MACHINE:X64  /machine:x64 cmTC_5193e.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_5193e.vcxproj -> E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\CMakeScratch\\TryCompile-pudd8b\\Debug\\cmTC_5193e.exe
         FinalizeBuildStatus:
-          Deleting file "cmTC_f2a2a.dir\\Debug\\cmTC_f2a2a.tlog\\unsuccessfulbuild".
-          Touching "cmTC_f2a2a.dir\\Debug\\cmTC_f2a2a.tlog\\cmTC_f2a2a.lastbuildstate".
-        Done Building Project "E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\CMakeScratch\\TryCompile-vtl8i2\\cmTC_f2a2a.vcxproj" (default targets).
+          Deleting file "cmTC_5193e.dir\\Debug\\cmTC_5193e.tlog\\unsuccessfulbuild".
+          Touching "cmTC_5193e.dir\\Debug\\cmTC_5193e.tlog\\cmTC_5193e.lastbuildstate".
+        Done Building Project "E:\\Repositories\\OpenQ4\\build_debug\\CMakeFiles\\CMakeScratch\\TryCompile-pudd8b\\cmTC_5193e.vcxproj" (default targets).
         
         Build succeeded.
             0 Warning(s)
             0 Error(s)
         
-        Time Elapsed 00:00:00.41
+        Time Elapsed 00:00:00.42
         
       exitCode: 0
   -

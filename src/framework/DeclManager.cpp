@@ -296,6 +296,7 @@ private:
 };
 
 idCVar idDeclManagerLocal::decl_show( "decl_show", "0", CVAR_SYSTEM, "set to 1 to print parses, 2 to also print references", 0, 2, idCmdSystem::ArgCompletion_Integer<0,2> );
+static idCVar decl_warnOnOverride( "decl_warnOnOverride", "0", CVAR_SYSTEM, "warn when a decl definition is overridden by another" );
 
 idDeclManagerLocal	declManagerLocal;
 idDeclManager *		declManager = &declManagerLocal;
@@ -920,7 +921,7 @@ int idDeclFile::LoadAndParse() {
 						suppressWarning = true;
 					}
 				}
-				if ( !suppressWarning ) {
+				if ( !suppressWarning && decl_warnOnOverride.GetBool() ) {
 					src.Warning( "%s '%s' previously defined at %s:%i", declManagerLocal.GetDeclNameFromType( identifiedType ),
 									name.c_str(), newDecl->sourceFile->fileName.c_str(), newDecl->sourceLine );
 				}

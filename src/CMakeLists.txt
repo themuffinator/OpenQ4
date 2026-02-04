@@ -242,7 +242,7 @@ endif()
 add_definitions(-DUSE_OPENAL)
 
 if(MSVC)
-add_compile_options(/J)
+add_compile_options(/J /FS)
 else()
 add_compile_options(-Wno-multichar)
 endif()

@@ -444,6 +444,7 @@ void idBinaryImage::GetGeneratedFileName( idStr & gfn, const char *name ) {
 	gfn.Replace( ",", "/" );
 	gfn.Replace( ")", "" );
 	gfn.Replace( " ", "" );
+	gfn.ToLower();
 }
 
 
