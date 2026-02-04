@@ -1,0 +1,149 @@
+Version 3
+// entity 0
+{
+"classname" "worldspawn"
+// primitive 0
+{
+ brushDef3
+ {
+  ( 0 0 -1 0 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+  ( 0 0 1 -200 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+  ( 0 -1 0 -208 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+  ( 0 1 0 -184 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+  ( -1 0 0 -256 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+  ( 1 0 0 248 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+ }
+}
+// primitive 1
+{
+ brushDef3
+ {
+  ( 0 0 -1 0 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+  ( 0 0 1 -200 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+  ( 1 0 0 -200 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+  ( 0 1 0 -184 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+  ( -1 0 0 -256 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+  ( 0 -1 0 176 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+ }
+}
+// primitive 2
+{
+ brushDef3
+ {
+  ( 0 0 -1 0 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+  ( 0 0 1 -200 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+  ( 0 -1 0 -208 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+  ( 1 0 0 -200 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+  ( 0 1 0 -184 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+  ( -1 0 0 192 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+ }
+}
+// primitive 3
+{
+ brushDef3
+ {
+  ( 0 0 -1 0 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+  ( 0 0 1 -200 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+  ( 0 -1 0 -208 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+  ( 1 0 0 -200 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+  ( -1 0 0 -256 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+  ( 0 1 0 200 ) ( ( 0.015625 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall2_1a"
+ }
+}
+// primitive 4
+{
+ brushDef3
+ {
+  ( 0 0 1 -200 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall1_5"
+  ( 0 -1 0 -208 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall1_5"
+  ( 1 0 0 -200 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall1_5"
+  ( 0 1 0 -184 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall1_5"
+  ( -1 0 0 -256 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall1_5"
+  ( 0 0 -1 192 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall1_5"
+ }
+}
+// primitive 5
+{
+ brushDef3
+ {
+  ( 0 0 -1 0 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall1_5"
+  ( 0 -1 0 -208 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall1_5"
+  ( 1 0 0 -200 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall1_5"
+  ( 0 1 0 -184 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall1_5"
+  ( -1 0 0 -256 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall1_5"
+  ( 0 0 1 -8 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common_walls/wall1_5"
+ }
+}
+}
+// entity 1
+{
+"classname" "light"
+"name" "light_1"
+"origin" "0 8 96"
+}
+// entity 2
+{
+"classname" "info_player_start"
+"name" "info_player_start_1"
+"origin" "-72 152 8"
+"angle" "270"
+}
+// entity 3
+{
+"classname" "func_static"
+"name" "normalDoor_frame_2"
+"origin" "-48 -144 0"
+"model" "models/mapobjects/strogg/doors/generic/buildingb/bb_gd_frame.lwo"
+"rotation" "-2.39601e-007 1 0 -1 -2.39601e-007 0 0 0 1"
+"shaderParm7" "1"
+"movedir" "270"
+}
+// entity 4
+{
+"classname" "func_door"
+"name" "discDoorTop_1"
+"origin" "-48 -144 0"
+"model" "models/mapobjects/strogg/doors/generic/buildingb/bb_gd_top.lwo"
+"rotation" "-1.02686e-007 1 0 -1 -1.02686e-007 0 0 0 1"
+"shaderParm7" "1"
+"team" "clampDoor_1"
+"gui" "guis/monitors/strogg/prompt2.gui"
+"movedir" "270"
+"lip" "20"
+"wait" "2"
+"openWait" ".25"
+"triggerOnOpen" "discToggleTrigger_1"
+"triggerClosed" "discToggleTrigger_1"
+"time" ".38"
+"gui2" "guis/monitors/strogg/prompt2.gui"
+"locked" "0"
+"triggerSize" "96"
+"snd_open" "hangar1_latchdoor_open"
+"snd_close" "hangar1_latchdoor_close"
+}
+// entity 5
+{
+"classname" "func_mover"
+"name" "doorDisc_3"
+"origin" "-62 -144 59"
+"model" "models/mapobjects/strogg/doors/generic/buildingb/bb_gd_disc_centered.lwo"
+"rotation" "-2.39601e-007 1 0 -1 -2.39601e-007 0 0 0 1"
+"bind" "discDoorTop_1"
+"clamped" "1"
+"snd_accel" "hangar1_latchdoor_unlock"
+"movedir" "270"
+}
+// entity 6
+{
+"classname" "func_door"
+"name" "discDoorBottom_1"
+"origin" "-48 -144 0"
+"model" "models/mapobjects/strogg/doors/generic/buildingb/bb_gd_bottom.lwo"
+"rotation" "-1.02686e-007 1 0 -1 -1.02686e-007 0 0 0 1"
+"team" "clampDoor_1"
+"movedir" "270"
+"time" ".38"
+"wait" "2"
+"openWait" ".25"
+"triggerSize" "96"
+}

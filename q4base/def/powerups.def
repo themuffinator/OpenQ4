@@ -1,0 +1,330 @@
+/***********************************************************************
+
+ powerups
+
+***********************************************************************/
+
+entityDef powerup_types 
+{
+	"powerup_quad_damage"		"0"
+	"powerup_haste"			"1"
+	"powerup_regeneration"		"2"
+	"powerup_invisibility"		"3"
+	"mp_ctf_marine_flag"		"4"
+	"mp_ctf_strogg_flag"		"5"
+	"mp_ctf_one_flag"		"6"
+	"powerup_ammoregen"		"7"
+	"powerup_guard"			"8"
+	"powerup_doubler"		"9"
+	"powerup_scout"			"10"
+	"powerup_moderator"		"11"
+	"powerup_deadzone"		"12"
+	"powerup_team_ammo_regen"	"13"
+	"powerup_team_health_regen"	"14"
+	"powerup_team_damage_mod"	"15"
+}
+
+entityDef powerup
+{
+	"editor_color"			".3 .3 1"
+	"editor_mins"			"-16 -16 0"
+	"editor_maxs"			"16 16 32"
+	"editor_copy100"		"inv_item"	
+	"editor_menu"			"pickup"
+	"editor_ignore"			"1"
+	
+	"spawnclass"			"idItemPowerup"
+	"respawn"				"120"
+	"time"					"30"
+	"nopulse"				"1"
+	"spin"					"1"
+	"mins"					"-16 -16 0"
+	"maxs"					"16 16 16"
+	"fx_respawn"			"effects/mp/itemrespawn.fx"
+	"dbFilter"				"powerup"
+	"globalAcquireSound"	"1"
+
+	"triggerBounds"			"40 40 48"
+
+	"simple_icon_scale"		"48.0"
+}
+
+entityDef powerup_quad_damage
+{
+	"inherit"			"powerup"
+	"editor_usage"			"Quad Damage"
+
+	"model"				"models/pick_ups/mp_pickups/mp_quad.lwo"
+	"type"				"0"	// MUST MATCH ONE OF THE DEFINES IN PLAYER.H
+	
+	"inv_name"			"#str_107423"
+	"inv_icon"			"gfx/guis/hud/icons/item_quaddamage.tga"
+	"mtr_simple_icon"		"gfx/guis/hud/icons/item_quaddamage.tga"
+
+	"snd_acquire"			"sound/mp/pickups/quad_acquire.wav"
+
+	"editor_ignore"			"0"
+	"fx_idle"			"effects/mp/quaddamage"
+
+	"net_syncPhysics"		"1"
+}
+
+entityDef powerup_haste
+{
+	"inherit"			"powerup"
+	"editor_usage"			"Haste"
+
+	"model"				"models/pick_ups/mp_pickups/mp_haste.lwo"
+	"type"				"1"	// MUST MATCH ONE OF THE DEFINES IN PLAYER.H
+	
+	"inv_name"			"#str_107424"
+	"inv_icon"			"gfx/guis/hud/icons/item_haste.tga"
+	"mtr_simple_icon"	"gfx/guis/hud/icons/item_haste.tga"
+	
+	"snd_acquire"			"sound/mp/pickups/haste.wav"
+		
+	"editor_ignore"			"0"
+	
+	"fx_idle"			"effects/mp/haste"
+	
+	"net_syncPhysics"		"1"
+}
+
+entityDef powerup_regeneration
+{
+	"inherit"			"powerup"
+	"editor_usage"			"Regeneration"
+
+	"model"				"models/pick_ups/mp_pickups/mp_regeneration.lwo"
+	"type"				"2"	// MUST MATCH ONE OF THE DEFINES IN PLAYER.H
+	
+	"inv_name"			"#str_107425"
+	"inv_icon"			"gfx/guis/hud/icons/item_regen.tga"
+	"mtr_simple_icon"	"gfx/guis/hud/icons/item_regen.tga"
+
+	"snd_acquire"			"sound/mp/pickups/regen_acquire.wav"
+
+	"editor_ignore"			"0"
+	
+	"fx_idle"			"effects/mp/regen"
+	
+	"net_syncPhysics"		"1"
+}
+
+entityDef powerup_invisibility
+{
+	"inherit"			"powerup"
+	"editor_usage"			"Invisibility"
+
+	"model"				"models/pick_ups/mp_pickups/mp_invisibility.lwo"
+	"type"				"3"	// MUST MATCH ONE OF THE DEFINES IN PLAYER
+	
+	"inv_name"			"#str_107426"
+	"inv_icon"			"gfx/guis/hud/icons/item_invis.tga"
+	"mtr_simple_icon"	"gfx/guis/hud/icons/item_invis.tga"
+
+	"snd_acquire"			"sound/mp/pickups/invis.wav"
+
+	"editor_ignore"			"0"
+	
+	"fx_idle"			"effects/mp/invis"
+	
+	"net_syncPhysics"		"1"
+}
+
+entityDef powerup_guard
+{
+	"inherit"			"powerup"
+	"editor_usage"			"Guard"
+
+	"model" 			"models/pick_ups/mp_pickups/ctf_guard.lwo"
+	"type"				"8"	// MUST MATCH ONE OF THE DEFINES IN PLAYER.H
+	
+	"inv_name"			"#str_107427"
+	"inv_icon"			"gfx/guis/hud/icons/item_guard.tga"
+	"mtr_simple_icon"	"gfx/guis/hud/icons/item_guard.tga"
+	"inv_bonushealth"		"200"
+	"inv_armor"			"200"
+	"filter_Arena CTF"		"1"
+	"filter_Arena One Flag CTF"	"1"
+
+	"globalAcquireSound"		"0"
+	"snd_acquire"			"sound/vo/mp/9_99_360_8.wav"
+
+	"editor_ignore"			"0"
+	
+	"time"				"-1"
+	"nodrop"			"1"
+	"unique"			"1"
+}
+
+entityDef powerup_doubler
+{
+	"inherit"			"powerup"
+	"editor_usage"			"Doubler"
+
+	"model" 			"models/pick_ups/mp_pickups/ctf_doubler.lwo"
+	"type"				"9"	// MUST MATCH ONE OF THE DEFINES IN PLAYER.H
+	
+	"inv_name"			"#str_107428"
+	"inv_icon"			"gfx/guis/hud/icons/item_doubler.tga"
+	"mtr_simple_icon"		"gfx/guis/hud/icons/item_doubler.tga"
+	"filter_Arena CTF"		"1"
+	"filter_Arena One Flag CTF"	"1"
+	
+	"globalAcquireSound"		"0"
+	"snd_acquire"			"sound/vo/mp/9_99_360_6.wav"
+
+	"editor_ignore"			"0"
+	"time"				"-1"
+	"nodrop"			"1"
+	"unique"			"1"
+}
+
+entityDef powerup_ammoregen
+{
+	"inherit"			"powerup"
+	"editor_usage"			"Ammo Regen"
+
+	"model" 			"models/pick_ups/mp_pickups/ctf_ammo_regen.lwo"
+	"type"				"7"	// MUST MATCH ONE OF THE DEFINES IN PLAYER.H
+	
+	"inv_name"			"#str_107429"
+	"inv_icon"			"gfx/guis/hud/icons/item_ammoregen.tga"
+	"mtr_simple_icon"		"gfx/guis/hud/icons/item_ammoregen.tga"
+	"filter_Arena CTF"		"1"
+	"filter_Arena One Flag CTF"	"1"
+	
+	"globalAcquireSound"		"0"
+	"snd_acquire"			"sound/vo/mp/9_99_320_10.wav"
+
+	"editor_ignore"			"0"
+	
+	"time"				"-1"
+	"nodrop"			"1"
+	"unique"			"1"
+}
+
+entityDef powerup_scout
+{
+	"inherit"			"powerup"
+	"editor_usage"			"Scout"
+
+	"model" 			"models/pick_ups/mp_pickups/ctf_scout.lwo"
+	"type"				"10"	// MUST MATCH ONE OF THE DEFINES IN PLAYER.H
+	
+	"inv_name"			"#str_107430"
+	"inv_icon"			"gfx/guis/hud/icons/item_scout.tga"
+	"mtr_simple_icon"	"gfx/guis/hud/icons/item_scout.tga"
+	"filter_Arena CTF"		"1"
+	"filter_Arena One Flag CTF"	"1"
+	
+	"globalAcquireSound"		"0"
+	"snd_acquire"			"sound/vo/mp/9_99_360_7.wav"
+
+	"editor_ignore"			"0"
+	"time"				"-1"
+	"nodrop"			"1"
+	"unique"			"1"
+}
+
+entityDef powerup_moderator
+{
+	"inherit"			"powerup"
+	"editor_usage"			"Moderator"
+
+	"model"					"models/pick_ups/mp_pickups/moderator.lwo"
+	"type"					"11"	// MUST MATCH ONE OF THE DEFINES IN PLAYER.H
+	
+	"inv_name"				"#str_107327"
+	"inv_icon"				"gfx/guis/hud/icons/item_moderator.tga"
+
+	"snd_acquire"			"items_ammo_default"
+
+	"editor_ignore"			"0"
+	"fx_idle"				"effects/mp/quaddamage"
+	
+	"skin_inview"			
+}
+
+entityDef powerup_deadzone
+{
+	"inherit"				"powerup"
+	"spawnclass"			"riDeadZonePowerup"
+	"editor_usage"			"DeadZone Token"
+
+	"model" 				"models/pick_ups/mp_pickups/mp_q4x_deadzone_z.ASE"
+	"type"					"12"	// MUST MATCH ONE OF THE DEFINES IN PLAYER.H
+	"time"					"30"
+	"no_respawn"			"1"
+	
+	"inv_name"				"#str_122003"
+	"inv_icon"				"gfx/guis/hud/icons/item_deadzone.tga"
+	"mtr_simple_icon"		"gfx/guis/hud/simpleicons/deadzone"
+
+	"snd_acquire"			"mp_dz_pickup"
+	"filter_DeadZone"		"1"
+
+	"dbTitle"				"DeadZone"
+	"dbText"				"Allows capture of a dead zone"
+	"editor_ignore"			"0"
+	"fx_idle"				"effects/mp/deadzone"
+	"net_syncPhysics"		"1"
+	//"unique"				"1"
+}
+
+entityDef powerup_team_ammo_regen
+{
+	"inherit"				"powerup"
+	"editor_usage"			"Team Ammo Regen (DO NOT PLACE IN RADIANT)"
+
+	"model" 				"models/items/quad_damage/quad.lwo"
+	"type"					"13"	// MUST MATCH ONE OF THE DEFINES IN PLAYER.H
+	"time"					"30"
+	
+	"inv_name"				"#str_122004"
+	"inv_icon"				"gfx/guis/hud/icons/item_quaddamage.tga"
+
+	//"snd_acquire"			"sound/vo/mp/9_99_360_1.wav"
+
+	"dbTitle"				"Team Ammo Regen"
+	"dbText"				"Team Ammo Regen"
+	"editor_ignore"			"1"
+}
+
+entityDef powerup_team_health_regen
+{
+	"inherit"				"powerup"
+	"editor_usage"			"Team Health Regen (DO NOT PLACE IN RADIANT)"
+
+	"model" 				"models/items/quad_damage/quad.lwo"
+	"type"					"14"	// MUST MATCH ONE OF THE DEFINES IN PLAYER.H
+	"time"					"30"
+	
+	"inv_name"				"#str_122005"
+	"inv_icon"				"gfx/guis/hud/icons/item_quaddamage.tga"
+
+	//"snd_acquire"			"sound/vo/mp/9_99_360_1.wav"
+
+	"dbTitle"				"Team Health Regen"
+	"dbText"				"Team Health Regen"
+	"editor_ignore"			"1"
+}
+
+entityDef powerup_team_damage_mod
+{
+	"inherit"				"powerup"
+	"editor_usage"			"Team Doubler (DO NOT PLACE IN RADIANT)"
+
+	"model" 				"models/pick_ups/mp_pickups/ctf_doubler.lwo"
+	"type"					"15"	// MUST MATCH ONE OF THE DEFINES IN PLAYER.H
+	"time"					"30"
+	
+	"inv_name"				"#str_122006"
+	"inv_icon"				"gfx/guis/hud/icons/item_doubler.tga"
+
+	"dbTitle"				"Team Doubler"
+	"dbText"				"Team Doubler"
+	"editor_ignore"			"1"
+}
+

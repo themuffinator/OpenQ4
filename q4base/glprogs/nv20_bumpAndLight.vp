@@ -1,0 +1,46 @@
+!!ARBvp1.0 OPTION ARB_position_invariant ;
+
+# VPROG_NV_BUMP_AND_3DLIGHT
+#
+# just for experimenting, not used in production
+# 
+# input:
+# 
+# TEX0	texture coordinates
+# TEX1	normal
+# TEX2	tangent[0]
+# TEX3	tangent[1]
+# 
+# output:
+# 
+# HPOS	homogeneous clip space position
+# TEX0	is the normalization cube map for the light vector
+# TEX1	will be the per-surface bump map
+# TEX2	will be the 3D light texture
+
+PARAM	defaultTexCoord = { 0, 0.5, 0, 1 };
+
+TEMP	R0;
+
+# calculate vector to light in R0
+ADD	R0, -vertex.position, program.env[4];
+
+# put into texture space for TEX0
+DP3	result.texcoord[0].x, vertex.texcoord[1], R0;
+DP3	result.texcoord[0].y, vertex.texcoord[2], R0;
+DP3	result.texcoord[0].z, vertex.texcoord[3], R0;
+
+# textures 1 takes the base coordinates by the texture matrix
+DP4	result.texcoord[1].x, vertex.texcoord[0], program.env[10];
+DP4	result.texcoord[1].y, vertex.texcoord[0], program.env[11];
+
+# texture 2 has one texgen and a constant
+MOV	result.texcoord[2], defaultTexCoord;
+DP4	result.texcoord[2].x, vertex.position, program.env[9];
+
+# texture 3 has three texgens
+DP4	result.texcoord[3].x, vertex.position, program.env[6];
+DP4	result.texcoord[3].y, vertex.position, program.env[7];
+DP4	result.texcoord[3].w, vertex.position, program.env[8];
+
+END

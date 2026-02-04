@@ -1,0 +1,481 @@
+//----------------------------------------------------------------
+// machinegun.def
+//
+// Copyright 2002-2004 Raven Software
+//----------------------------------------------------------------
+
+export machinegun
+{
+	options -prefix MACHINE_GUN_ -scale .4 -keep barrel_1 barrel_2 eject flashlight
+
+	addoptions -skipmesh rt_strogg_arm_mesh 
+	addoptions -skipmesh lft_strogg_arm_mesh 
+
+	mesh	work/models/weapons/marine_machine_gun/animations/machinegun_mesh.ma 		-dest models/weapons/machinegun/view
+	anim	work/models/weapons/marine_machine_gun/animations/machinegun_fire.ma 		-dest models/weapons/machinegun/fire
+	anim	work/models/weapons/marine_machine_gun/animations/machinegun_idle.ma 		-dest models/weapons/machinegun/idle
+	anim	work/models/weapons/marine_machine_gun/animations/machinegun_reload.ma 		-dest models/weapons/machinegun/reload
+	anim	work/models/weapons/marine_machine_gun/animations/machinegun_raise_weapon.ma	-dest models/weapons/machinegun/raise
+	anim	work/models/weapons/marine_machine_gun/animations/machinegun_lower_weapon.ma	-dest models/weapons/machinegun/lower
+	anim	work/models/weapons/marine_machine_gun/animations/machinegun_flashlight.ma	-dest models/weapons/machinegun/flashlight
+}
+
+export machinegun_strogg
+{
+	options -prefix MACHINE_GUN_ -scale .4 -keep barrel_1 barrel_2 eject flashlight
+	addoptions -skipmesh rt_arm_mesh 
+	addoptions -skipmesh lft_arm_mesh 
+	mesh	work/models/weapons/marine_machine_gun/animations/machinegun_mesh.ma 		-dest models/weapons/machinegun/view_strogg
+}
+
+export machinegun
+{
+	options -prefix PLAYER_MG_ -scale .4 -keep ATTACHER stock_joint clip_joint muzzle_flash handle_joint -sourcedir work/models/characters/marine/multiplayer -destdir models/weapons/machinegun/world -rename ATTACHER origin -clearorigin 
+/*
+	addoptions -skipmesh body_mesh
+	addoptions -skipmesh head_mesh
+	addoptions -skipmesh Reye_mesh
+	addoptions -skipmesh Leye_mesh
+	addoptions -skipmesh teethUpper_mesh
+	addoptions -skipmesh teethLower_mesh
+*/
+	mesh	idle.ma					-dest machinegun_world
+	anim	idle.ma					-dest machinegun_idle
+	anim	idle.ma					-dest machinegun_reload
+	anim	idle.ma					-dest machinegun_fire1
+}
+
+entityDef viewStyle_shouldered_machinegun {
+	"viewoffset"				"1.1 1.5 -1.0"
+	"viewangles"				"-2.5 -9 -4.9"
+}
+
+entityDef viewStyle_q3_machinegun {
+	"viewoffset"				"1.1 -0.5 -1.0"
+  	"viewangles"				"-0.7 -7.4 -4.9"
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+// Weapon Definition
+//--------------------------------------------------------------------------------------------------------------------
+
+entityDef weapon_machinegun 
+{
+	"editor_color"				".3 .3 1"
+	"editor_mins"				"-16 -16 0"
+	"editor_maxs"				"16 16 32"
+
+	"editor_usage"				"Machinegun"
+	"editor_menu"				"pickup"
+	"editor_var inv_weaponmod"	"comma separated of any of the following machinegun modifications.\n - wpmod_machinegun_ammo"
+
+	"spawnclass"				"idItem"
+	"weaponclass"				"rvWeaponMachinegun"
+	"size"						"32 32 32"
+	"model_view" 				"weapon_machinegun_view"
+	"model_view_strogg"			"weapon_machinegun_view_strogg"
+  	"model_world"				"weapon_machinegun_world"
+	"model"						"models/weapons/machinegun/w_mg_lo.lwo"
+	"def_dropItem"				"weapon_machinegun"
+	"def_ejectBrass"			"debris_brass_machinegun"
+
+	"joint_attach"				"MG_ATTACHER"
+  	"joint_view_flash"			"barrel_2"
+	"joint_view_flashlight"		"flashlight"
+	"joint_view_guiLight"		"gun_jt"
+	"joint_view_eject"			"eject"
+	"joint_world_flash"			"muzzle_flash"
+
+	"inv_weapon"				"weapon_machinegun"
+	"inv_start_ammo_machinegun"		"40"
+	"inv_item"					"1"
+	"inv_icon"					"gfx/guis/hud/icons/item_machinegun.tga"
+	"inv_name"					"#str_107406"
+
+	"fireRate"					".1"
+	"spread"					"2"
+
+	"mtr_crosshair"				"gfx/guis/crosshairs/crosshair_machinegun"
+	"def_hitscan"				"hitscan_bullet"
+	"def_althitscan"			"hitscan_zoomed_bullet"
+	
+	"ammoType"					"ammo_machinegun"
+	"ammoRequired"				"1"
+	"clipSize"					"40"
+	"lowAmmo"					"10"
+	"gui"						"guis/weapons/machinegun_ammo.gui"
+	"gui2"						"guis/weapons/machinegun_inview_scope.gui"
+
+	"mtr_icon"					"gfx/guis/hud/icons/gun_machinegun"
+
+	"muzzle_kick_time"			"0.2"
+	"muzzle_kick_maxtime"		"0.6"
+	"muzzle_kick_angles"		"0 0 0"
+	"muzzle_kick_offset"		"0.5 .15 .15"
+
+	"ejectOffset"				"0.5 -1 -1"
+	
+	"ammoRegenStep"				"4"
+	"ammoRegenTime"				"1000"
+
+	"recoilTime"				"145"
+	"recoilAngles"				"-1 0 0"
+	
+	// Mapping of modifications to indexes
+  	"def_mod1"					"wpmod_machinegun_ammo"
+
+	"foreshorten"				".6"
+
+	// ---------------------------- Muzzleflash ---------------------------------------
+
+	"mtr_flashShader"			"lights/muzzleflash"
+	"flashColor"				"1 0.8 0.4"
+	"flashRadius"				"200"
+	"flashPointLight"			"1"
+	"flashTime"					".1"
+	"flashViewOffset"			"15 -5 -5"
+
+	// ---------------------------- Flashlight ---------------------------------------
+	
+	"mtr_flashlightShader"		"gfx/lights/flashlight"
+	"flashlightColor"			"1 1 .9"
+	"flashlightRadius"			"400"
+	"flashlightAngle"			"15.0"
+	"flashlightTarget"			"900 0 0"
+	"flashlightUp"				"0 340 0"
+	"flashlightRight"			"0 0 -340"
+	"flashlightPointLight"		"0"
+
+	"mtr_guiLightShader"		"lights/viewWeaponGuiLight"
+	"glightRadius"				"0.9"
+	"glightOffset"				"4 3.5 0.2"
+	"glightColor"				".5 1 1 1"
+
+	"snd_zoomIn"				"weapon_machinegun_scope_in"
+	"snd_zoomOut"				"weapon_machinegun_scope_out"
+	"snd_quaddamage"			"weapon_quaddamage_fire"
+	"snd_bolt"					"weapon_machinegun_bolt"
+	"snd_acquire"				"pickup_weapon"
+	"snd_noAmmo"				"weapon_machinegun_dryfire"
+	
+  	"fx_muzzleflash"			"effects/weapons/machinegun/muzzleflash.fx"
+  	"fx_muzzleflash_world"		"effects/weapons/machinegun/muzzleflash.fx"
+	"fx_respawn"				"effects/mp/itemrespawn.fx"
+
+	"def_viewStyle"				"viewStyle_q3_machinegun"
+	"def_viewStyle1"			"viewStyle_shouldered_machinegun"
+
+	"weaponAngleOffsetAverages" "10"
+	"weaponAngleOffsetScale" 	".2"
+	"weaponAngleOffsetMax"		"3"
+	"weaponOffsetTime"			"400"
+	"weaponOffsetScale"			"0.002"
+
+	// Scope / Zoom
+	"spreadzoom"				"0"
+	"zoomFov"					"50"
+	"zoomTime"					".1"
+	"zoomHideCrosshair"			"0"
+	"gui_zoom"					"guis/weapons/machinegun_scope.gui"
+
+ 	"hidesurface"				"models/weapons/blaster/flare"
+
+	"net_syncPhysics"			"1"
+}
+
+entityDef weapon_machinegun_mp
+{
+	"inherit"				"weapon_machinegun"
+	"clipsize"				"0"
+  	"def_mod1"				""
+  	"inv_icon"				"gfx/guis/hud/icons/item_machinegun_colored"
+  	"mtr_simple_icon"		"simpleicons/item_machinegun_colored"
+	"simple_icon_scale"			"32.0"
+	"triggerSize"				"32"
+  	
+  	// use q3 style spread in MP
+  	"machinegunSpreadStyle"			"1"
+  	"spread"				"200"
+  	"spreadZoom"				"150"
+  	"editor_ignore"				"1"
+  	
+	"hidesurface"				"models/weapons/machinegun/clip_large"
+	  	
+  	"muzzle_kick_time"			"0"
+	"muzzle_kick_maxtime"			"0"
+	"muzzle_kick_angles"			"0 0 0"
+	"muzzle_kick_offset"			"0 0 0"
+	"recoilTime"				"0"
+	"recoilAngles"				"0 0 0"
+	"def_hitscan"				"hitscan_bullet_mp"
+	"def_althitscan"			"hitscan_zoomed_bullet_mp"
+	"altFireRate"				".2"
+	
+	"respawn_Team DM"			"30"
+	"respawn_Tourney"			"15"
+	
+	"inv_start_ammo_machinegun"		"100"
+	
+	// played when you touch a weapon you can't acquire, i.e. weaponStay in MP
+	"snd_noAcquire"			"pickup_weaponstay"	
+}
+
+entityDef weapon_blaster_gui
+{
+	"model"						"weapon_machinegun_world"
+	"hidesurface"				"models/weapons/blaster/flare"
+	
+}
+
+entityDef moveable_item_machinegun 
+{
+	"inherit"					"weapon_machinegun"
+
+	"editor_rotatable"			"1"
+	
+	"spawnclass"				"idMoveableItem"
+	"mass"						"2500"
+	"density"					"0.05"
+	"friction"					"0.2"
+	"bouncyness"				"0"
+	"itemclipmodel" 				"models/weapons/machinegun/w_mg_lo_clip.lwo"
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+// Mods
+//--------------------------------------------------------------------------------------------------------------------
+
+entityDef wpmod_machinegun_ammo
+{
+	"weapon"					"weapon_machinegun"
+
+	"mod_showsurface"			"models/weapons/machinegun/clip_large"
+	"mod_hidesurface"			"models/weapons/machinegun/clip_small"
+
+	"clipSize"					"80"
+}
+
+entityDef weaponmod_machinegun_ammo
+{
+	"editor_color"				".3 .3 1"
+	"editor_mins"				"-16 -16 0"
+	"editor_maxs"				"16 16 32"
+
+	"editor_menu"				"pickup"
+	"editor_usage"				"Machinegun Extended Clip Modification"
+
+	"spawnclass"				"idItem"
+	"size"						"32 32 32"
+	"inv_weaponmod"				"wpmod_machinegun_ammo"
+	"inv_ammo_machinegun"		"120"
+	"inv_item"					"1"
+	"inv_icon"					"gfx/guis/hud/icons/item_machinegun.tga"
+	"inv_name"					"#str_107435"
+
+	"model"						"models/items/ammo/ammo_box.lwo"
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+// Models
+//-------------------------------------------------------------------------------------------------------------------0
+
+model weapon_machinegun_view
+{
+	mesh						models/weapons/machinegun/view.md5mesh
+
+	offset						(-1.5 1.7 .25)
+
+	anim idle					models/weapons/machinegun/idle.md5anim
+	anim raise					models/weapons/machinegun/raise.md5anim
+	{
+		frame 7					sound_weapon			snd_bolt
+	}	
+	
+	anim putaway				models/weapons/machinegun/lower.md5anim
+	{
+		frame 1					sound_weapon			weapon_switch
+	}	
+
+	anim fire 					models/weapons/machinegun/fire.md5anim
+	{
+		frame 1					sound_weapon	weapon_machinegun_fire
+		frame 1					sound_item		weapon_machinegun_fire_stereo
+		frame 1					object_call		EjectBrass
+	}
+	anim reload					models/weapons/machinegun/reload.md5anim
+	{
+		frame 6					sound_weapon			weapon_machinegun_clipout
+		frame 16				sound_item				weapon_machinegun_clipin
+		frame 26				sound_weapon			snd_bolt
+	}
+	anim flashlight				models/weapons/machinegun/flashlight.md5anim
+	{
+		frame 7					sound_weapon			weapon_blaster_flashlight
+	}
+}
+
+model weapon_machinegun_view_strogg
+{
+	inherit						weapon_machinegun_view
+
+	offset						(-1.5 1.7 .25)
+
+	mesh						models/weapons/machinegun/view_strogg.md5mesh
+}
+
+model weapon_machinegun_world 
+{
+	mesh		 				models/weapons/machinegun/world/machinegun_world.md5mesh
+
+	anim raise					models/weapons/machinegun/world/machinegun_idle.md5anim	
+	anim idle 					models/weapons/machinegun/world/machinegun_idle.md5anim
+	anim aim					models/weapons/machinegun/world/machinegun_idle.md5anim
+	anim fire1 					models/weapons/machinegun/world/machinegun_fire1.md5anim
+	anim reload					models/weapons/machinegun/world/machinegun_reload.md5anim
+	anim noammo					models/weapons/machinegun/world/machinegun_idle.md5anim
+	anim putaway				models/weapons/machinegun/world/machinegun_idle.md5anim
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//												HitScan
+//-------------------------------------------------------------------------------------------------------------------0
+
+entityDef hitscan_bullet
+{
+	"range"						"40000"
+
+	"fx_impact"				"effects/weapons/machinegun/impact_default.fx"
+	"fx_impact_water"			"effects/ambient/splash_smll.fx"
+	"fx_impact_concrete"			"effects/weapons/machinegun/impact_concrete.fx"
+	"fx_impact_rock"			"effects/weapons/machinegun/impact_concrete.fx"
+	"fx_impact_electronics"			"effects/weapons/machinegun/impact_electronics.fx"
+	"fx_impact_flesh"			"effects/weapons/machinegun/impact_flesh.fx"						
+	"fx_impact_glass"			"effects/weapons/machinegun/impact_glass.fx"
+	"fx_impact_monstermetal"		"effects/weapons/machinegun/impact_monstermetal.fx"
+	"fx_impact_bpglass"			"effects/weapons/machinegun/impact_bpglass.fx"
+	"fx_impact_mp"				"effects/weapons/machinegun/impact_default_mp.fx"
+	"fx_impact_concrete_mp"			"effects/weapons/machinegun/impact_default_mp.fx"
+	"fx_impact_rock_mp"			"effects/weapons/machinegun/impact_default_mp.fx"
+	"fx_impact_glass_mp"			"effects/weapons/machinegun/impact_default_mp.fx"
+	"fx_impact_bpglass_mp"			"effects/weapons/machinegun/impact_default_mp.fx"
+	"fx_impact_electronics_mp"		"effects/weapons/machinegun/impact_default_mp.fx"
+	
+	"def_damage"				"damage_machinegun"
+	"def_damage_flesh"			"damage_machinegun_flesh"
+		
+	"push"						"7500"
+}
+
+entityDef hitscan_zoomed_bullet
+{
+	"inherit"					"hitscan_bullet"
+	
+	"def_damage"				"damage_machinegun_zoom"
+	"def_damage_flesh"			"damage_machinegun_zoom_flesh"
+}
+
+//---------------------------------------------------------------
+// SP - normal
+//---------------------------------------------------------------
+entityDef damage_machinegun
+{
+	"inherit"					"damage_bullet"
+	"damage"					"15"
+	"damage_flesh"				"18"
+
+	"deathPush"					"100"
+	"deathPushMin"				"3000 350"
+	"deathPushMax"				"5000 500"
+}
+
+entityDef damage_machinegun_flesh
+{
+	"inherit"					"damage_machinegun"
+	"damage"					"18"
+}
+
+//---------------------------------------------------------------
+// SP - Zoomed
+//---------------------------------------------------------------
+entityDef damage_machinegun_zoom
+{
+	"inherit"					"damage_machinegun"
+	"damage"					"20"
+	"damage_flesh"				"24"
+}
+
+entityDef damage_machinegun_zoom_flesh
+{
+	"inherit"					"damage_machinegun"
+	"damage"					"24"
+}
+
+//---------------------------------------------------------------
+// MP
+//---------------------------------------------------------------
+entityDef hitscan_bullet_mp
+{
+	"inherit"				"hitscan_bullet"
+	"range"					"40000"
+
+	"def_damage"				"damage_machinegun_mp"
+	"def_damage_flesh"			"damage_machinegun_mp"
+}
+
+entityDef hitscan_zoomed_bullet_mp
+{
+	"inherit"				"hitscan_bullet"
+	"range"					"40000"
+	
+	"def_damage"				"damage_machinegun_zoom_mp"
+	"def_damage_flesh"			"damage_machinegun_zoom_mp"
+}
+
+entityDef damage_machinegun_mp
+{
+	"inherit"					"damage_bullet"
+	"damage"					"7"
+	"damage_flesh"					"7"
+	"damage_team"					"5"
+	"knockback"					"7"
+	"knockback_team"				"5"
+
+	"deathPush"					"100"
+	"deathPushMin"					"3000 350"
+	"deathPushMax"					"5000 500"
+}
+
+
+entityDef damage_machinegun_zoom_mp
+{
+	"inherit"					"damage_machinegun_mp"
+	"damage"					"10"
+	"damage_flesh"					"10"
+	"damage_team"					"7"
+	"knockback"					"10"
+	"knockback_team"				"10"
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//												Casing
+//--------------------------------------------------------------------------------------------------------------------
+
+entityDef debris_brass_machinegun {
+	"model" 					"models/weapons/machinegun/brass.lwo"
+	"clipmodel"					"simpletri"
+	
+	"scale"						"0.3"
+	
+	"linear_velocity"			"10 -75 50"
+	"linear_velocity_range"		"0.1 0.15 0.35"
+	"angular_velocity"			"0 8000 0"
+	"angular_velocity_range"	"0 1.0 0"
+	
+	"density"					"0.02"
+	"linear_friction"			"0.4"
+	"angular_friction"			"0.1"
+	"friction"					"0.2"
+	"bouncyness"				"0.1"
+	"snd_bounce"				"brass_casing"
+	"bounce_sound_once"			"1"
+}

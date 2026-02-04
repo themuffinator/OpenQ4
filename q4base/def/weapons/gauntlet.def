@@ -1,0 +1,213 @@
+//----------------------------------------------------------------
+// gauntlet.def
+//
+// Copyright 2002-2004 Raven Software
+//----------------------------------------------------------------
+
+export gauntlet
+{
+	options -prefix GAUNTLET_ -scale .4 -sourcedir work/models/weapons/strogg_gauntlet/animations -destdir models/weapons/gauntlet
+
+	addoptions -skipmesh rt_strogg_arm_mesh 
+	addoptions -skipmesh lft_strogg_arm_mesh 
+	
+	mesh	idle.ma 					-dest view
+	anim	idle.ma						-dest view_idle
+	anim	lower_raise.ma				-range 1 6 -dest lower
+	anim	lower_raise.ma				-range 11 18 -dest raise
+	anim	attack_start_loop_end.ma	-range 1 8 -dest attack_start
+	anim	attack_start_loop_end.ma	-range 8 23 -dest attack_loop
+	anim	attack_start_loop_end.ma	-range 23 32 -dest attack_end
+}
+
+export gauntlet_strogg
+{
+	options -prefix GAUNTLET_ -scale .4 -sourcedir work/models/weapons/strogg_gauntlet/animations -destdir models/weapons/gauntlet
+	addoptions -skipmesh rt_arm_mesh 
+	addoptions -skipmesh lft_arm_mesh 
+
+	mesh	idle.ma 				-dest view_strogg
+}
+
+export gauntlet
+{
+	options -prefix PLAYER_GNT_ -scale .4 -keep ATTACHER -sourcedir work/models/characters/marine/multiplayer -destdir models/weapons/gauntlet/world -rename ATTACHER origin -clearorigin
+	mesh	idle.ma			-dest gauntlet
+	anim	idle.ma			-dest idle
+	anim	idle.ma			-dest fire
+}
+
+entityDef viewStyle_shouldered_gauntlet {
+	"viewangles"				"0 0 0"
+	"viewoffset"				"0 0 0"
+}
+
+entityDef viewStyle_q3_gauntlet {
+	"viewangles"				"-2.8 -5 2.4"
+  	"viewoffset"				"-1.2 2.1 0.3"
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+// Weapon Defintion
+//-------------------------------------------------------------------------------------------------------------------0
+
+entityDef weapon_gauntlet
+{
+	"editor_menu"				"pickup"
+	"editor_color"				".3 .3 1"
+	"editor_mins"				"-16 -16 0"
+	"editor_maxs"				"16 16 32"
+
+	"editor_usage"				"Gauntlet"
+
+	"modelindex"				"MODELINDEX_GAUNTLET"
+
+	"spawnclass"				"idItem"
+	"weaponclass"				"rvWeaponGauntlet"
+	"weaponname"				"Gauntlet"
+	"size"						"32 32 32"
+
+  	"model_view"				"weapon_gauntlet_view"
+  	"model_view_strogg"			"weapon_gauntlet_view_strogg"
+ 	"model_world"				"weapon_gauntlet_world"
+	"model" 					"models/weapons/gauntlet/gauntlet.lwo"
+
+	"joint_attach"				"GNT_ATTACHER"
+
+//	"joint_attach"				"PST_ATTACHER"
+//	"joint_view_flashlight"		"barrel"
+//	"joint_view_flash"			"barrel"
+//	"joint_world_flash"			"muzzle_flash"
+
+	"inv_weapon"				"weapon_gauntlet"
+	"inv_item"					"5"
+	"inv_icon"					"gfx/guis/hud/icons/item_gauntlet_colored"
+	"mtr_simple_icon"					"simpleicons/item_gauntlet_colored"
+	"simple_icon_scale"			"32.0"
+	"inv_name"					"#str_107402"
+
+	"clipSize"					"0"
+	"ammoRequired"				"0"
+	"ammoType"					"ammo_none"
+
+	"weaponAngleOffsetAverages" "10"
+	"weaponAngleOffsetScale" 	".25"
+	"weaponAngleOffsetMax"		"10"
+	"weaponOffsetTime"			"600"
+	"weaponOffsetScale"			"0.003"
+
+	"mtr_crosshair"				"gfx/guis/crosshairs/crosshair_gauntlet"
+	"mtr_icon"					"gfx/guis/hud/icons/gun_gauntlet"
+
+	"foreshorten"				".65"
+
+	// -------------------- Recoil and Muzzle Kick ---------------------------------------
+
+	"muzzle_kick_time"			"0.1"
+	"muzzle_kick_maxtime"		"0.2"
+	"muzzle_kick_angles"		"-5 0 0"
+	"muzzle_kick_offset"		"2 0 0"
+
+	"recoilTime"				"100"
+	"recoilAngles"				"-2 0 0"
+
+	// ---------------------------- Muzzle Flash ---------------------------------------
+
+	"mtr_flashShader"			"lights/muzzleflash"
+	"flashColor"				"0.7 0.8 1"
+	"flashRadius"				"200"
+	"flashPointLight"			"1"
+	"flashTime"					".1"
+	"flashViewOffset"			"15 5 -10"
+
+	"def_viewStyle"				"viewStyle_q3_gauntlet"
+	"def_viewStyle1"			"viewStyle_shouldered_gauntlet"
+
+	"snd_acquire"				"pickup_weapon"
+	"snd_blade_fast"			"generic_laser_coupling_spin_fast"
+//	"snd_blade_slow"			"generic_laser_coupling_spin_slow"
+
+	"snd_spin_up"				"weapon_gauntlet_spinup"
+	"snd_spin_down"				"weapon_gauntlet_spindown"
+	"snd_spin_loop"				"weapon_gauntlet_spin"
+	"snd_spin_wall"				"weapon_gauntlet_wall"
+	"snd_spin_flesh"			"weapon_gauntlet_flesh"
+	
+	"joint_blade"				"center"
+	"blade_spinfast"			"900 0 0"
+	"blade_spinslow"			"90 0 0"
+	"blade_accel"				".25"
+
+	"def_damage"				"damage_gauntlet"
+	"fx_impact"					"effects/weapons/gauntlet/impact.fx"
+	"fx_impact_flesh"			"effects/weapons/gauntlet/impact_flesh.fx"
+	"fx_impact_monstermetal"	"effects/weapons/gauntlet/impact_monstermetal.fx"
+	"range"						"48"
+	"fireRate"					".4"
+
+	"has_windup"				"1"
+	"snd_hit"				"weapon_mp_gauntlet_impact"
+}
+
+entityDef weapon_gauntlet_mp
+{
+	"inherit"					"weapon_gauntlet"
+	"muzzle_kick_time"		"0"
+	"muzzle_kick_maxtime"		"0"
+	"muzzle_kick_angles"		"0 0 0"
+	"muzzle_kick_offset"		"0 0 0"
+	"recoilTime"			"0"
+	"recoilAngles"			"0 0 0"
+	"range"						"50"
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+// Models
+//--------------------------------------------------------------------------------------------------------------------
+
+model weapon_gauntlet_view
+{
+	mesh						models/weapons/gauntlet/view.md5mesh
+	anim idle 					models/weapons/gauntlet/view_idle.md5anim
+	anim lower 					models/weapons/gauntlet/lower.md5anim
+	anim raise 					models/weapons/gauntlet/raise.md5anim
+	anim attack_start 			models/weapons/gauntlet/attack_start.md5anim
+	{
+		frame 1					sound_weapon		scientist_weapon_move
+	}
+	anim attack_loop 			models/weapons/gauntlet/attack_loop.md5anim
+	anim attack_end				models/weapons/gauntlet/attack_end.md5anim
+	{
+		frame 1					sound_weapon		scientist_weapon_move
+	}
+}
+
+model weapon_gauntlet_view_strogg
+{
+	inherit						weapon_gauntlet_view
+	mesh						models/weapons/gauntlet/view_strogg.md5mesh
+}
+
+model weapon_gauntlet_world
+{
+	mesh					models/weapons/gauntlet/world/gauntlet.md5mesh
+	anim idle				models/weapons/gauntlet/world/idle.md5anim
+	anim fire				models/weapons/gauntlet/world/fire.md5anim
+}
+
+entityDef damage_gauntlet
+{
+	"damage"					"50"
+	"gib"						"1"
+
+	"dv_time"					"100"
+	"dv_scale"					".05"
+
+	"deathPush"					"200"
+	"deathPushMin"				"2000 400"
+	"deathPushMax"				"4000 500"
+	"knockback"					"50"
+	
+	"bleed"						"1"
+}
+

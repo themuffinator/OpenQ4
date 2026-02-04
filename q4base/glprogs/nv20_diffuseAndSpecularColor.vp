@@ -1,0 +1,59 @@
+!!ARBvp1.0 OPTION ARB_position_invariant ;
+
+# VPROG_NV_DIFFUSE_AND_SPECULAR_COLOR
+# 
+# input:
+# 
+# TEX0	texture coordinates
+# TEX1	normal
+# TEX2	tangent[0]
+# TEX3	tangent[1]
+# COL0	vertex color
+# 
+# output:
+# 
+# HPOS	homogeneous clip space position
+# TEX0	is the normalization cube map for the half angle
+# TEX1	will be the per-surface bump map
+# TEX2	will be the per-surface diffuse map
+# TEX3	will be the per-surface specular map
+
+TEMP	R0, R1, R2;
+
+# textures 1, 2, and 3 use the same texcoords
+DP4	result.texcoord[1].x, vertex.texcoord[0], program.env[10];
+DP4	result.texcoord[1].y, vertex.texcoord[0], program.env[11];
+
+DP4	result.texcoord[2].x, vertex.texcoord[0], program.env[12];
+DP4	result.texcoord[2].y, vertex.texcoord[0], program.env[13];
+
+DP4	result.texcoord[3].x, vertex.texcoord[0], program.env[14];
+DP4	result.texcoord[3].y, vertex.texcoord[0], program.env[15];
+
+# texture 0's texcoords will be the halfangle in texture space
+
+# calculate normalized vector to light in R0
+ADD		R0, -vertex.position, program.env[4];
+DP3		R1, R0, R0;
+RSQ		R1, R1.x;
+MUL		R0,	R0, R1.x;
+
+# calculate normalized vector to viewer in R1
+ADD		R1, -vertex.position, program.env[5];
+DP3		R2, R1, R1;
+RSQ		R2, R2.x;
+MUL		R1,	R1, R2.x;
+
+# add together to become the half angle vector in object space (non-normalized)
+ADD		R0, R0, R1;
+
+# put into texture space
+DP3		result.texcoord[0].x, vertex.texcoord[1], R0;
+DP3		result.texcoord[0].y, vertex.texcoord[2], R0;
+DP3		result.texcoord[0].z, vertex.texcoord[3], R0;
+
+# copy color
+MOV		result.color, vertex.color;
+
+END
+

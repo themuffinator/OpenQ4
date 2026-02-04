@@ -1,0 +1,339 @@
+//----------------------------------------------------------------
+// blaster.def
+//
+// Copyright 2002-2004 Raven Software
+//----------------------------------------------------------------
+
+export blaster
+{
+	options -prefix BLASTER_ -scale .4 -keep lft_pnky_3 barrel -keep flashlight -parent lft_wrst body -sourcedir work/models/weapons/marine_blaster_pistol/animations -destdir models/weapons/blaster
+
+	addoptions -skipmesh rt_strogg_arm_mesh 
+	addoptions -skipmesh lft_strogg_arm_mesh 
+	
+	mesh	blaster_idle_00.ma 				-dest view
+	anim	blaster_position_fire.ma 		-dest fire
+	anim	blaster_position_fire2.ma 		-dest fire2
+	anim	blaster_idle_00.ma 				-dest idle
+	anim	blaster_raise_weapon.ma			-dest raise
+	anim	blaster_lower_weapon.ma			-dest lower
+	anim	blaster_flashlight.ma 			-dest flashlight
+	anim	blaster_position_mod_start.ma 	-dest charge_up
+	anim	blaster_position_mod_end.ma 	-dest big_recoil
+}
+
+export blaster_strogg
+{
+	options -prefix BLASTER_ -scale .4 -keep barrel -keep flashlight -parent lft_wrst body -sourcedir work/models/weapons/marine_blaster_pistol/animations -destdir models/weapons/blaster
+	addoptions -skipmesh rt_arm_mesh 
+	addoptions -skipmesh lft_arm_mesh 
+	mesh	blaster_idle_00.ma 				-dest view_strogg
+}
+
+
+export blaster
+{
+	options -prefix PLAYER_PST_ -scale .4 -keep muzzle_flash ATTACHER -sourcedir work/models/characters/marine/animation_mocap_cinematics -destdir models/weapons/blaster/world -rename ATTACHER origin -clearorigin
+	mesh	newMarine_oneframe_idle.ma			-dest blaster
+	anim	newMarine_oneframe_idle.ma			-dest idle
+}
+
+
+entityDef viewStyle_shouldered_blaster {
+	"viewangles"				"-0.5 -9 1.6"
+	"viewoffset"				"-1.3 5 1.15"
+}
+
+entityDef viewStyle_q3_blaster {
+	"viewangles"				"1 -5.7 1.6"
+  	"viewoffset"				"-2 1.7 1.15"
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+// Weapon Defintion
+//-------------------------------------------------------------------------------------------------------------------0
+
+entityDef weapon_blaster
+{
+	"editor_menu"				"pickup"
+	"editor_color"				".3 .3 1"
+	"editor_mins"				"-16 -16 0"
+	"editor_maxs"				"16 16 32"
+
+	"editor_usage"				"Blaster"
+
+	"spawnclass"				"idItem"
+	"weaponclass"				"rvWeaponBlaster"
+	"weaponname"				"Blaster"
+	"size"						"32 32 32"
+
+  	"model_view"				"weapon_blaster_view"
+  	"model_view_strogg"			"weapon_blaster_view_strogg"
+  	"model_world"				"weapon_blaster_world"
+	"model" 					"models/weapons/blaster/w_bp.lwo"
+
+	"joint_attach"				"PST_ATTACHER"
+	"joint_view_flashlight"		"barrel"
+	"joint_view_flash"			"barrel"
+	"joint_world_flash"			"muzzle_flash"
+
+	// Firing properties
+	"chargeTime"				".8"
+	"chargeDelay"				".1"
+	"chargeGlow"				"0 .4"
+	"fireRate"					".15"
+	"spread"					".2"
+
+//	"def_projectile"			"projectile_blaster"
+	"def_hitscan"				"hitscan_blaster"
+	"def_altprojectile"			"projectile_blaster_charged"
+	"ammoType"					"ammo_blaster"
+	"clipSize"					"0"
+	"ammoRequired"				"0"
+//	"launchFromBarrel"			"1"
+
+	"inv_weapon"				"weapon_blaster"
+	"inv_item"					"5"
+	"inv_icon"					"gfx/guis/hud/icons/item_blaster.tga"
+	"inv_name"					"#str_107400"
+
+//	"gui"						"guis/weapons/blaster_ammo.gui"
+	"mtr_icon"					"gfx/guis/hud/icons/gun_blaster"
+
+	"mtr_crosshair"				"gfx/guis/crosshairs/crosshair_blaster"
+//	"crosshairOffsetX"			"2"
+//	"crosshairOffsetY"			"2"
+
+	// -------------------- Recoil and Muzzle Kick ---------------------------------------
+
+	"muzzle_kick_time"			"0.1"
+	"muzzle_kick_maxtime"		"0.2"
+	"muzzle_kick_angles"		"-5 0 0"
+	"muzzle_kick_offset"		"2 0 0"
+
+	"recoilTime"				"100"
+	"recoilAngles"				"-2 0 0"
+	
+	// ---------------------------- Flashlight ---------------------------------------
+	
+	"mtr_flashlightShader"		"gfx/lights/flashlight"
+	"flashlightColor"			"1 1 .9"
+	"flashlightRadius"			"400"
+	"flashlightAngle"			"15.0"
+	"flashlightTarget"			"1000 0 0"
+	"flashlightUp"				"0 375 0"
+	"flashlightRight"			"0 0 -375"
+	"flashlightPointLight"		"0"
+
+
+	// ---------------------------- Muzzle Flash ---------------------------------------
+
+	"mtr_flashShader"			"lights/muzzleflash"
+	"flashColor"				"0.7 0.8 1"
+	"flashRadius"				"200"
+	"flashPointLight"			"1"
+	"flashTime"					".1"
+	"flashViewOffset"			"15 5 -10"
+
+	// ------------------------- Sounds and Effects ---------------------------------------
+	  	
+	"snd_charge"				"weapon_blaster_charge"
+	"snd_charge_loop"			"weapon_blaster_charged"
+	"snd_charge_click"			"weapon_blaster_charge_click"
+	"snd_quaddamage"			"weapon_quaddamage_fire"
+
+ 	"fx_normalflash"			"effects/weapons/blaster/muzzleflash.fx"
+ 	"fx_chargedflash"			"effects/weapons/blaster/charged/muzzleflash.fx"		
+	"fx_respawn"				"effects/mp/itemrespawn.fx"
+ 	"fx_muzzleflash_world"		"effects/weapons/blaster/muzzleflash_world.fx"
+
+	"snd_acquire"				"pickup_weapon"
+
+	"def_viewStyle"				"viewStyle_q3_blaster"
+	"def_viewStyle1"			"viewStyle_shouldered_blaster"
+
+ 	
+	"foreshorten"				".65"
+	
+	"weaponAngleOffsetAverages" "10"
+	"weaponAngleOffsetScale" 	".25"
+	"weaponAngleOffsetMax"		"10"
+	"weaponOffsetTime"			"600"
+	"weaponOffsetScale"			"0.003"
+	
+	"net_syncPhysics"			"1"
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+// Models
+//-------------------------------------------------------------------------------------------------------------------0
+
+model weapon_blaster_view
+{
+	mesh						models/weapons/blaster/view.md5mesh
+
+	anim idle 					models/weapons/blaster/idle.md5anim	
+	anim raise					models/weapons/blaster/raise.md5anim
+	{
+		rate					1.4
+		frame 6					sound_weapon	weapon_blaster_ready
+	}		
+	anim putaway				models/weapons/blaster/lower.md5anim
+	{
+		frame 1					sound_weapon	weapon_switch
+	}
+
+	anim fire1 					models/weapons/blaster/fire.md5anim
+	{
+		frame 1					sound_weapon	weapon_blaster_fire
+		frame 1					sound_item		weapon_blaster_fire_stereo
+	}
+	anim fire2 					models/weapons/blaster/fire2.md5anim
+	{
+		frame 1					sound_weapon	weapon_blaster_fire
+		frame 1					sound_item		weapon_blaster_fire_stereo
+	}
+
+	anim flashlight				models/weapons/blaster/flashlight.md5anim
+	{
+		frame 8					sound_weapon	weapon_blaster_flashlight
+	}
+	
+	anim charging				models/weapons/blaster/charge_up.md5anim
+	anim chargedfire			models/weapons/blaster/big_recoil.md5anim
+	{
+		frame 1					sound_weapon	weapon_blaster_fire_charged
+		frame 1					sound_item		weapon_blaster_fire_stereo
+	}
+}
+
+model weapon_blaster_view_strogg
+{
+	inherit						weapon_blaster_view
+	mesh						models/weapons/blaster/view_strogg.md5mesh
+}
+
+model weapon_blaster_world 
+{
+	mesh				models/weapons/blaster/world/blaster.md5mesh
+	anim idle				models/weapons/blaster/world/idle.md5anim
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+// Mods
+//-------------------------------------------------------------------------------------------------------------------0
+
+//--------------------------------------------------------------------------------------------------------------------
+// Projectile
+//-------------------------------------------------------------------------------------------------------------------0
+
+entityDef hitscan_blaster
+{
+	"range"						"10000"
+
+	"fx_impact"					"effects/weapons/blaster/impact_default.fx"
+	"fx_impact_water"			"effects/ambient/splash_smll.fx"
+	"fx_impact_concrete"		"effects/weapons/hyperblaster/impact_concrete.fx"
+	"fx_impact_flesh"			"effects/weapons/hyperblaster/impact_flesh.fx"
+	"fx_impact_monstermetal"	"effects/weapons/hyperblaster/impact_flesh.fx"
+	"fx_impact_glass"			"effects/weapons/blaster/impact_glass.fx"					
+	"fx_impact_bpglass"			"effects/weapons/blaster/impact_bpglass.fx"
+	"fx_impact_electronics"		"effects/weapons/hyperblaster/impact_electronics.fx"	
+
+	"fx_path"					"effects/weapons/blaster/trail.fx"
+	
+	"def_damage"				"damage_blaster"
+		
+	"push"						"7500"
+
+	"impact_gib"				"1"
+}
+
+entityDef projectile_blaster
+{
+	"spawnclass"				"idProjectile"
+	"mins"						"-2 -2 -2"
+	"maxs"						"2 2 2"
+	"cone"						"2"
+	"noshadows"					"1"
+																
+	"def_damage"				"damage_blaster"
+								
+	"velocity"					"1500 0 0"
+	"fuse"						"4"
+	"push"						"7500"
+								
+	"detonate_on_fuse"			"1"
+	"detonate_on_death"			"0"
+	"detonate_on_world"			"1"
+	"detonate_on_actor"			"1"
+								
+	"impact_gib"				"1"
+								
+	"decal_bounce"				""
+	"decal_size"				"8"
+								
+	"fx_fly"					"effects/weapons/blaster/fly.fx"
+	"fx_impact"					"effects/weapons/blaster/impact_default.fx"
+	"fx_impact_water"			"effects/ambient/splash_smll.fx"
+	"fx_impact_flesh"			"effects/weapons/blaster/impact_flesh.fx"
+	"fx_impact_monstermetal"	"effects/weapons/blaster/impact_monstermetal.fx"
+	"fx_impact_electronics"		"effects/weapons/machinegun/impact_electronics.fx"
+	"fx_impact_armor"			"effects/weapons/machinegun/impact_armor.fx"
+	
+	"fx_teleport_enter"		"effects/mp/item_teleport.fx"
+	"fx_teleport"			"effects/mp/item_teleport.fx"
+}
+
+entityDef projectile_blaster_charged
+{
+	"inherit"					"projectile_blaster"
+
+	"mins"						"-8 -8 -8"
+	"maxs"						"8 8 8"
+
+	"velocity"					"2000 0 0"
+
+	"fx_fly"					"effects/weapons/blaster/charged/fly.fx"
+	"fx_impact"					"effects/weapons/blaster/charged/impact_default.fx"
+	"fx_impact_flesh"			"effects/weapons/blaster/impact_flesh_charged.fx"
+	"fx_impact_monstermetal"	"effects/weapons/blaster/impact_monstermetal_charged.fx"
+	"fx_impact_electronics"		"effects/weapons/machinegun/impact_electronics.fx"
+	"fx_impact_armor"			"effects/weapons/machinegun/impact_armor.fx"
+
+
+	"def_damage"				"damage_blaster_charged"
+	"def_splash_damage"			"damage_blastersplash_charged"
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+// Damage
+//-------------------------------------------------------------------------------------------------------------------0
+
+entityDef damage_blaster
+{
+	"inherit"					"damage_bullet"
+	"damage"					"8"
+
+	"fx_wound"					"effects/wounds/energy.fx"
+
+	"deathPush"					"100"
+	"deathPushMin"				"2000 250"
+	"deathPushMax"				"5000 500"
+}
+
+entityDef damage_blaster_charged
+{
+	"inherit"					"damage_blaster"
+	"damage"					"50"
+}
+
+entityDef damage_blastersplash_charged
+{
+	"inherit"					"damage_blaster"
+	
+	"damage"					"40"
+	"radius"					"50"
+	"knockback"					"30"
+	"push"						"2500"
+}

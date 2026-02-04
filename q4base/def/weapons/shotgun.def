@@ -1,0 +1,378 @@
+//----------------------------------------------------------------
+// shotgun.def
+//
+// Copyright 2002-2004 Raven Software
+//----------------------------------------------------------------
+
+export shotgun
+{
+	options -prefix SHOTGUN_ -keep lft_pnky_3 -scale .4 -keep flash eject -parent lft_wrst body
+
+	addoptions -skipmesh rt_strogg_arm_mesh 
+	addoptions -skipmesh lft_strogg_arm_mesh 
+
+	mesh	work/models/weapons/marine_shotgun/animations/SHOTGUN_mesh.ma 			-dest models/weapons/shotgun/view
+	anim	work/models/weapons/marine_shotgun/animations/SHOTGUN_fire.ma 			-dest models/weapons/shotgun/fire
+	anim	work/models/weapons/marine_shotgun/animations/SHOTGUN_idle.ma 			-dest models/weapons/shotgun/idle
+	anim	work/models/weapons/marine_shotgun/animations/SHOTGUN_raise.ma			-dest models/weapons/shotgun/raise
+	anim	work/models/weapons/marine_shotgun/animations/SHOTGUN_lower.ma			-dest models/weapons/shotgun/lower
+	
+	anim	work/models/weapons/marine_shotgun/animations/SHOTGUN_reload_start.ma	-dest models/weapons/shotgun/reload_start
+	anim	work/models/weapons/marine_shotgun/animations/SHOTGUN_reload_loop.ma	-dest models/weapons/shotgun/reload_loop
+	anim	work/models/weapons/marine_shotgun/animations/SHOTGUN_reload_end.ma		-dest models/weapons/shotgun/reload_end
+	anim	work/models/weapons/marine_shotgun/animations/SHOTGUN_reload_clip.ma	-dest models/weapons/shotgun/reload_clip
+}
+
+export shotgun_strogg
+{
+	options -prefix SHOTGUN_ -keep lft_pnky_3 -scale .4 -keep flash eject -parent lft_wrst body
+
+	addoptions -skipmesh rt_arm_mesh 
+	addoptions -skipmesh lft_arm_mesh 
+	mesh	work/models/weapons/marine_shotgun/animations/SHOTGUN_mesh.ma 			-dest models/weapons/shotgun/view_strogg
+}
+
+export shotgun
+{
+	options -prefix PLAYER_SG_ -scale .4 -keep ATTACHER muzzle_flash -sourcedir work/models/characters/marine/multiplayer -destdir models/weapons/shotgun/world -rename ATTACHER origin -clearorigin 
+	mesh	shotgun_idle.ma			-dest shotgun
+	anim	shotgun_idle.ma			-dest idle
+}
+
+entityDef viewStyle_shouldered_shotgun {
+	"viewoffset"				"-1.6 4.5 3.7"
+	"viewangles"				"2 -6.25 2"
+}
+
+entityDef viewStyle_q3_shotgun {
+	"viewoffset"				"-1.6 3.8 3.7"
+  	"viewangles"				"3 -8.5 2"
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+// Weapon Defintion
+//-------------------------------------------------------------------------------------------------------------------0
+
+entityDef weapon_shotgun
+{
+	"editor_color"				".3 .3 1"
+	"editor_mins"				"-16 -16 0"
+	"editor_maxs"				"16 16 32"
+
+	"editor_usage"				"Shotgun"
+	"editor_menu"				"pickup"
+	"editor_var inv_weaponmod"		"comma separated of any of the following shotgun modifications.\n - weapon_shotgun_ammo"
+
+	"modelindex"				"MODELINDEX_SHOTGUN"
+
+	"spawnclass"				"idItem"
+	"weaponclass"				"rvWeaponShotgun"
+	"size"					"32 32 32"
+	"model_view" 				"weapon_shotgun_view"
+	"model_view_strogg" 			"weapon_shotgun_view_strogg"
+  	"model_world"				"weapon_shotgun_world"
+	"model"					"models/weapons/shotgun/w_sg.lwo"
+	"def_dropItem"				"weapon_shotgun"
+	"def_ejectBrass"			"debris_brass_shotgun"
+
+	"joint_attach"				"SG_ATTACHER"
+	"joint_view_flash"			"flash"
+  	"joint_view_eject"			"eject"
+	"joint_view_guiLight"			"body"
+	"joint_world_flash"			"muzzle_flash"
+
+	"fireRate"				".8"
+	"spread"				"7"
+	"hitscans"				"10"
+
+	"inv_weapon"				"weapon_shotgun"
+	"inv_start_ammo_shotgun"		"10"
+	"inv_item"				"1"
+	"inv_icon"				"gfx/guis/hud/icons/item_shotgun.tga"
+	"inv_name"				"#str_107410"
+
+	"weaponname"				"Shotgun"
+	"def_hitscan"				"hitscan_shotgun_pellet"
+	"mtr_crosshair"				"gfx/guis/crosshairs/crosshair_shotgun"
+	"ammoType"				"ammo_shotgun"
+	"clipSize"				"8"
+	"ammoRequired"				"1"
+	"gui"					"guis/weapons/shotgun_ammo.gui"
+	"mtr_icon"				"gfx/guis/hud/icons/gun_shotgun"
+
+	"muzzle_kick_time"			"0.5"
+	"muzzle_kick_maxtime"			"0.8"
+	"muzzle_kick_angles"			"0 0 0"
+	"muzzle_kick_offset"			"5.5 .15 .15" // 1 1 2" //"2.5 1 2"
+
+	"ammoRegenStep"				"1"
+	"ammoRegenTime"				"1500"
+
+	"ejectOffset"				"6 -4 -3"
+
+	"recoilTime"				"600"
+	"recoilAngles"				"-.25 0 0"
+	
+ 	"def_mod1"				"wpmod_shotgun_ammo"
+
+	"foreshorten"				".44"
+
+	"mtr_flashShader"			"lights/muzzleflash"
+	"flashColor"				"1 0.8 0.4"
+	"flashRadius"				"240"
+	"flashPointLight"			"1"
+	"flashTime"				".1"
+	"flashViewOffset"			"15 -5 -5"
+
+	"fx_eject"				"effects/weapons/shotgun/eject.fx"
+  	"fx_muzzleflash"			"effects/weapons/shotgun/muzzleflash.fx"		
+  	"fx_muzzleflash_world"			"effects/weapons/shotgun/muzzleflash_world.fx"		
+	"fx_respawn"				"effects/mp/itemrespawn.fx"
+
+	"def_viewStyle"				"viewStyle_q3_shotgun"
+	"def_viewStyle1"			"viewStyle_shouldered_shotgun"
+
+	"weaponAngleOffsetAverages" 		"10"
+	"weaponAngleOffsetScale" 		".10"
+	"weaponAngleOffsetMax"			"2"
+	"weaponOffsetTime"			"600"
+	"weaponOffsetScale"			"0.002"
+
+	"snd_quaddamage"			"weapon_quaddamage_fire"
+	"snd_acquire"				"pickup_weapon"
+	"snd_noAmmo"				"weapon_shotgun_dryfire"
+
+	"mtr_guiLightShader"			"lights/viewWeaponGuiLight"
+	"glightRadius"				".9"
+	"glightOffset"				"0 1.5 -5.0"
+	"glightColor"				"1 0 0 1"
+
+	"net_syncPhysics"			"1"
+}
+
+entityDef weapon_shotgun_mp
+{
+	"inherit"				"weapon_shotgun"
+	"clipsize"				"0"
+	"hidesurface"				"models/weapons/shotgun/clip"
+	// q3 style spread
+	"shotgunSpreadStyle"			"1"
+	"spread"				"875"
+	"hitscans"				"11"
+	"editor_ignore"				"1"
+	"range"					"131072"
+	"fireRate"				"1.0"
+	"inv_icon"				"gfx/guis/hud/icons/item_shotgun_colored"
+	"mtr_simple_icon"			"simpleicons/item_shotgun_colored"
+	"simple_icon_scale"			"32.0"
+	"triggerSize"				"32"
+	
+	"muzzle_kick_time"			"0"
+	"muzzle_kick_maxtime"			"0"
+	"muzzle_kick_angles"			"0 0 0"
+	"muzzle_kick_offset"			"0 0 0"
+	"recoilTime"				"0"
+	"recoilAngles"				"0 0 0"
+	"respawn_Team DM"			"30"
+	"respawn_Tourney"			"15"
+	
+	// played when you touch a weapon you can't acquire, i.e. weaponStay in MP
+	"snd_noAcquire"			"pickup_weaponstay"
+}
+
+entityDef moveable_item_shotgun
+{
+	"inherit"					"weapon_shotgun"
+
+	"editor_rotatable"			"1"
+	
+	"itemclipmodel"					"models/weapons/shotgun/w_sg_clip.lwo"
+
+	"spawnclass"				"idMoveableItem"
+	"mass"					"2000"
+	"density"					"0.05"
+	"friction"					"0.2"
+	"bouncyness"				"0"
+
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+// Models
+//-------------------------------------------------------------------------------------------------------------------0
+
+model weapon_shotgun_view
+{
+	mesh						models/weapons/shotgun/view.md5mesh
+
+	anim idle 					models/weapons/shotgun/idle.md5anim
+	{
+		rate	.25
+	}
+	anim raise					models/weapons/shotgun/raise.md5anim
+	{
+		frame 5					sound 	weapon_shotgun_pump1
+		frame 10				sound	weapon_shotgun_pump2
+	}
+	anim putaway				models/weapons/shotgun/lower.md5anim
+	{
+		frame 1					sound_weapon			weapon_switch
+	}
+
+	anim fire1 					models/weapons/shotgun/fire.md5anim
+	{
+		frame 1					sound_weapon	weapon_shotgun_fire
+		frame 1					sound_item		weapon_shotgun_fire_stereo
+		frame 12				sound	weapon_shotgun_pump1
+		frame 15				object_call		EjectBrass
+		frame 16				sound	weapon_shotgun_pump2
+	}
+
+	anim reload_start			models/weapons/shotgun/reload_start.md5anim
+	anim reload_loop			models/weapons/shotgun/reload_loop.md5anim
+	{
+		frame 4					sound_item		weapon_shotgun_shell
+	}
+
+	anim reload_end				models/weapons/shotgun/reload_end.md5anim
+	{
+		frame 4					sound			weapon_shotgun_pump1
+		frame 8					sound			weapon_shotgun_pump2
+	}
+
+	anim reload_clip			models/weapons/shotgun/reload_clip.md5anim
+	{
+		frame 9					sound			weapon_shotgun_clipout
+		frame 22				sound				weapon_shotgun_clipin
+		frame 35				sound			weapon_shotgun_pump1
+		frame 38				sound			weapon_shotgun_pump2
+	}
+}
+
+model weapon_shotgun_view_strogg
+{
+	inherit						weapon_shotgun_view
+	mesh						models/weapons/shotgun/view_strogg.md5mesh	
+}
+
+model weapon_shotgun_world
+{
+	mesh						models/weapons/shotgun/world/shotgun.md5mesh
+	anim idle					models/weapons/shotgun/world/idle.md5anim
+
+/*
+	anim idle 					models/weapons/shotgun/world/shotgun_idle.md5anim
+	anim aim 					models/weapons/shotgun/world/shotgun_idle.md5anim
+	anim fire1 					models/weapons/shotgun/world/shotgun_fire1.md5anim
+	anim fire2 					models/weapons/shotgun/world/shotgun_fire1.md5anim
+	anim fire3 					models/weapons/shotgun/world/shotgun_fire1.md5anim
+	anim fire4 					models/weapons/shotgun/world/shotgun_fire1.md5anim
+	anim fire5 					models/weapons/shotgun/world/shotgun_fire1.md5anim
+	anim reload_start 			models/weapons/shotgun/world/shotgun_reload_start.md5anim
+	anim reload_loop 			models/weapons/shotgun/world/shotgun_reload_loop.md5anim
+	anim reload_end 			models/weapons/shotgun/world/shotgun_reload_end.md5anim
+	anim putaway				models/weapons/shotgun/world/shotgun_idle.md5anim
+*/
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+// Mods
+//-------------------------------------------------------------------------------------------------------------------0
+
+entityDef wpmod_shotgun_ammo
+{
+	"weapon"				"weapon_shotgun"
+	"mod_showsurface"		"models/weapons/shotgun/clip"
+	"clipSize"				"10"
+}
+
+entityDef weaponmod_shotgun_ammo
+{
+	"editor_color"				".3 .3 1"
+	"editor_mins"				"-16 -16 0"
+	"editor_maxs"				"16 16 32"
+	"editor_menu"				"pickup"
+	"editor_usage"				"Shotgun Ammo Modification"
+
+	"spawnclass"				"idItem"
+	"size"						"32 32 32"
+	"inv_weaponmod"				"wpmod_shotgun_ammo"
+	"inv_ammo_shotgun"			"32"
+	"inv_item"					"1"
+	"inv_icon"					"gfx/guis/hud/icons/item_shotgun.tga"
+	"inv_name"					"#str_107431"
+	"model"						"models/items/ammo/ammo_box.lwo"
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//												HitScan
+//-------------------------------------------------------------------------------------------------------------------0
+
+entityDef hitscan_shotgun_pellet
+{
+	"inherit"				"hitscan_bullet"
+	"fx_impact"				"effects/weapons/shotgun/impact_default.fx"	
+	"fx_impact_water"			"effects/ambient/splash_smll.fx"
+	"fx_impact_concrete"			"effects/weapons/shotgun/impact_concrete.fx"
+	"fx_impact_electronics"			"effects/weapons/shotgun/impact_electronics.fx"
+	"fx_impact_flesh"			"effects/weapons/shotgun/impact_flesh.fx"						
+	"fx_impact_glass"			"effects/weapons/shotgun/impact_glass.fx"
+	"fx_impact_bpglass"			"effects/weapons/shotgun/impact_bpglass.fx"
+	"fx_impact_monstermetal"		"effects/weapons/shotgun/impact_monstermetal.fx"
+	"fx_impact_mp"				"effects/weapons/shotgun/impact_default_mp.fx"
+	"fx_impact_concrete_mp"			"effects/weapons/shotgun/impact_default_mp.fx"
+	"fx_impact_rock_mp"			"effects/weapons/shotgun/impact_default_mp.fx"
+	"fx_impact_glass_mp"			"effects/weapons/shotgun/impact_default_mp.fx"
+	"fx_impact_bpglass_mp"			"effects/weapons/shotgun/impact_default_mp.fx"
+	"fx_impact_electronics_mp"		"effects/weapons/shotgun/impact_default_mp.fx"
+	"def_damage"				"damage_pellet"
+	"def_damage_flesh"			"damage_pellet"
+	// for multiplayer clients. we only sync the hitscan def
+	// must be the same as weapon_shotgun_mp
+	"hitscans"				"11"
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+// Damage
+//-------------------------------------------------------------------------------------------------------------------0
+
+entityDef damage_pellet
+{
+	"inherit"					"damage_bullet"
+	"damage"					"14"
+
+	"splat_size"				"128"
+	
+	"deathPush"					"100"
+	"deathPushMin"				"4000 500"
+	"deathPushMax"				"9000 600"
+}
+
+entityDef damage_pellet_mp
+{
+	"inherit"					"damage_pellet"
+	"knockback"					"10"
+	"damage"					"10"
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//												Casing
+//-------------------------------------------------------------------------------------------------------------------0
+
+entityDef debris_brass_shotgun {
+	"model" 					"models/weapons/shotgun/sshell_bigger.lwo"
+	
+	"scale"						"0.3"
+	"scale_reset_duration"		"0.35"
+	
+	"linear_velocity"			"10 -55 75"
+	"linear_velocity_range"		"0.1 0.2 0.25"
+	"angular_velocity"			"0 16000 0"
+	"angular_velocity_range"	"0 0.5 0"
+	
+	"density"					"0.02"
+	"linear_friction"			"0.2"
+	"angular_friction"			"0.1"
+	"friction"					"0.2"
+	"bouncyness"				"0.1"
+	"snd_bounce"				"shotgun_shell"
+}

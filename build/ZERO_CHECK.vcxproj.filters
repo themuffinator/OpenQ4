@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="E:\Repositories\Quake4Doom\build\CMakeFiles\0601c517c8c8d22cf6b5f5df0670ccd1\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{FEA373ED-C3F2-3A66-824A-E4AC85C3115F}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

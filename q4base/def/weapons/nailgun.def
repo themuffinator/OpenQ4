@@ -1,0 +1,526 @@
+//----------------------------------------------------------------
+// nailgun.def
+//
+// Copyright 2002-2004 Raven Software
+//----------------------------------------------------------------
+
+export nailgun
+{
+	options -prefix NAILGUN_ -scale .4  -parent lft_wrst nailgun_body -keep lft_shldr lft_elbo lft_wrst lft_thmb_1 lft_ndx_1 lft_mddl_1 lft_ring_5 lft_pnky_1 lft_thmb_2 lft_ndx_2 lft_mddl_2 lft_ring_2 lft_pnky_2 lft_thmb_3 lft_ndx_3 lft_mddl_3 lft_ring_3 lft_pnky_3 lft_thmb_4 lft_ndx_4 lft_mddl_4 lft_ring_4 lft_pnky_4 rt_elbo rt_wrst rt_ring_1 rt_ndx_1 rt_thmb_1 rt_ring_2 rt_ndx_2 rt_thmb_2 rt_ring_3 rt_ndx_3 rt_thmb_3 rt_ring_4 rt_ndx_4 rt_thmb_4 nailgun_rt_steam_nozzle nailgun_lft_steam_nozzle
+//-keepmeshprefix nailgun_
+//-keepmesh rt_arm_mesh -keepmesh lft_arm_mesh
+//-keepmesh temp_left_hand_handle
+
+	addoptions -skipmesh rt_strogg_arm_mesh 
+	addoptions -skipmesh lft_strogg_arm_mesh 
+	addoptions	-skipmesh mgun_mesh
+	addoptions	-skipmesh mgun_lg_clip
+	addoptions	-skipmesh mgun_sm_clip
+
+	mesh	work/models/weapons/nailgun/animations/nailgun_idle.ma 				-dest models/weapons/nailgun/view
+	anim	work/models/weapons/nailgun/animations/nailgun_idle.ma 				-dest models/weapons/nailgun/idle
+	anim	work/models/weapons/nailgun/animations/nailgun_shoot.ma 			-dest models/weapons/nailgun/fire
+	anim	work/models/weapons/nailgun/animations/nailgun_barrelspin.ma 			-dest models/weapons/nailgun/barrelspin
+	anim	work/models/weapons/nailgun/animations/nailgun_raise.ma				-dest models/weapons/nailgun/raise
+	anim	work/models/weapons/nailgun/animations/nailgun_lower.ma				-dest models/weapons/nailgun/lower
+	anim	work/models/weapons/nailgun/animations/nailgun_fire_fast.ma	-dest models/weapons/nailgun/fire_fast
+	anim	work/models/weapons/nailgun/animations/nailgun_fire_slow.ma	-dest models/weapons/nailgun/fire_slow
+	anim	work/models/weapons/nailgun/animations/nailgun_reload.ma			-dest models/weapons/nailgun/reload
+	anim	work/models/weapons/nailgun/animations/nailgun_spinup.ma			-dest models/weapons/nailgun/spinup
+	anim	work/models/weapons/nailgun/animations/nailgun_spindown.ma			-dest models/weapons/nailgun/spindown
+	anim	work/models/weapons/nailgun/animations/nailgun_spindown.ma			-range 1 2 -dest models/weapons/nailgun/spinempty
+
+	anim	work/models/weapons/nailgun/animations/nailgun_reload_double_A.ma	-dest models/weapons/nailgun/reload_clip1_hold
+	anim	work/models/weapons/nailgun/animations/nailgun_reload_double_B.ma	-dest models/weapons/nailgun/reload_clip1_finish
+	anim	work/models/weapons/nailgun/animations/nailgun_reload_double_C.ma	-dest models/weapons/nailgun/reload_clip2
+
+	anim	work/models/weapons/nailgun/animations/nailgun_clasp_open.ma		-dest models/weapons/nailgun/clasp_open
+	anim	work/models/weapons/nailgun/animations/nailgun_clasp_1clip.ma		-dest models/weapons/nailgun/clasp_1clip
+	anim	work/models/weapons/nailgun/animations/nailgun_clasp_2clips.ma		-dest models/weapons/nailgun/clasp_2clip
+
+}
+
+export nailgun_strogg
+{
+	options -prefix NAILGUN_ -scale .4  -parent lft_wrst nailgun_body -keep lft_shldr lft_elbo lft_wrst lft_thmb_1 lft_ndx_1 lft_mddl_1 lft_ring_5 lft_pnky_1 lft_thmb_2 lft_ndx_2 lft_mddl_2 lft_ring_2 lft_pnky_2 lft_thmb_3 lft_ndx_3 lft_mddl_3 lft_ring_3 lft_pnky_3 lft_thmb_4 lft_ndx_4 lft_mddl_4 lft_ring_4 lft_pnky_4 rt_elbo rt_wrst rt_ring_1 rt_ndx_1 rt_thmb_1 rt_ring_2 rt_ndx_2 rt_thmb_2 rt_ring_3 rt_ndx_3 rt_thmb_3 rt_ring_4 rt_ndx_4 rt_thmb_4 nailgun_rt_steam_nozzle nailgun_lft_steam_nozzle
+	addoptions -skipmesh rt_arm_mesh 
+	addoptions -skipmesh lft_arm_mesh 
+	addoptions	-skipmesh mgun_mesh
+	addoptions	-skipmesh mgun_lg_clip
+	addoptions	-skipmesh mgun_sm_clip
+	mesh	work/models/weapons/nailgun/animations/nailgun_idle.ma 				-dest models/weapons/nailgun/view_strogg
+}
+
+/*
+export nailgun
+
+{
+//	options -prefix NAILGUN_nailgun_ -scale .4 -keepmesh rt_armmesh_uvs lft_armmesh_uvs comm_lo -keep lft_shldr lft_elbo lft_wrst lft_thmb_1 lft_ndx_1 lft_mddl_1 lft_ring_5 lft_pnky_1 lft_thmb_2 lft_ndx_2 lft_mddl_2 lft_ring_2 lft_pnky_2 lft_thmb_3 lft_ndx_3 lft_mddl_3 lft_ring_3 lft_pnky_3 lft_thmb_4 lft_ndx_4 lft_mddl_4 lft_ring_4 lft_pnky_4 rt_elbo rt_wrst rt_ring_1 rt_ndx_1 rt_thmb_1 rt_ring_2 rt_ndx_2 rt_thmb_2 rt_ring_3 rt_ndx_3 rt_thmb_3 rt_ring_4 rt_ndx_4 rt_thmb_4
+//	options -prefix NAILGUN_ -scale .4 -keepmesh temp_left_hand_handle -keepmeshprefix nailgun_ -keepmesh rt_armmesh_uvs -keepmesh lft_armmesh_uvs -keepmesh comm_lo -keep lft_shldr lft_elbo lft_wrst lft_thmb_1 lft_ndx_1 lft_mddl_1 lft_ring_5 lft_pnky_1 lft_thmb_2 lft_ndx_2 lft_mddl_2 lft_ring_2 lft_pnky_2 lft_thmb_3 lft_ndx_3 lft_mddl_3 lft_ring_3 lft_pnky_3 lft_thmb_4 lft_ndx_4 lft_mddl_4 lft_ring_4 lft_pnky_4 rt_elbo rt_wrst rt_ring_1 rt_ndx_1 rt_thmb_1 rt_ring_2 rt_ndx_2 rt_thmb_2 rt_ring_3 rt_ndx_3 rt_thmb_3 rt_ring_4 rt_ndx_4 rt_thmb_4
+//	mesh	work/models/weapons/nailgun/animations/world_nailgun.ma 		-dest models/weapons/nailgun/world/worldnailgun
+
+	options -prefix PLAYER_NG_ -scale .4 -keep muzzle_flash ATTACHER -sourcedir work/models/characters/marine/multiplayer -destdir models/weapons/nailgun/world -rename ATTACHER origin -clearorigin
+	mesh	nailgun_idle.ma			-dest nailgun
+	anim	nailgun_idle.ma			-dest idle
+	anim	nailgun_fire2.ma		-dest fire
+	anim	nailgun_spinup.ma		-dest spinup
+	anim	nailgun_spindown.ma		-dest spindown
+}
+*/
+
+entityDef viewStyle_q3_nailgun {
+	"viewoffset"				"-2.7 2.6 1.6"
+	"viewangles"				"3.1 -7.2 0.3"
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//										Weapon Definition
+//--------------------------------------------------------------------------------------------------------------------
+
+entityDef weapon_nailgun
+{
+	"editor_menu"				"pickup"
+	"editor_color"				".3 .3 1"
+	"editor_mins"				"-16 -16 0"
+	"editor_maxs"				"16 16 32"
+	"editor_usage"				"Nailgun"
+
+	"spawnclass"				"idItem"
+	"weaponclass"				"rvWeaponNailgun"
+	"size"						"32 32 32"
+	"model_view" 				"weapon_nailgun_view"
+	"model_view_strogg" 		"weapon_nailgun_view_strogg"
+  	"model_world"				"weapon_nailgun_world"
+	"model"						"models/weapons/nailgun/w_ng.lwo"
+	"def_dropItem"				"weapon_nailgun"
+	"mtr_crosshair"				"gfx/guis/crosshairs/crosshair_nailgun"
+
+	"joint_attach"				"NG_ATTACHER"
+ 	"joint_view_barrel"			"nailgun_rotating_firing_pins"
+	"joint_view_flash"			"nailgun_rotating_firing_pins"
+	"joint_view_guiLight"		"nailgun_body"
+	"joint_view_drum"			"nailgun_rotating_drum"
+	"joint_view_pins"			"nailgun_rotating_firing_pins"
+	"joint_view_steamRight"		"nailgun_rt_steam_nozzle"
+	"joint_view_steamLeft"		"nailgun_lft_steam_nozzle"
+
+	"joint_world_flash"			"nailgun_rotating_drum"
+
+	"fireRate"					".16"
+	"spread"					"3"
+	"spread_mp"					"0"
+	"spreadSeek"				"5"
+	"drumSpeed"					".8"
+	
+	"inv_weapon"				"weapon_nailgun"
+	"inv_start_ammo_nailgun"			"50"
+	"inv_item"					"1"
+	"inv_icon"					"gfx/guis/hud/icons/item_nailgun"
+	"inv_name"					"#str_107407"
+
+	"gui"						"guis/weapons/nailgun_ammo.gui"
+	"gui_zoom"					"guis/weapons/nailgun_scope.gui"
+
+	"mtr_icon"					"gfx/guis/hud/icons/gun_nailgun"
+
+	"def_projectile"			"projectile_nail"
+	"def_altprojectile"			"projectile_nail_seek"
+	"ammoType"					"ammo_nailgun"
+	"ammoRequired"				"1"
+	"clipSize"					"50"
+	"lowAmmo"					"1"
+
+	"mtr_flashShader"			"lights/muzzleflash"
+	"flashColor"				"1 0.8 0.4"
+	"flashRadius"				"200"
+	"flashPointLight"			"1"
+	"flashTime"					".1"
+	"flashViewOffset"			"15 -5 -5"
+
+	"muzzle_kick_time"			"0.2"
+	"muzzle_kick_maxtime"		"0.6"
+	"muzzle_kick_angles"		"0 0 0"
+	"muzzle_kick_offset"		"0.5 .15 .15"
+	"recoilTime"				"145"
+	"recoilAngles"				"-1 0 0"
+	
+	"ammoRegenStep"				"2"
+	"ammoRegenTime"				"1250"
+	
+	"def_mod1"					"wpmod_nailgun_power"
+	"def_mod2"					"wpmod_nailgun_seek"
+
+	"foreshorten"				".66"
+	"snd_zoomIn"				"weapon_machinegun_scope_in"
+	"snd_zoomOut"				"weapon_machinegun_scope_out"
+	"snd_spinfast"				"weapon_nailgun_spinfast"
+	"snd_spinslow"				"weapon_nailgun_spinslow"
+	"snd_spinup"				"weapon_nailgun_spinup"
+	"snd_spindown"				"weapon_nailgun_spindown"
+	"snd_quaddamage"			"weapon_quaddamage_fire"
+	"snd_fire"					"weapon_nailgun_fire"
+	"snd_fireStereo"			"weapon_nailgun_fire_stereo"
+	"snd_acquire"				"pickup_weapon"
+	"snd_noAmmo"				"weapon_nailgun_dryfire"
+
+  	"fx_muzzleflash"			"effects/weapons/nailgun/muzzleflash.fx"
+  	"fx_muzzleflash_world"		"effects/weapons/nailgun/muzzleflash_world.fx"
+	"fx_exhaust"				"effects/weapons/nailgun/exhaust.fx"
+	"fx_respawn"				"effects/mp/itemrespawn.fx"
+
+	"def_viewStyle"				"viewStyle_q3_nailgun"
+	
+	"weaponAngleOffsetAverages" "10"
+	"weaponAngleOffsetScale" 	".25"
+	"weaponAngleOffsetMax"		"5"
+	"weaponOffsetTime"			"600"
+	"weaponOffsetScale"			"0.001"
+
+//	"launchFromBarrel"			"1"
+
+	"mtr_guiLightShader"		"lights/viewWeaponGuiLight"
+	"glightRadius"				"1.1"
+	"glightOffset"				"1.8 2.0 .9"
+
+	"net_syncPhysics"			"1"
+}
+
+entityDef weapon_nailgun_mp
+{
+	"inherit"				"weapon_nailgun"
+	"clipsize"				"0"
+	"def_mod3"				""
+	"hidesurface"				"models/weapons/nailgun_mod_ammo"
+	"editor_ignore"				"1"
+	"inv_icon"				"gfx/guis/hud/icons/item_nailgun_colored.tga"
+	"mtr_simple_icon"			"simpleicons/item_nailgun_colored.tga"
+	"simple_icon_scale"			"32.0"
+	"model"						"models/weapons/nailgun/w_ng_mp.lwo"
+	"triggerSize"				"32"
+	
+	"muzzle_kick_time"			"0"
+	"muzzle_kick_maxtime"			"0"
+	"muzzle_kick_angles"			"0 0 0"
+	"muzzle_kick_offset"			"0 0 0"
+	"recoilTime"				"0"
+	"recoilAngles"				"0 0 0"
+	
+	"respawn_Team DM"			"30"
+	"respawn_Tourney"			"15"
+	
+	// played when you touch a weapon you can't acquire, i.e. weaponStay in MP
+	"snd_noAcquire"			"pickup_weaponstay"
+}
+
+entityDef moveable_item_nailgun
+{
+	"inherit"					"weapon_nailgun"
+
+	"editor_rotatable"			"1"
+	"editor_menu"				"pickup"
+	
+	"itemclipmodel"					"models/weapons/nailgun/w_ng_clip.lwo"
+
+
+	"spawnclass"				"idMoveableItem"
+	"mass"						"4000"
+	"density"					"0.05"
+	"friction"					"0.2"
+	"bouncyness"				"0"
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+// Models
+//-------------------------------------------------------------------------------------------------------------------0
+
+model weapon_nailgun_view
+{
+	mesh						models/weapons/nailgun/view.md5mesh
+
+	channel legs				( *lft_shldr *rt_elbo origin -nailgun_lft_clasp )
+	channel torso				( nailgun_lft_clasp )
+
+	anim idle		 			models/weapons/nailgun/idle.md5anim
+	anim raise					models/weapons/nailgun/raise.md5anim
+	{
+		frame 8					sound_weapon			weapon_nailgun_handle
+	}
+	anim putaway				models/weapons/nailgun/lower.md5anim
+	{
+		frame 1					sound_weapon			weapon_switch
+	}	
+	anim fire_slow 				models/weapons/nailgun/fire_slow.md5anim
+	{
+//		frame 1					sound_weapon	weapon_nailgun_fire
+//		frame 1					sound_item		weapon_nailgun_fire_stereo
+	}
+	anim fire_fast 				models/weapons/nailgun/fire_fast.md5anim
+	{
+		frame 1					sound_weapon	weapon_nailgun_fire
+		frame 1					sound_item		weapon_nailgun_fire_stereo
+	}
+	anim spinup					models/weapons/nailgun/spinup.md5anim
+	{
+		rate 2
+	}
+	anim spindown				models/weapons/nailgun/spindown.md5anim
+	anim spinempty				models/weapons/nailgun/spinempty.md5anim
+	anim reload					models/weapons/nailgun/reload.md5anim
+	{
+		frame 12				sound_weapon	weapon_nailgun_clipout
+		frame 14				object_call		ClaspOpen
+		frame 23				guievent		nailgun_clipout
+		frame 26				sound_item		weapon_nailgun_clipin
+		frame 28				object_call		ClaspClose
+		frame 26				guievent		nailgun_clipin
+		frame 39				sound_weapon	weapon_nailgun_handle
+	}
+	anim reload_clip1hold		models/weapons/nailgun/reload_clip1_hold.md5anim
+	{
+		frame 7					sound_weapon	weapon_nailgun_clipout
+		frame 9					object_call		ClaspOpen
+		frame 29				sound_item		weapon_nailgun_clipin
+		frame 31				object_call		ClaspClose
+	}		
+	anim reload_clip1finish		models/weapons/nailgun/reload_clip1_finish.md5anim
+	{	
+		frame 10				sound_weapon	weapon_nailgun_handle
+	}
+	anim reload_clip2			models/weapons/nailgun/reload_clip2.md5anim
+	{
+		frame 10				sound_weapon	weapon_nailgun_clipout
+		frame 35				sound_item		weapon_nailgun_clipin
+		frame 50				sound_weapon	weapon_nailgun_handle
+	}
+	anim clasp_open				models/weapons/nailgun/clasp_open.md5anim
+	anim clasp_1clip			models/weapons/nailgun/clasp_1clip.md5anim
+	anim clasp_2clip			models/weapons/nailgun/clasp_2clip.md5anim
+}
+
+model weapon_nailgun_view_strogg
+{
+	inherit					weapon_nailgun_view
+
+	mesh					models/weapons/nailgun/view_strogg.md5mesh
+
+	channel legs			( *lft_shldr *rt_elbo origin -nailgun_lft_clasp )
+	channel torso			( nailgun_lft_clasp )	
+}
+
+model weapon_nailgun_world 
+{
+	mesh					models/weapons/nailgun/world/nailgun.md5mesh
+	anim idle				models/weapons/nailgun/world/idle.md5anim
+	anim fire				models/weapons/nailgun/world/fire.md5anim
+	anim spinup				models/weapons/nailgun/world/spinup.md5anim
+	anim spindown			models/weapons/nailgun/world/spindown.md5anim
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//													Mods
+//-------------------------------------------------------------------------------------------------------------------0
+
+entityDef wpmod_nailgun_power
+{
+	"weapon"					"weapon_nailgun"
+
+	"mod_showsurface"			"models/weapons/nailgun_mod_rof"
+	"mod_showsurface2"			"models/weapons/nailgun_mod_ammo"
+	"mod_hidesurface"			"models/weapons/nailgun_clip"
+
+	"fireRate"					".12"
+	"drumSpeed"					"1.25"
+	"clipSize"					"100"
+}
+
+entityDef wpmod_nailgun_seek
+{
+	"weapon"					"weapon_nailgun"
+
+	"mod_showsurface"			"models/weapons/nailgun_mod_accuracy"
+	"mod_showsurface2"			"models/weapons/nailgun/scope"
+	
+	"zoomFov"					"80"
+	"zoomTime"					".1"
+	"zoomHideCrosshair"			"0"
+	"gui_zoom"					"guis/weapons/nailgun_scope.gui"
+	"fx_guide"					"effects/weapons/nailgun/guide.fx"
+	"fx_guidestart"				"effects/weapons/nailgun/guide_start.fx"
+	
+	"lockRange"					"1000"
+	"lockHoldTime"				"10"
+	"lockAquireTime"			".1"
+	"gui2"					"guis/weapons/nailgun_scope.gui"
+}
+
+entityDef weaponmod_nailgun_power
+{
+	"editor_color"				".3 .3 1"
+	"editor_mins"				"-16 -16 0"
+	"editor_maxs"				"16 16 32"
+	"editor_menu"				"pickup"
+	"editor_usage"				"Nailgun Power Modification"
+
+	"spawnclass"				"idItem"
+	"size"						"32 32 32"
+	"inv_weaponmod"				"wpmod_nailgun_power"
+	"inv_ammo_nailgun"			"100"
+	"inv_item"					"1"
+	"inv_icon"					"gfx/guis/hud/icons/item_nailgun.tga"
+	"inv_name"					"#str_107436"
+	"model"						"models/items/ammo/ammo_box.lwo"
+
+	"net_syncPhysics"			"1"
+}
+
+entityDef weaponmod_nailgun_seek
+{
+	"editor_color"				".3 .3 1"
+	"editor_mins"				"-16 -16 0"
+	"editor_maxs"				"16 16 32"
+	"editor_menu"				"pickup"
+	"editor_usage"				"Nailgun Seeker Modification"
+
+	"spawnclass"				"idItem"
+	"size"						"32 32 32"
+	"inv_weaponmod"				"wpmod_nailgun_seek"
+	"inv_ammo_nailgun"			"100"
+	"inv_item"					"1"
+	"inv_icon"					"gfx/guis/hud/icons/item_nailgun.tga"
+	"inv_name"					"#str_107438"
+	"model"						"models/items/ammo/ammo_box.lwo"
+
+	"net_syncPhysics"			"1"
+}
+
+entityDef weaponmod_nailgun_rof
+{
+	"inherit"					"weaponmod_nailgun_power"
+}
+
+entityDef weaponmod_nailgun_ammo
+{
+	"inherit"					"weaponmod_nailgun_power"
+}
+//--------------------------------------------------------------------------------------------------------------------
+//													Projectile
+//-------------------------------------------------------------------------------------------------------------------0
+
+entityDef projectile_nail
+{
+	"spawnclass"				"idProjectile"
+	"mins"						"-1 -1 -1"
+	"maxs"						"1 1 1"
+	"noshadows"					"1"
+	"clipmask_largeshot"		"0"
+								
+	"model"						"models/weapons/nailgun/nail.ase"
+	"def_damage"				"damage_nailDirect"
+	"def_splash_damage"			"damage_nailSplash"
+																											
+	"health"					"0"
+	"speed"						"1200"
+	"gravity"					"0"
+	"fuse"						"4"
+								
+	"detonate_on_fuse"			"1"
+	"detonate_on_death"			"0"
+	"detonate_on_world"			"1"
+	"detonate_on_actor"			"1"
+	"detonate_on_bounce"		"1"
+																
+	"decal_size"				"8"
+
+	//sigh... so that a splash damage projectile can still have it's impact effect suppressed on buddy corpses... :/
+	"bloodyImpactEffect"		"1"
+	
+	"fx_fly"			"effects/weapons/nailgun/fly.fx"
+	"fx_fly_mp_low"		"effects/weapons/nailgun/fly_mp_low.fx"
+	"fx_impact"			"effects/weapons/nailgun/impact_default.fx"
+	"fx_impact_water"		"effects/ambient/splash_smll.fx"
+	"fx_impact_concrete"		"effects/weapons/nailgun/impact_concrete.fx"
+	"fx_impact_rock"		"effects/weapons/nailgun/impact_concrete.fx"
+	"fx_impact_monstermetal"	"effects/weapons/machinegun/impact_monstermetal.fx"
+	"fx_impact_flesh"		"effects/weapons/machinegun/impact_flesh.fx"	
+	"fx_impact_glass"		"effects/weapons/nailgun/impact_glass.fx"					
+	"fx_impact_bpglass"		"effects/weapons/nailgun/impact_bpglass.fx"
+	"fx_impact_electronics"		"effects/weapons/nailgun/impact_electronics.fx"
+	"fx_impact_mp"			"effects/weapons/nailgun/impact_default_mp.fx"
+	"fx_impact_concrete_mp"		"effects/weapons/nailgun/impact_default_mp.fx"
+	"fx_impact_rock_mp"		"effects/weapons/nailgun/impact_default_mp.fx"
+	"fx_impact_glass_mp"		"effects/weapons/nailgun/impact_default_mp.fx"
+	"fx_impact_bpglass_mp"		"effects/weapons/nailgun/impact_default_mp.fx"
+	"fx_impact_electronics_mp"	"effects/weapons/nailgun/impact_default_mp.fx"
+	
+	"fx_teleport_enter"		"effects/mp/item_teleport.fx"
+	"fx_teleport"			"effects/mp/item_teleport.fx"
+}
+
+entityDef projectile_nail_mp
+{
+	"inherit"					"projectile_nail"
+	"speed"						"1400"
+	"no_impact_prediction"		"1"
+}
+
+entityDef projectile_nail_seek
+{
+	"inherit"					"projectile_nail"
+	"spawnclass"				"idGuidedProjectile"
+
+	"speed"						"700"
+	
+	"turn_max"					"1800"
+	"turn_accel"				".5"
+	"clamp_dist"				"1001"
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//													Damage
+//-------------------------------------------------------------------------------------------------------------------0
+
+entityDef damage_nailDirect 
+{
+	"damage"					"25"
+//	"push"						"1000"
+	"gib"						"0"
+
+	"deathPush"					"150"
+	"deathPushMin"				"2000 350"
+	"deathPushMax"				"4000 500"
+
+	"bleed"						"1"
+}
+
+entityDef damage_nailSplash 
+{
+	"damage"					"25"
+	"radius"					"50"
+	"knockback"					"5"
+	"push"						"0"
+	"gib"						"0"
+
+	"deathPush"					"100"
+	"deathPushMin"				"2000 350"
+	"deathPushMax"				"4000 500"
+}
+
+entityDef damage_nailDirect_mp
+{
+	"inherit"				"damage_nailDirect"
+	"damage"				"25"
+	"knockback"				"30"
+}
+
+entityDef damage_nailSplash_mp
+{
+	"damage"					"25"
+	"radius"					"75"
+	"knockback"					"30"
+	"push"						"0"
+	"gib"						"0"
+
+	"deathPush"					"100"
+	"deathPushMin"				"2000 350"
+	"deathPushMax"				"4000 500"
+}

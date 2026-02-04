@@ -1,0 +1,107 @@
+!!ARBvp1.0 OPTION ARB_position_invariant ;
+
+# input:
+# 
+# texcoord[0] TEX0	texcoords
+# attrib[9] TEX1	tangent[0]
+# attrib[10] TEX2	tangent[1]
+# attrib[2] TEX3	normal
+#
+# c[5]	localViewOrigin
+# c[6]	modelMatrix[0]
+# c[7]	modelMatrix[1]
+# c[8]	modelMatrix[2]
+# 
+# output:
+# 
+# texture 0 is the environment cube map
+# texture 1 is the normal map
+#
+# texCoord[0] is the normal map texcoord
+# texCoord[1] is the vector to the eye in global space
+# texCoord[2] is the surface tangent to global coordiantes
+# texCoord[3] is the surface bitangent to global coordiantes
+# texCoord[4] is the surface normal to global coordiantes
+
+TEMP	R0, R1, R2;
+
+# texture 0 takes the unodified texture coordinates
+MOV		result.texcoord[0], vertex.texcoord[0];
+
+# texture 1 is the vector to the eye in global coordinates
+SUB		R0, program.env[5], vertex.position;
+DP3		result.texcoord[1].x, R0, program.env[6];
+DP3		result.texcoord[1].y, R0, program.env[7];
+DP3		result.texcoord[1].z, R0, program.env[8];
+
+# texture 2 gets the transformed tangent
+DP3		result.texcoord[2].x, vertex.attrib[9], program.env[6];
+DP3		result.texcoord[3].x, vertex.attrib[9], program.env[7];
+DP3		result.texcoord[4].x, vertex.attrib[9], program.env[8];
+
+# texture 3 gets the transformed tangent
+DP3		result.texcoord[2].y, vertex.attrib[10], program.env[6];
+DP3		result.texcoord[3].y, vertex.attrib[10], program.env[7];
+DP3		result.texcoord[4].y, vertex.attrib[10], program.env[8];
+
+# texture 4 gets the transformed tangent
+DP3		result.texcoord[2].z, vertex.normal, program.env[6];
+DP3		result.texcoord[3].z, vertex.normal, program.env[7];
+DP3		result.texcoord[4].z, vertex.normal,program.env[8];
+
+MOV		result.color, vertex.color;
+
+END
+
+#==================================================================================
+
+!!ARBfp1.0 
+OPTION ARB_precision_hint_fastest;
+
+# per-pixel cubic reflextion map calculation
+
+# texture 0 is the environment cube map
+# texture 1 is the normal map
+#
+# texCoord[0] is the normal map texcoord
+# texCoord[1] is the vector to the eye in global space
+# texCoord[3] is the surface tangent to global coordiantes
+# texCoord[4] is the surface bitangent to global coordiantes
+# texCoord[5] is the surface normal to global coordiantes
+
+TEMP	globalEye, localNormal, globalNormal, R0, R1;
+
+PARAM	subOne = { -1, -1, -1, -1 };
+PARAM	scaleTwo = { 2, 2, 2, 2 };
+
+# load the filtered normal map, then normalize to full scale,
+TEX		localNormal, fragment.texcoord[0], texture[1], 2D;
+MOV		localNormal.x, localNormal.a;				# rxgb normal compression
+MAD		localNormal, localNormal, scaleTwo, subOne;
+DP3		R1, localNormal,localNormal;
+RSQ		R1, R1.x;
+MUL		localNormal.xyz, localNormal, R1;
+
+# transform the surface normal by the local tangent space 
+DP3		globalNormal.x, localNormal, fragment.texcoord[2];
+DP3		globalNormal.y, localNormal, fragment.texcoord[3];
+DP3		globalNormal.z, localNormal, fragment.texcoord[4];
+
+# normalize vector to eye
+DP3		R0, fragment.texcoord[1], fragment.texcoord[1];
+RSQ		R0, R0.x;
+MUL		globalEye, fragment.texcoord[1], R0;
+
+# calculate reflection vector
+DP3		R0, globalEye, globalNormal;
+MUL		R0, R0, globalNormal;
+MAD		R0, R0, scaleTwo, -globalEye;
+
+# read the environment map with the reflection vector
+TEX		R0, R0, texture[0], CUBE;
+
+#MUL		result.color.xyz, R0, fragment.color;
+MOV		result.color.xyz, R0;
+
+END
+

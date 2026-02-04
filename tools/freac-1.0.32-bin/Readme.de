@@ -1,0 +1,593 @@
+fre:ac Version 1.0.32
+
+fre:ac ist ein freier Open-Source Audiokonverter für verschiedene Formate.
+Das Programm unterstützt das Rippen von Audio-CDs und konvertiert folgende
+Audioformate:
+
+	- MP3
+		- mit dem LAME MP3-Encoder			(http://lame.sourceforge.net/)
+		- mit dem mpg123-Decoder			(http://www.mpg123.org/)
+
+	- MP4/M4A AAC
+		- mit dem FAAC/FAAD2-Codec			(http://www.audiocoding.com/)
+
+	- Xiph Foundation Codecs
+		- Vorbis					(http://www.vorbis.com/)
+		- FLAC						(http://flac.sourceforge.net/)
+
+	- Windows Media Audio					(http://www.microsoft.com/)
+	- Windows Wave Dateien					(http://www.microsoft.com/)
+
+	- verschiedene weitere Formate
+		- Bonk Audio					(http://www.logarithmic.net/pfh/bonk/)
+
+		- Apple AIFF (nur Dekodierung)			(http://www.apple.com/)
+		- Creative Voice (nur Dekodierung)		(http://www.creative.com/)
+		- Sun Au (nur Dekodierung)			(http://www.oracle.com/)
+
+		- TwinVQ VQF (mit Plugin, nur Enkodierung)	(http://www.ntt.co.jp/)
+
+fre:ac verwendet die CDRip Ripping Library zum CD-Rippen.
+
+Code from FAAD2 is copyright (c) Nero AG, www.nero.com
+
+Installation
+------------
+
+	fre:ac steht in zwei Varianten bereit, als .exe-Datei, welche einen Installationsassistenten enthält,
+	oder alternativ als .zip-Archiv, welches nur die Anwendung ohne Installer beinhaltet.
+
+	Wenn Sie die .exe-Datei heruntergeladen haben, führen Sie sie einfach aus und der Installationsassistent
+	wird Sie durch den Installationsprozess führen und Startmenüeinträge zum Starten von fre:ac anlegen.
+
+	Wenn Sie das .zip-Archiv heruntergeladen haben, entpacken Sie bitte den Inhalt an einen Ort Ihrer Wahl
+	und starten Sie anschließend freac.exe um fre:ac auszuführen.
+
+Voraussetzungen
+---------------
+
+	Voraussetzungen zum Ausführen von fre:ac:
+
+		Unterstützte Betriebsysteme:
+			- Windows XP/Vista/7/8.x/10 (ältere Windows-Versionen funktionieren evtl. mit einigen Einschränkungen)
+
+		Minimale Hardwarevoraussetzungen:
+			- Intel Pentium III oder AMD Athlon XP Prozessor
+			- 256 MB RAM
+			- 50 MB freier Festplattenplatz
+
+		Empfohlene Hardwarespezifikationen:
+			- Intel Core i3 oder AMD Phenom II Prozessor
+			- 1 GB RAM
+			- 1 GB freier Festplattenplatz
+
+	Zusätzliche Vorraussetzungen zur Übersetzung des Quellcodes:
+
+		- MinGW GCC v4.0+ (http://www.mingw.org/) oder Microsoft Visual Studio 2015
+		- smooth v0.8.71.8 (http://www.smooth-project.org/)
+
+	Zusätzliche optionale Software:
+
+		- TwinVQ wird verwendet, wenn es installiert ist
+		- Winamp-Plugins können verwendet werden, wenn sie im "plugins"-Verzeichnis vorhanden sind
+
+Bekannte Probleme
+-----------------
+
+	- Es gibt folgende Einschränkungen für das Eingabeformat:
+
+		- BladeEnc:
+				- Audiodaten müssen in 32, 44.1 oder 48 kHz vorliegen
+		- FAAC:
+				- Audiodaten müssen in 8, 11.025, 12, 16, 22.05, 24, 32, 44.1, 48, 64, 88.2 oder 96 kHz vorliegen
+		- FLAC:
+				- Der FLAC-Referenzencoder ist auf eine Sampleauflösung von 24bit beschränkt
+		- TwinVQ:
+				- Audiodaten müssen in 22.05 kHz (24 und 32 kBit) oder 44.1 kHz (48 kBit) vorliegen
+
+	- Resampling wird nur mit LAME unterstützt. Eingabedateien müssen in der für die Ausgabe gewünschten
+	  Abtastrate vorliegen, wenn nicht LAME verwendet wird.
+
+	- fre:ac ist zurzeit auf 2 Audiokanäle beschränkt
+
+Geschichte
+----------
+
+	Version 1.0.32 (März 2018)
+
+		- Serbische und chinesische (traditionell) Übersetzungen für das Installationsprogramm hinzugefügt
+		- Standard-Ausgabevorlage auf <artist> - <album> - <track> - <title> geändert
+		- Verhalten von Controls zur Bitratenauswahl verbessert
+		- Zeige Länge der Jobliste in Stunden, wenn länger als eine Stunde
+		- Problem mit Kodierung in eine einzige Datei behoben, wenn vorgeschlagener Dateiname zu lang wird
+		- Umgang mit leerem Track-Metadatenfeld verbessert
+		- Probleme beim Umgang mit ungültigen Xing/LAME-Tags behoben
+		- Fehler bei FAAC-Qualitätseinstellung behoben
+		- Problem mit fehlenden Coverbild-Mimetypes in MP4-Tags behoben
+		- Vertauschung von TwinVQ- und WMA-Kodierern im Konfigurationsdialog behoben
+		- mpg123 auf Version 1.25.10 aktualisiert
+		- Update auf MP4v2 v2.0.0
+
+	Version 1.0.31a (November 2017)
+
+		- Bulgarische Übersetzung aktualisiert
+		- FAAC-Kodierer aktualisiert um Fehler bei Joint Stereo zu beheben
+
+	Version 1.0.31 (November 2017)
+
+		- Italienische Übersetzung aktualisiert
+		- Standard-Ausgabevorlage auf <artist> - <album>\<artist> - <album> - <track> - <title> geändert
+		- Verwende als Standardeinstellung WMA 9.2 statt WMA 10 Pro
+		- Unterstützung zum Lesen von WAV-Dateien mit unbekannter Länge hinzugefügt
+		- Seltener Absturz beim Dekodieren einiger Ogg Vorbis-Dateien behoben
+		- Einige Probleme bei Verbindung mit der freedb-Datenbank behoben
+		- CDRip auf Version 1.27 aktualisiert um Probleme bei der Erkennung von USB-Laufwerken zu beheben
+		- LAME auf Version 3.100 aktualisiert
+		- FAAC auf Version 1.29.9.2 aktualisiert
+		- FAAD2 auf Version 2.8.6 aktualisiert
+		- mpg123 auf Version 1.25.7 aktualisiert
+		- Ogg-Bibliothek auf Version 1.3.3 aktualisiert
+
+	Version 1.0.30 (September 2017)
+
+		- Kleinere Verbesserungen für den CDDB-Sendedialog
+		- Schutz gegen mehrfach gesendete CD-Einlegebenachrichtigung eingebaut
+		- FAAC auf Version 1.29.7.4 aktualisiert
+
+	Version 1.0.29 (August 2017)
+
+		- Zum Lesen von MP3-Dateien wird jetzt der mpg123-Decoder verwendet
+		- Standardblockgröße bei FLAC auf 4096 Samples geändert, entsprechend den offiziellen FLAC-Tools
+		- Unterstützung für veraltete Main- und LTP-AAC-Profile entfernt
+		- Problem mit Fortschrittsanzeige bei lange laufenden Konvertierungen behoben
+		- Probleme beim Umgang mit Tabulatorzeichen in Titelinformationen behoben
+		- CDRip auf Version 1.26 aktualisiert um Probleme mit Laufwerken mit dem Buchstaben A: zu beheben
+		- FAAC auf Version 1.29.7 aktualisiert
+		- FAAD2 auf Version 2.8.1 aktualisiert
+
+	Version 1.0.28 (Februar 2017)
+
+		- Chinesische (traditionell) Übersetzung aktualisiert
+		- Die Konfiguration wird jetzt in freac.xml gespeichert
+		- Absturz bei einigen ungültigen Cover-Bildern behoben
+		- FLAC auf Version 1.3.2 aktualisiert
+
+	Version 1.0.27 (Dezember 2016)
+
+		- Sprachunterstützung für Kantonesisch (Hong Kong) und Korsisch hinzugefügt
+		- Kleinere Verbesserungen für den CDDB-Sendedialog
+		- Erkennung des MIME-Types von Cover-Bildern verbessert
+		- Zeige Fehlermeldung nur einmal wenn während der Konvertierung mehrere Dateien hinzugefügt werden
+		- Fehlerhafte Meldung über nicht existierendes Verzeichnis bei Wurzelverzeichnis eines Laufwerks behoben
+		- Probleme beim Umgang mit CDDB-Einträgen mit Zeilenumbrüchen behoben
+		- Problem beim Senden von neuen CDDB-Einträgen behoben, wenn eine Disc-ID-Kollision vorlag
+		- Fehler behoben, durch den der CDDB-Abfragedialog bei minimiertem Hauptfenster außerhalb des Bildschirms erschien
+
+	Version 1.0.26 (Oktober 2015)
+
+		- Serbische (Latein und Kyrillisch) Übersetzungen aktualisiert
+		- Erkennung von zusammengefügten MP3-Dateien verbessert
+		- Öffnen und Speichern von Ogg Vorbis-Dateien mit Coverbildern beschleunigt
+		- Lese nicht-Standardfelder TOTALTRACKS und TOTALDISCS aus Vorbis Comments
+		- Schreibe beim Rippen von Audio CDs Anzahl der Tracks in Tags
+		- Absturz behoben, wenn Vorbis-Kodierer nicht initialisiert werden kann
+		- Absturz beim Versuch, ungültige Ogg Vorbis-Dateien zu öffnen, behoben
+		- Absturz beim Versuch, Ogg Vorbis-Dateien mit sehr großen Coverbildern zu speichern, behoben
+		- Absturz beim Scrollen der Joblist mit sichtbarem Tooltip behoben
+		- Fehler beim Parsen von Xing/LAME MP3-Informationstags behoben
+		- Fehler behoben, durch den Text in Eingabefeldern im skalierten Modus u.U. verschwand
+
+	Version 1.0.25 (September 2015)
+
+		- Italienische, schwedische, baskische und valencianische Übersetzungen aktualisiert
+		- Unterstützung für Coverbilder in MP4/AAC- und Ogg Vorbis-Dateien hinzugefügt
+		- Beachte dezimale VBR-Qualitätswerte in den LAME-Einstellungen
+		- Speichere Playlisten und Cue Sheets im Eine-Datei-Modus zusammen mit Ausgabedatei
+		- Überschreiben vorhandener Dateien im "Ausgabe in Eingabeordner"-Modus behoben
+		- Problem behoben, durch das LAME im Auto-Resampling-Modus keine beliebigen Sampleraten akzeptierte
+		- Möglichen Absturz bei CDDB-Abfragen behoben
+		- Abstürze in den MAD- und FLAC-Decoder-Komponenten behoben
+		- Absturz beim Versuch, WMA-Dateien ohne gesetzte Abspieldauer abzuspielen, behoben
+		- Fehler behoben, durch den keine Coverbilder ohne Beschreibung in WMA-Dateien geschrieben wurden
+		- CDRip auf Version 1.25 aktualisiert um Probleme bei der Laufwerkserkennung zu beheben
+
+	Version 1.0.24 (Juli 2015)
+
+		- Toleranz gegen Mauszittern für Tooltips hinzugefügt
+		- Samplerate-Prüfung bei FAAC-Kodierer hinzugefügt
+		- CDs nicht auswerfen, wenn der Nutzer die Konvertierung gestoppt hat
+		- Information zu CD-Nummer wird bei Konvertierung beibehalten
+		- Darstellungsfehler unter Windows 8.x und 10 behoben
+		- Flaches Titelleistendesign unter Windows 8.x und 10
+		- CDDB-Abfragedialog ist wieder modal
+		- Vorbis auf Version 1.3.5 + aoTuV Beta 6.03 (2014) aktualisiert
+
+	Version 1.0.23 (November 2014)
+
+		- Sprachunterstützung für Baskisch und Serbisch (Kyrillisch) hinzugefügt
+		- Chinesische (traditionell) und tschechische Übersetzungen aktualisiert
+		- Baskische Anleitung hinzugefügt
+		- Unterstützung zum Lesen von Windows Wave-Dateien im IEEE Float-Format hinzugefügt
+		- Zusätzliche, von Winamp 5.6 definierte Genres hinzugefügt
+		- Das Hauptfenster wird beim Drücken von Escape nicht mehr geschlossen
+		- Stabilitätsprobleme beim Dekodieren von MP3-Dateien behoben
+		- Absturz beim Schreiben von Coverbildern in WMA-Tags behoben
+		- Problem behoben, durch das der Drag & Drop-Zielbereich nicht mit der Jobliste übereinstimmte
+		- Problem mit der Option "Originale nach dem Kodieren löschen" mit geschützten Dateien behoben
+		- Problem beim Interpretieren von nicht standardgemäßen UTF-16-Zeichenketten in ID3v2-Tags behoben
+		- FLAC auf Version 1.3.1 aktualisiert
+
+	Version 1.0.22 (Juli 2014)
+
+		- Sprachunterstützung für Afrikaans hinzugefügt
+		- Spanische, slowakische, serbische und litauische Übersetzungen aktualisiert
+		- Unterstützung für CD-Laufwerke mit den Laufwerksbuchstaben A: und B: hinzugefügt
+		- Problem bei der Dekodierung von AAC-Datein im MAIN-Profil behoben
+		- Problem bei der Berechnung der Länge des letzten Tracks von CD-Extra CDs behoben
+		- Problem behoben, durch das ein ungültiges Genre in ID3v1-Tags geschrieben wurde
+		- Problem mit versetzt angezeigtem CJK-Editor im Standarddesign von Windows Vista/7/8 behoben
+		- Absturz bei der Auswahl eines Ausgabeplugins behoben
+		- Absturz beim Einlesen von fehlerhaften Vorbis-Comments behoben
+		- Unscharfe Benutzeroberfläche auf Displays mit hoher Auflösung behoben
+		- Bildschirmartefakte von Tooltips beim Entfernen von Tracks behoben
+		- Problem beim direkten Start des Deinstallationsprogramms behoben
+		- Vorbis auf aoTuV Beta 6.03 (2014) aktualisiert
+		- Ogg-Bibliothek auf Version 1.3.2 aktualisiert
+		- CDRip auf Version 1.24 aktualisiert
+
+	Version 1.0.21a (Juli 2013)
+
+		- Löschen von WMA-Ausgabedateien nach der Kodierung behoben
+		- Problem mit nicht anklickbaren Eingabefeldmenüschaltflächen behoben
+		- Seltenes Problem mit dem FLAC-Kodierer bei Komprimierungsstufe 7 und 8 behoben
+		- Problem mit Online-Updater nach Update der smooth-Bibliothek behoben
+		- Probleme bei Kompilierung mit Microsoft Visual C++ behoben
+
+	Version 1.0.21 (Juli 2013)
+
+		- Rumänische und schwedische Übersetzungen aktualisiert
+		- Standardeinstellungen für FLAC angepasst
+
+	Version 1.0.21 Beta 1 (Juni 2013)
+
+		- Russische Übersetzung aktualisiert
+		- Unterstützung für große Schriften hinzugefügt
+		- ID3v2-Coverdaten werden nun auch in iTunes angezeigt
+		- Unregelmäßige Abstürze beim Beenden des Programms behoben
+		- Problem bei der Auswahl des Ausgabeformats durch den WMA-Decoder behoben
+		- Anzeige einer ASPI-Fehlermeldung auf Systemen ohne optische Laufwerke behoben
+		- FLAC auf Version 1.3.0 aktualisiert
+		- Ogg-Bibliothek auf Version 1.3.1 aktualisiert
+		- Update auf smooth v0.8.71.0
+		- Kleinere Fehlerkorrekturen
+
+	Version 1.0.20a (März 2012)
+
+		- Unbeasichtigte Abhängigkeit zu Intel Laufzeitbibliotheken entfernt
+		- Falsche Fehlermeldungen mit AMD CPUs behoben
+
+	Version 1.0.20 (März 2012)
+
+		- Sprachunterstützung für Bulgarisch hinzugefügt
+		- Spanische Anleitung hinzugefügt
+		- Polnische und rumänische Übersetzungen aktualisiert
+		- LAME auf Version 3.99.5 aktualisiert
+		- Ogg-Bibliothek auf Version 1.3.0 aktualisiert
+		- Kleinere Fehlerkorrekturen
+
+	Version 1.0.19 (Mai 2011)
+
+		- Serbische Übersetzung aktualisiert
+		- Mögliche Abstürze des MP3-Dekodierers behoben
+		- Vorbis auf aoTuV Beta 6.03 aktualisiert
+		- Weitere kleinere Fehlerkorrekturen
+
+	Version 1.0.18 (April 2011)
+
+		- Französische, tschechische, niederländische und finnische Übersetzungen aktualisiert
+		- CD-Text-Unterstützung für Sampler-CDs hinzugefügt
+		- Unterstützung für MP3-Dekodierung ohne Unterbrechungen hinzugefügt
+		- Unterstützung zum Dekodieren von unkomprimierten AIFF-C-Dateien hinzugefügt
+		- Standardausgabeverzeichnis auf Ordner "Eigene Musik" geändert
+		- Überspringen der ersten Sekunden bei einigen MP3- und Raw-AAC-Dateien behoben
+		- Probleme beim Dekodieren der Raw-Formate WAVE, AIFF und AU behoben
+		- Vorbis auf aoTuV Beta 6.02 aktualisiert
+		- Ogg-Bibliothek auf Version 1.2.2 aktualisiert
+		- Kleinere Fehlerkorrekturen
+
+	Version 1.0.17 (November 2010)
+
+		- Projekt umbenannt in fre:ac - free audio converter
+		- Sprachunterstützung für Arabisch hinzugefügt
+		- Japanische, türkische, ukrainische und finnische Übersetzungen aktualisiert
+		- Extrem langsamen Programmstart beim Start von Netzlaufwerken behoben
+		- Fehler beim Lesen der WMA-Metadaten-Eigenschaften Track und TrackNumber behoben
+		- Ogg-Bibliothek auf Version 1.2.1 aktualisiert
+		- Einige kleinere Korrekturen
+
+	Version 1.0.16 (August 2010)
+
+		- Niederländische Übersetzung aktualisiert
+		- Niederländische und tschechische Übersetzungen für das Installationsprogramm hinzugefügt
+		- Standardmäßig wird jetzt ein vernünftiger WMA-Codec ausgewählt
+		- Probleme mit Texteingabefeldern behoben
+		- Maximale Länge von Dateinamen auf NT-Systemen angehoben
+		- Einige kleinere Korrekturen
+
+	Version 1.0.15 (Juli 2010)
+
+		- Windows Media Audio Kodierer/Dekodierer hinzugefügt
+		- Unterstützung für Wildcards in BEcmd-Parametern hinzugefügt
+		- Konfigurationsoption für Geschwindigkeit beim Rippen hinzugefügt
+		- Dateinamensvorlage <filetype> hinzugefügt
+		- Die meisten Übersetzungen aktualisiert
+		- Mehrere Übersetzungen für das Installationsprogramm hinzugefügt
+		- Portugiesische Anleitung hinzugefügt
+		- GUI-Performance verbessert, besonders unter Windows Vista und Windows 7
+		- Fehler beim Umgang mit ungültigen Daten vor dem ersten MP3-Frame behoben
+		- Fehler bei LAME ABR-Voreinstellungskonfiguration behoben
+		- Problem beim Öffnen von MP3- und FLAC-Dateien unter Windows 9x mit Unicows behoben
+		- Probleme beim CD-Rippen auf einigen Windows 7 x64 Systemen behoben
+		- LAME auf Version 3.98.4 aktualisiert
+		- CDRip auf Version 1.23 aktualisiert
+		- Ogg-Bibliothek auf Version 1.2.0 aktualisiert
+		- Einige kleinere Korrekturen
+
+	Version 1.0.14 (Oktober 2009)
+
+		- Sprachunterstützung für Hebräisch hinzugefügt
+		- Vietnamesische und tschechische Übersetzungen aktualisiert
+		- Zum Lesen von MP3-Dateien wird jetzt der MAD-Decoder verwendet
+		- Programmsprache wird jetzt beim ersten Start automatisch ausgewählt
+		- Anzeige für Gesamtzeit und -prozent hinzugefügt
+		- Unterstützung für LAME Info-Tags hinzugefügt
+		- Vietnamesische Übersetzung für das Installationsprogramm hinzugefügt
+		- Fehler beim automatischen Einlesen von CDs beim Einlegen behoben
+		- Diverse Probleme mit Winamp-Eingabeplugins behoben
+		- Unscharfe Iconanzeige unter Windows Vista und Windows 7 behoben
+		- Einfrieren des Programms unter Windows 7 behoben
+		- Mögliches Einfrieren beim Programmstart behoben
+		- Deutliche Geschwindigkeitsverbesserungen bei der Kodierung
+		- Einige kleinere Korrekturen
+
+	Version 1.0.13 (Juli 2009)
+
+		- Sprachunterstützung für Vietnamesisch und Galizisch hinzugefügt
+		- Tschechische Anleitung hinzugefügt
+		- Chinesische (traditionell), tschechische und serbische Übersetzungen aktualisiert
+		- Mehrkern-CPUs werden beim Kodieren/Dekodieren besser ausgenutzt
+		- Diverse weitere Geschwindigkeitsverbesserungen
+		- Veraltete Voreinstellungen für LAME entfernt
+		- Möglichen Absturz am Ende der Kodierung mit LAME behoben
+		- Möglichen Absturz beim Öffnen von Bonk-Dateien behoben
+		- Fehler in der Argumentverarbeitung bei BEcmd behoben
+		- Probleme mit easyUpdate behoben
+		- Ogg-Bibliothek auf Version 1.1.4 aktualisiert
+
+	Version 1.0.12 (Mai 2009)
+
+		- Sprachunterstützung für Kroatisch hinzugefügt
+		- Japanische und russische Übersetzungen aktualisiert
+		- Problem bei der CDDB-Abfrage bei gleichzeitig aktivierter lokaler und Online-CDDB-Abfrage behoben
+		- Probleme mit easyUpdate unter Windows Vista behoben
+		- Probleme beim Starten unter Windows NT 4.0 behoben
+		- Komprimierung aller ausführbaren Dateien deaktiviert, um falsche Warnungen von Virenscannern zu verhindern
+		- Vorbis auf aoTuV Beta 5.7 aktualisiert
+
+	Version 1.0.11 (Februar 2009)
+
+		- Italienische, serbische und schwedische Übersetzungen aktualisiert
+		- Vorlage <directory> hinzugefügt, um das Erhalten von Verzeichnisstrukturen zu ermöglichen
+		- Fehler beim Umgang mit nicht-ASCII-Zeichen beim Öffnen von MP3-Dateien mit mehreren Tags behoben
+		- Fehler in ID3lib behoben, um korrektes Lesen und Schreiben von ID3v2.4-Tags zu gewährleisten
+		- Fehler behoben, durch den FLAC-Dateien in einigen Situationen nicht bis zum Ende dekodiert wurden
+		- Fehler beim Öffnen von großen MP4-Dateien behoben
+		- FAAC auf Version 1.28 aktualisiert
+		- FAAD2 suf Version 2.7 aktualisiert
+		- Update auf MP4v2 v2.0 Alpha
+
+	Version 1.0.10 (Dezember 2008)
+
+		- Japanische, norwegische, spanische (lateinamerikanisch) und serbische Übersetzungen aktualisiert
+		- Option zum Ersetzen von vorhandenen Kommentaren durch Standardkommentar hinzugefügt
+		- CheckBox für "In einzelne Datei kodieren" zum Hauptfenster hinzugefügt
+		- Gesamtlänge aller Tracks in der Jobliste wird nun über der Jobliste angezeigt
+		- Fenster können jetzt durch Drücken von Escape geschlossen werden
+		- CDDB-Abfragen sind jetzt standardmäßig aktiviert
+		- Fehlerhaftes Erstellen von leeren Verzeichnissen im Einzelne-Datei-Modus behoben
+		- Zeige bei unterschiedlichen Sample-Formaten im Einzelne-Datei-Modus eine Fehlermeldung an
+		- Komprimierung des Uninstallers deaktiviert, um falsche Bedrohungs-Warnungen von Virenscannern zu beheben
+		- Deutsche und japanische Übersetzungen für das Installationsprogramm hinzugefügt
+		- LAME auf Version 3.98.3 aktualisiert
+		- Vorbis auf aoTuV Beta 5.61 aktualisiert
+		- Einige Abstürze behoben
+
+	Version 1.0.9 (September 2008)
+
+		- Serbische, polnische und schwedische Übersetzungen aktualisiert
+		- Komplett überarbeiteter LAME-Konfigurationsdialog
+		- Gleitkommawerte für LAME VBR Qualität erlaubt
+		- Kodierung kann jetzt abgebrochen werden, falls eine Ausgabedatei bereits existiert
+		- Erstellen des Playlisten-Verzeichnisses trotz abgewählter Playlisten-Option behoben
+		- Fehlerhaften Umgang mit Kommentaren in Metadaten behoben
+		- Nicht funktionierende Zeichensatz-Auswahl nach manuell gestarteter CDDB-Abfrage behoben
+		- LAME auf Version 3.98.1 aktualisiert
+		- CDRip auf Version 1.21 aktualisiert (mit cdparanoia III Version 10.2)
+		- Einige kleinere Fehlerkorrekturen
+
+	Version 1.0.8 (Juli 2008)
+
+		- Russische Übersetzung aktualisiert
+		- Kleinere Verbesserungen der Übersetzungen und der Anleitung
+		- Label/Produzent und ISRC-Informationen werden bei der Konvertierung jetzt mit übernommen
+		- Möglichen Absturz beim Beenden des Programms behoben
+		- Fehlerhafte Qualitätslevelanzeige in Vorbis-Kodiererkonfiguration behoben
+		- Gültigkeitsprüfung für CDDB-Einträge leicht verbessert
+		- Voreinstellung 'Standard' ist jetzt Standardeinstellung für LAME
+		- LAME auf Version 3.98 aktualisiert
+		- Vorbis auf aoTuV Beta 5.5 aktualisiert
+		- Kleinere Fehlerkorrekturen
+
+	Version 1.0.7 (März 2008)
+
+		- Fehler in Cuesheets für mehrere Titel in einer Datei behoben
+		- Absturz beim Versuch, ungültige OGG-Dateien zu dekodieren, behoben
+		- Mögliche unvollständige FLAC-Dekodierung behoben
+		- Fehler beim Einlesen von AAC-Dateien mit ID3v2-Tags behoben
+		- In vorangegangenen Versionen nicht funktionierendes easyUpdate repariert
+		- Einige weitere Korrekturen
+
+	Version 1.0.7 Beta 2 (März 2008)
+
+		- Französische und russische Übersetzungen aktualisiert
+		- Unterstützung für AAC-Synchronisierung hinzugefügt (zum Lesen von AAC-Streamrips benötigt)
+		- Fehler in der Unterstützung von CDs von mehreren Künstlern behoben
+		- Fehlerhafte Übergabe von unsynchronisierten ID3v2-Tags an den LAME-Decoder behoben
+		- Absturz des FLAC-Kodierers in Verbindung mit Bild-Metadaten behoben
+		- Möglichen Absturz im FLAC-Decoder behoben
+		- Fehler in der Unterstützung für große Schriftarten behoben
+
+	Version 1.0.7 Beta 1 (Februar 2008)
+
+		- Sprachunterstützung für Estnisch hinzugefügt
+		- Russische Anleitung hinzugefügt
+		- Japanische und russische Übersetzungen aktualisiert
+		- Screenshots für die griechische Anleitung hinzugefügt
+		- Fehler bei HTTP-Proxy-Authentifizierung behoben
+		- Fehler bei Änderung der Spaltenbreite in der Jobliste behoben
+		- Update auf smooth v0.8.70.0
+
+	Version 1.0.6 (Januar 2008)
+
+		- Sprachunterstützung für Valencianisch und Portugiesisch hinzugefügt
+		- Griechische Anleitung hinzugefügt
+		- Türkische Übersetzung aktualisiert
+		- Dialogfensterpositionen sind jetzt relativ zur Position des Hauptfensters
+		- Mechanismus zum Anpassen der Hauptfenstergröße an den Bildschirm beim Start verbessert
+		- Bonk auf Version 0.12 aktualisiert
+		- Kleinere Fehlerkorrekturen
+
+	Version 1.0.5 (November 2007)
+
+		- Russische Übersetzung aktualisiert
+		- Vorlage <installdrive> für Ausgabeverzeichnisangabe hinzugefügt
+		- Verschiedene CDDB-Probleme behoben
+		- Abstürze von BEcmd behoben
+		- Gültigkeitsprüfung für CDDB-Daten verbessert
+		- FLAC auf Version 1.2.1 aktualisiert
+		- FAAC auf Version 1.26 aktualisiert
+		- FAAD2 suf Version 2.6.1 aktualisiert
+		- Update auf MPEG4IP v1.6.1
+		- Anpassungen für Kompilierung mit GCC 4.2
+		- Kleinere Fehlerkorrekturen
+
+	Version 1.0.4 (Juli 2007)
+
+		- Slowakische und schwedische Übersetzung aktualisiert
+		- Fehlerhafte Schriftdarstellung bei großen Schriftarten behoben
+		- Kodierung von leeren Tracks behoben, wenn keine CD eingelegt ist
+		- NT SCSI-Modus wird auf NT-Systemen nun standardmäßig zum Zugriff auf CD-Laufwerke verwendet
+		- Kleinere Verbesserungen und Korrekturen
+
+	Version 1.0.3 (Juni 2007)
+
+		- Sprachunterstützung für Katalanisch hinzugefügt
+		- Französische und griechische Übersetzung aktualisiert
+		- Fehler beim Lesen von Vorbis (und FLAC) Comment Tags behoben
+		- Fehlende Xing-Header bei Verwendung von LAME-Voreinstellungen behoben
+		- Schreiben von fehlerhaften Xing-Headern durch LAME wenn ID3-Tags existieren behoben
+		- Absturz beim Lesen von nicht unterstützten Sun Audio Dateien (.au) behoben
+		- Unterstützung für Netzwerkdateien und -verzeichnisse verbessert
+		- Detaillierte Fehlerbeschreibungen, wenn Dateien nicht geöffnet werden können
+		- Weitere kleinere Verbesserungen und Korrekturen
+
+	Version 1.0.2 (April 2007)
+
+		- Deutsche und italienische Anleitungen hinzugefügt
+		- Dänische, polnische und rumänische Übersetzung aktualisiert
+		- Timeout-Parameter zum Kommandozeilen-Kodierer hinzugefügt
+		- Ungewolltes Downsampling beim Kodieren von MP3s mit niedriger Bitrate behoben
+		- Nicht funktionierendes Kontextmenü der Jobliste korrigiert
+		- Verbesserungen beim Installer
+		- Fehler im Kommandozeilen-Kodierer behoben
+		- Einige weitere Korrekturen
+
+	Version 1.0.1 (März 2007)
+
+		- Schreiben von fehlerhaften ID3v2-Tags, wenn iconv.dll nicht zur Verfügung steht, behoben
+		- Schreiben von ID3v1-Tags beim Kodieren von VBR- oder ABR-MP3s behoben
+		- Fehlerhafte Anzeige des Fortschrittsbalkens bei vielen Tracks in der Jobliste behoben
+		- Absturz beim Kodieren in einzelne MP4-Datei behoben
+		- Viele Fehler im Kommandozeilen-Kodierer behoben
+
+	Version 1.0 (Februar 2007)
+
+		- Sprachunterstützung für Rumänisch hinzugefügt
+		- Benutzerhandbuch hinzugefügt
+		- Absturz beim Klick auf "Sprachdatei bearbeiten" im Konfigurationsdialog behoben
+		- Fehler beim Einlesen von MP3-Dateien mit niedriger Bitrate behoben
+		- Unterstützung zum CD-rippen mit dem Kommandozeilenkodierer hinzugefügt
+		- Einige Fehler im Kommandozeilenkodierer behoben
+		- Fehler im graphischen Installationsprogramm behoben
+		- FLAC auf Version 1.1.4 aktualisiert
+		- FAAD2 auf Version 2.5 aktualisiert
+		- FAAC auf Version 1.25 aktualisiert
+		- Vorbis auf aoTuV Beta 5 aktualisiert
+		- Einige kleinere Fehler behoben
+
+Besonderen Dank
+---------------
+
+	- Paul Francis Harrison für die Entwicklung des Bonk-Formats
+	- Albert L. Faber für die exzellente CDRip Ripper Bibliothek
+
+	- den Übersetzern: Eric Le Carre (Französisch),
+			   Marco D'Amato und Roberto Boriotti (Italienisch),
+			   REIKA (Japanisch),
+			   Federico Reddig und Will (Spanisch),
+			   Jose Maria Vera Somoza (Spanisch, Latinamerikanisch),
+			   Nikolaos-Ioannis Galanis (Griechisch),
+			   Evgeny Kozlov (Russisch),
+			   Henryk Ning und Meng Pang Wang (Chinesisch, traditionell),
+			   Joeyong Jen (Chinesisch, vereinfacht),
+			   Michal Trzebiatowski und Darek Rzeznicki (Polnisch),
+			   Peter Toth (Ungarisch),
+			   Andrij Iletschko (Ukrainisch),
+			   Wim Garreyn und Thomas De Rocker (Niederländisch),
+			   Nebojša Nikolic (Serbisch),
+			   Jan Parttimaa (Finnisch),
+			   Julius Faltus (Tschechisch),
+			   Escada (Portugiesisch, Brasilianisch),
+			   Odyssey (Koreanisch),
+			   Jan Arni Jacobsen (Dänisch),
+			   Mikael Hiort af Ornäs und Anton Mjörnebrant (Schwedisch),
+			   Peter Krajcár (Slowakisch),
+			   Andreas Normann Aanonsen (Norwegian),
+			   Vincent Rateau (Esperanto),
+			   Cako (Türkisch),
+			   Naglis Jonaitis (Litauisch),
+			   Borca Alin und Laurentiu Bubuianu (Rumänisch),
+			   El libre (Katalanisch),
+			   Agustín Bou (Valencianisch),
+			   Jose Goncalves (Portugiesisch),
+			   Meelis Pasieko (Estnisch),
+			   Goran Bekic (Kroatisch),
+			   Eduardo Estévez (Galizisch),
+			   Phan Anh (Vietnamesisch),
+			   Ilan Tsmeret (Hebräisch),
+			   Eman Ali Fhoula (Arabisch),
+			   Martin Deyanov und KalinM (Bulgarisch),
+			   Cois Wiid (Afrikaans),
+			   Xabier Aramendi (Baskisch),
+			   Kin Kwok (Kantonesisch, Hong Kong),
+			   Patriccollu di Santa Maria è Sichè (Korsisch)
+
+	- Hans-Jürgen Bardenhagen für seine Hilfe und Vorschläge zum FAAC-Kodierer
+	- allen Testern und jedem der Fehlerberichte eingeschickt hat
+
+-----------------------------------------------------------------------------------
+
+Die offizielle fre:ac-Homepage: http://www.freac.org/
+
+robert.kausch@freac.org,
+Robert Kausch

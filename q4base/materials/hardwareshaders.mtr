@@ -1,0 +1,259 @@
+//----------------------------------
+//  rj test
+//----------------------------------
+
+rj/testMultiplyBlend
+{
+	DECAL_MACRO
+	noSelfShadow
+	noShadows
+	noImpact
+	nonSolid
+	{
+		blend 			GL_DST_COLOR, GL_SRC_COLOR
+		rgba			decalFade[ DecalLife ]
+		vertexColor
+		glslProgram 	glsl/MultiplyBlend.glsl
+		shaderTexture	Image			gfx/test/bullethole2.tga
+	}	
+}
+
+
+
+rj/testglsl
+{
+	noSelfShadow
+	noShadows
+	noImpact
+	nonSolid
+
+	{
+		glslProgram	glsl/Displacement.glsl
+		shaderParm		scrollX				time * 2.0
+		shaderParm		scrollY				time * 2.0
+		shaderParm		sizeX				1.0
+		shaderParm		sizeY				1.0
+		shaderParm		texCoordSize		0.25
+		shaderTexture	DisplacementMap		gfx/test/pnh3.tga
+		shaderTexture	Image				gfx/test/hatch5.tga
+	}
+}
+
+rj/testglslDisplacementTwoStage
+{
+	noSelfShadow
+	noShadows
+	noImpact
+	nonSolid
+
+	{
+		glslProgram	glsl/DisplacementTwoStage.glsl
+		shaderParm		scrollX				time * 2.0
+		shaderParm		scrollY				time * 2.0
+		shaderParm		sizeX				1.0
+		shaderParm		sizeY				1.0
+		shaderParm		texCoordSize		0.25
+		shaderTexture	DisplacementMap		gfx/test/pnh3.tga
+		shaderParm		scrollX2			time * 2.0
+		shaderParm		scrollY2			time * 2.0
+		shaderParm		sizeX2				1.0
+		shaderParm		sizeY2				1.0
+		shaderParm		texCoordSize2		0.25
+		shaderTexture	DisplacementMap2	gfx/test/pnh3.tga
+		shaderTexture	Image				gfx/test/hatch5.tga
+	}
+}
+
+rj/testglsl2
+{
+	noSelfShadow
+	noShadows
+	noImpact
+	nonSolid
+
+	{
+		glslProgram	glsl/GhostPulling.glsl
+		shaderParm		scrollX				time
+		shaderParm		scrollY				time
+		shaderParm		sizeX				0.5
+		shaderParm		sizeY				0.5
+		shaderParm		distortionLength	50
+		shaderTexture	Image				gfx/test/frodo.tga
+		shaderTexture	DisplacementMap		gfx/test/pnh3.tga
+	}
+}
+
+rj/testglsl3
+{
+	noSelfShadow
+	noShadows
+	noImpact
+	nonSolid
+
+	{
+		glslProgram	glsl/Displacement2.glsl
+		shaderParm		OffsetScrollSpeed	time * 0.45
+		shaderParm		EffectAScrollSpeed	time * .75
+		shaderParm		EffectBScrollSpeed	time * .5
+		shaderParm		OffsetScale			0.05
+		shaderParm		EffectAScale		flickerblink [time * .0125]	
+		shaderParm		EffectBScale		flickerblink [time * .00125]
+		shaderParm		BaseFlicker			grunttable [time * .25 ]
+		shaderParm		EffectAFlicker		flickerblink [time * .25]
+		shaderParm		EffectBFlicker		0.5
+		shaderTexture	Image				gfx/effects/energy_sparks/ctf_strogg_flag.tga
+		shaderTexture	DisplacementMap		gfx/test/Channel_Test_Texture.tga
+		shaderTexture	EffectA				gfx/effects/energy_sparks/ctf_mask_flag5.tga
+		shaderTexture	EffectB				gfx/effects/energy_sparks/ctf_green_lines.tga
+		shaderTexture	Mask				gfx/effects/energy_sparks/ctf_mask_flag.tga
+	}
+}
+
+rj/DisplacementCube
+{
+	noSelfShadow
+	noShadows
+	noImpact
+	nonSolid
+
+	{
+		blend			blend
+		alpha			0.5
+		
+		glslProgram		glsl/DisplacementCube.glsl
+		shaderParm		scrollX				time * 0.25
+		shaderParm		scrollY				time * 0.25
+		shaderParm		sizeX				1 // cosine[ time * 0.2 ] * 0.1 + 0.9
+		shaderParm		sizeY				0.1 // cosine[ time * 0.2 ] * 0.1 + 0.9
+		shaderParm		texCoordSize		0.045
+		shaderParm		EyeVector			viewOrigin
+		shaderTexture	DisplacementMap		gfx/test/pnh3.tga
+		shaderTexture	Image				textures/stroyent/thinwavy_d.tga
+		shaderTexture	CubeImage			cubemap gfx/env/waste
+	}
+}
+
+
+hs/SniperBlur
+{
+	translucent
+	sort				gui
+	needCurrentRender
+	{
+		glslProgram		glsl/SniperStretch2.glsl
+		shaderParm		textureScale			POTCorrectionX, POTCorrectionY
+		shaderParm		textureHalfScale		POTCorrectionX * 0.5, POTCorrectionY * 0.5
+		shaderParm		backgroundColor			0.2, 0.2, 0.2, 1.0
+		shaderTexture	BackgroundImage			_currentRender
+		shaderTexture	Scope					gfx/guis/hud/reticles/mgun_scope_distort.tga
+	}
+}
+
+table testflicker { { 0.1, 0.1, 0.2, 0.5, 0.4, 0.6, 0.7, 0.9, 0.8, 0.85, 0.9, 1 } }
+table testflicker2 { { 0.8, 0.9, 0.85, 1.0, 0.9, 0.8, 0.95 } }
+
+
+
+
+// The stages blow must remain in that order, any additional stages will be ignored.  Failure to do so will result in burnination.
+// ( based loosly on ATI's DOF in Rendermonkey )
+//		'DistanceScale' is approximately the focus point 
+//		'sampleDist' controls the blurred image.  The higher the value, the more ‘double vision’-ish you get
+//		'range' includes the spread of blur – less range = sharper results overall
+//		'focus' indicates the center point : 0.5 = center focus on the ‘DistanceScale’
+//		'Scoll' indicates rate at which the Variance texture is ‘color cycled’ through
+//		'ApproachColor' is the color at which the blur will approach
+//		'ApproachPercent' controls which percentage the blur is – 0.0 = original color, 1.0 = ‘ApproachColor’
+hs/MedLabs
+{
+	{
+		glslProgram		glsl/DepthTexture.glsl
+		
+		shaderParm		distanceScale			Parm7 //500.0
+	}
+	{
+		glslProgram		glsl/Blur.glsl
+		shaderParm		textureScale			POTCorrectionX, POTCorrectionY
+		shaderParm		sampleDist				0.00620			// 0.01920
+		shaderTexture	Image					_currentRender
+	}
+	{
+		glslProgram		glsl/MedLabs.glsl
+		shaderParm		range					Parm4		//4.0
+		shaderParm		focus					Parm5	//0.31
+		shaderParm		Scroll					1//cosine[ time / 4 ]
+		shaderParm		ApproachColor			Parm0, Parm1, Parm2, Parm3 //.694, .694, .694, Parm3	// .313, .702, 1, 1
+		shaderParm		ApproachPercent			Parm6 //testflicker[ time / 10 ]
+		
+		shaderTexture	Depth					DepthTexture
+		shaderTexture	Blur1					BlurTexture1
+//		shaderTexture	Scene					_currentRender
+		shaderTexture	Variance				gfx/guis/white.tga //gfx/test.tga
+	}
+}
+
+// The stages blow must remain in that order, any additional stages will be ignored.  Failure to do so will result in burnination.
+// ( based loosly on ATI's DOF in Rendermonkey )
+//		'DistanceScale' is approximately the focus point 
+//		'sampleDist' controls the blurred image.  The higher the value, the more ‘double vision’-ish you get
+//		'range' includes the spread of blur – less range = sharper results overall
+//		'focus' indicates the center point : 0.5 = center focus on the ‘DistanceScale’
+//		'Scoll' indicates rate at which the Variance texture is ‘color cycled’ through
+//		'ApproachColor' is the color at which the blur will approach
+//		'ApproachPercent' controls which percentage the blur is – 0.0 = original color, 1.0 = ‘ApproachColor’
+hs/ALSetup
+{
+	{
+		glslProgram		glsl/DepthTexture2.glsl
+		
+		shaderTexture	Image					_white
+		shaderParm		distanceScale			2000.0
+	}
+	{
+		glslProgram		glsl/AL.glsl
+		shaderParm		distanceScale			2000.0
+		shaderParm		textureScale			POTCorrectionX, POTCorrectionY
+		shaderParm		LightLoc				99.0, 99.1, 99.2
+		shaderParm		LightColor				99.3, 99.4, 99.5, 1.0
+		shaderParm		LightSize				99.6
+		shaderParm		LightBehind				99.7
+		shaderParm		LightMinDistance		99.8
+		shaderTexture	LightImage				gfx/lights/round.tga
+		shaderTexture	RT						DepthTexture
+	}
+}
+
+hs/DepthImage
+{
+	{
+		map				DepthTexture
+	}
+}
+
+
+
+/////////////////////////////////////////////////////////////////////
+////// Begin Depth Sprites replacements here!
+/////////////////////////////////////////////////////////////////////
+
+guide gfx/effects/smoke/smoke_alpha_depth depthSpriteAlphaBlend( "gfx/effects/smoke/alpha.tga","gfx/effects/depth/alpha_depth.tga", 120 )
+
+guide gfx/effects/smoke/cloud_alpha_depth depthSpriteAlphaBlend( "gfx/effects/smoke/cloud_alpha.tga", "gfx/effects/depth/cloud_alpha_depth.tga", 60 )
+												 			
+guide gfx/effects/smoke/cloud_alpha_depth2 depthSpriteAlphaBlend( "gfx/effects/smoke/cloud_alpha.tga", "gfx/effects/depth/cloud_alpha_depth.tga", 120 )
+
+guide gfx/effects/weapons/muzzleflash2_depth depthSpriteAdditive( "gfx/effects/weapons/mflash2_machinegun.tga", "gfx/effects/depth/mflash2_machinegun_depth.tga", 40 )
+
+guide gfx/effects/particles_shapes/dirt3_depth depthSpriteAlphaBlend( "gfx/effects/particles_shapes/dirt3.tga", "gfx/effects/depth/dirt3_depth.tga", 200 )
+												 			
+guide gfx/effects/particles_shapes/dirt2_depth depthSpriteAlphaBlend( "gfx/effects/particles_shapes/dirt2.tga", "gfx/effects/depth/dirt2_depth.tga", 100 )											 			
+
+guide gfx/effects/smoke/steam_alpha_depth depthSpriteAlphaBlend( "gfx/effects/smoke/steam_alpha.tga", "gfx/effects/depth/steam_alpha_depth.tga", 40 )		
+
+guide gfx/effects/smoke/steam_white_depth depthSpriteAlphaBlend( "gfx/effects/smoke/white_alpha.tga", "gfx/effects/depth/steam_white_depth.tga", 60 )	
+
+guide gfx/effects/energy_sparks/bombard_focus_depth depthSpriteAdditive( "gfx/effects/energy_sparks/focus_beam.tga", "gfx/effects/depth/focus_beam_depth.tga", 100 )
+
+/////////////////////////////////////////////////////////////////////
+////// End Depth Sprites replacements here!
+/////////////////////////////////////////////////////////////////////

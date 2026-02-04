@@ -1,0 +1,98 @@
+!!ARBvp1.0 OPTION ARB_position_invariant ;
+
+# this is slightly simpler than the ARB interaction,
+# because the R200 can only emit six texture coordinates,
+# so we assume that the diffuse and specular matrixes are
+# the same, with higher level code splitting it into two
+# passes if it isn't
+#
+# I am using texcoords instead of attribs, because a separate
+# extension is required to use attribs with vertex array objects.
+# 
+# input:
+# 
+# TEX0	texture coordinates
+# TEX1	tangent[0]
+# TEX2	tangent[1]
+# TEX3	normal
+# COL	vertex color
+#
+# c[4]	localLightOrigin
+# c[5]	localViewOrigin
+# c[6]	lightProjection S
+# c[7]	lightProjection T
+# c[8]	lightProjection Q
+# c[9]	lightFalloff S
+# c[10]	bumpMatrix S
+# c[11]	bumpMatrix T
+# c[12]	diffuseMatrix S
+# c[13]	diffuseMatrix T
+# c[14]	specularMatrix S
+# c[15]	specularMatrix T
+# 
+# output:
+# 
+# texcoord 0 = light projection texGen
+# texcoord 1 = light falloff texGen
+# texcoord 2 = bumpmap texCoords
+# texcoord 3 = specular / diffuse texCoords
+# texcoord 4 = normalized halfangle vector in tangent space
+# texcoord 5 = unnormalized vector to light in tangent space
+
+TEMP	R0, R1, R2, lightDir;
+
+PARAM	defaultTexCoord = { 0, 0.5, 0, 1 };
+
+# texture 0 has three texgens
+DP4		result.texcoord[0].x, vertex.position, program.env[6];
+DP4		result.texcoord[0].y, vertex.position, program.env[7];
+DP4		result.texcoord[0].w, vertex.position, program.env[8];
+
+# texture 1 has one texgen
+MOV		result.texcoord[1], defaultTexCoord;
+DP4		result.texcoord[1].x, vertex.position, program.env[9];
+
+# textures 2 takes the base coordinates by the texture matrix
+MOV		result.texcoord[2], defaultTexCoord;
+DP4		result.texcoord[2].x, vertex.texcoord[0], program.env[10];
+DP4		result.texcoord[2].y, vertex.texcoord[0], program.env[11];
+
+# textures 3 takes the base coordinates by the texture matrix
+MOV		result.texcoord[3], defaultTexCoord;
+DP4		result.texcoord[3].x, vertex.texcoord[0], program.env[12];
+DP4		result.texcoord[3].y, vertex.texcoord[0], program.env[13];
+
+# texture 4's texcoords will be the halfangle in tangent space
+
+# calculate normalized vector to light in R0
+SUB		lightDir, program.env[4], vertex.position;
+DP3		R1, lightDir, lightDir;
+RSQ		R1, R1.x;
+MUL		R0, lightDir, R1.x;
+
+# calculate normalized vector to viewer in R1
+SUB		R1, program.env[5], vertex.position;
+DP3		R2, R1, R1;
+RSQ		R2, R2.x;
+MUL		R1, R1, R2.x;
+
+# add together to become the half angle vector in object space (non-normalized)
+ADD		R0, R0, R1;
+
+# put into texture space
+DP3		result.texcoord[4].x, vertex.texcoord[1], R0;
+DP3		result.texcoord[4].y, vertex.texcoord[2], R0;
+DP3		result.texcoord[4].z, vertex.texcoord[3], R0;
+
+# texture 5's texcoords will be the unnormalized lightDir in tangent space
+DP3		result.texcoord[5].x, vertex.texcoord[1], lightDir;
+DP3		result.texcoord[5].y, vertex.texcoord[2], lightDir;
+DP3		result.texcoord[5].z, vertex.texcoord[3], lightDir;
+
+# generate the vertex color, which can be 1.0, color, or 1.0 - color
+# for 1.0 : env[16] = 0, env[17] = 1
+# for color : env[16] = 1, env[17] = 0
+# for 1.0-color : env[16] = -1, env[17] = 1
+MAD		result.color, vertex.color, program.env[16], program.env[17];
+
+END

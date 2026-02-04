@@ -1,0 +1,141 @@
+!!ARBvp1.0 OPTION ARB_position_invariant ;
+
+# VPROG_INTERACTION
+# 
+# input:
+# 
+# attrib[8] TEX0	texture coordinates
+# attrib[9] TEX1	normal
+# attrib[10] TEX2	tangent[0]
+# attrib[11] TEX3	tangent[1]
+# COL			vertex color
+#
+# c[4]	localLightOrigin
+# c[5]	localViewOrigin
+# c[6]	lightProjection S
+# c[7]	lightProjection T
+# c[8]	lightProjection Q
+# c[9]	lightFalloff S
+# c[10]	bumpMatrix S
+# c[11]	bumpMatrix T
+# c[12]	diffuseMatrix S
+# c[13]	diffuseMatrix T
+# c[14]	specularMatrix S
+# c[15]	specularMatrix T
+# c[16]	vertex color modulate
+# c[17]	vertex color add
+# 
+# c[20] model matrix 
+# c[21] model matrix
+# c[22] model matrix
+#
+# output:
+# 
+# texture[0] is the ambient cube map (was the normalization cube map)
+# texture[1] is the per-surface bump map
+# texture[2] is the light falloff texture
+# texture[3] is the light projection texture
+# texture[4] is the per-surface diffuse map
+# texture[5] is empty (was the per-surface specular map)
+# texture[6] is empty (was the specular lookup table)
+
+# texcoord[0] is the surface bump map
+# texcoord[1] is the surface diffuse map
+# texcoord[2] is the light projection
+# texcoord[3] is the light falloff
+# texcoord[4] is the local normal to global normal transform
+# texcoord[5] is the local normal to global normal transform
+# texcoord[6] is the local normal to global normal transform
+
+TEMP	R0, R1, R2;
+
+PARAM	defaultTexCoord = { 0, 0.5, 0, 1 };
+
+# textures 0 takes the base coordinates by the texture matrix
+MOV		result.texcoord[0], defaultTexCoord;
+DP4		result.texcoord[0].x, vertex.attrib[8], program.env[10];
+DP4		result.texcoord[0].y, vertex.attrib[8], program.env[11];
+
+# textures 1 takes the base coordinates by the texture matrix
+MOV		result.texcoord[1], defaultTexCoord;
+DP4		result.texcoord[1].x, vertex.attrib[8], program.env[12];
+DP4		result.texcoord[1].y, vertex.attrib[8], program.env[13];
+
+# texture 2 has one texgen
+MOV		result.texcoord[2], defaultTexCoord;
+DP4		result.texcoord[2].x, vertex.position, program.env[9];
+
+# texture 3 has three texgens
+DP4		result.texcoord[3].x, vertex.position, program.env[6];
+DP4		result.texcoord[3].y, vertex.position, program.env[7];
+DP4		result.texcoord[3].w, vertex.position, program.env[8];
+
+# put into texture space
+DP3		result.texcoord[4].x, vertex.attrib[9], program.env[20];
+DP3		result.texcoord[4].y, vertex.attrib[10], program.env[20];
+DP3		result.texcoord[4].z, vertex.attrib[11], program.env[20];
+
+# put into texture space
+DP3		result.texcoord[5].x, vertex.attrib[9], program.env[21];
+DP3		result.texcoord[5].y, vertex.attrib[10], program.env[21];
+DP3		result.texcoord[5].z, vertex.attrib[11], program.env[21];
+
+# put into texture space
+DP3		result.texcoord[6].x, vertex.attrib[9], program.env[22];
+DP3		result.texcoord[6].y, vertex.attrib[10], program.env[22];
+DP3		result.texcoord[6].z, vertex.attrib[11], program.env[22];
+
+# generate the vertex color, which can be 1.0, color, or 1.0 - color
+# for 1.0 : env[16] = 0, env[17] = 1
+# for color : env[16] = 1, env[17] = 0
+# for 1.0-color : env[16] = -1, env[17] = 1
+MAD		result.color, vertex.color, program.env[16], program.env[17];
+
+END
+
+
+#======================================================================
+
+!!ARBfp1.0 
+OPTION ARB_precision_hint_fastest;
+
+# env[0] is the constant diffuse modifier
+
+TEMP	light, R0, localNormal;
+
+PARAM	subOne = { -1, -1, -1, -1 };
+PARAM	scaleTwo = { 2, 2, 2, 2 };
+
+# load the local space surface normal
+TEX	localNormal, fragment.texcoord[0], texture[1], 2D;
+MOV localNormal.x, localNormal.a;			# rxgb normal map compression
+MAD	localNormal, localNormal, scaleTwo, subOne;
+
+# transform into ambient map space
+DP3	R0.x, localNormal, fragment.texcoord[4];
+DP3	R0.y, localNormal, fragment.texcoord[5];
+DP3	R0.z, localNormal, fragment.texcoord[6];
+
+# load the ambient value
+TEX	light, R0, texture[0], CUBE;
+
+# modulate by the surface diffuse map
+TXP	R0, fragment.texcoord[1], texture[4], 2D;
+MUL	light, light, R0;
+
+# modulate by the light falloff
+TXP	R0, fragment.texcoord[2], texture[2], 2D;
+MUL	light, light, R0;
+
+# modulate by the light projection
+TXP	R0, fragment.texcoord[3], texture[3], 2D;
+MUL	light, light, R0;
+
+# modulate by the constant diffuse factor
+MUL	light, light, program.env[0];
+
+# modulate by the vertex color
+MUL result.color.xyz, light, fragment.color;
+
+END
+

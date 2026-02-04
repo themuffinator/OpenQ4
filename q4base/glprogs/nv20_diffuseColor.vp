@@ -1,0 +1,28 @@
+!!ARBvp1.0 OPTION ARB_position_invariant ;
+
+# VPROG_NV_DIFFUSE_COLOR
+# 
+# input:
+# 
+# TEX0	texture coordinates
+# COL0	vertex color
+# 
+# output:
+# 
+# HPOS	homogeneous clip space position
+# TEX0	will be the per-surface diffuse map
+# TEX1	will be the light projection texture
+
+# textures 0 takes the base coordinates by the texture matrix
+DP4	result.texcoord[0].x, vertex.texcoord[0], program.env[12];
+DP4	result.texcoord[0].y, vertex.texcoord[0], program.env[13];
+
+# texture 1 has three texgens
+DP4	result.texcoord[1].x, vertex.position, program.env[6];
+DP4	result.texcoord[1].y, vertex.position, program.env[7];
+DP4	result.texcoord[1].w, vertex.position, program.env[8];
+
+# copy color
+MOV	result.color, vertex.color;
+
+END

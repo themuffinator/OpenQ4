@@ -1,0 +1,562 @@
+//----------------------------------------------------------------
+// ammo.def
+//
+// Copyright 2002-2004 Raven Software
+//----------------------------------------------------------------
+
+// Define the types of ammo that are used in the game.
+// This entityDef is required by the game code.
+// Up to 16 ammo types can be defined.
+entityDef ammo_types 
+{
+	"ammo_none"				"0"
+	"ammo_blaster"			"1"
+	"ammo_machinegun"		"2"
+	"ammo_nailgun"			"3"
+	"ammo_railgun"			"4"
+	"ammo_shotgun"			"5"
+	"ammo_hyperblaster"		"6"
+	"ammo_rocketlauncher"	"7"
+	"ammo_grenadelauncher"	"8"
+	"ammo_lightninggun"		"9"
+	"ammo_dmg"				"10"
+	"ammo_napalmgun"		"11"
+}
+
+entityDef ammo_triggersize_SP {
+	"triggerSize"		"32"
+}
+entityDef ammo_triggersize_MP {
+	"triggerSize"		"16"
+}
+
+entityDef ammo_default
+{	
+	"editor_color"				".3 .3 1"
+	"editor_mins"				"-8 -8 0"
+	"editor_maxs"				"8 8 16"
+	"editor_rotatable"			"1"
+	"editor_menu"				"pickup"
+
+	"fx_respawn"				"effects/mp/itemrespawn.fx"
+	"snd_acquire"				"items_ammo_default"
+	"respawn"				"40"
+	"editor_ignore"				"1"
+	"inherit"				"ammo_triggersize_SP"
+}
+
+entityDef ammo_machinegun
+{
+	"inherit"				"ammo_default"
+
+	"editor_usage"				"Large Clips"
+
+	"spawnclass"				"idItem"
+	"model"					"models/pick_ups/sp_pickups/sp_mg_rounds.lwo"
+	"size"					"32 32 32"
+	"inv_ammo_machinegun"			"50"
+
+	"inv_name"				"#str_107411"
+	"inv_icon"				"gfx/guis/hud/icons/item_machinegun.tga"
+
+	"dbTitle"				"Machinegun Rounds"
+	"dbText"				"Ammo for the machinegun.... <more text here>"
+	"dbFilter"				"item"
+
+	"editor_ignore"				"0"
+}
+
+entityDef ammo_machinegun_mp
+{
+	"inherit"				"ammo_machinegun"
+	"inherit2"				"ammo_triggersize_MP"
+	
+	"editor_ignore"				"1"
+	
+	"model"					"models/items/ammo/ammo_box.lwo"	
+	"skin"					"skins/items/ammo/machinegun"
+	"skin_pickup"				"skins/items/ammo/machinegun_pickup"
+	"inv_ammo_machinegun"			"60"
+	"inv_icon"				"gfx/guis/hud/icons/ammo_machinegun_colored"
+	"mtr_simple_icon"				"simpleicons/ammo_machinegun_colored"
+}
+
+entityDef ammo_nailgun
+{
+	"inherit"				"ammo_default"
+
+	"editor_usage"				"Large Nails"
+
+	"spawnclass"				"idItem"
+	"model"					"models/pick_ups/sp_pickups/sp_nails.lwo"
+	"action"				"sound/electronics/1shot_beep_02.wav"
+	"size"					"32 32 32"
+	"inv_ammo_nailgun"			"40"
+
+	"inv_name"				"#str_107412"
+	"inv_icon"				"gfx/guis/hud/icons/item_nailgun.tga"
+
+	"dbTitle"				"Nailgun Nails"
+	"dbText"				"Ammo for the nailgun.... <more text here>"
+	"dbFilter"				"item"
+	"editor_ignore"				"0"
+}
+
+entityDef ammo_nailgun_mp
+{
+	"inherit"				"ammo_nailgun"
+	"inherit2"				"ammo_triggersize_MP"
+	"editor_ignore"				"1"
+	
+	"model"					"models/items/ammo/ammo_box.lwo"	
+	"skin"					"skins/items/ammo/nailgun"
+	"skin_pickup"				"skins/items/ammo/nailgun_pickup"
+	"inv_ammo_nailgun"			"50"
+	"inv_icon"				"gfx/guis/hud/icons/ammo_nailgun_colored"
+	"mtr_simple_icon"				"simpleicons/ammo_nailgun_colored"
+}
+
+entityDef ammo_railgun
+{
+	"inherit"				"ammo_default"
+
+	"editor_usage"				"Large Slugs"
+
+	"spawnclass"				"idItem"
+	"model"					"models/pick_ups/sp_pickups/sp_rails.lwo"
+	"size"					"32 32 32"
+
+	"inv_ammo_railgun"			"5"
+	"inv_name"				"#str_107413"
+	"inv_icon"				"gfx/guis/hud/icons/item_railgun.tga"
+
+	"dbTitle"				"Railgun Slugs"
+	"dbText"				"Ammo for the railgun.... <more text here>"
+	"dbFilter"				"item"
+	"editor_ignore"				"0"
+}
+
+entityDef ammo_railgun_mp
+{
+	"inherit"				"ammo_railgun"
+	"inherit2"				"ammo_triggersize_MP"
+	"editor_ignore"				"1"
+	
+	"model"					"models/items/ammo/ammo_box.lwo"		
+	"skin"					"skins/items/ammo/railgun"
+	"skin_pickup"				"skins/items/ammo/railgun_pickup"	
+	"inv_ammo_railgun"			"7"
+	"inv_icon"				"gfx/guis/hud/icons/ammo_railgun_colored"
+	"mtr_simple_icon"				"simpleicons/ammo_railgun_colored"
+}
+
+entityDef ammo_shotgun
+{
+	"inherit"				"ammo_default"
+
+	"editor_usage"				"Large Shells"
+
+	"spawnclass"				"idItem"
+	"model"					"models/pick_ups/sp_pickups/sp_shotgun.lwo"
+	"size"					"32 32 32"
+
+	"inv_ammo_shotgun"			"12"
+	"inv_name"				"#str_107414"
+	"inv_icon"				"gfx/guis/hud/icons/item_shotgun.tga"
+
+	"dbTitle"				"Shotgun Shells"
+	"dbText"				"Ammo for the shotgun.... <more text here>"
+	"dbFilter"				"item"
+	"editor_ignore"				"0"
+}
+
+entityDef ammo_shotgun_mp
+{
+	"inherit"				"ammo_shotgun"
+	"inherit2"				"ammo_triggersize_MP"
+	"editor_ignore"				"1"
+	
+	"model"					"models/items/ammo/ammo_box.lwo"	
+	"skin"					"skins/items/ammo/shotgun"
+	"skin_pickup"				"skins/items/ammo/shotgun_pickup"
+	"inv_ammo_shotgun"			"16"
+	"inv_icon"				"gfx/guis/hud/icons/ammo_shotgun_colored"
+	"mtr_simple_icon"				"simpleicons/ammo_shotgun_colored"
+}
+
+entityDef ammo_hyperblaster
+{
+	"inherit"				"ammo_default"
+
+	"editor_usage"				"HyperBlaster Ammo"
+
+	"spawnclass"				"idItem"
+	"model"					"models/pick_ups/sp_pickups/sp_hyper_ammo.lwo"
+	"size"					"32 32 32"
+
+	"inv_ammo_hyperblaster"			"40"
+	"inv_name"				"#str_107415"
+	"inv_icon"				"gfx/guis/hud/icons/item_hyperblaster.tga"
+
+	"editor_ignore"				"0"
+}
+
+entityDef ammo_hyperblaster_mp
+{
+	"inherit"				"ammo_hyperblaster"
+	"inherit2"				"ammo_triggersize_MP"
+	"editor_ignore"				"1"
+	
+	"model"					"models/items/ammo/ammo_box.lwo"	
+	"skin"					"skins/items/ammo/hyperblaster"
+	"skin_pickup"				"skins/items/ammo/hyperblaster_pickup"
+	"inv_ammo_hyperblaster"			"50"
+	"inv_icon"				"gfx/guis/hud/icons/ammo_hyperblaster_colored"
+	"mtr_simple_icon"				"simpleicons/ammo_hyperblaster_colored"
+}
+
+entityDef ammo_rocketlauncher
+{
+	"inherit"				"ammo_default"
+
+	"editor_usage"				"Rocket Launcher Ammo"
+
+	"spawnclass"				"idItem"
+	"model"					"models/pick_ups/sp_pickups/sp_rockets.lwo"
+	"size"					"32 32 32"
+
+	"inv_ammo_rocketlauncher"		"6"
+	"inv_name"				"#str_107416"
+	"inv_icon"				"gfx/guis/hud/icons/item_rocket.tga"
+
+	"editor_ignore"				"0"
+}
+
+entityDef ammo_rocketlauncher_mp
+{
+	"inherit"				"ammo_rocketlauncher"
+	"inherit2"				"ammo_triggersize_MP"
+	"editor_ignore"				"1"
+	
+	"model"					"models/items/ammo/ammo_box.lwo"
+	"skin"					"skins/items/ammo/rocketlauncher"
+	"skin_pickup"				"skins/items/ammo/rocketlauncher_pickup"
+	"inv_ammo_rocketlauncher"		"5"
+	"inv_icon"				"gfx/guis/hud/icons/ammo_rocket_colored"
+	"mtr_simple_icon"				"simpleicons/ammo_rocket_colored"
+}
+
+entityDef ammo_grenadelauncher
+{
+	"inherit"				"ammo_default"
+
+	"editor_usage"				"Grenade Launcher Ammo"
+
+	"spawnclass"				"idItem"
+	"model"					"models/pick_ups/sp_pickups/sp_grenades.lwo"
+	"size"					"32 32 32"
+
+	"inv_ammo_grenadelauncher"		"10"
+	"inv_name"				"#str_107417"
+	"inv_icon"				"gfx/guis/hud/icons/item_grenade.tga"
+
+	"editor_ignore"				"0"
+}
+
+entityDef ammo_grenadelauncher_mp
+{
+	"inherit"				"ammo_grenadelauncher"
+	"inherit2"				"ammo_triggersize_MP"
+	"editor_ignore"				"1"
+	
+	"model"					"models/items/ammo/ammo_box.lwo"	
+	"skin"					"skins/items/ammo/grenadelauncher"
+	"skin_pickup"				"skins/items/ammo/grenadelauncher_pickup"
+	"inv_ammo_grenadelauncher"		"5"
+	"inv_icon"				"gfx/guis/hud/icons/ammo_grenade_colored"
+	"mtr_simple_icon"				"simpleicons/ammo_grenade_colored"
+}
+
+entityDef ammo_lightninggun
+{
+	"inherit"				"ammo_default"
+
+	"editor_usage"				"Lightning Gun Ammo"
+
+	"spawnclass"				"idItem"
+	"model"					"models/pick_ups/sp_pickups/sp_lightning.lwo"
+	"size"					"32 32 32"
+
+	"inv_ammo_lightninggun"			"80"
+	"inv_name"				"#str_107418"
+	"inv_icon"				"gfx/guis/hud/icons/item_lightning.tga"
+
+	"editor_ignore"				"0"
+	
+	"fx_idle"				"effects/weapons/lightninggun/pickup.fx"
+}
+
+entityDef ammo_lightninggun_mp
+{	
+	"inherit"				"ammo_lightninggun"
+	"inherit2"				"ammo_triggersize_MP"
+	"editor_ignore"				"1"
+	
+	"model"					"models/items/ammo/ammo_box.lwo"	
+	"skin"					"skins/items/ammo/lightninggun"
+	"skin_pickup"				"skins/items/ammo/lightninggun_pickup"
+	"inv_ammo_lightninggun"			"60"
+	"inv_icon"				"gfx/guis/hud/icons/ammo_lightning_colored"
+	"mtr_simple_icon"				"simpleicons/ammo_lightning_colored"
+	"fx_idle"				""
+}
+
+entityDef ammo_dmg
+{
+	"inherit"				"ammo_default"
+
+	"editor_usage"				"Dark Matter Gun Ammo"
+
+	"spawnclass"				"idItem"
+	"model"					"models/pick_ups/sp_pickups/sp_darkmatter.lwo"
+	"size"					"32 32 32"
+
+	"inv_ammo_dmg"				"5"
+	"inv_name"				"#str_107419"
+	"inv_icon"				"gfx/guis/hud/icons/item_darkmatter.tga"
+
+	"editor_ignore"				"0"
+	
+	"fx_idle"				"effects/weapons/dmg/pickup.fx"
+}
+
+entityDef ammo_dmg_mp
+{
+	"inherit"				"ammo_dmg"
+	"inherit2"				"ammo_triggersize_MP"
+	"editor_ignore"				"1"
+	
+	"model"					"models/items/ammo/ammo_box.lwo"	
+	"skin"					"skins/items/ammo/dmg"
+	"skin_pickup"				"skins/items/ammo/dmg_pickup"
+	"inv_ammo_dmg"				"5"
+	"inv_icon"				"gfx/guis/hud/icons/ammo_darkmatter_colored"
+	"mtr_simple_icon"				"simpleicons/ammo_darkmatter_colored"
+	"fx_idle"				""
+}
+
+entityDef ammo_napalmgun
+{
+	"inherit"					"ammo_default"
+	"editor_usage"				"Napalm Ammo"
+
+	"spawnclass"				"idItem"
+	"model"						"models/weapons/napalmgun/ammo_flame.ase"	// (Squirrel@Ritual) FIXME: This differs from
+																			// the "models/pick_ups/sp_pickups/sp_darkmatter.lwo"
+																			// pattern significantly...  may not be an issue (since
+																			// no Napalm Launcher in single player?) but this raises
+																			// a minor red flag
+	"size"						"32 32 32"
+
+	"inv_ammo_napalmgun"		"10"
+	"inv_name"					"Napalm Gun Ammo"
+	"inv_icon"					"gfx/guis/hud/icons/item_fire.tga"
+	"mtr_simple_icon"			"gfx/guis/hud/simpleicons/ammo_napalmgun"
+
+	"editor_ignore"				"0"
+}  
+
+entityDef ammo_napalmgun_mp
+{
+	"inherit"					"ammo_napalmgun"
+	"inherit2"					"ammo_triggersize_MP"
+	"editor_ignore"				"1"
+	
+	"model"						"models/items/ammo/ammo_box.lwo"	
+	"skin"						"skins/items/ammo/flamegun"
+	"skin_pickup"				"skins/items/ammo/flamegun_pickup"
+	"inv_ammo_napalmgun"		"10"
+	"inv_icon"					"gfx/guis/hud/icons/item_fire_colored"
+} 
+
+entityDef ammo_currentweapon
+{
+  	"inherit"					"ammo_default"
+  
+  	"editor_usage"				"Ammo for Current Weapon"
+  
+  	"spawnclass"				"idItem"
+  	"model"						"models/pick_ups/sp_pickups/sp_mg_rounds.lwo"
+  	"size"						"32 32 32"
+  
+  	"item_currentWeaponAmmo"	"1"
+  	"editor_ignore"				"0"
+}
+
+
+//---------------------------------------------------------------
+// moveable ammo
+
+entityDef ammo_moveable	{
+
+	"spawnclass"				"idMoveableItem"
+	"nodrop"				"0"
+	"noimpact"				"1"
+	"notPushable"				"1"
+	"density"				"1"
+	"mass"					"3000"
+	"friction"				"0.4"
+	"bouncyness"				"0.6"
+}
+
+entityDef ammo_machinegun_moveable
+{	
+	"inherit"					"ammo_machinegun"
+	"inherit2"					"ammo_triggersize_SP"	
+
+	"spawnclass"				"idMoveableItem"
+	"nodrop"				"0"
+	"noimpact"				"1"
+	"notPushable"				"1"
+	"density"				"1"
+	"mass"					"2000"
+	"friction"				"0.4"
+	"bouncyness"				"0.3"
+	
+}
+
+entityDef ammo_hyperblaster_moveable
+{	
+	"inherit"				"ammo_hyperblaster"
+	"inherit2"				"ammo_triggersize_SP"	
+
+	"spawnclass"				"idMoveableItem"
+	"nodrop"				"0"
+	"noimpact"				"1"
+	"notPushable"				"1"
+	"density"				"1"
+	"mass"					"4000"
+	"friction"				"0.4"
+	"bouncyness"				"0.3"
+	
+}
+
+entityDef ammo_nailgun_moveable
+{	
+	"inherit"				"ammo_nailgun"
+	"inherit2"				"ammo_triggersize_SP"	
+
+	"spawnclass"				"idMoveableItem"
+	"nodrop"				"0"
+	"noimpact"				"1"
+	"notPushable"				"1"
+	"density"				"1"
+	"mass"					"4000"
+	"friction"				"0.4"
+	"bouncyness"				"0.3"
+}
+
+entityDef ammo_rocketlauncher_moveable
+{	
+	"inherit"				"ammo_rocketlauncher"
+	"inherit2"				"ammo_triggersize_SP"	
+
+	"spawnclass"				"idMoveableItem"
+	"nodrop"				"0"
+	"noimpact"				"1"
+	"notPushable"				"1"
+	"density"				"1"
+	"mass"					"5000"
+	"friction"				"0.3"
+	"bouncyness"				"0.2"
+}
+
+entityDef ammo_grenadelauncher_moveable
+{	
+	"inherit"				"ammo_grenadelauncher"
+	"inherit2"				"ammo_triggersize_SP"	
+
+	"spawnclass"				"idMoveableItem"
+	"nodrop"				"0"
+	"noimpact"				"1"
+	"notPushable"				"1"
+	"density"				"1"
+	"mass"					"5000"
+	"friction"				"0.4"
+	"bouncyness"				"0.3"
+}
+
+entityDef ammo_railgun_moveable
+{	
+	"inherit"				"ammo_railgun"
+	"inherit2"				"ammo_triggersize_SP"	
+
+	"spawnclass"				"idMoveableItem"
+	"nodrop"				"0"
+	"noimpact"				"1"
+	"notPushable"				"1"
+	"density"				"1"
+	"mass"					"3000"
+	"friction"				"0.4"
+	"bouncyness"				"0.3"
+}
+
+entityDef ammo_shotgun_moveable
+{	
+	"inherit"				"ammo_shotgun"
+	"inherit2"				"ammo_triggersize_SP"	
+
+	"spawnclass"				"idMoveableItem"
+	"nodrop"				"0"
+	"noimpact"				"1"
+	"notPushable"				"1"
+	"density"				"1"
+	"mass"					"3500"
+	"friction"				"0.4"
+	"bouncyness"				"0.3"
+}
+
+entityDef ammo_lightninggun_moveable
+{	
+	"inherit"				"ammo_lightninggun"
+	"inherit2"				"ammo_triggersize_SP"	
+
+	"spawnclass"				"idMoveableItem"
+	"nodrop"				"0"
+	"noimpact"				"1"
+	"notPushable"				"1"
+	"density"				"1"
+	"mass"					"3200"
+	"friction"				"0.3"
+	"bouncyness"				"0.4"
+}
+
+entityDef ammo_dmg_moveable
+{	
+	"inherit"				"ammo_dmg"
+	"inherit2"				"ammo_triggersize_SP"	
+
+	"spawnclass"				"idMoveableItem"
+	"nodrop"				"0"
+	"noimpact"				"1"
+	"notPushable"				"1"
+	"density"				"1"
+	"mass"					"8000"
+	"friction"				"0.8"
+	"bouncyness"				"0.1"
+}
+
+entityDef ammo_napalmgun_moveable
+{	
+	"inherit"				"ammo_napalmgun"
+	"inherit2"				"ammo_triggersize_SP"	
+
+	"spawnclass"				"idMoveableItem"
+	"nodrop"				"0"
+	"noimpact"				"1"
+	"notPushable"				"1"
+	"density"				"1"
+	"mass"					"5000"
+	"friction"				"0.3"
+	"bouncyness"				"0.2"
+}

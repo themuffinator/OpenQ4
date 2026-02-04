@@ -1,0 +1,17 @@
+!!ARBvp1.0
+
+TEMP R0;
+
+# RO = OPOS - light, assumes light.w = 0
+SUB	R0, vertex.position, program.env[4];
+
+# RO -= OPOS.w * light
+MAD	R0, R0.wwww, program.env[4], R0;
+
+# normal transform
+DP4	result.position.x, R0, state.matrix.mvp.row[0];
+DP4	result.position.y, R0, state.matrix.mvp.row[1];
+DP4	result.position.z, R0, state.matrix.mvp.row[2];
+DP4	result.position.w, R0, state.matrix.mvp.row[3];
+
+END

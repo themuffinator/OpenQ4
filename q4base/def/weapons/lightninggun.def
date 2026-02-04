@@ -1,0 +1,324 @@
+//----------------------------------------------------------------
+// lightninggun.def
+//
+// Copyright 2002-2004 Raven Software
+//----------------------------------------------------------------
+
+export lightning_gun
+{
+	options -prefix LIGNTNING_ -scale .4 -keep barrel spire_1 spire_2 spire_3 spire_4 -sourcedir work/models/weapons/strogg_lightning_gun/animations -destdir models/weapons/lightning_gun
+
+	addoptions -skipmesh rt_strogg_arm_mesh 
+	addoptions -skipmesh lft_strogg_arm_mesh 
+
+	mesh idle_00.ma			-dest mesh
+	anim idle_00.ma			-dest idle
+	anim lower.ma			-dest lower
+	anim raise.ma			-dest raise
+	anim shoot_start.ma			-dest shoot_start
+	anim shoot_loop.ma			-dest shoot_loop
+	anim shoot_end.ma			-dest shoot_end
+}
+
+export lightning_gun_strogg
+{
+	options -prefix LIGNTNING_ -scale .4 -keep barrel spire_1 spire_2 spire_3 spire_4 -sourcedir work/models/weapons/strogg_lightning_gun/animations -destdir models/weapons/lightning_gun
+	addoptions -skipmesh rt_arm_mesh 
+	addoptions -skipmesh lft_arm_mesh 
+	mesh idle_00.ma			-dest mesh_strogg
+}
+
+export lightning_gun
+{
+	options -prefix PLAYER_LG_ -scale .4 -keep muzzle_flash ATTACHER -sourcedir work/models/characters/marine/animation_mocap_cinematics -destdir models/weapons/lightning_gun/world -rename ATTACHER origin -clearorigin
+	mesh	newMarine_oneframe_idle.ma			-dest lightninggun
+	anim	newMarine_oneframe_idle.ma			-dest idle
+}
+
+entityDef viewStyle_q3_lightninggun {
+	"viewoffset"				"0 -1.7 1"
+	"viewangles"				"-7.4 8.5 9.8"
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//										Weapon Definition
+//--------------------------------------------------------------------------------------------------------------------
+entityDef weapon_lightninggun
+{
+	"editor_color"				".3 .3 1"
+	"editor_mins"				"-16 -16 0"
+	"editor_maxs"				"16 16 32"
+
+	"editor_usage"				"Lightning Gun"
+	"editor_menu"				"pickup"
+	"editor_var inv_weaponmod"	"comma separated of any of the following lightning gun modifications.\n - weapon_lightninggun_chain"
+
+	"spawnclass"				"idItem"
+	"weaponclass"				"rvWeaponLightningGun"
+	"size"						"32 32 32"
+	"model_view" 				"weapon_lightninggun_view"
+	"model_view_strogg" 		"weapon_lightninggun_view_strogg"
+  	"model_world"				"weapon_lightninggun_world"
+	"model"						"models/weapons/lightning_gun/w_lg.lwo"
+	"def_dropItem"				"weapon_lightninggun"
+
+	"chainLightningRange"		"0 0"
+
+	"fireRate"					".05"
+	"spread"					"1"
+	"range"						"1600"
+
+	"joint_attach"				"LG_ATTACHER"
+  	"joint_view_flash"			"barrel"
+	"joint_world_flash"			"muzzle_flash"
+
+//	"joint_hideGun_flash"		"GNT_ATTACHER"
+	"joint_hideGun_flash"		"waist"
+
+	"inv_weapon"						"weapon_lightninggun"
+	"inv_start_ammo_lightninggun"		"100"
+	"inv_item"							"1"
+	"inv_icon"							"gfx/guis/hud/icons/item_lightning.tga"
+	"inv_name"							"#str_107405"
+
+	"mtr_crosshair"				"gfx/guis/crosshairs/crosshair_lightninggun"
+	"ammoType"					"ammo_lightninggun"
+	"ammoRequired"				"1"
+	"clipSize"					"0"
+	"lowAmmo"					"10"
+	"mtr_icon"					"gfx/guis/hud/icons/gun_lightninggun"
+
+	"muzzle_kick_time"			"0.1"
+	"muzzle_kick_maxtime"		"0.5"
+	"muzzle_kick_angles"		"-3 0 0"
+	"muzzle_kick_offset"		"0.5 .15 .15"
+
+	"recoilTime"				"145"
+	"recoilAngles"				"-1 0 0"
+
+	"def_damage"				"damage_lightninggun"
+	
+	"ammoRegenStep"				"5"
+	"ammoRegenTime"				"1500"
+	
+	// Mapping of modifications to indexes
+	"def_mod1"					"wpmod_lightninggun_chain"
+
+	"foreshorten"				".6"
+
+	"mtr_flashShader"			"lights/muzzleflash"
+	"flashColor"				".5 .8 1"
+	"flashRadius"				"200"
+	"flashPointLight"			"1"
+	"flashTime"					".1"
+	"flashViewOffset"			"15 -5 -5"
+
+	"snd_quaddamage"			"weapon_quaddamage_fire"
+	"snd_acquire"				"pickup_weapon"
+	"snd_fire"					"weapon_lightninggun_fire"
+	"snd_fire_stereo"			"weapon_lightninggun_fire_stereo"
+	"snd_fire_loop"				"weapon_lightninggun_fireloop"
+	
+	"def_viewStyle"				"viewStyle_q3_lightninggun"
+
+	"weaponAngleOffsetAverages" "10"
+	"weaponAngleOffsetScale" 	".25"
+	"weaponAngleOffsetMax"		"5"
+	"weaponOffsetTime"			"600"
+	"weaponOffsetScale"			"0.002"
+	
+	"fx_impact"					"effects/weapons/lightninggun/impact.fx"
+	"fx_impact_mp"					"effects/weapons/lightninggun/impact_mp.fx"
+//	"fx_impact_water"			"effects/ambient/splash_med.fx"
+	"fx_trail"					"effects/weapons/lightninggun/trail.fx"	
+	"fx_trail_world"			"effects/weapons/lightninggun/trail_world.fx"	
+	"fx_crawl"					"effects/weapons/lightninggun/crawl.fx"	
+	"fx_spire"					"effects/weapons/lightninggun/spire.fx"
+//	"fx_flash"					"effects/weapons/lightninggun/muzzleflash.fx"
+//	"fx_flash_world"			"effects/weapons/lightninggun/muzzleflash_world.fx"
+	"fx_respawn"				"effects/mp/itemrespawn.fx"
+	"crawlTime"					".05"
+	
+	// ------------------------ Ammo Tubes ---------------------------------------
+	
+	"joint_tube_0"				"tube_1"
+	"joint_tube_1"				"tube_2"
+	"joint_tube_2"				"tube_3"
+	"tubeTime"					"1"
+	"tubeOffset"				"1"
+	"fx_tube"					"effects/weapons/lightninggun/tube.fx"
+	
+	"snd_tube"					"weapon_lightninggun_tube"
+	"snd_noAmmo"				"weapon_lightninggun_dryfire"
+
+	"net_syncPhysics"			"1"
+}
+
+entityDef moveable_item_lightning_gun
+{
+	"inherit"					"weapon_lightninggun"
+
+	"editor_rotatable"			"1"
+	
+	"itemclipmodel"					"models/weapons/lightning_gun/w_lg_clip.lwo"
+
+	"spawnclass"				"idMoveableItem"
+	"mass"						"3000"
+	"density"					"0.05"
+	"friction"					"0.2"
+	"bouncyness"				"0"
+}
+
+entityDef weapon_lightninggun_mp
+{
+	"inherit"				"weapon_lightninggun"
+	"inv_icon"				"gfx/guis/hud/icons/item_lightning_colored"
+	"mtr_simple_icon"				"simpleicons/item_lightning_colored"
+	"simple_icon_scale"			"32.0"
+	"triggerSize"				"32"
+
+	"range"					"736"	// q3a value is 768
+	"fireRate"				"0.04"
+	"fx_trail_noimpact"			"effects/weapons/lightninggun/trail_noimpact.fx"	
+	
+	"muzzle_kick_time"			"0"
+	"muzzle_kick_maxtime"			"0"
+	"muzzle_kick_angles"			"0 0 0"
+	"muzzle_kick_offset"			"0 0 0"
+	"recoilTime"				"0"
+	"recoilAngles"				"0 0 0"
+	
+	"respawn_Team DM"			"30"
+	"respawn_Tourney"			"15"
+	
+	// played when you touch a weapon you can't acquire, i.e. weaponStay in MP
+	"snd_noAcquire"				"pickup_weaponstay"	
+	"snd_idle_hum"				"weapon_lightninggun_hum"	
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//												Mods
+//-------------------------------------------------------------------------------------------------------------------0
+
+entityDef wpmod_lightninggun_chain
+{
+	
+	"weapon"				"weapon_lightninggun"
+	"chainLightningRange"		"200 400"
+}
+
+entityDef weaponmod_lightninggun_chain
+{
+	"editor_color"				".3 .3 1"
+	"editor_mins"				"-16 -16 0"
+	"editor_maxs"				"16 16 32"
+	"editor_menu"				"pickup"
+	"editor_usage"				"Lighting Gun Chain Lightning"
+
+	"spawnclass"				"idItem"
+	"size"						"32 32 32"
+	"inv_weaponmod"				"wpmod_lightninggun_chain"
+	"inv_ammo_lightninggun"		"100"
+	"inv_item"					"1"
+	"inv_icon"					"gfx/guis/hud/icons/item_lightning.tga"
+	"inv_name"					"#str_107434"
+	"model"						"models/items/ammo/ammo_box.lwo"
+
+	"net_syncPhysics"			"1"
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//												Models
+//--------------------------------------------------------------------------------------------------------------------
+
+model weapon_lightninggun_view
+{
+	mesh						models/weapons/lightning_gun/mesh.md5mesh
+	anim idle 					models/weapons/lightning_gun/idle.md5anim	
+	anim putaway				models/weapons/lightning_gun/lower.md5anim
+	anim raise					models/weapons/lightning_gun/raise.md5anim
+	anim shoot_start			models/weapons/lightning_gun/shoot_start.md5anim
+	{
+		rate	10
+	}
+	anim shoot_loop				models/weapons/lightning_gun/shoot_loop.md5anim
+	anim shoot_end				models/weapons/lightning_gun/shoot_end.md5anim
+	{
+		rate	.25
+	}
+}
+
+model weapon_lightninggun_view_strogg
+{
+	inherit						weapon_lightninggun_view
+	mesh						models/weapons/lightning_gun/mesh_strogg.md5mesh
+}
+
+model weapon_lightninggun_world 
+{
+	mesh					models/weapons/lightning_gun/world/lightninggun.md5mesh
+	anim idle				models/weapons/lightning_gun/world/idle.md5anim
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//												HitScan
+//-------------------------------------------------------------------------------------------------------------------0
+
+entityDef hitscan_lightninggun
+{
+	"range"						"10000"
+	"push"						"10000"
+	
+	"def_damage"				"damage_lightninggun"
+	
+//	"fx_impact"					"effects/weapons/lightninggun/impact.fx"
+//	"fx_impact_water"			"effects/ambient/splash_med.fx"
+//	"fx_path"					"effects/weapons/lightninggun/trail.fx"
+}
+
+entityDef hitscan_lightninggun_mp
+{
+	"inherit"					"hitscan_lightninggun"
+	"range"						"736"  // q3a value is 768
+	"def_damage"				"damage_lightninggun_mp"
+	"inv_icon"					"gfx/guis/hud/icons/item_lightning_colored"
+	"mtr_simple_icon"				"simpleicons/item_lightning_colored"
+}
+
+
+//--------------------------------------------------------------------------------------------------------------------
+//													Damage
+//-------------------------------------------------------------------------------------------------------------------0
+
+entityDef damage_lightninggun
+{
+	"damage"					"11"
+//	"knockback"					"10"
+	"gib"						"1"
+
+	"filter_electricity"		"1"						// can damage all entities with their damage_filter set to "electricity"
+	
+	"dv_time"					"100"
+	"dv_scale"					".05"
+
+	"fx_wound"					"effects/wounds/energy.fx"
+
+	"deathPush"					"200"
+	"deathPushMin"				"2000 400"
+	"deathPushMax"				"4000 500"
+	
+	"bleed"						"1"
+	
+	"pain"						"stream"
+}
+
+entityDef damage_lightninggun_mp
+{
+	"inherit"					"damage_lightninggun"
+	"damage"					"7"
+	"knockback"					"11"
+}
+
+
+
+

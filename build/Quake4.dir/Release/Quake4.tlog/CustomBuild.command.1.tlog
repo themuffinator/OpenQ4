@@ -1,0 +1,10 @@
+^E:\REPOSITORIES\QUAKE4DOOM\SRC\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SE:/Repositories/Quake4Doom/src -BE:/Repositories/Quake4Doom/build --check-stamp-file E:/Repositories/Quake4Doom/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
