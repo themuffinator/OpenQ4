@@ -559,6 +559,8 @@ idCVar password(					"password",					"",				CVAR_GAME | CVAR_NOCHEAT, "client pa
 idCVar g_gameReviewPause(			"g_gameReviewPause",		"30",			CVAR_GAME | CVAR_NETWORKSYNC | CVAR_INTEGER | PC_CVAR_ARCHIVE, "scores review time in seconds (at end game)", 2, 3600 );
 // RAVEN END
 idCVar net_clientPredictGUI(		"net_clientPredictGUI",		"1",			CVAR_GAME | CVAR_BOOL, "test guis in networking without prediction" );
+idCVar net_menulanserver(			"net_menulanserver",		"0",			CVAR_GAME | CVAR_ARCHIVE | CVAR_BOOL, "treat menu server list as LAN only" );
+idCVar net_serverMenuDedicated(	"net_serverMenuDedicated",	"0",			CVAR_GAME | CVAR_ARCHIVE | CVAR_BOOL, "menu dedicated server toggle" );
 
 idCVar si_voteFlags(				"si_voteFlags",				"0",			CVAR_GAME | CVAR_SERVERINFO | CVAR_INTEGER | PC_CVAR_ARCHIVE, "vote flags. bit mask of votes not allowed on this server\n"
 																					"bit  0 (+1)    restart now\n"

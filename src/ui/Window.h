@@ -459,6 +459,7 @@ protected:
 	idWinStr backgroundHover;
 	idWinStr backgroundFocus;
 	idWinStr backgroundLine;
+	idWinStr backgroundGreyed;
 	idWinStr tabTextScales;
 	idWinInt cvarMin;
 	idWinStr model1;

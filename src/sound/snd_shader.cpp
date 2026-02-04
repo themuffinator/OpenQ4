@@ -346,6 +346,10 @@ bool idSoundShader::ParseShader( idLexer& src )
 		{
 			parms.soundShaderFlags |= SSF_NO_FLICKER;
 		}
+		else if( !token.Icmp( "no_shakes" ) )
+		{
+			parms.shakes = 0.0f;
+		}
 		// plain
 		else if( !token.Icmp( "plain" ) )
 		{

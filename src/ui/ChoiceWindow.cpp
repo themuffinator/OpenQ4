@@ -344,7 +344,13 @@ void idChoiceWindow::UpdateChoicesAndVals( void ) {
 			}
 		}
 		if ( choices.Num() != values.Num() ) {
-			common->Warning( "idChoiceWindow:: gui '%s' window '%s' has value count unequal to choices count", gui->GetSourceFile(), name.c_str());
+			if ( values.Num() < choices.Num() ) {
+				for ( int i = values.Num(); i < choices.Num(); i++ ) {
+					values.Append( choices[i] );
+				}
+			} else if ( values.Num() > choices.Num() ) {
+				values.SetNum( choices.Num(), false );
+			}
 		}
 		latchedVals = choiceVals.c_str();
 	}

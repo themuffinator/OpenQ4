@@ -30,6 +30,13 @@ If you have questions concerning this license or the applicable additional terms
 #include "snd_local.h"
 
 idCVar s_noSound( "s_noSound", "0", CVAR_BOOL, "returns NULL for all sounds loaded and does not update the sound rendering" );
+idCVar s_volume( "s_volume", "1.0", CVAR_ARCHIVE | CVAR_FLOAT, "master volume (0-1)" );
+idCVar s_musicVolume( "s_musicVolume", "1.0", CVAR_ARCHIVE | CVAR_FLOAT, "music volume (0-1)" );
+idCVar s_speakerFraction( "s_speakerFraction", "0.5", CVAR_ARCHIVE | CVAR_FLOAT, "center channel mix fraction" );
+idCVar s_useOpenAL( "s_useOpenAL", "1", CVAR_ARCHIVE | CVAR_BOOL, "use OpenAL audio backend" );
+idCVar s_deviceName( "s_deviceName", "", CVAR_ARCHIVE, "OpenAL device name override" );
+idCVar s_useEAXReverb( "s_useEAXReverb", "1", CVAR_ARCHIVE | CVAR_BOOL, "use EAX reverb if available" );
+idCVar s_numberOfSpeakers( "s_numberOfSpeakers", "6", CVAR_ARCHIVE | CVAR_INTEGER, "number of speakers (2 or 6)" );
 
 #ifdef ID_RETAIL
 	idCVar s_useCompression( "s_useCompression", "1", CVAR_BOOL, "Use compressed sound files (mp3/xma)" );

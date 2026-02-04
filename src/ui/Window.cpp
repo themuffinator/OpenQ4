@@ -110,6 +110,7 @@ const idRegEntry idWindow::RegisterVars[] = {
 	{ "backgroundHover", idRegister::STRING },
 	{ "backgroundFocus", idRegister::STRING },
 	{ "backgroundLine", idRegister::STRING },
+	{ "backgroundGreyed", idRegister::STRING },
 	{ "itemheight", idRegister::INT },
 };
 
@@ -2011,6 +2012,9 @@ idWinVar *idWindow::GetWinVarByName(const char *_name, bool fixup, drawWin_t** o
 	if (idStr::Icmp(_name, "backgroundLine") == 0) {
 		retVar = &backgroundLine;
 	}
+	if (idStr::Icmp(_name, "backgroundGreyed") == 0) {
+		retVar = &backgroundGreyed;
+	}
 
 	if (idStr::Icmp(_name, "tabTextScales") == 0) {
 		retVar = &tabTextScales;
@@ -2292,44 +2296,59 @@ bool idWindow::ParseRegEntry(const char *name, idParser *src) {
 
 	// not predefined so just read the next token and add it to the state
 	idToken tok;
-	idVec4 v;	
 	idWinInt *vari;
 	idWinFloat *varf;
 	idWinStr *vars;
-	if (src->ReadToken(&tok)) {
-		if (var) {
-			var->Set(tok);
-			return true;
-		}
-		switch (tok.type) {
-			case TT_NUMBER : 
-				if (tok.subtype & TT_INTEGER) {
-					vari = new idWinInt();
-					*vari = atoi(tok);
-					vari->SetName(work);
-					definedVars.Append(vari);
-				} else if (tok.subtype & TT_FLOAT) {
-					varf = new idWinFloat();
-					*varf = atof(tok);
-					varf->SetName(work);
-					definedVars.Append(varf);
-				} else {
-					vars = new idWinStr();
-					*vars = tok;
-					vars->SetName(work);
-					definedVars.Append(vars);
-				}
-				break;
-			default :
+	if (!src->ReadToken(&tok)) {
+		common->Warning("ParseRegEntry: No value for %s - file %s line %d\n", name, src->GetFileName(), src->GetLineNum());
+		return true;
+	}
+
+	if (var) {
+		var->Set(tok);
+		return true;
+	}
+
+	// consume the rest of the line to avoid mis-parsing multi-value entries
+	idStr remainder;
+	src->ParseRestOfLine(remainder);
+	if (remainder.Length()) {
+		idStr combined = tok;
+		combined += " ";
+		combined += remainder;
+		vars = new idWinStr();
+		*vars = combined;
+		vars->SetName(work);
+		definedVars.Append(vars);
+		return true;
+	}
+
+	switch (tok.type) {
+		case TT_NUMBER : 
+			if (tok.subtype & TT_INTEGER) {
+				vari = new idWinInt();
+				*vari = atoi(tok);
+				vari->SetName(work);
+				definedVars.Append(vari);
+			} else if (tok.subtype & TT_FLOAT) {
+				varf = new idWinFloat();
+				*varf = atof(tok);
+				varf->SetName(work);
+				definedVars.Append(varf);
+			} else {
 				vars = new idWinStr();
 				*vars = tok;
 				vars->SetName(work);
 				definedVars.Append(vars);
-				break;
-		}
+			}
+			break;
+		default :
+			vars = new idWinStr();
+			*vars = tok;
+			vars->SetName(work);
+			definedVars.Append(vars);
+			break;
 	}
-//	src->UnreadToken(&tok);
-	common->Warning("ParseRegEntry: No value for %s - file %s line %d\n", name, src->GetFileName(), src->GetLineNum());
 	return true;
 }
 

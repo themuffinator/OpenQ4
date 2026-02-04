@@ -912,8 +912,18 @@ int idDeclFile::LoadAndParse() {
 		if ( newDecl ) {
 			// update the existing copy
 			if ( newDecl->sourceFile != this || newDecl->redefinedInReload ) {
-				src.Warning( "%s '%s' previously defined at %s:%i", declManagerLocal.GetDeclNameFromType( identifiedType ),
-								name.c_str(), newDecl->sourceFile->fileName.c_str(), newDecl->sourceLine );
+				bool suppressWarning = false;
+				if ( newDecl->textSource != NULL && newDecl->textLength == size ) {
+					const char *newText = usedGuideDefinition ? guideDefinition.c_str() : ( finalPreprocessedBuffer.c_str() + startMarker );
+					const int newChecksum = MD5_BlockChecksum( newText, size );
+					if ( newChecksum == newDecl->checksum ) {
+						suppressWarning = true;
+					}
+				}
+				if ( !suppressWarning ) {
+					src.Warning( "%s '%s' previously defined at %s:%i", declManagerLocal.GetDeclNameFromType( identifiedType ),
+									name.c_str(), newDecl->sourceFile->fileName.c_str(), newDecl->sourceLine );
+				}
 				continue;
 			}
 			if ( newDecl->declState != DS_UNPARSED ) {

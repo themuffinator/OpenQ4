@@ -275,7 +275,9 @@ void Script_NamedEvent(idWindow* window, idList<idGSWinVar>* src) {
 		}
 		else
 		{
-			common->Warning("GUI: %s: unknown window %s for named event %s\n", window->GetName(), windowName.c_str(), varName.c_str());
+			if (idWindow::gui_debug.GetBool()) {
+				common->Warning("GUI: %s: unknown window %s for named event %s\n", window->GetName(), windowName.c_str(), varName.c_str());
+			}
 		}
 	}
 }

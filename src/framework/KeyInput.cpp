@@ -57,8 +57,13 @@ keyname_t keynames[] =
 
 	{"ALT",				K_ALT,				"#str_07027"},
 	{"RIGHTALT",		K_RIGHT_ALT,		"#str_07027"},
+	{"LEFTALT",			K_ALT,				"#str_07027"},
 	{"CTRL",			K_CTRL,				"#str_07028"},
+	{"LEFTCTRL",		K_CTRL,				"#str_07028"},
+	{"RIGHTCTRL",		K_CTRL,				"#str_07028"},
 	{"SHIFT",			K_SHIFT,			"#str_07029"},
+	{"LEFTSHIFT",		K_SHIFT,			"#str_07029"},
+	{"RIGHTSHIFT",		K_SHIFT,			"#str_07029"},
 
 	{"LWIN", 			K_LWIN, 			"#str_07030"},
 	{"RWIN", 			K_RWIN, 			"#str_07031"},
