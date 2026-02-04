@@ -7,9 +7,9 @@ media = '../../../../../media-sdk'
 media = os.path.abspath( media )
 
 try:
-    shutil.rmtree( 'Doom3_SDK' )
+    shutil.rmtree( 'OpenQ4_SDK' )
 except:
-    print 'Could not remove Doom3_SDK'
+    print 'Could not remove OpenQ4_SDK'
     pass
 
 # copy source from list
@@ -18,7 +18,7 @@ l = [ s[:-1] for s in f.readlines() ]
 f.close()
 for p in l:
     sp = os.path.join( '../../..', p )
-    dp = os.path.join( 'Doom3_SDK/src', p )
+    dp = os.path.join( 'OpenQ4_SDK/src', p )
     try:
         os.makedirs( os.path.dirname( dp ) )
     except:
@@ -32,7 +32,7 @@ for root, dirs, files in os.walk( media ):
         dirs.remove( '.svn' )
     for f in files:
         sp = os.path.join( root, f )
-        dp = os.path.join( 'Doom3_SDK', sp[ len( media ) + 1: ] )
+        dp = os.path.join( 'OpenQ4_SDK', sp[ len( media ) + 1: ] )
         try:
             os.makedirs( os.path.dirname( dp ) )
         except:
@@ -46,7 +46,7 @@ def makewritable( path ):
             os.chmod( os.path.join( root, f ), stat.S_IWRITE )
 
 # cleanup '.svn'
-for root, dirs, files in os.walk( 'Doom3_SDK' ):
+for root, dirs, files in os.walk( 'OpenQ4_SDK' ):
     if '.svn' in dirs:
         print 'remove ' + os.path.join( root, '.svn' )
         # SVN sets readonly on some files, which causes rmtree failure on win32

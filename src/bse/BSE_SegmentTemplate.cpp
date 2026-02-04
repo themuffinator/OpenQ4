@@ -477,7 +477,7 @@ bool rvSegmentTemplate::Parse(rvDeclEffect* effect, int segmentType, idParser* l
 			{
 				lexer->ReadToken(&token);
 				mSoundShader = (idSoundShader*)declManager->FindSound(token);
-				// jmarshall: Doom 3's sound engine didn't expose gettimelength!
+				// jmarshall: legacy sound engine didn't expose gettimelength!
 								//float effecta = mSoundShader->(double)v11->GetTimeLength((idSoundShader*)v11) * 0.001;
 				float effecta = 1.0f;
 				// jmarshall end

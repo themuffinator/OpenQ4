@@ -1,5 +1,5 @@
 // RAVEN BEGIN
-// bdube: note that this file is no longer merged with Doom3 updates
+// bdube: note that this file is no longer merged with legacy engine updates
 //
 // MERGE_DATE 06/02/2004
 

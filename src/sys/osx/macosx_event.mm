@@ -59,7 +59,7 @@ static CGRect	inputRect;
 static const void *sKLuchrData	= NULL;
 static const void *sKLKCHRData	= NULL;
 
-int	vkeyToDoom3Key[256] = {
+int	vkeyToOpenQ4Key[256] = {
 	/*0x00*/	'a', 's', 'd', 'f', 'h', 'g', 'z', 'x',
 	/*0x08*/	'c', 'v', '?', 'b', 'q', 'w', 'e', 'r',
 	/*0x10*/	'y', 't', '1', '2', '3', '4', '6', '5',
@@ -78,12 +78,12 @@ int	vkeyToDoom3Key[256] = {
 	/*0x78*/	K_F2, K_PGDN, K_F1, K_LEFTARROW, K_RIGHTARROW, K_DOWNARROW, K_UPARROW, K_POWER
 };
 
-int	vkeyToDoom3Key_French[256] = {
+int	vkeyToOpenQ4Key_French[256] = {
 	/*0x00*/	'q',	's',		'd',	'f',		'h',		'g',		'w',		'x',
 	/*0x08*/	'c',	'v',		'?',	'b',		'a',		'z',		'e',		'r',
 	/*0x10*/	'y',	't',		'1',	'2',		'3',		'4',		'6',		'5',
 	/*0x18*/	'-',	'9',		'7',	')',		'8',		'0',		'$',		'o',
-	/*0x20*/	'u',	'^',		'i',	'p',		K_ENTER,	'l',		'j',		'ù',
+	/*0x20*/	'u',	'^',		'i',	'p',		K_ENTER,	'l',		'j',		'ï¿½',
 	/*0x28*/	'k',	'm',		0x60,	';',			'=',	'n',		',',			':',
 	/*0x30*/	K_TAB, K_SPACE, '<', K_BACKSPACE, '?', K_ESCAPE, '?', K_COMMAND,
 	/*0x38*/	K_SHIFT, K_CAPSLOCK, K_ALT, K_CTRL, '?', '?', '?', '?',
@@ -97,11 +97,11 @@ int	vkeyToDoom3Key_French[256] = {
 	/*0x78*/	K_F2, K_PGDN, K_F1, K_LEFTARROW, K_RIGHTARROW, K_DOWNARROW, K_UPARROW, K_POWER
 };
 
-int	vkeyToDoom3Key_German[256] = {
+int	vkeyToOpenQ4Key_German[256] = {
 	/*0x00*/	'a',	's',		'd',	'f',		'h',		'g',		'y',		'x',
 	/*0x08*/	'c',	'v',		'?',	'b',		'q',		'w',		'e',		'r',
 	/*0x10*/	'z',	't',		'1',	'2',		'3',		'4',		'6',		'5',
-	/*0x18*/	'«',	'9',		'7',	'-',		'8',		'0',		'+',		'o',
+	/*0x18*/	'ï¿½',	'9',		'7',	'-',		'8',		'0',		'+',		'o',
 	/*0x20*/	'u',	'[',		'i',	'p',		K_ENTER,	'l',		'j',		'\'',
 	/*0x28*/	'k',	';',		'#',	',',		'-',		'n',		'm',		'.',
 	/*0x30*/	K_TAB, K_SPACE, '`', K_BACKSPACE, '?', K_ESCAPE, '?', K_COMMAND,
@@ -116,7 +116,7 @@ int	vkeyToDoom3Key_German[256] = {
 	/*0x78*/	K_F2, K_PGDN, K_F1, K_LEFTARROW, K_RIGHTARROW, K_DOWNARROW, K_UPARROW, K_POWER
 };
 
-static const int *vkeyTable = vkeyToDoom3Key;	
+static const int *vkeyTable = vkeyToOpenQ4Key;	
 
 /*
  ===========
@@ -132,11 +132,11 @@ void Sys_InitScanTable( void ) {
 	}
 
 	if ( lang.Icmp( "english" ) == 0 ) {
-		vkeyTable = vkeyToDoom3Key;
+		vkeyTable = vkeyToOpenQ4Key;
 	} else if ( lang.Icmp( "french" ) == 0 ) {
-		vkeyTable = vkeyToDoom3Key_French;
+		vkeyTable = vkeyToOpenQ4Key_French;
 	} else if ( lang.Icmp( "german" ) == 0 ) {
-		vkeyTable = vkeyToDoom3Key_German;
+		vkeyTable = vkeyToOpenQ4Key_German;
 	}
 
 	if ( KLGetCurrentKeyboardLayout( &kbLayout )  == 0 ) {
@@ -531,7 +531,7 @@ unsigned char Sys_MapCharForKey( int key ) {
  ===============
  */
 unsigned char Sys_GetConsoleKey( bool shifted ) {
-	if ( vkeyTable == vkeyToDoom3Key_French ) {
+	if ( vkeyTable == vkeyToOpenQ4Key_French ) {
 		return shifted ? '>' : '<';
 	}
 	else {

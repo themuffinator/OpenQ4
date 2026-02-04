@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 # set the project name
-project(Quake4)
+project(OpenQ4)
 
 set(Q4GAME
 	game/Actor.cpp 
@@ -232,6 +232,10 @@ set(QUAKE4_SOURCES
 		${Q4GAME_WEAPON_SOURCES}
 	)
 
+if(WIN32)
+	list(APPEND QUAKE4_SOURCES sys/win32/rc/OpenQ4Version.rc)
+endif()
+
 
 add_definitions(-DUSE_OPENAL)
 
@@ -242,8 +246,8 @@ add_compile_options(-Wno-multichar)
 endif()
 
 # add the executable
-add_executable(Quake4 ${QUAKE4_SOURCES})
-target_precompile_headers(Quake4 PRIVATE idLib/precompiled.h)
-target_link_libraries(Quake4 opengl32.lib Dbghelp.lib Iphlpapi.lib dinput8.lib Winmm.lib dxguid.lib ws2_32.lib ${PROJECT_SOURCE_DIR}/external/openal-soft/lib/win64/openal32.lib)
-target_include_directories(Quake4 PRIVATE "external/openal-soft/include")
-set_target_properties(Quake4 PROPERTIES OUTPUT_NAME "Quake4" LINK_FLAGS "/STACK:16777216,16777216 /SUBSYSTEM:WINDOWS /PDB:\"Quake4.pdb\"")
+add_executable(OpenQ4 ${QUAKE4_SOURCES})
+target_precompile_headers(OpenQ4 PRIVATE idLib/precompiled.h)
+target_link_libraries(OpenQ4 opengl32.lib Dbghelp.lib Iphlpapi.lib dinput8.lib Winmm.lib dxguid.lib ws2_32.lib ${PROJECT_SOURCE_DIR}/external/openal-soft/lib/win64/openal32.lib)
+target_include_directories(OpenQ4 PRIVATE "external/openal-soft/include")
+set_target_properties(OpenQ4 PROPERTIES OUTPUT_NAME "OpenQ4" LINK_FLAGS "/STACK:16777216,16777216 /SUBSYSTEM:WINDOWS /PDB:\"OpenQ4.pdb\"")

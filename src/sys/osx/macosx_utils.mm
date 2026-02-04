@@ -34,7 +34,7 @@ If you have questions concerning this license or the applicable additional terms
 #import <mach/vm_map.h>
 
 
-#define CD_MOUNT_NAME "DOOM"
+#define CD_MOUNT_NAME "OpenQ4"
 
 #include "macosx_local.h"
 #include "macosx_sys.h"
@@ -44,7 +44,7 @@ If you have questions concerning this license or the applicable additional terms
 
 const char *macosx_scanForLibraryDirectory(void)
 {
-    return "/Library/DOOM";
+    return "/Library/OpenQ4";
 }
 
 // EEEK!

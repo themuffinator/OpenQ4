@@ -1,0 +1,1561 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="E:\Repositories\OpenQ4\build_debug\CMakeFiles\OpenQ4.dir\cmake_pch.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\build_debug\CMakeFiles\OpenQ4.dir\cmake_pch.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\aas\AASFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\aas\AASFileManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\aas\AASFile_optimize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\aas\AASFile_sample.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\bse\BSE_Effect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\bse\BSE_EffectTemplate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\bse\BSE_Envelopes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\bse\BSE_Manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\bse\BSE_ParseParticle2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\bse\BSE_Segment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\bse\BSE_SegmentTemplate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\cm\CollisionModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\cm\CollisionModel_contacts.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\cm\CollisionModel_contents.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\cm\CollisionModel_debug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\cm\CollisionModel_files.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\cm\CollisionModel_load.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\cm\CollisionModel_rotate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\cm\CollisionModel_trace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\cm\CollisionModel_translate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\CVarSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\CmdSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\Common.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\Compressor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\Console.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\DeclAF.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\DeclEntityDef.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\DeclLipSync.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\DeclManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\DeclMatType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\DeclPlayback.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\DeclPlayerModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\DeclSkin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\DeclTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\DemoFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\EditField.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\EventLoop.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\File.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\FileSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\KeyInput.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\Session.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\Session_menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\Unzip.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\UsercmdGen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\async\AsyncClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\async\AsyncNetwork.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\async\AsyncServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\async\MsgChannel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\async\NetworkSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\framework\async\ServerScan.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\Base64.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\BitMsg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\CmdArgs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\Dict.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\Heap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\LangDict.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\Lexer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\LexerFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\Lib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\Parser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\Str.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\TextCompiler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\Timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\TimingCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\Token.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\mapfile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\precompiled.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\rvHeap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\rvHeapArena.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\rvMemSys.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\bv\Bounds.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\bv\Box.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\bv\Frustum.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\bv\Sphere.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\containers\HashIndex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\geometry\JointTransform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\geometry\Surface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\geometry\Surface_Patch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\geometry\Surface_Polytope.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\geometry\Surface_SweptSpline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\geometry\TraceModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\geometry\Winding.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\geometry\Winding2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\hashing\CRC16.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\hashing\CRC32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\hashing\CRC8.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\hashing\Honeyman.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\hashing\MD4.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\hashing\MD5.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\math\Angles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\math\Complex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\math\FFT.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\math\Lcp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\math\Math.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\math\Matrix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\math\Ode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\math\Plane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\math\Pluecker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\math\Polynomial.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\math\Quat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\math\Radians.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\math\Rotation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\math\Simd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\math\Simd_generic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\idlib\math\Vector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\BinaryImage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\Cinematic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\GuiModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\ImageManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\Image_files.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\Image_intrinsic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\Image_load.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\Image_process.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\Image_program.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\Interaction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\Material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\ModelDecal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\ModelManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\ModelOverlay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\Model_ase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\Model_beam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\Model_liquid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\Model_lwo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\Model_ma.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\Model_md3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\Model_md5.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\Model_prt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\Model_sprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\RenderEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\RenderSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\RenderSystem_init.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\RenderWorld.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\RenderWorld_demo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\RenderWorld_load.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\RenderWorld_portals.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\VertexCache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\cg_explicit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\draw_arb2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\draw_common.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\draw_exp_stub.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\tr_backend.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\tr_deform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\tr_font.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\tr_guisurf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\tr_light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\tr_lightrun.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\tr_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\tr_orderIndexes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\tr_polytope.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\tr_render.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\tr_rendertools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\tr_shadowbounds.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\tr_stencilshadow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\tr_subview.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\tr_trace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\tr_trisurf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\tr_turboshadow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\color\ColorSpace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\DXT\DXTDecoder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\DXT\DXTEncoder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jcapimin.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jcapistd.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jccoefct.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jccolor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jcdctmgr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jchuff.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jcinit.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jcmainct.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jcmarker.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jcmaster.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jcomapi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jcparam.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jcphuff.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jcprepct.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jcsample.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jctrans.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jdapimin.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jdapistd.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jdatadst.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jdatasrc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jdcoefct.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jdcolor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jddctmgr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jdhuff.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jdinput.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jdmainct.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jdmarker.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jdmaster.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jdmerge.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jdphuff.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jdpostct.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jdsample.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jdtrans.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jerror.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jfdctflt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jfdctfst.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jfdctint.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jidctflt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jidctfst.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jidctint.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jidctred.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jload.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jmemansi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jmemdos.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jmemmgr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jmemname.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jmemnobs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jpegtran.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jquant1.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jquant2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\jpeg-6\jutils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\OpenGL\gl_Image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\renderer\OpenGL\gl_RenderTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\tools\compilers\dmap\dmap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\tools\compilers\dmap\facebsp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\tools\compilers\dmap\gldraw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\tools\compilers\dmap\glfile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\tools\compilers\dmap\leakfile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\tools\compilers\dmap\map.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\tools\compilers\dmap\optimize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\tools\compilers\dmap\optimize_gcc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\tools\compilers\dmap\output.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\tools\compilers\dmap\portals.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\tools\compilers\dmap\shadowopt3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\tools\compilers\dmap\tritjunction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\tools\compilers\dmap\tritools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\tools\compilers\dmap\ubrush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\tools\compilers\dmap\usurface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sound\SoundVoice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sound\WaveFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sound\snd_emitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sound\snd_shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sound\snd_system.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sound\snd_world.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sound\openal\AL_SoundHardware.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sound\openal\AL_SoundSample.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sound\openal\AL_SoundVoice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sys\sys_local.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sys\win32\win_cpu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sys\win32\win_gamma.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sys\win32\win_glimp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sys\win32\win_input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sys\win32\win_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sys\win32\win_net.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sys\win32\win_qgl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sys\win32\win_shared.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sys\win32\win_snd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sys\win32\win_syscon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sys\win32\win_taskkeyhook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\sys\win32\win_wndproc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\ui\BindWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\ui\ChoiceWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\ui\DeviceContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\ui\EditWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\ui\FieldWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\ui\GameBearShootWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\ui\GameBustOutWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\ui\GameSSDWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\ui\GameWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\ui\GuiScript.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\ui\ListGUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\ui\ListWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\ui\MarkerWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\ui\RegExp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\ui\RenderWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\ui\SimpleWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\ui\SliderWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\ui\UserInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\ui\Window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\ui\Winvar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\external\glew\glew.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Actor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\AF.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\AFEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\BrittleFracture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Effect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\FreeView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\GameEdit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Game_Debug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Game_local.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Game_Log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Game_network.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Game_render.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Healing_Station.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Icon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\IconManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\IK.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Instance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Item.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\LipSync.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Misc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Moveable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Mover.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\MultiplayerGame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Playback.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\PlayerView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Player_Cheats.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Player_States.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Projectile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Pvs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\SecurityCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Sound.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\spawner.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\SplineMover.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Target.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\TramGate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Trigger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\Weapon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\WorldSpawn.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\AAS.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\AASCallback_AvoidLocation.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\AASCallback_FindCoverArea.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\AAS_Find.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\AAS_debug.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\AAS_pathing.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\AAS_routing.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\AAS_tactical.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\AI.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\AI_Actions.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\AI_Announcements.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\AI_Debug.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\AI_Manager.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\AI_Medic.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\AI_Move.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\AI_States.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\AI_Tactical.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\AI_Util.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\AI_events.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\AI_pathing.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_Berserker.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_BossBuddy.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_BossMakron.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_ConvoyGround.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_ConvoyHover.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_FailedTransfer.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_Fatty.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_Gladiator.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_Grunt.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_Gunner.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_Harvester.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_HarvesterDispersal.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_HeavyHoverTank.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_IronMaiden.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_LightTank.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_NetworkGuardian.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_RepairBot.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_Scientist.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_Sentry.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_SlimyTransfer.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_StreamProtector.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_StroggFlyer.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_StroggHover.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_StroggMarine.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_TeleportDropper.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_Turret.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\Monster_TurretFlying.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\ObstacleAvoidance.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\ai\VehicleAI.cpp">
+      <Filter>game-quake4\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\anim\Anim.cpp">
+      <Filter>game-quake4\anim</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\anim\Anim_Blend.cpp">
+      <Filter>game-quake4\anim</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\anim\Anim_Import.cpp">
+      <Filter>game-quake4\anim</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\anim\Anim_Testmodel.cpp">
+      <Filter>game-quake4\anim</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\bots\Bot.cpp">
+      <Filter>game-quake4\bots</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\bots\BotAI.cpp">
+      <Filter>game-quake4\bots</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\bots\BotAI_Battle_Attacked.cpp">
+      <Filter>game-quake4\bots</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\bots\BotAI_Battle_Chase.cpp">
+      <Filter>game-quake4\bots</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\bots\BotAI_Battle_Fight.cpp">
+      <Filter>game-quake4\bots</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\bots\BotAI_Battle_NBG.cpp">
+      <Filter>game-quake4\bots</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\bots\BotAI_Battle_Retreat.cpp">
+      <Filter>game-quake4\bots</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\bots\BotAI_SeekLTG.cpp">
+      <Filter>game-quake4\bots</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\bots\BotAI_Seek_NBG.cpp">
+      <Filter>game-quake4\bots</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\bots\BotAI_respawn.cpp">
+      <Filter>game-quake4\bots</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\bots\Bot_Input.cpp">
+      <Filter>game-quake4\bots</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\bots\Bot_char.cpp">
+      <Filter>game-quake4\bots</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\bots\Bot_chat.cpp">
+      <Filter>game-quake4\bots</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\bots\Bot_goal.cpp">
+      <Filter>game-quake4\bots</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\bots\Bot_weapons.cpp">
+      <Filter>game-quake4\bots</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\bots\Bot_weights.cpp">
+      <Filter>game-quake4\bots</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\client\ClientAFEntity.cpp">
+      <Filter>game-quake4\client</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\client\ClientEffect.cpp">
+      <Filter>game-quake4\client</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\client\ClientEntity.cpp">
+      <Filter>game-quake4\client</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\client\ClientModel.cpp">
+      <Filter>game-quake4\client</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\client\ClientMoveable.cpp">
+      <Filter>game-quake4\client</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\gamesys\Class.cpp">
+      <Filter>game-quake4\gamesys</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\gamesys\DebugGraph.cpp">
+      <Filter>game-quake4\gamesys</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\gamesys\Event.cpp">
+      <Filter>game-quake4\gamesys</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\gamesys\SaveGame.cpp">
+      <Filter>game-quake4\gamesys</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\gamesys\State.cpp">
+      <Filter>game-quake4\gamesys</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\gamesys\SysCmds.cpp">
+      <Filter>game-quake4\gamesys</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\gamesys\SysCvar.cpp">
+      <Filter>game-quake4\gamesys</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\mp\Buying.cpp">
+      <Filter>game-quake4\mp</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\mp\CTF.cpp">
+      <Filter>game-quake4\mp</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\mp\GameState.cpp">
+      <Filter>game-quake4\mp</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\mp\Tourney.cpp">
+      <Filter>game-quake4\mp</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\mp\VoiceComms.cpp">
+      <Filter>game-quake4\mp</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\mp\stats\StatEvent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\mp\stats\StatManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\mp\stats\StatWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\physics\Clip.cpp">
+      <Filter>game-quake4\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\physics\Force.cpp">
+      <Filter>game-quake4\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\physics\Force_Constant.cpp">
+      <Filter>game-quake4\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\physics\Force_Drag.cpp">
+      <Filter>game-quake4\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\physics\Force_Field.cpp">
+      <Filter>game-quake4\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\physics\Force_Spring.cpp">
+      <Filter>game-quake4\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\physics\Physics.cpp">
+      <Filter>game-quake4\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\physics\Physics_AF.cpp">
+      <Filter>game-quake4\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\physics\Physics_Actor.cpp">
+      <Filter>game-quake4\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\physics\Physics_Base.cpp">
+      <Filter>game-quake4\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\physics\Physics_Monster.cpp">
+      <Filter>game-quake4\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\physics\Physics_Parametric.cpp">
+      <Filter>game-quake4\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\physics\Physics_Particle.cpp">
+      <Filter>game-quake4\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\physics\Physics_Player.cpp">
+      <Filter>game-quake4\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\physics\Physics_RigidBody.cpp">
+      <Filter>game-quake4\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\physics\Physics_Static.cpp">
+      <Filter>game-quake4\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\physics\Physics_StaticMulti.cpp">
+      <Filter>game-quake4\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\physics\Physics_VehicleMonster.cpp">
+      <Filter>game-quake4\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\physics\Push.cpp">
+      <Filter>game-quake4\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\script\ScriptFuncUtility.cpp">
+      <Filter>game-quake4\script</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\script\Script_Compiler.cpp">
+      <Filter>game-quake4\script</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\script\Script_Interpreter.cpp">
+      <Filter>game-quake4\script</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\script\Script_Program.cpp">
+      <Filter>game-quake4\script</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\script\Script_Thread.cpp">
+      <Filter>game-quake4\script</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\vehicle\Vehicle.cpp">
+      <Filter>game-quake4\vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\vehicle\VehicleAnimated.cpp">
+      <Filter>game-quake4\vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\vehicle\VehicleController.cpp">
+      <Filter>game-quake4\vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\vehicle\VehicleDriver.cpp">
+      <Filter>game-quake4\vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\vehicle\VehicleMonster.cpp">
+      <Filter>game-quake4\vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\vehicle\VehicleParts.cpp">
+      <Filter>game-quake4\vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\vehicle\VehiclePosition.cpp">
+      <Filter>game-quake4\vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\vehicle\VehicleRigid.cpp">
+      <Filter>game-quake4\vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\vehicle\VehicleSpline.cpp">
+      <Filter>game-quake4\vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\vehicle\VehicleStatic.cpp">
+      <Filter>game-quake4\vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\vehicle\Vehicle_DropPod.cpp">
+      <Filter>game-quake4\vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\vehicle\Vehicle_Walker.cpp">
+      <Filter>game-quake4\vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\weapon\WeaponBlaster.cpp">
+      <Filter>game-quake4\weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\weapon\WeaponDarkMatterGun.cpp">
+      <Filter>game-quake4\weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\weapon\WeaponGauntlet.cpp">
+      <Filter>game-quake4\weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\weapon\WeaponGrenadeLauncher.cpp">
+      <Filter>game-quake4\weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\weapon\WeaponHyperblaster.cpp">
+      <Filter>game-quake4\weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\weapon\WeaponLightningGun.cpp">
+      <Filter>game-quake4\weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\weapon\WeaponMachinegun.cpp">
+      <Filter>game-quake4\weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\weapon\WeaponNailgun.cpp">
+      <Filter>game-quake4\weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\weapon\WeaponNapalmGun.cpp">
+      <Filter>game-quake4\weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\weapon\WeaponRailgun.cpp">
+      <Filter>game-quake4\weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\weapon\WeaponRocketLauncher.cpp">
+      <Filter>game-quake4\weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Repositories\OpenQ4\src\game\weapon\WeaponShotgun.cpp">
+      <Filter>game-quake4\weapon</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Actor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\AF.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\AFEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\BrittleFracture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Effect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\FreeView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\GameEdit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Game_Debug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Game_local.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Game_Log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Healing_Station.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Icon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\IconManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\IK.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Instance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Item.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\LipSync.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Misc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Moveable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Mover.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\MultiplayerGame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\PlayerView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Projectile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Pvs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\SecurityCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Sound.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\spawner.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\SplineMover.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Target.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\TramGate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Trigger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\Weapon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\src\game\WorldSpawn.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\build_debug\CMakeFiles\OpenQ4.dir\Debug\cmake_pch.h">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\build_debug\CMakeFiles\OpenQ4.dir\Debug\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\build_debug\CMakeFiles\OpenQ4.dir\Release\cmake_pch.h">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\build_debug\CMakeFiles\OpenQ4.dir\Release\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\build_debug\CMakeFiles\OpenQ4.dir\MinSizeRel\cmake_pch.h">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\build_debug\CMakeFiles\OpenQ4.dir\MinSizeRel\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\build_debug\CMakeFiles\OpenQ4.dir\RelWithDebInfo\cmake_pch.h">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repositories\OpenQ4\build_debug\CMakeFiles\OpenQ4.dir\RelWithDebInfo\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="E:\Repositories\OpenQ4\src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="E:\Repositories\OpenQ4\src\game\Game.def">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="E:\Repositories\OpenQ4\src\sys\win32\rc\OpenQ4Version.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{81513A7E-33E8-3DEC-B8C3-25C7131053A3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Precompile Header File">
+      <UniqueIdentifier>{366C6BE9-67C5-3921-9D7B-B706299454A9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{5D53D030-F08D-3502-897E-9257C50471D7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game-quake4">
+      <UniqueIdentifier>{874E46B1-443E-363D-BDEE-EF034237C774}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game-quake4\ai">
+      <UniqueIdentifier>{ED017F16-6045-33EA-A164-488F61F38216}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game-quake4\anim">
+      <UniqueIdentifier>{5BB43C4E-2253-35CA-AC6F-FB8BFC3F00EA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game-quake4\bots">
+      <UniqueIdentifier>{9B500BE6-4B78-398D-9B64-33F39F0BF749}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game-quake4\client">
+      <UniqueIdentifier>{4ED5DFD5-55F6-35DE-A262-C890864C245C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game-quake4\gamesys">
+      <UniqueIdentifier>{D67F784E-9CB1-3123-BE19-BB1F17DFB666}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game-quake4\mp">
+      <UniqueIdentifier>{D6F88B23-B37F-3E1E-885B-35406F31BCC1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game-quake4\physics">
+      <UniqueIdentifier>{79F05C14-231F-330F-9F92-E4F31B05D40F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game-quake4\script">
+      <UniqueIdentifier>{4902945F-6C37-397A-8C0B-6CD375C809D8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game-quake4\vehicle">
+      <UniqueIdentifier>{0F3FA748-B3EE-3C5D-A19D-0B449635411D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game-quake4\weapon">
+      <UniqueIdentifier>{2CBA0685-E250-36CC-A32C-74D06085F4DC}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

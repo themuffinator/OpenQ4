@@ -1,5 +1,5 @@
 // RAVEN BEGIN
-// ddynerman: note that this file is no longer merged with Doom3 updates
+// ddynerman: note that this file is no longer merged with legacy engine updates
 //
 // MERGE_DATE 09/30/2004
 

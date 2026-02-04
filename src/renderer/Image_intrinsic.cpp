@@ -647,8 +647,8 @@ void idImageManager::CreateIntrinsicImages() {
 	// reassigned during stereo rendering
 	originalCurrentRenderImage = currentRenderImage;
 
-	loadingIconImage = ImageFromFile("textures/loadingicon2", TF_DEFAULT, TR_CLAMP, TD_DEFAULT, CF_2D );
-	hellLoadingIconImage = ImageFromFile("textures/loadingicon3", TF_DEFAULT, TR_CLAMP, TD_DEFAULT, CF_2D );
+	loadingIconImage = ImageFromFile("gfx/guis/loadscreens/generic", TF_DEFAULT, TR_CLAMP, TD_DEFAULT, CF_2D );
+	hellLoadingIconImage = ImageFromFile("gfx/guis/loadscreens/generic", TF_DEFAULT, TR_CLAMP, TD_DEFAULT, CF_2D );
 
 	//release_assert( loadingIconImage->referencedOutsideLevelLoad );
 	//release_assert( hellLoadingIconImage->referencedOutsideLevelLoad );

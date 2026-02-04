@@ -1074,7 +1074,7 @@ void idAsyncClient::ProcessChallengeResponseMessage( const netadr_t from, const 
 		idStr::Icmp( cvarSystem->GetCVarString( "fs_game" ), serverGame ) ) {
 		// bug #189 - if the server is running ROE and ROE is not locally installed, refuse to connect or we might crash
 		if ( !fileSystem->HasD3XP() && ( !idStr::Icmp( serverGameBase, "d3xp" ) || !idStr::Icmp( serverGame, "d3xp" ) ) ) {
-			common->Printf( "The server is running Doom3: Resurrection of Evil expansion pack. RoE is not installed on this client. Aborting the connection..\n" );
+			common->Printf( "The server is running an expansion pack that is not installed on this client. Aborting the connection..\n" );
 			cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "disconnect\n" );
 			return;
 		}

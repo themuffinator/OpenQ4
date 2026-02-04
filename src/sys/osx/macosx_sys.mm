@@ -165,7 +165,7 @@ void Sys_Error(const char *error, ...)
     va_end(argptr);
 
     NSLog(@"Sys_Error: %@", formattedString);
-    NSRunAlertPanel(@"DOOM Error", formattedString, nil, nil, nil);
+    NSRunAlertPanel(@"OpenQ4 Error", formattedString, nil, nil, nil);
 
     Sys_Quit();
 }

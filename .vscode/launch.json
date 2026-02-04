@@ -2,17 +2,30 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch Quake4Doom (Release)",
+      "name": "Launch OpenQ4 (Debug)",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "${workspaceFolder}\\build\\Release\\Quake4.exe",
+      "program": "${workspaceFolder}\\build_debug\\Debug\\OpenQ4.exe",
       "args": [
         "+set",
+        "logFile",
+        "2",
+        "+set",
+        "logFileName",
+        "logs/openq4.log",
+        "+set",
+        "r_fullscreen",
+        "0",
+        "+set",
         "fs_basepath",
-        "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Quake 4"
+        "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Quake 4",
+        "+set",
+        "fs_savepath",
+        "${env:USERPROFILE}\\Saved Games\\OpenQ4"
       ],
       "cwd": "${workspaceFolder}",
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "preLaunchTask": "Build OpenQ4 (Debug)"
     }
   ]
 }

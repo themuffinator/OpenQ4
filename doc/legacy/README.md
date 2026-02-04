@@ -1,13 +1,13 @@
-# Quake4Doom
-Quake 4 SDK integrated with Doom 3 GPL release
+# OpenQ4 (Legacy Notes)
+Quake 4 SDK integrated with the open-source engine base
 
 ![alt text](https://i.ibb.co/V3Mw0Rv/unknown-1.png)
 ![alt text](https://i.ibb.co/TTHTTkQ/image.png)
 
 INSTALLATION:
-	Sound: This project uses the RBDoom3BFG OpenAL audio code, which doesn't support OGG sound files. You need to convert them. Go to q4base/sound and open convert.bat. Fix up the paths, and then run convert.bat. This will convert all the ogg files to wav files(they need to be extracted first, don't forget zpak_english.pk4!). 
+	Sound: This project uses OpenAL audio code that doesn't support OGG sound files. You need to convert them. Go to q4base/sound and open convert.bat. Fix up the paths, and then run convert.bat. This will convert all the ogg files to wav files(they need to be extracted first, don't forget zpak_english.pk4!). 
 
-This project is a code integration of the Quake 4 SDK against the Doom 3 GPL codebase. 
+This project is a code integration of the Quake 4 SDK against an open-source engine base. 
 This means this includes new engine side features that were in the Quake 4 engine,
 and some adjustments to the Quake 4 SDK code.
 

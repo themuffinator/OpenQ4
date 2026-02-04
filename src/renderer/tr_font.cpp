@@ -32,6 +32,10 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "tr_local.h"
 
+static ID_INLINE int FloatToIntRound( float value ) {
+	return idMath::FtoiFast( value + ( value >= 0.0f ? 0.5f : -0.5f ) );
+}
+
 #ifdef BUILD_FREETYPE
 #include "../ft2/fterrors.h"
 #include "../ft2/ftsystem.h"
@@ -274,6 +278,7 @@ float readFloat( void ) {
 }
 
 #define QUAKE4_FONT_SIZE 20548
+#define QUAKE4_FONTDAT_SIZE 9236
 
 /*
 ============
@@ -330,7 +335,7 @@ bool idRenderSystemLocal::RegisterFont( const char *fontName, fontInfoEx_t &font
 		float glyphScale = 1.0f; 		// change the scale to be relative to 1 based on 72 dpi ( so dpi of 144 means a scale of .5 )
 		glyphScale *= 48.0f / pointSize;
 
-		idStr::snPrintf( name, sizeof(name), "%s/fontImage_%i.dat", fontName, pointSize );
+		idStr::snPrintf( name, sizeof(name), "%s_%i.fontdat", fontName, pointSize );
 
 		fontInfo_t *outFont;
 		if ( fontCount == 0 ) {
@@ -343,6 +348,66 @@ bool idRenderSystemLocal::RegisterFont( const char *fontName, fontInfoEx_t &font
 			outFont = &font.fontInfoLarge;
 		}
 
+		idStr::Copynz( outFont->name, name, sizeof( outFont->name ) );
+
+		len = fileSystem->ReadFile( name, NULL, &ftime );
+		if ( len == QUAKE4_FONTDAT_SIZE ) {
+			fileSystem->ReadFile( name, &faceData, &ftime );
+			const float *glyphData = reinterpret_cast<const float *>( faceData );
+			const int glyphStride = 9;
+
+			idStr fontMaterialName = va( "%s_%i", fontName, pointSize );
+			const idMaterial *fontMaterial = declManager->FindMaterial( fontMaterialName.c_str() );
+			fontMaterial->SetSort( SS_GUI );
+
+			int mw = 0;
+			int mh = 0;
+			for ( i = 0; i < GLYPHS_PER_FONT; i++ ) {
+				const float *g = glyphData + ( i * glyphStride );
+				const float imageWidth = g[0];
+				const float imageHeight = g[1];
+				const float xSkip = g[2];
+				const float top = g[4];
+
+				outFont->glyphs[i].imageWidth = FloatToIntRound( imageWidth );
+				outFont->glyphs[i].imageHeight = FloatToIntRound( imageHeight );
+				outFont->glyphs[i].xSkip = FloatToIntRound( xSkip );
+				outFont->glyphs[i].top = FloatToIntRound( top );
+				outFont->glyphs[i].height = outFont->glyphs[i].imageHeight;
+				outFont->glyphs[i].bottom = outFont->glyphs[i].top - outFont->glyphs[i].height;
+				outFont->glyphs[i].pitch = outFont->glyphs[i].imageWidth;
+				outFont->glyphs[i].s = g[5];
+				outFont->glyphs[i].t = g[6];
+				outFont->glyphs[i].s2 = g[7];
+				outFont->glyphs[i].t2 = g[8];
+				outFont->glyphs[i].glyph = fontMaterial;
+				idStr::Copynz( outFont->glyphs[i].shaderName, fontMaterialName.c_str(), sizeof( outFont->glyphs[i].shaderName ) );
+
+				if ( mh < outFont->glyphs[i].height ) {
+					mh = outFont->glyphs[i].height;
+				}
+				if ( mw < outFont->glyphs[i].xSkip ) {
+					mw = outFont->glyphs[i].xSkip;
+				}
+			}
+
+			outFont->glyphScale = glyphScale;
+
+			if ( fontCount == 0 ) {
+				font.maxWidthSmall = mw;
+				font.maxHeightSmall = mh;
+			} else if ( fontCount == 1 ) {
+				font.maxWidthMedium = mw;
+				font.maxHeightMedium = mh;
+			} else {
+				font.maxWidthLarge = mw;
+				font.maxHeightLarge = mh;
+			}
+			fileSystem->FreeFile( faceData );
+			continue;
+		}
+
+		idStr::snPrintf( name, sizeof(name), "%s/fontImage_%i.dat", fontName, pointSize );
 		idStr::Copynz( outFont->name, name, sizeof( outFont->name ) );
 
 		len = fileSystem->ReadFile( name, NULL, &ftime );

@@ -192,7 +192,7 @@ BEGIN
     LTEXT           "Anim Frames",IDC_STATIC,113,70,42,8
     LTEXT           "Anim Rate",IDC_STATIC,196,70,34,8
     LTEXT           "Offset",IDC_STATIC,13,281,22,8
-    GROUPBOX        "DOOM Stuff",IDC_STATIC,5,448,84,48,WS_TABSTOP
+    GROUPBOX        "OpenQ4 Stuff",IDC_STATIC,5,448,84,48,WS_TABSTOP
     LTEXT           "Trails",IDC_STATIC,227,274,18,8
     LTEXT           "Time",IDC_STATIC,228,289,16,8
     LTEXT           "In file: ",IDC_STATIC_INFILE,10,23,119,8
@@ -202,7 +202,7 @@ BEGIN
     PUSHBUTTON      "M",IDC_BUTTON_MUZZLE,43,462,11,12
     PUSHBUTTON      "F",IDC_BUTTON_FLIGHT,58,462,11,12
     PUSHBUTTON      "S",IDC_BUTTON_SELECTED,73,462,11,12
-    PUSHBUTTON      "Switch to DOOM",IDC_BUTTON_DOOM,12,480,63,12
+    PUSHBUTTON      "Switch to OpenQ4",IDC_BUTTON_DOOM,12,480,63,12
     PUSHBUTTON      "x-",IDC_BUTTON_XDN,152,467,13,11
     PUSHBUTTON      "x+",IDC_BUTTON_XUP,177,467,13,11
     PUSHBUTTON      "y+",IDC_BUTTON_YUP,165,455,13,11
@@ -304,7 +304,7 @@ BEGIN
     IDC_BUTTON_MUZZLE       "show the selected particle as muzzle smoke"
     IDC_BUTTON_FLIGHT       "show the selected particle as projectile flight smoke"
     IDC_BUTTON_SELECTED     "show the selected particle on the selected entity"
-    IDC_BUTTON_DOOM         "force focus to DOOM"
+    IDC_BUTTON_DOOM         "force focus to OpenQ4"
 END
 
 #endif    // English (U.S.) resources

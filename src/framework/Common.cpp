@@ -390,15 +390,29 @@ void idCommonLocal::VPrintf( const char *fmt, va_list args ) {
 		if ( !logFile && !recursing ) {
 			struct tm *newtime;
 			ID_TIME_T aclock;
-			const char *fileName = com_logFileName.GetString()[0] ? com_logFileName.GetString() : "qconsole.log";
+			idStr fileName = com_logFileName.GetString()[0] ? com_logFileName.GetString() : "qconsole.log";
+			if ( fileName.Icmp( "auto" ) == 0 ) {
+				fileName = "logs/openq4_%Y%m%d_%H%M%S.log";
+			}
+
+			char resolvedFileName[MAX_OSPATH];
+			const char *fileNameToOpen = fileName.c_str();
+
+			time( &aclock );
+			newtime = localtime( &aclock );
+			if ( newtime && fileName.Find( '%' ) != -1 ) {
+				if ( strftime( resolvedFileName, sizeof( resolvedFileName ), fileName.c_str(), newtime ) > 0 ) {
+					fileNameToOpen = resolvedFileName;
+				}
+			}
 
 			// fileSystem->OpenFileWrite can cause recursive prints into here
 			recursing = true;
 
-			logFile = fileSystem->OpenFileWrite( fileName );
+			logFile = fileSystem->OpenFileWrite( fileNameToOpen );
 			if ( !logFile ) {
 				logFileFailed = true;
-				FatalError( "failed to open log file '%s'\n", fileName );
+				FatalError( "failed to open log file '%s'\n", fileNameToOpen );
 			}
 
 			recursing = false;
@@ -409,9 +423,7 @@ void idCommonLocal::VPrintf( const char *fmt, va_list args ) {
 				logFile->ForceFlush();
 			}
 
-			time( &aclock );
-			newtime = localtime( &aclock );
-			Printf( "log file '%s' opened on %s\n", fileName, asctime( newtime ) );
+			Printf( "log file '%s' opened on %s\n", fileNameToOpen, asctime( newtime ) );
 		}
 		if ( logFile ) {
 			logFile->Write( msg, strlen( msg ) );

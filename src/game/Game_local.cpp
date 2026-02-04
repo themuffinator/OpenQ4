@@ -2744,7 +2744,7 @@ void idGameLocal::CacheDictionaryMedia( const idDict *dict ) {
 				// precache the render model
 				renderModelManager->FindModel( kv->GetValue() );
 				// precache .cm files only
-// jmarshall: caching code is different in Doom 3
+// jmarshall: caching code is different in the legacy engine
 				//collisionModelManager->PreCacheModel( GetMapName(), kv->GetValue() );
 				collisionModelManager->LoadModel(GetMapName(), kv->GetValue(), true);
 // jmarshall end

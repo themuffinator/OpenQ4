@@ -137,8 +137,8 @@ static LONG WINAPI ConWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		return 0;
 	case WM_CTLCOLORSTATIC:
 		if ((HWND)lParam == s_wcd.hwndBuffer) {
-			SetBkColor((HDC)wParam, RGB(0x00, 0x00, 0x80));
-			SetTextColor((HDC)wParam, RGB(0xff, 0xff, 0x00));
+			SetBkColor((HDC)wParam, RGB(0x36, 0x3a, 0x16));
+			SetTextColor((HDC)wParam, RGB(0xff, 0x9c, 0x01));
 			return (long)s_wcd.hbrEditBackground;
 		}
 		else if ((HWND)lParam == s_wcd.hwndErrorBox) {
@@ -179,7 +179,7 @@ static LONG WINAPI ConWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		}
 		break;
 	case WM_CREATE:
-		s_wcd.hbrEditBackground = CreateSolidBrush(RGB(0x00, 0x00, 0x80));
+		s_wcd.hbrEditBackground = CreateSolidBrush(RGB(0x36, 0x3a, 0x16));
 		s_wcd.hbrErrorBackground = CreateSolidBrush(RGB(0x80, 0x80, 0x80));
 		SetTimer(hWnd, 1, 1000, NULL);
 		break;

@@ -9,10 +9,17 @@
 
 // RAVEN BEGIN
 // rjohnson: this is the name of the game we are making
-#define GAME_NAME						"Quake4"			// appears on window titles and errors
+#define PROJECT_NAME					"OpenQ4"
+#define PROJECT_AUTHOR					"themuffinator"
+#define PROJECT_COMPANY				"DarkMatter Productions"
+#define PROJECT_VERSION				"0.0.1"
+#define PROJECT_WEBSITE				"www.darkmatter-quake.com"
+#define PROJECT_REPO					"https://github.com/themuffinator/OpenQ4"
+
+#define GAME_NAME						PROJECT_NAME			// appears on window titles and errors
 #define GAME_ICON						"q4icon.bmp"
 
-#define ENGINE_VERSION					GAME_NAME "-ICED-0.01"
+#define ENGINE_VERSION					PROJECT_NAME "-" PROJECT_VERSION
 
 // jnewquist: build type
 #if defined(_DEBUG)
@@ -31,24 +38,24 @@
 #endif
 
 // paths
-#define	CD_BASEDIR						"Quake4"
+#define	CD_BASEDIR						"OpenQ4"
 #define	BASE_GAMEDIR					"q4base"
 #define	BASE_MPGAMEDIR					"q4mp"
 #define	DEMO_GAMEDIR					"demo"
 
 // filenames
-#define	CD_EXE							"Quake4.exe"
+#define	CD_EXE							"OpenQ4.exe"
 
 #ifdef _XENON
-#define CONFIG_FILE						"save:/Quake4Config.cfg"
+#define CONFIG_FILE						"save:/OpenQ4Config.cfg"
 #else
-#define CONFIG_FILE						"Quake4Config.cfg"
+#define CONFIG_FILE						"OpenQ4Config.cfg"
 #endif
 
 // base folder where the source code lives
 #define SOURCE_CODE_BASE_FOLDER			"code"
 
-#define DEVELOPER_DOMAIN				"ravensoft.com"
+#define DEVELOPER_DOMAIN				"darkmatter-quake.com"
 // RAVEN END
 
 
@@ -108,15 +115,15 @@
 #define EDITOR_WINDOWTEXT				"QuakeEdit"
 
 // win32 info
-#define WIN32_CONSOLE_CLASS				"Quake 4 WinConsole"
-#define WIN32_SPLASH_CLASS				"Quake 4 Splash"
-#define	WIN32_WINDOW_CLASS_NAME			"Quake4"
-#define	WIN32_FAKE_WINDOW_CLASS_NAME	"QUAKE4_WGL_FAKE"
+#define WIN32_CONSOLE_CLASS				"OpenQ4 WinConsole"
+#define WIN32_SPLASH_CLASS				"OpenQ4 Splash"
+#define	WIN32_WINDOW_CLASS_NAME			"OpenQ4"
+#define	WIN32_FAKE_WINDOW_CLASS_NAME	"OPENQ4_WGL_FAKE"
 
 #ifdef __linux__
-	#define DEFAULT_BASE_PATH				"/usr/local/games/quake4"
+	#define DEFAULT_BASE_PATH				"/usr/local/games/openq4"
 #elif defined( MACOS_X )
-	#define DEFAULT_BASE_PATH				"/Applications/Quake4"
+	#define DEFAULT_BASE_PATH				"/Applications/OpenQ4"
 #endif
 
 // CD Key file info

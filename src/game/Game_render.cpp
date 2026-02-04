@@ -24,6 +24,8 @@ idGameLocal::InitGameRenderSystem
 ========================
 */
 void idGameLocal::InitGameRenderSystem(void) {
+	const int msaaSamples = Max( 0, cvarSystem->GetCVarInteger( "r_multiSamples" ) );
+
 	{
 		idImageOpts opts;
 		opts.format = FMT_RGBA8;
@@ -33,12 +35,12 @@ void idGameLocal::InitGameRenderSystem(void) {
 		opts.isPersistant = true;
 		opts.width = renderSystem->GetScreenWidth();
 		opts.height = renderSystem->GetScreenHeight();
-		opts.numMSAASamples = 4; // renderSystem->GetNumMSAASamples();
+		opts.numMSAASamples = msaaSamples; // renderSystem->GetNumMSAASamples();
 
 		idImage *albedoImage = renderSystem->CreateImage("_forwardRenderAlbedo", &opts, TF_LINEAR);
 		idImage *emissiveImage = renderSystem->CreateImage("_forwardRenderEmissive", &opts, TF_LINEAR);
 
-		opts.numMSAASamples = 4; // renderSystem->GetNumMSAASamples();
+		opts.numMSAASamples = msaaSamples; // renderSystem->GetNumMSAASamples();
 		opts.format = FMT_DEPTH_STENCIL;
 		idImage *depthImage = renderSystem->CreateImage("_forwardRenderDepth", &opts, TF_LINEAR);
 
@@ -55,11 +57,11 @@ void idGameLocal::InitGameRenderSystem(void) {
 		opts.isPersistant = true;
 		opts.width = renderSystem->GetScreenWidth();
 		opts.height = renderSystem->GetScreenHeight();
-		opts.numMSAASamples = 4; // renderSystem->GetNumMSAASamples();
+		opts.numMSAASamples = msaaSamples; // renderSystem->GetNumMSAASamples();
 
 		idImage* albedoImage = renderSystem->CreateImage(va("_postProcessAlbedo%d", i), &opts, TF_LINEAR);
 
-		opts.numMSAASamples = 4; // renderSystem->GetNumMSAASamples();
+		opts.numMSAASamples = msaaSamples; // renderSystem->GetNumMSAASamples();
 		opts.format = FMT_DEPTH_STENCIL;
 		idImage* depthImage = renderSystem->CreateImage(va("_postProcessDepth%d", i), &opts, TF_LINEAR);
 

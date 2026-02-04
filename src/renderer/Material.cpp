@@ -607,6 +607,10 @@ int idMaterial::ParseTerm( idLexer &src ) {
 	if ( !token.Icmp( "fragmentPrograms" ) ) {
 		return GetExpressionConstant( (float) glConfig.ARBFragmentProgramAvailable );
 	}
+	if ( !token.Icmp( "glslPrograms" ) ) {
+		// Quake 4 BSE/GLSL materials expect this; treat as disabled by default.
+		return GetExpressionConstant( 0.0f );
+	}
 
 	if ( !token.Icmp( "sound" ) ) {
 		pd->registersAreConstant = false;
@@ -1134,6 +1138,12 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 			continue;
 		}
 
+		// Quake 4 materials can gate stages with an if expression (e.g. glslPrograms == 1)
+		if ( !token.Icmp( "if" ) ) {
+			ss->conditionRegister = ParseExpression( src );
+			continue;
+		}
+
 		// image options
 		if ( !token.Icmp( "blend" ) ) {
 			ParseBlend( src, ss );
@@ -1308,6 +1318,9 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 				texGenRegisters[0] = ParseExpression( src );
 				texGenRegisters[1] = ParseExpression( src );
 				texGenRegisters[2] = ParseExpression( src );
+			} else if ( !token.Icmp( "potCorrection" ) ) {
+				// Quake 4 post-process shaders use this; treat as screen space.
+				ts->texgen = TG_SCREEN;
 			} else {
 				common->Warning( "bad texGen '%s' in material %s", token.c_str(), GetName() );
 				SetMaterialFlag( MF_DEFAULTED );
@@ -1537,6 +1550,20 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 
 		if (  !token.Icmp( "fragmentMap" ) ) {	
 			ParseFragmentMap( src, &newStage );
+			continue;
+		}
+
+		// Quake 4 GLSL material tokens (ignored if GLSL isn't supported)
+		if ( !token.Icmp( "glslProgram" ) ) {
+			src.SkipRestOfLine();
+			continue;
+		}
+		if ( !token.Icmp( "shaderParm" ) ) {
+			src.SkipRestOfLine();
+			continue;
+		}
+		if ( !token.Icmp( "shaderTexture" ) ) {
+			src.SkipRestOfLine();
 			continue;
 		}
 

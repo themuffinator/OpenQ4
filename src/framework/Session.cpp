@@ -945,7 +945,7 @@ void idSessionLocal::StartPlayingRenderDemo( idStr demoName ) {
 	guiLoading->SetStateString( "demo", "" );
 
 	// setup default render demo settings
-	// that's default for <= Doom3 v1.1
+	// that's default for <= legacy engine v1.1
 	renderdemoVersion = 1;
 	savegameVersion = 16;
 

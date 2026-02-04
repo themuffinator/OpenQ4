@@ -1,0 +1,278 @@
+log file 'logs/openq4.log' opened on Wed Feb  4 19:41:07 2026
+
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\game000.pk4 with checksum 0xb3abe28c
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\game100.pk4 with checksum 0x74b379d9
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\game200.pk4 with checksum 0xa3c810d9
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\game300.pk4 with checksum 0x68fb90b1
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak001.pk4 with checksum 0xf2cbc998
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak002.pk4 with checksum 0x7f8d80d1
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak003.pk4 with checksum 0x1b57b207
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak004.pk4 with checksum 0x385aa578
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak005.pk4 with checksum 0x60d50a1d
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak006.pk4 with checksum 0x9099ed11
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak007.pk4 with checksum 0xaf301fff
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak008.pk4 with checksum 0x4ac6f6d9
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak009.pk4 with checksum 0x36030c7d
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak010.pk4 with checksum 0x4b80fbda
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak011.pk4 with checksum 0x8acf4cfa
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak012.pk4 with checksum 0xbe4120b0
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak013.pk4 with checksum 0x6ad67f40
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak014.pk4 with checksum 0xee51cd59
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak015.pk4 with checksum 0xf5bf4e0c
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak016.pk4 with checksum 0x2196f58c
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak017.pk4 with checksum 0x91118a35
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak018.pk4 with checksum 0x98a14f03
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak019.pk4 with checksum 0xbc82ac79
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak020.pk4 with checksum 0xce74cda5
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak021.pk4 with checksum 0x2ba6e70c
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak022.pk4 with checksum 0x4e390eec
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak023.pk4 with checksum 0x7c1fd3a5
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak024.pk4 with checksum 0x5546d551
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak025.pk4 with checksum 0xcaeec1fd
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\q4cmp_pak001.pk4 with checksum 0xd0813943
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\zpak_english.pk4 with checksum 0x5868f530
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\zpak_english_01.pk4 with checksum 0xd9f04b8b
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\zpak_english_02.pk4 with checksum 0x9dbd91fd
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\zpak_english_03.pk4 with checksum 0x2eb6ad8
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\zpak_english_04.pk4 with checksum 0xd3fefaa1
+Loaded pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\zpak_english_05.pk4 with checksum 0x8596af60
+Addon pk4 C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\q4cmp_pak001.pk4 with checksum 0xd0813943 is on addon list
+Current search path:
+E:/Repositories/OpenQ4/_save/q4base
+C:/Program Files (x86)/Steam/steamapps/common/Quake 4/q4base
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\zpak_english_05.pk4 (3 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\zpak_english_04.pk4 (3 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\zpak_english_03.pk4 (4 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\zpak_english_02.pk4 (21 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\zpak_english_01.pk4 (1 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\zpak_english.pk4 (3457 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak025.pk4 (12 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak024.pk4 (8 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak023.pk4 (8 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak022.pk4 (14 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak021.pk4 (89 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak020.pk4 (11 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak019.pk4 (1206 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak018.pk4 (3 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak017.pk4 (3 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak016.pk4 (193 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak015.pk4 (34 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak014.pk4 (552 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak013.pk4 (239 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak012.pk4 (1081 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak011.pk4 (5620 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak010.pk4 (5539 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak009.pk4 (1284 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak008.pk4 (1289 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak007.pk4 (1330 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak006.pk4 (1343 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak005.pk4 (1395 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak004.pk4 (2249 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak003.pk4 (1281 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak002.pk4 (313 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\pak001.pk4 (5837 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\game300.pk4 (11 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\game200.pk4 (9 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\game100.pk4 (2 files)
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\game000.pk4 (2 files)
+game DLL: 0x0 in pak: 0x0
+Addon pk4s:
+C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\q4cmp_pak001.pk4 (119 files)
+file system initialized.
+--------------------------------------
+----- Initializing Decls -----
+Parsing Guides...
+Found 64 guides...
+^3WARNING: ^1file materials/hardwareshaders.mtr, line 366: Expecting '{' but found ','
+^3WARNING: ^1file materials/hardwareshaders.mtr, line 367: Expecting '{' but found ')'
+^3WARNING: ^1file materials/hardwareshaders.mtr, line 370: Expecting '{' but found ','
+^3WARNING: ^1file materials/hardwareshaders.mtr, line 371: Expecting '{' but found ')'
+^3WARNING: ^1file materials/hardwareshaders.mtr, line 374: Expecting '{' but found ','
+^3WARNING: ^1file materials/hardwareshaders.mtr, line 375: Expecting '{' but found ')'
+^3WARNING: ^1file materials/hardwareshaders.mtr, line 378: Expecting '{' but found ','
+^3WARNING: ^1file materials/hardwareshaders.mtr, line 379: Expecting '{' but found ')'
+^3WARNING: ^1file materials/hardwareshaders.mtr, line 382: Expecting '{' but found ','
+^3WARNING: ^1file materials/hardwareshaders.mtr, line 383: Expecting '{' but found ')'
+^3WARNING: ^1file materials/hardwareshaders.mtr, line 386: Expecting '{' but found ','
+^3WARNING: ^1file materials/hardwareshaders.mtr, line 387: Expecting '{' but found ')'
+^3WARNING: ^1file materials/hardwareshaders.mtr, line 390: Expecting '{' but found ','
+^3WARNING: ^1file materials/hardwareshaders.mtr, line 391: Expecting '{' but found ')'
+^3WARNING: ^1file materials/hardwareshaders.mtr, line 394: Expecting '{' but found ','
+^3WARNING: ^1file materials/hardwareshaders.mtr, line 395: Expecting '{' but found ')'
+^3WARNING: ^1file materials/hardwareshaders.mtr, line 398: Expecting '{' but found ','
+^3WARNING: ^1file materials/hardwareshaders.mtr, line 399: Expecting '{' but found ')'
+^3WARNING: ^1file materials/mappack1.mtr, line 238: material 'models/mapobjects/multiplayer/jump_pad/jump_pad_color' previously defined at materials/mapobjects_mp2.mtr:1
+^3WARNING: ^1file materials/mappack1.mtr, line 262: material 'models/mapobjects/multiplayer/jump_pad/jump_pad_color_glow' previously defined at materials/mapobjects_mp2.mtr:29
+^3WARNING: ^1file materials/mappack1.mtr, line 287: material 'models/mapobjects/multiplayer/acceleration_pad/acceleration_pad_color' previously defined at materials/mapobjects_mp2.mtr:53
+^3WARNING: ^1file materials/mappack1.mtr, line 305: material 'models/mapobjects/multiplayer/acceleration_pad/arrows_color' previously defined at materials/mapobjects_mp2.mtr:78
+^3WARNING: ^1file materials/stroyent_mp.mtr, line 21: material 'textures/stroyent/mp/concrete09asmooth' previously defined at materials/mappack1.mtr:1
+^3WARNING: ^1file materials/stroyent_mp.mtr, line 42: material 'textures/stroyent/mp/concrete09smooth' previously defined at materials/mappack1.mtr:21
+^3WARNING: ^1file materials/stroyent_mp.mtr, line 63: material 'textures/stroyent/mp/concrete04smooth' previously defined at materials/mappack1.mtr:42
+^3WARNING: ^1file materials/stroyent_mp.mtr, line 73: material 'textures/stroyent/mp/stroy_pillar1_orange' previously defined at materials/mappack1.mtr:63
+^3WARNING: ^1file materials/stroyent_mp.mtr, line 81: material 'textures/stroyent/mp/stroy_pillar1_green' previously defined at materials/mappack1.mtr:75
+^3WARNING: ^1file materials/stroyent_mp.mtr, line 89: material 'textures/stroyent/mp/tun6_green' previously defined at materials/mappack1.mtr:83
+^3WARNING: ^1file materials/stroyent_mp.mtr, line 97: material 'textures/stroyent/mp/tun6small_green' previously defined at materials/mappack1.mtr:91
+^3WARNING: ^1file materials/stroyent_mp.mtr, line 105: material 'textures/stroyent/mp/tunbump_green' previously defined at materials/mappack1.mtr:99
+^3WARNING: ^1file materials/stroyent_mp.mtr, line 113: material 'textures/stroyent/mp/tunpipe_green' previously defined at materials/mappack1.mtr:107
+^3WARNING: ^1file materials/stroyent_mp.mtr, line 121: material 'textures/stroyent/mp/tunpipe_orange' previously defined at materials/mappack1.mtr:115
+^3WARNING: ^1file materials/stroyent_mp.mtr, line 129: material 'textures/stroyent/mp/tunpipe2_orange' previously defined at materials/mappack1.mtr:123
+^3WARNING: ^1file materials/stroyent_mp.mtr, line 137: material 'textures/stroyent/mp/tunpipe2_green' previously defined at materials/mappack1.mtr:131
+^3WARNING: ^1file materials/stroyent_mp.mtr, line 155: material 'textures/stroyent/mp/tunwall12_orange' previously defined at materials/mappack1.mtr:139
+^3WARNING: ^1file materials/stroyent_mp.mtr, line 163: material 'textures/stroyent/mp/tunwall12_green' previously defined at materials/mappack1.mtr:157
+^3WARNING: ^1file materials/stroyent_mp.mtr, line 171: material 'textures/stroyent/mp/tunwall15_orange' previously defined at materials/mappack1.mtr:165
+^3WARNING: ^1file materials/stroyent_mp.mtr, line 179: material 'textures/stroyent/mp/tunwall15_green' previously defined at materials/mappack1.mtr:173
+^3WARNING: ^1file materials/weapons.mtr, line 556: Expecting '{' but found 'guide'
+^3WARNING: ^1file materials/weapons.mtr, line 557: Missing decl name
+------------------------------
+------- Initializing renderSystem --------
+using ARB2 renderSystem
+renderSystem initialized.
+--------------------------------------
+696 strings read from strings/english_code.lang
+1794 strings read from strings/english_guis.lang
+5756 strings read from strings/english_lips.lang
+5759 strings read from strings/english_mappack.lang
+6235 strings read from strings/english_maps.lang
+^3WARNING: ^1Unknown string id #str_104344
+Couldn't open journal files
+^3WARNING: ^1Unknown string id #str_104345
+couldn't exec editor.cfg
+execing default.cfg
+"LEFTCTRL" isn't a valid key
+"RIGHTCTRL" isn't a valid key
+"LEFTALT" isn't a valid key
+"LEFTSHIFT" isn't a valid key
+"RIGHTSHIFT" isn't a valid key
+couldn't exec OpenQ4Config.cfg
+couldn't exec autoexec.cfg
+696 strings read from strings/english_code.lang
+1794 strings read from strings/english_guis.lang
+5756 strings read from strings/english_lips.lang
+5759 strings read from strings/english_mappack.lang
+6235 strings read from strings/english_maps.lang
+----- Initializing Sound System ------
+Setup OpenAL device and context... Done.
+OpenAL vendor: Creative Labs Inc.
+OpenAL renderer: Software
+OpenAL version: 1.1
+OpenAL extensions: EAX EAX2.0 EAX3.0 EAX4.0 EAX5.0 EAX3.0EMULATED EAX4.0EMULATED AL_EXT_OFFSET AL_EXT_LINEAR_DISTANCE AL_EXT_EXPONENT_DISTANCE
+sound system initialized.
+--------------------------------------
+----- R_InitOpenGL -----
+Initializing OpenGL subsystem
+...registered window class
+...registered fake window class
+...initializing QGL
+...calling LoadLibrary( 'opengl32' ): succeeded
+Couldn't find proc address for: wglBindTexImageARB
+Couldn't find proc address for: wglReleaseTexImageARB
+Couldn't find proc address for: wglSetPbufferAttribARB
+...created window @ 3,22 (1296x759)
+Initializing OpenGL driver
+...getting DC: succeeded
+...PIXELFORMAT 5 selected
+...creating GL context: succeeded
+...making context current: succeeded
+Couldn't find proc address for: wglBindTexImageARB
+Couldn't find proc address for: wglReleaseTexImageARB
+Couldn't find proc address for: wglSetPbufferAttribARB
+
+------- Input Initialization -------
+Initializing DirectInput...
+mouse: DirectInput initialized.
+keyboard: DirectInput initialized.
+------------------------------------
+Init Glew...
+...using GL_ARB_multitexture
+...using GL_ARB_texture_env_combine
+...using GL_ARB_texture_cube_map
+...using GL_ARB_texture_env_dot3
+...using GL_ARB_texture_env_add
+...using GL_ARB_texture_non_power_of_two
+...using GL_ARB_texture_compression
+...using GL_EXT_texture_compression_s3tc
+...using GL_EXT_texture_filter_anisotropic
+   maxTextureAnisotropy: 16.000000
+...using GL_1.4_texture_lod_bias
+X..GL_EXT_shared_texture_palette not found
+...using GL_EXT_texture3D
+...using GL_EXT_stencil_wrap
+X..GL_NV_register_combiners not found
+...using GL_EXT_stencil_two_side
+X..GL_ATI_fragment_shader not found
+X..GL_ATI_text_fragment_shader not found
+...using GL_ARB_vertex_buffer_object
+...using GL_ARB_vertex_program
+...using GL_ARB_fragment_program
+...using EXT_depth_bounds_test
+---------- R_ARB2_Init ----------
+Available.
+---------------------------------
+----- R_ReloadARBPrograms -----
+glprogs/test.vfp
+glprogs/test.vfp
+glprogs/interaction.vfp
+glprogs/interaction.vfp
+glprogs/bumpyEnvironment.vfp
+glprogs/bumpyEnvironment.vfp
+glprogs/ambientLight.vfp
+glprogs/ambientLight.vfp
+glprogs/shadow.vp
+glprogs/R200_interaction.vp
+glprogs/nv20_bumpAndLight.vp
+glprogs/nv20_diffuseColor.vp
+glprogs/nv20_specularColor.vp
+glprogs/nv20_diffuseAndSpecularColor.vp
+glprogs/environment.vfp
+glprogs/environment.vfp
+glprogs/arbVP_glasswarp.txt
+glprogs/arbFP_glasswarp.txt
+-------------------------------
+using ARB_vertex_buffer_object memory
+using ARB2 renderSystem
+Writing generated/images/gfx/guis/loadscreens/generic#__0200.bimage
+------------- Initializing Game -------------
+gamename: baseQUAKE4-1
+gamedate: Feb  4 2026
+Initializing event system
+...531 event definitions
+Initializing class hierarchy
+...248 classes, 598968 bytes for event callbacks
+Initializing scripts
+Compiled 'C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\scripts\main.script': 3.7 ms
+-------------- Compile stats ----------------
+
+Memory usage:
+     Strings: 54, 6600 bytes
+  Statements: 84435, 3377400 bytes
+   Functions: 3361, 487932 bytes
+   Variables: 368000 bytes
+    Mem used: 5960112 bytes
+ Static data: 8421640 bytes
+   Allocated: 10526028 bytes
+ Thread size: 14064 bytes
+
+------------ Game Map Shutdown --------------
+---------------------------------------------
+idRenderSystem::Shutdown()
+Shutting down OpenGL subsystem
+...wglMakeCurrent( NULL, NULL ): success
+...deleting GL context: success
+...releasing DC: success
+...destroying window
+...shutting down QGL
+...unloading OpenGL DLL
+--------------- Game Shutdown ---------------
+rvStatAllocator:  dump of usage stats
+	0 total bytes handed out in 0 requests
+	begin game:      0;  end game:        0
+	player hit:      0;  player kill:     0
+	player death:    0;
+	damage dealt:    0;  damage taken:    0
+	stat team:       0
+	flag capture:    0;
+	flag drop:       0;  flag return:     0
+------------ Game Map Shutdown --------------
+---------------------------------------------
+Shutdown event system
+---------------------------------------------

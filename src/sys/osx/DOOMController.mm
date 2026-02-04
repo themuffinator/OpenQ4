@@ -270,13 +270,13 @@ extern void CL_Quit_f(void);
             NSString *message;
 
             if (!cddir || *cddir == '\0') {
-                message = [NSString stringWithFormat:@"Could not find DOOM levels."];
+                message = [NSString stringWithFormat:@"Could not find OpenQ4 levels."];
             } else if (![defaultManager fileExistsAtPath:[NSString stringWithFormat:@"%s", cddir]]) {
-                message = [NSString stringWithFormat:@"Could not find DOOM levels:  '%s' does not exist.", cddir];
+                message = [NSString stringWithFormat:@"Could not find OpenQ4 levels:  '%s' does not exist.", cddir];
             } else {
-                message = [NSString stringWithFormat:@"Could not find DOOM levels:  '%s' is not a complete DOOM installation.", cddir];
+                message = [NSString stringWithFormat:@"Could not find OpenQ4 levels:  '%s' is not a complete OpenQ4 installation.", cddir];
             }
-            switch (NSRunAlertPanel(@"DOOM", @"%@", @"Quit", @"Find...", nil, message)) {
+            switch (NSRunAlertPanel(@"OpenQ4", @"%@", @"Quit", @"Find...", nil, message)) {
                 case NSAlertDefaultReturn:
                 default:
                     Sys_Quit();
@@ -428,9 +428,9 @@ const char *Sys_EXEPath( void ) {
  */
 const char *Sys_DefaultSavePath(void) {
 #if defined( ID_DEMO_BUILD )
-	sprintf( savepath, "%s/Library/Application Support/Doom 3 Demo", [NSHomeDirectory() cString] );
+	sprintf( savepath, "%s/Library/Application Support/OpenQ4 Demo", [NSHomeDirectory() cString] );
 #else
-	sprintf( savepath, "%s/Library/Application Support/Doom 3", [NSHomeDirectory() cString] );
+	sprintf( savepath, "%s/Library/Application Support/OpenQ4", [NSHomeDirectory() cString] );
 #endif
 	return savepath.c_str();
 }

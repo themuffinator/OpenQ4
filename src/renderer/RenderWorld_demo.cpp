@@ -610,7 +610,7 @@ void	idRenderWorldLocal::WriteRenderEntity( qhandle_t handle, const renderEntity
 	}
 #endif
 
-	// RENDERDEMO_VERSION >= 2 ( Doom3 1.2 )
+	// RENDERDEMO_VERSION >= 2 ( legacy engine 1.2 )
 	//session->writeDemo->WriteInt( ent->timeGroup );
 	//session->writeDemo->WriteInt( ent->xrayIndex );
 
@@ -714,7 +714,7 @@ void	idRenderWorldLocal::ReadRenderEntity() {
 		}
 	}
 
-	// >= Doom3 v1.2 only
+	// >= legacy engine v1.2 only
 	//if ( session->renderdemoVersion >= 2 ) {
 	//	session->readDemo->ReadInt( ent.timeGroup );
 	//	session->readDemo->ReadInt( ent.xrayIndex );

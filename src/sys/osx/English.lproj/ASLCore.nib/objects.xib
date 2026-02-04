@@ -58,7 +58,7 @@
     <reference idRef="249"/>
     <object class="IBCarbonWindow" id="250">
       <string name="windowRect">640 261 881 829 </string>
-      <string name="title">Doom 3 Preferences</string>
+      <string name="title">OpenQ4 Preferences</string>
       <object name="rootControl" class="IBCarbonRootControl" id="251">
         <string name="bounds">0 0 241 568 </string>
         <string name="viewFrame">0 0 568 241 </string>
@@ -278,7 +278,7 @@
     </object>
     <object class="IBCarbonWindow" id="305">
       <string name="windowRect">648 341 776 734 </string>
-      <string name="title">Doom 3</string>
+      <string name="title">OpenQ4</string>
       <object name="rootControl" class="IBCarbonRootControl" id="307">
         <string name="bounds">0 0 128 393 </string>
         <string name="viewFrame">0 0 393 128 </string>
@@ -289,7 +289,7 @@
             <string name="viewFrame">84 20 289 48 </string>
             <ostype name="controlSignature">CD__</ostype>
             <int name="controlID">1</int>
-            <string name="title">Please insert the disc &quot;Doom 3&quot; or press Quit.</string>
+            <string name="title">Please insert the disc &quot;OpenQ4&quot; or press Quit.</string>
           </object>
           <object class="IBCarbonIcon" id="348">
             <string name="bounds">20 20 68 68 </string>
@@ -556,7 +556,7 @@
       <string name="viewFrame">20 20 441 16 </string>
       <boolean name="small">TRUE</boolean>
       <int name="controlSize">1</int>
-      <string name="title">Doom 3 Registration Code:</string>
+      <string name="title">OpenQ4 Registration Code:</string>
     </object>
     <object class="IBCarbonButton" id="371">
       <string name="bounds">118 309 138 379 </string>
@@ -599,7 +599,7 @@
     <reference idRef="374"/>
     <object class="IBCarbonWindow" id="375">
       <string name="windowRect">449 235 607 716 </string>
-      <string name="title">Doom 3 Registration</string>
+      <string name="title">OpenQ4 Registration</string>
       <reference name="rootControl" idRef="373"/>
       <boolean name="receiveUpdates">FALSE</boolean>
       <boolean name="isResizable">FALSE</boolean>

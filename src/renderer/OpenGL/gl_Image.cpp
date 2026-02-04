@@ -385,9 +385,17 @@ void idImage::AllocImage() {
 	int numSides;
 	int target;
 	int uploadTarget;
+	bool wantsMSAA = ( opts.textureType == TT_2D && opts.numMSAASamples > 0 );
+	if ( wantsMSAA ) {
+		if ( !( GLEW_ARB_texture_multisample || GLEW_VERSION_3_2 ) ) {
+			common->Warning( "MSAA textures not supported, disabling for %s", GetName() );
+			opts.numMSAASamples = 0;
+			wantsMSAA = false;
+		}
+	}
 	if ( opts.textureType == TT_2D ) {
 // jmarshall
-		if (opts.numMSAASamples == 0) {
+		if ( !wantsMSAA ) {
 			target = uploadTarget = GL_TEXTURE_2D;
 		}
 		else {
@@ -406,6 +414,22 @@ void idImage::AllocImage() {
 	}
 
 	glBindTexture( target, texnum );
+
+	if ( wantsMSAA ) {
+		int samples = opts.numMSAASamples;
+#ifdef GL_MAX_SAMPLES
+		GLint maxSamples = 0;
+		glGetIntegerv( GL_MAX_SAMPLES, &maxSamples );
+		if ( maxSamples > 0 && samples > maxSamples ) {
+			common->Warning( "Requested %d MSAA samples, clamping to %d for %s", samples, maxSamples, GetName() );
+			samples = maxSamples;
+			opts.numMSAASamples = maxSamples;
+		}
+#endif
+		glTexImage2DMultisample( GL_TEXTURE_2D_MULTISAMPLE, samples, internalFormat, opts.width, opts.height, GL_TRUE );
+		GL_CheckErrors();
+		return;
+	}
 
 	for ( int side = 0; side < numSides; side++ ) {
 		int w = opts.width;

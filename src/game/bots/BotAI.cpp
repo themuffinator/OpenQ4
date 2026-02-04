@@ -1144,7 +1144,7 @@ void rvmBot::BotGetRandomPointNearPosition( idVec3 point, idVec3& randomPoint, f
 	int areaNum = aas->PointAreaNum(point);
 	const aasArea_t& area = file->GetArea(areaNum);
 	
-	// justin: I'm changing this from the method I used in Doom 3 to a method that doesn't require me
+	// justin: I'm changing this from the method I used in the legacy engine to a method that doesn't require me
 	// to change the AAS format
 	//int firstEdge = area.firstEdge;
 	//int i = rvRandom::irand(0, area.numEdges);

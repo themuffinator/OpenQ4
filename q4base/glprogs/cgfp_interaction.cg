@@ -1,5 +1,5 @@
 
-// Doom3 interaction fragment shader
+// OpenQ4 interaction fragment shader
 // Cass Everitt
 
 float2 CenterScale( float2 inTC, float2 centerScale ) {

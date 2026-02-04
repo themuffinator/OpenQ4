@@ -1,0 +1,46 @@
+// OpenQ4 version information resource.
+#include <winres.h>
+
+#include "../../AutoVersion.h"
+#include "../../../framework/licensee.h"
+
+#define IDI_ICON1 4001
+
+IDI_ICON1 ICON "res\\quake4.ico"
+
+#define VER_FILEVERSION VERSION_MAJOR_RELEASE,VERSION_MINOR_RELEASE,VERSION_INTERNAL_BUILD,VERSION_BUILD_NUMBER
+#define VER_FILEVERSION_STR VERSION_STRING_DOTTED
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION VER_FILEVERSION
+ PRODUCTVERSION VER_FILEVERSION
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+	BLOCK "StringFileInfo"
+	BEGIN
+		BLOCK "040904b0"
+		BEGIN
+			VALUE "CompanyName", PROJECT_COMPANY
+			VALUE "FileDescription", GAME_NAME " Engine"
+			VALUE "FileVersion", VERSION_STRING_DOTTED
+			VALUE "InternalName", GAME_NAME
+			VALUE "OriginalFilename", GAME_NAME ".exe"
+			VALUE "ProductName", GAME_NAME
+			VALUE "ProductVersion", VERSION_STRING_DOTTED
+			VALUE "LegalCopyright", "Copyright (C) 2026 " PROJECT_COMPANY
+			VALUE "Comments", "Author: " PROJECT_AUTHOR "\r\nWebsite: " PROJECT_WEBSITE "\r\nRepo: " PROJECT_REPO
+		END
+	END
+	BLOCK "VarFileInfo"
+	BEGIN
+		VALUE "Translation", 0x0409, 1200
+	END
+END
