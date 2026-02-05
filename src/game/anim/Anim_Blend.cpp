@@ -10,6 +10,8 @@
 #include "../../game/Projectile.h"
 #include "../ai/AI.h"
 
+extern idCVar r_showSkel;
+
 static const char *channelNames[ ANIM_NumAnimChannels ] = {
 	"all", "torso", "legs", "head", "eyelids"
 };
@@ -4829,8 +4831,6 @@ bool idAnimator::CreateFrame( int currentTime, bool force ) {
 	jointMod_t *		jointMod;
 // RAVEN END	
 	const idJointQuat *	defaultPose;
-
-	static idCVar		r_showSkel( "r_showSkel", "0", CVAR_RENDERER | CVAR_INTEGER, "draw the skeleton when model animates, 1 = draw model with skeleton, 2 = draw skeleton only, 3 = draw joints only", 0, 3, idCmdSystem::ArgCompletion_Integer<0,3> );
 
 	if ( gameLocal.inCinematic && gameLocal.skipCinematic ) {
 		return false;

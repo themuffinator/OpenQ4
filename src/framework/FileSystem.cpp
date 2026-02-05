@@ -811,8 +811,23 @@ const char *idFileSystemLocal::BuildOSPath( const char *base, const char *game, 
 		testPath.StripFilename();
 
 		if ( testPath.HasUpper() ) {
+			bool warn = true;
 
-			common->Warning( "Non-portable: path contains uppercase characters: %s", testPath.c_str() );
+			// On case-insensitive OSes, avoid warning for top-level non-game folders
+			// that are only being probed during discovery (e.g. CrashReports, Docs).
+			if ( !fs_caseSensitiveOS.GetBool() ) {
+				if ( !relativePath || !relativePath[0] ) {
+					if ( idStr::Icmp( game, gameFolder.c_str() ) != 0 &&
+						 idStr::Icmp( game, fs_game.GetString() ) != 0 &&
+						 idStr::Icmp( game, fs_game_base.GetString() ) != 0 ) {
+						warn = false;
+					}
+				}
+			}
+
+			if ( warn ) {
+				common->Warning( "Non-portable: path contains uppercase characters: %s", testPath.c_str() );
+			}
 
 			// attempt a fixup on the fly
 			if ( fs_caseSensitiveOS.GetBool() ) {
@@ -1725,6 +1740,9 @@ idModList *idFileSystemLocal::ListMods( void ) {
 	search[3] = fs_cdpath.GetString();
 
 	for ( isearch = 0; isearch < 4; isearch++ ) {
+		if ( !search[ isearch ] || !search[ isearch ][ 0 ] ) {
+			continue;
+		}
 
 		dirs.Clear();
 		pk4s.Clear();
@@ -1736,6 +1754,12 @@ idModList *idFileSystemLocal::ListMods( void ) {
 		dirs.Remove( ".." );
 		dirs.Remove( "base" );
 		dirs.Remove( "pb" );
+
+		for ( i = dirs.Num() - 1; i >= 0; --i ) {
+			if ( dirs[ i ].HasUpper() ) {
+				dirs.RemoveIndex( i );
+			}
+		}
 
 		// see if there are any pk4 files in each directory
 		for( i = 0; i < dirs.Num(); i++ ) {

@@ -241,6 +241,7 @@ static infoParm_t	infoParms[] = {
 	{"ikclip",		0,	0,	CONTENTS_IKCLIP },		// solid to IK
 	{"blood",		0,	0,	CONTENTS_BLOOD },		// used to detect blood decals
 	{"trigger",		0,	0,	CONTENTS_TRIGGER },		// used for triggers
+	{"projectileclip",	0,	0,	CONTENTS_PROJECTILECLIP },	// projectiles only
 	{"aassolid",	0,	0,	CONTENTS_AAS_SOLID },	// solid for AAS
 	{"aasobstacle",	0,	0,	CONTENTS_AAS_OBSTACLE },// used to compile an obstacle into AAS that can be enabled/disabled
 	{"flashlight_trigger",	0,	0,	CONTENTS_FLASHLIGHT_TRIGGER }, // used for triggers that are activated by the flashlight
@@ -544,7 +545,15 @@ int idMaterial::ParseTerm( idLexer &src ) {
 		pd->registersAreConstant = false;
 		return EXP_REG_PARM4;
 	}
+	if ( !token.Icmp( "DecalLife" ) ) {
+		pd->registersAreConstant = false;
+		return EXP_REG_PARM4;
+	}
 	if ( !token.Icmp( "parm5" ) ) {
+		pd->registersAreConstant = false;
+		return EXP_REG_PARM5;
+	}
+	if ( !token.Icmp( "DecalSpawn" ) ) {
 		pd->registersAreConstant = false;
 		return EXP_REG_PARM5;
 	}
@@ -774,6 +783,10 @@ int idMaterial::NameToSrcBlendMode( const idStr &name ) {
 		return GLS_SRCBLEND_DST_ALPHA;
 	} else if ( !name.Icmp( "GL_ONE_MINUS_DST_ALPHA" ) ) {
 		return GLS_SRCBLEND_ONE_MINUS_DST_ALPHA;
+	} else if ( !name.Icmp( "GL_SRC_COLOR" ) ) {
+		return GLS_SRCBLEND_SRC_COLOR;
+	} else if ( !name.Icmp( "GL_ONE_MINUS_SRC_COLOR" ) ) {
+		return GLS_SRCBLEND_ONE_MINUS_SRC_COLOR;
 	} else if ( !name.Icmp( "GL_SRC_ALPHA_SATURATE" ) ) {
 		return GLS_SRCBLEND_ALPHA_SATURATE;
 	}
@@ -1097,6 +1110,7 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 	int					a, b;
 	int					matrix[2][3];
 	newShaderStage_t	newStage;
+	bool				stageHasShaderTokens;
 
 	if ( numStages >= MAX_SHADER_STAGES ) {
 		SetMaterialFlag( MF_DEFAULTED );
@@ -1110,6 +1124,7 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 	cubeMap = CF_2D;
 
 	imageName[0] = 0;
+	stageHasShaderTokens = false;
 
 	memset( &newStage, 0, sizeof( newStage ) );
 
@@ -1555,15 +1570,30 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 
 		// Quake 4 GLSL material tokens (ignored if GLSL isn't supported)
 		if ( !token.Icmp( "glslProgram" ) ) {
+			stageHasShaderTokens = true;
 			src.SkipRestOfLine();
 			continue;
 		}
 		if ( !token.Icmp( "shaderParm" ) ) {
+			stageHasShaderTokens = true;
 			src.SkipRestOfLine();
 			continue;
 		}
 		if ( !token.Icmp( "shaderTexture" ) ) {
-			src.SkipRestOfLine();
+			stageHasShaderTokens = true;
+
+			idToken texToken;
+			idStr lastImageToken;
+			while ( src.ReadTokenOnLine( &texToken ) ) {
+				const char *value = texToken.c_str();
+				if ( value[0] == '_' || idStr::FindText( value, "/" ) != -1 || idStr::FindText( value, "." ) != -1 ) {
+					lastImageToken = value;
+				}
+			}
+
+			if ( lastImageToken.Length() > 0 && !imageName[0] ) {
+				idStr::Copynz( imageName, lastImageToken.c_str(), sizeof( imageName ) );
+			}
 			continue;
 		}
 
@@ -1608,7 +1638,9 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 			ts->image = globalImages->defaultImage;
 		}
 	} else if ( !ts->cinematic && !ts->dynamic && !ss->newStage ) {
-		common->Warning( "material '%s' had stage with no image", GetName() );
+		if ( !stageHasShaderTokens ) {
+			common->Warning( "material '%s' had stage with no image", GetName() );
+		}
 		ts->image = globalImages->defaultImage;
 	}
 }

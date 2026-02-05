@@ -284,6 +284,12 @@ void GL_State( int stateBits ) {
 		case GLS_SRCBLEND_ONE_MINUS_DST_COLOR:
 			srcFactor = GL_ONE_MINUS_DST_COLOR;
 			break;
+		case GLS_SRCBLEND_SRC_COLOR:
+			srcFactor = GL_SRC_COLOR;
+			break;
+		case GLS_SRCBLEND_ONE_MINUS_SRC_COLOR:
+			srcFactor = GL_ONE_MINUS_SRC_COLOR;
+			break;
 		case GLS_SRCBLEND_SRC_ALPHA:
 			srcFactor = GL_SRC_ALPHA;
 			break;

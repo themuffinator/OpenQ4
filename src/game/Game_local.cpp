@@ -8565,6 +8565,10 @@ idGameLocal::GetBotItemEntry
 */
 int idGameLocal::GetBotItemEntry( const char* name )
 {
+	if ( !name || !name[0] ) {
+		return 9;
+	}
+
 	const idKeyValue* keyvalue = botItemTable->dict.FindKey( name );
 	if( !keyvalue )
 	{

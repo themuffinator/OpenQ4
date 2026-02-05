@@ -129,6 +129,18 @@ void Script_LocalSound(idWindow *window, idList<idGSWinVar> *src) {
 
 /*
 =========================
+Script_SetLightColor
+=========================
+*/
+void Script_SetLightColor(idWindow *window, idList<idGSWinVar> *src) {
+	idWinVec4 *parm = dynamic_cast<idWinVec4*>((*src)[0].var);
+	if (window && window->GetGui()) {
+		window->GetGui()->SetLightColorVar(parm);
+	}
+}
+
+/*
+=========================
 Script_EvalRegs
 =========================
 */
@@ -367,6 +379,7 @@ guiCommandDef_t commandList[] = {
 	{ "resetCinematics", Script_ResetCinematics, 0, 2 },
 	{ "transition", Script_Transition, 4, 6 },
 	{ "localSound", Script_LocalSound, 1, 1 },
+	{ "setlightcolor", Script_SetLightColor, 1, 1 },
 	{ "runScript", Script_RunScript, 1, 1 },
 	{ "evalRegs", Script_EvalRegs, 0, 0 },
 // jmarshall - Quake 4 gui implementation
@@ -622,6 +635,19 @@ void idGuiScript::FixupParms(idWindow *win) {
 						}
 					}
 				}
+			}
+		}
+	} else if (handler == &Script_SetLightColor) {
+		idWinStr *str = dynamic_cast<idWinStr*>(parms[0].var);
+		if (str) {
+			idWinVar *dest = win->GetWinVarByName(*str, true);
+			if (dest) {
+				delete parms[0].var;
+				parms[0].var = dest;
+				parms[0].own = false;
+			} else {
+				common->Warning( "Window %s in gui %s: setLightColor command does not specify a valid var %s",
+					win->GetName(), win->GetGui()->GetSourceFile(), str->c_str() );
 			}
 		}
 	} else if (handler == &Script_Transition) {

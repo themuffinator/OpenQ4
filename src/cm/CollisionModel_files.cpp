@@ -579,7 +579,7 @@ bool idCollisionModelManagerLocal::LoadCollisionModelFile( const char *name, uns
 		return false;
 	}
 
-	if ( !src->ReadToken( &token ) || token != CM_FILEVERSION ) {
+	if ( !src->ReadToken( &token ) || ( token != CM_FILEVERSION && token.Icmp( "3" ) != 0 && token.Icmp( "3.00" ) != 0 ) ) {
 		common->Warning( "%s has version %s instead of %s", fileName.c_str(), token.c_str(), CM_FILEVERSION );
 		delete src;
 		return false;

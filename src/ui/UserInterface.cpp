@@ -241,6 +241,7 @@ idUserInterfaceLocal::idUserInterfaceLocal() {
 	interactive = false;
 	uniqued = false;
 	bindHandler = NULL;
+	lightColorVar = NULL;
 	//so the reg eval in gui parsing doesn't get bogus values
 	time = 0;
 	refs = 1;
@@ -335,6 +336,7 @@ bool idUserInterfaceLocal::InitFromFile( const char *qpath, bool rebuild, bool c
 	}
 
 	loading = false;
+	lightColorVar = NULL;
 
 	return true; 
 }
@@ -430,6 +432,13 @@ int idUserInterfaceLocal::GetStateInt( const char *varName, const char* defaultS
 
 float idUserInterfaceLocal::GetStateFloat( const char *varName, const char* defaultString ) const {
 	return state.GetFloat(varName, defaultString);
+}
+
+idVec4 idUserInterfaceLocal::GetLightColor( void ) {
+	if ( lightColorVar ) {
+		return *lightColorVar;
+	}
+	return vec4_origin;
 }
 
 void idUserInterfaceLocal::StateChanged( int _time, bool redraw ) {

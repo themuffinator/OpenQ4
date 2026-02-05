@@ -27,6 +27,7 @@ If you have questions concerning this license or the applicable additional terms
 */
 
 class idWindow;
+class idWinVec4;
 
 class idUserInterfaceLocal : public idUserInterface {
 	friend class idUserInterfaceManagerLocal;
@@ -70,6 +71,7 @@ public:
 
 	virtual float				CursorX() { return cursorX; }
 	virtual float				CursorY() { return cursorY; }
+	virtual idVec4				GetLightColor(void) override;
 
 	size_t						Size();
 
@@ -91,6 +93,7 @@ public:
 	void						RecurseSetKeyBindingNames( idWindow *window );
 	idStr						&GetPendingCmd() { return pendingCmd; };
 	idStr						&GetReturnCmd() { return returnCmd; };
+	void						SetLightColorVar( idWinVec4 *var ) { lightColorVar = var; }
 
 private:
 	bool						active;
@@ -114,6 +117,8 @@ private:
 	int							time;
 
 	int							refs;
+
+	idWinVec4 *					lightColorVar;
 };
 
 class idUserInterfaceManagerLocal : public idUserInterfaceManager {

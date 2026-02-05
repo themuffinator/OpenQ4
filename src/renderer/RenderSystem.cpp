@@ -1020,8 +1020,8 @@ idImage* idRenderSystemLocal::CreateImage(const char* name, idImageOpts* opts, t
 	// Check to see if the image already exists.
 	idImage* image = globalImages->GetImage(name);
 	if (image != nullptr) {
-		common->FatalError("idRenderSystemLocal::CreateImage: Image already allocated!");
-		return nullptr;
+		image->AllocImage(*opts, textureFilter, TR_CLAMP);
+		return image;
 	}
 
 	return globalImages->ScratchImage(name, opts, textureFilter, TR_CLAMP, TD_DEFAULT);

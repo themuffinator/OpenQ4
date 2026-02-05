@@ -642,6 +642,10 @@ void idImageManager::CreateIntrinsicImages() {
 	currentRenderImage = ImageFromFunction("_currentRender", R_RGBA8Image);
 	currentDepthImage = ImageFromFunction("_currentDepth", R_DepthImage);
 
+	// placeholders for runtime render targets referenced by materials
+	ImageFromFunction("_forwardRenderResolvedAlbedo", R_RGBA8Image);
+	ImageFromFunction("_postProcessAlbedo1", R_RGBA8Image);
+
 
 	// save a copy of this for material comparison, because currentRenderImage may get
 	// reassigned during stereo rendering
