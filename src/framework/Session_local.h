@@ -99,6 +99,7 @@ public:
 	virtual void		Frame();
 
 	virtual bool		IsMultiplayer();
+	virtual bool		IsLoadingSaveGame() const { return loadingSaveGame; }
 
 	virtual bool		ProcessEvent( const sysEvent_t *event );
 

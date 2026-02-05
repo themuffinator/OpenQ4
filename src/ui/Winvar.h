@@ -862,7 +862,7 @@ public:
 
 class idWinFloatPtr : public idWinVar {
 public:
-	idWinFloatPtr() : idWinVar() {};
+	idWinFloatPtr() : idWinVar(), data(NULL), ownerVec4(NULL) {};
 	~idWinFloatPtr() {};
 	virtual void Init(const char* _name, idWindow* win) {
 
@@ -878,6 +878,7 @@ public:
 
 	void Bind(idWinVec4& ptr, int component)
 	{
+		ownerVec4 = &ptr;
 		switch (component)
 		{
 		case 0:
@@ -893,6 +894,10 @@ public:
 			data = &ptr.data[3];
 			break;
 		}
+	}
+
+	idWinVec4* GetOwnerVec4() const {
+		return ownerVec4;
 	}
 
 	virtual void Set(const char* val) {
@@ -915,6 +920,7 @@ public:
 	virtual float x(void) const { return *data; };
 protected:
 	float* data;
+	idWinVec4* ownerVec4;
 };
 
 #endif /* !__WINVAR_H__ */

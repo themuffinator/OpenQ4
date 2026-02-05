@@ -1639,18 +1639,18 @@ void idSessionLocal::ExecuteMapChange( bool noFadeWipe ) {
 
 	// load and spawn all other entities ( from a savegame possibly )
 	if ( loadingSaveGame && savegameFile ) {
-		if ( game->InitFromSaveGame( fullMapName + ".map", rw, savegameFile ) == false ) {
+		if ( game->InitFromSaveGame( fullMapName, rw, savegameFile ) == false ) {
 			// If the loadgame failed, restart the map with the player persistent data
 			loadingSaveGame = false;
 			fileSystem->CloseFile( savegameFile );
 			savegameFile = NULL;
 
 			game->SetServerInfo( mapSpawnData.serverInfo );
-			game->InitFromNewMap( fullMapName + ".map", rw, idAsyncNetwork::server.IsActive(), idAsyncNetwork::client.IsActive(), Sys_Milliseconds() );
+			game->InitFromNewMap( fullMapName, rw, idAsyncNetwork::server.IsActive(), idAsyncNetwork::client.IsActive(), Sys_Milliseconds() );
 		}
 	} else {
 		game->SetServerInfo( mapSpawnData.serverInfo );
-		game->InitFromNewMap( fullMapName + ".map", rw, idAsyncNetwork::server.IsActive(), idAsyncNetwork::client.IsActive(), Sys_Milliseconds() );
+		game->InitFromNewMap( fullMapName, rw, idAsyncNetwork::server.IsActive(), idAsyncNetwork::client.IsActive(), Sys_Milliseconds() );
 	}
 
 	if ( !idAsyncNetwork::IsActive() && !loadingSaveGame ) {
@@ -2399,7 +2399,7 @@ void idSessionLocal::Draw() {
 		renderSystem->SetColor( colorBlack );
 		renderSystem->DrawStretchPic( 0, 0, 640, 480, 0, 0, 1, 1, declManager->FindMaterial( "_white" ) );
 		guiTest->Redraw( com_frameTime );
-	} else if ( guiActive && !guiActive->State().GetBool( "gameDraw" ) ) {
+	} else if ( guiActive ) {
 		
 		// draw the frozen gui in the background
 		if ( guiActive == guiMsg && guiMsgRestore ) {
@@ -2409,6 +2409,19 @@ void idSessionLocal::Draw() {
 		// draw the menus full screen
 		if ( guiActive == guiTakeNotes && !com_skipGameDraw.GetBool() ) {
 			game->Draw( GetLocalClientNum() );
+		}
+
+		if ( guiActive->State().GetBool( "gameDraw" ) ) {
+			if ( mapSpawned && !com_skipGameDraw.GetBool() && GetLocalClientNum() >= 0 ) {
+				bool gameDraw = game->Draw( GetLocalClientNum() );
+				if ( !gameDraw ) {
+					renderSystem->SetColor( colorBlack );
+					renderSystem->DrawStretchPic( 0, 0, 640, 480, 0, 0, 1, 1, declManager->FindMaterial( "_white" ) );
+				}
+			} else {
+				renderSystem->SetColor( colorBlack );
+				renderSystem->DrawStretchPic( 0, 0, 640, 480, 0, 0, 1, 1, declManager->FindMaterial( "_white" ) );
+			}
 		}
 
 		guiActive->Redraw( com_frameTime );

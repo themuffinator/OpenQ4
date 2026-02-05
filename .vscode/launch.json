@@ -20,18 +20,37 @@
         "r_fullscreen",
         "0",
         "+set",
+        "g_autoScreenshot",
+        "1",
+        "+set",
+        "g_autoScreenshotDelayMs",
+        "10000",
+        "+set",
+        "g_autoScreenshotQuit",
+        "1",
+        "+set",
         "fs_basepath",
         "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Quake 4",
         "+set",
         "fs_savepath",
-        "${env:USERPROFILE}\\Saved Games\\OpenQ4",
+        "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Quake 4",
         "+set",
         "fs_devpath",
-        "${workspaceFolder}"
+        "",
+        "+set",
+        "net_serverDedicated",
+        "0",
+        "+set",
+        "net_serverAllowServerMod",
+        "1",
+        "+set",
+        "si_gameType",
+        "DM",
+        "+spawnServer",
+        "mp/q4dm1"
       ],
       "cwd": "${workspaceFolder}",
-      "console": "integratedTerminal",
-      "preLaunchTask": "Build OpenQ4 (Debug)"
+      "console": "integratedTerminal"
     }
   ]
 }

@@ -214,7 +214,7 @@ void idEventLoop::Init( void ) {
 		com_journalDataFile = fileSystem->OpenFileRead( "journaldata.dat" );
 	}
 
-	if ( !com_journalFile || !com_journalDataFile ) {
+	if ( com_journal.GetInteger() != 0 && ( !com_journalFile || !com_journalDataFile ) ) {
 		com_journal.SetInteger( 0 );
 		com_journalFile = 0;
 		com_journalDataFile = 0;

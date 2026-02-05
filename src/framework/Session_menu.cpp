@@ -306,11 +306,9 @@ void idSessionLocal::SetMainMenuGuiVars( void ) {
 	guiMainMenu->SetKeyBindingNames();
 
 	// flag for in-game menu
-	if ( mapSpawned ) {
-		guiMainMenu->SetStateString( "inGame", IsMultiplayer() ? "2" : "1" );
-	} else {
-		guiMainMenu->SetStateString( "inGame", "0" );
-	}
+	const char *inGameState = mapSpawned ? ( IsMultiplayer() ? "2" : "1" ) : "0";
+	guiMainMenu->SetStateString( "inGame", inGameState );
+	guiMainMenu->SetStateString( "ingame", inGameState );
 
 	SetCDKeyGuiVars( );
 #ifdef ID_DEMO_BUILD
@@ -1501,8 +1499,14 @@ idSessionLocal::HandleMsgCommands
 */
 void idSessionLocal::HandleMsgCommands( const char *menuCommand ) {
 	assert( guiActive == guiMsg );
+	idCmdArgs args;
+	args.TokenizeString( menuCommand, false );
+	if ( args.Argc() == 0 ) {
+		return;
+	}
+	const char *cmd = args.Argv( 0 );
 	// "stop" works even on first frame
-	if ( idStr::Icmp( menuCommand, "stop" ) == 0 ) {
+	if ( idStr::Icmp( cmd, "stop" ) == 0 ) {
 		// force hiding the current dialog
 		guiActive = guiMsgRestore;
 		guiMsgRestore = NULL;
@@ -1513,13 +1517,13 @@ void idSessionLocal::HandleMsgCommands( const char *menuCommand ) {
 		common->DPrintf( "MessageBox HandleMsgCommands 1st frame ignore\n" );
 		return;
 	}
-	if ( idStr::Icmp( menuCommand, "mid" ) == 0 || idStr::Icmp( menuCommand, "left" ) == 0 ) {
+	if ( idStr::Icmp( cmd, "mid" ) == 0 || idStr::Icmp( cmd, "left" ) == 0 ) {
 		guiActive = guiMsgRestore;
 		guiMsgRestore = NULL;
 		msgRunning = false;
 		msgRetIndex = 0;
 		DispatchCommand( guiActive, msgFireBack[ 0 ].c_str() );
-	} else if ( idStr::Icmp( menuCommand, "right" ) == 0 ) {
+	} else if ( idStr::Icmp( cmd, "right" ) == 0 ) {
 		guiActive = guiMsgRestore;
 		guiMsgRestore = NULL;
 		msgRunning = false;

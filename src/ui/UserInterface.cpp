@@ -35,6 +35,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "UserInterfaceLocal.h"
 
 extern idCVar r_skipGuiShaders;		// 1 = don't render any gui elements on surfaces
+extern idCVar gui_debugScript;
 
 idUserInterfaceManagerLocal	uiManagerLocal;
 idUserInterfaceManager *	uiManager = &uiManagerLocal;
@@ -240,6 +241,7 @@ idUserInterfaceLocal::idUserInterfaceLocal() {
 	active = false;
 	interactive = false;
 	uniqued = false;
+	initialized = false;
 	bindHandler = NULL;
 	lightColorVar = NULL;
 	//so the reg eval in gui parsing doesn't get bogus values
@@ -337,6 +339,7 @@ bool idUserInterfaceLocal::InitFromFile( const char *qpath, bool rebuild, bool c
 
 	loading = false;
 	lightColorVar = NULL;
+	initialized = false;
 
 	return true; 
 }
@@ -375,11 +378,31 @@ void idUserInterfaceLocal::HandleNamedEvent ( const char* eventName ) {
 }
 
 void idUserInterfaceLocal::Redraw( int _time ) {
+	SetStateInt( "mousex", (int)CursorX() );
+	SetStateInt( "mousey", (int)CursorY() );
 	if ( r_skipGuiShaders.GetInteger() > 5 ) {
 		return;
 	}
 	if ( !loading && desktop ) {
 		time = _time;
+		if ( !initialized ) {
+			initialized = true;
+			desktop->Init();
+		}
+		if ( gui_debugScript.GetInteger() > 4 ) {
+			static int lastDebugRedrawTime = -10000;
+			if ( _time - lastDebugRedrawTime >= 250 ) {
+				common->Printf( "GUI: redraw gui=%s time=%d active=%d interactive=%d visible=%d r_skipGuiShaders=%d cursor=%.1f,%.1f\n",
+					source.c_str(),
+					_time,
+					active ? 1 : 0,
+					interactive ? 1 : 0,
+					desktop->visible ? 1 : 0,
+					r_skipGuiShaders.GetInteger(),
+					cursorX, cursorY );
+				lastDebugRedrawTime = _time;
+			}
+		}
 		uiManagerLocal.dc.PushClipRect( uiManagerLocal.screenRect );
 		desktop->Redraw( 0, 0 );
 		uiManagerLocal.dc.PopClipRect();
@@ -403,19 +426,44 @@ void idUserInterfaceLocal::DeleteStateVar( const char *varName ) {
 }
 
 void idUserInterfaceLocal::SetStateString( const char *varName, const char *value ) {
+	const char *oldValue = state.GetString( varName, "" );
 	state.Set( varName, value );
+	if ( gui_debugScript.GetInteger() > 3 ) {
+		const char *newValue = value ? value : "";
+		if ( idStr::Icmp( oldValue, newValue ) != 0 ) {
+			common->Printf( "GUI: state %s = \"%s\" (was \"%s\") gui=%s\n", varName, newValue, oldValue, source.c_str() );
+		}
+	}
 }
 
 void idUserInterfaceLocal::SetStateBool( const char *varName, const bool value ) {
+	bool oldValue = state.GetBool( varName, "0" );
 	state.SetBool( varName, value );
+	if ( gui_debugScript.GetInteger() > 3 ) {
+		if ( oldValue != value ) {
+			common->Printf( "GUI: state %s = %d (was %d) gui=%s\n", varName, value ? 1 : 0, oldValue ? 1 : 0, source.c_str() );
+		}
+	}
 }
 
 void idUserInterfaceLocal::SetStateInt( const char *varName, const int value ) {
+	int oldValue = state.GetInt( varName, "0" );
 	state.SetInt( varName, value );
+	if ( gui_debugScript.GetInteger() > 3 ) {
+		if ( oldValue != value ) {
+			common->Printf( "GUI: state %s = %d (was %d) gui=%s\n", varName, value, oldValue, source.c_str() );
+		}
+	}
 }
 
 void idUserInterfaceLocal::SetStateFloat( const char *varName, const float value ) {
+	float oldValue = state.GetFloat( varName, "0" );
 	state.SetFloat( varName, value );
+	if ( gui_debugScript.GetInteger() > 3 ) {
+		if ( oldValue != value ) {
+			common->Printf( "GUI: state %s = %.4f (was %.4f) gui=%s\n", varName, value, oldValue, source.c_str() );
+		}
+	}
 }
 
 const char* idUserInterfaceLocal::GetStateString( const char *varName, const char* defaultString ) const {

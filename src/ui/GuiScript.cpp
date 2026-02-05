@@ -34,6 +34,29 @@ If you have questions concerning this license or the applicable additional terms
 #include "GuiScript.h"
 #include "UserInterfaceLocal.h"
 
+idCVar gui_debugScript( "gui_debugScript", "0", CVAR_GUI | CVAR_INTEGER, "log gui script execution details (0=off, 1=key events, 2=verbose, 3=sets/transitions/cmds, 4=state changes, 5=redraw trace)" );
+
+namespace {
+	idList<const idGuiScriptList*> g_guiScriptLists;
+}
+
+idGuiScriptList::idGuiScriptList() {
+	list.SetGranularity( 4 );
+	g_guiScriptLists.Append( this );
+}
+
+idGuiScriptList::~idGuiScriptList() {
+	g_guiScriptLists.Remove( this );
+	list.DeleteContents( true );
+}
+
+bool idGuiScriptList::IsValid( const idGuiScriptList *list ) {
+	if ( list == NULL ) {
+		return false;
+	}
+	return g_guiScriptLists.FindIndex( list ) != -1;
+}
+
 
 /*
 =========================
@@ -60,11 +83,32 @@ void Script_Set(idWindow *window, idList<idGSWinVar> *src) {
 			} else {
 				window->AddCommand(*dest);
 			}
+			if ( gui_debugScript.GetInteger() > 2 ) {
+				common->Printf( "GUI: cmd \"%s\" (caller=%s gui=%s)\n",
+					( parmCount > 2 ) ? val.c_str() : ( dest ? dest->c_str() : "<null>" ),
+					window ? window->GetName() : "<null>",
+					window && window->GetGui() ? window->GetGui()->GetSourceFile() : "<null>" );
+			}
 			return;
 		} 
 	}
 	(*src)[0].var->Set((*src)[1].var->c_str());
 	(*src)[0].var->SetEval(false);
+	idWinFloatPtr* floatPtr = dynamic_cast<idWinFloatPtr*>((*src)[0].var);
+	if ( floatPtr ) {
+		idWinVec4* owner = floatPtr->GetOwnerVec4();
+		if ( owner ) {
+			owner->SetEval( false );
+		}
+	}
+	if ( gui_debugScript.GetInteger() > 2 ) {
+		const char *varName = (*src)[0].var ? (*src)[0].var->GetName() : "<null>";
+		const char *varValue = (*src)[1].var ? (*src)[1].var->c_str() : "<null>";
+		common->Printf( "GUI: set %s = %s (caller=%s gui=%s)\n",
+			varName, varValue,
+			window ? window->GetName() : "<null>",
+			window && window->GetGui() ? window->GetGui()->GetSourceFile() : "<null>" );
+	}
 }
 
 /*
@@ -173,9 +217,18 @@ void Script_ResetTime(idWindow *window, idList<idGSWinVar> *src) {
 	if (win && win->win) {
 		win->win->ResetTime(atoi(*parm));
 		win->win->EvalRegs(-1, true);
+		if (gui_debugScript.GetInteger() > 0) {
+			common->Printf("GUI: resetTime window=%s time=%s (caller=%s gui=%s)\n",
+				win->win->GetName(), parm ? parm->c_str() : "<null>", window ? window->GetName() : "<null>",
+				window && window->GetGui() ? window->GetGui()->GetSourceFile() : "<null>");
+		}
 	} else {
 		window->ResetTime(atoi(*parm));
 		window->EvalRegs(-1, true);
+		if (gui_debugScript.GetInteger() > 0) {
+			common->Printf("GUI: resetTime window=%s time=%s (self)\n",
+				window ? window->GetName() : "<null>", parm ? parm->c_str() : "<null>");
+		}
 	}
 }
 
@@ -250,6 +303,10 @@ void Script_Transition(idWindow *window, idList<idGSWinVar> *src) {
 		}
 		else if (valp) {
 			valp->SetEval(false);
+			idWinVec4* owner = valp->GetOwnerVec4();
+			if ( owner ) {
+				owner->SetEval( false );
+			}
 			window->AddTransition(valp, *from, *to, time, ac, dc);
 			// 
 		} else {
@@ -257,6 +314,16 @@ void Script_Transition(idWindow *window, idList<idGSWinVar> *src) {
 			window->AddTransition(rect, *from, *to, time, ac, dc);
 		}
 		window->StartTransition();
+		if ( gui_debugScript.GetInteger() > 2 ) {
+			const char *varName = (*src)[0].var ? (*src)[0].var->GetName() : "<null>";
+			common->Printf( "GUI: transition %s from=%s to=%s time=%d ac=%.3f dc=%.3f (caller=%s gui=%s)\n",
+				varName,
+				from ? from->c_str() : "<null>",
+				to ? to->c_str() : "<null>",
+				time, ac, dc,
+				window ? window->GetName() : "<null>",
+				window && window->GetGui() ? window->GetGui()->GetSourceFile() : "<null>" );
+		}
 	}
 }
 
@@ -270,17 +337,33 @@ void Script_NamedEvent(idWindow* window, idList<idGSWinVar>* src) {
 	idWinStr* parm = dynamic_cast<idWinStr*>((*src)[0].var);
 	idStr parmStr = parm->c_str();
 
+	if (gui_debugScript.GetInteger() > 1) {
+		common->Printf("GUI: namedEvent '%s' (caller=%s gui=%s)\n",
+			parm ? parm->c_str() : "<null>",
+			window ? window->GetName() : "<null>",
+			window && window->GetGui() ? window->GetGui()->GetSourceFile() : "<null>");
+	}
+
 	int p = idStr::FindText(parm->c_str(), "::");
 	if (p <= 0)
 	{
-		window->RunNamedEvent(parm->c_str());
+		if ( window && window->GetGui() ) {
+			window->GetGui()->HandleNamedEvent( parm->c_str() );
+		} else if ( window ) {
+			window->RunNamedEvent( parm->c_str() );
+		}
 	}
 	else
 	{
 		idStr windowName = parmStr.Mid(0, p);
 		idStr varName = parmStr.Mid(p + 2, parmStr.Length() - (p + 2));
 
-		drawWin_t* childWindow = window->FindChildByName(windowName);
+		drawWin_t* childWindow = NULL;
+		if ( window && window->GetGui() && window->GetGui()->GetDesktop() ) {
+			childWindow = window->GetGui()->GetDesktop()->FindChildByName( windowName );
+		} else if ( window ) {
+			childWindow = window->FindChildByName( windowName );
+		}
 		if (childWindow)
 		{
 			childWindow->win->RunNamedEvent(varName);
@@ -307,6 +390,12 @@ void Script_StopTransitions(idWindow* window, idList<idGSWinVar>* src) {
 	if (childWindow)
 	{
 		childWindow->win->ClearTransitions();
+		if (gui_debugScript.GetInteger() > 1) {
+			common->Printf("GUI: stopTransitions window=%s (caller=%s gui=%s)\n",
+				childWindow->win ? childWindow->win->GetName() : "<null>",
+				window ? window->GetName() : "<null>",
+				window && window->GetGui() ? window->GetGui()->GetSourceFile() : "<null>");
+		}
 	}
 }
 
@@ -320,6 +409,12 @@ void Script_ConsoleCmd(idWindow* window, idList<idGSWinVar>* src) {
 	idStr parmStr = parm->c_str();
 
 	cmdSystem->BufferCommandText(CMD_EXEC_NOW, parmStr.c_str());
+	if ( gui_debugScript.GetInteger() > 2 ) {
+		common->Printf( "GUI: consoleCmd \"%s\" (caller=%s gui=%s)\n",
+			parmStr.c_str(),
+			window ? window->GetName() : "<null>",
+			window && window->GetGui() ? window->GetGui()->GetSourceFile() : "<null>" );
+	}
 }
 
 /*

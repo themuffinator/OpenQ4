@@ -172,6 +172,14 @@ idRenderModel *idRenderWorldLocal::ParseModel( idLexer *src ) {
 			tri->verts[j].normal[0] = src->ParseFloat();
 			tri->verts[j].normal[1] = src->ParseFloat();
 			tri->verts[j].normal[2] = src->ParseFloat();
+			tri->verts[j].color[0] = 255;
+			tri->verts[j].color[1] = 255;
+			tri->verts[j].color[2] = 255;
+			tri->verts[j].color[3] = 255;
+			tri->verts[j].color2[0] = 255;
+			tri->verts[j].color2[1] = 255;
+			tri->verts[j].color2[2] = 255;
+			tri->verts[j].color2[3] = 255;
 
 			if (src->PeekTokenString(")")) {
 				src->ExpectTokenString(")");

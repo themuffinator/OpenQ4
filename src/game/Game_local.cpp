@@ -293,6 +293,8 @@ void idGameLocal::Clear( void ) {
 	framenum = 0;
 	previousTime = 0;
 	time = 0;
+	autoScreenshotStartTime = 0;
+	autoScreenshotPending = false;
 	vacuumAreaNum = 0;
 
 // RAVEN BEGIN
@@ -559,14 +561,16 @@ void idGameLocal::Init( void ) {
 	botItemTable = FindEntityDef("bot_itemtable", false);
 	if (botItemTable == NULL)
 	{
-		common->FatalError("Failed to find bot_itemtable decl!\n");
+		common->Warning("bot_itemtable decl not found. Bot support disabled.\n");
 	}
-
-	// init all the bot systems.
-	botCharacterStatsManager.Init();
-	botFuzzyWeightManager.Init();
-	botWeaponInfoManager.Init();
-	botGoalManager.BotSetupGoalAI();
+	else
+	{
+		// init all the bot systems.
+		botCharacterStatsManager.Init();
+		botFuzzyWeightManager.Init();
+		botWeaponInfoManager.Init();
+		botGoalManager.BotSetupGoalAI();
+	}
 // jmarshall end
 
 	Printf( "...%d aas types\n", aasList.Num() );
@@ -1337,7 +1341,9 @@ void idGameLocal::LoadMap( const char *mapName, int randseed ) {
 			delete mapFile;
 		}
 		mapFile = new idMapFile;
-		if ( !mapFile->Parse( idStr( mapName ) + ".map" ) ) {
+		idStr mapFilePath = mapName;
+		mapFilePath.SetFileExtension( "map" );
+		if ( !mapFile->Parse( mapFilePath ) ) {
 			delete mapFile;
 			mapFile = NULL;
 			Error( "Couldn't load %s", mapName );
@@ -1997,7 +2003,7 @@ void idGameLocal::InitFromNewMap( const char *mapName, idRenderWorld *renderWorl
 // RAVEN END
 
 // jmarshall
-	if (gameLocal.IsMultiplayer() && gameLocal.isServer)
+	if (botItemTable && gameLocal.IsMultiplayer() && gameLocal.isServer)
 	{
 		botGoalManager.InitLevelItems();
 	}
@@ -2005,6 +2011,23 @@ void idGameLocal::InitFromNewMap( const char *mapName, idRenderWorld *renderWorl
 
 
 	gamestate = GAMESTATE_ACTIVE;
+	autoScreenshotStartTime = Sys_Milliseconds();
+	const bool gAutoScreenshot = g_autoScreenshot.GetBool();
+	const bool gAutoScreenshotCvar = cvarSystem->GetCVarBool( "g_autoScreenshot" );
+	autoScreenshotPending = gAutoScreenshot || gAutoScreenshotCvar;
+	const bool comAutoScreenshot = cvarSystem->GetCVarBool( "com_autoScreenshot" );
+	if ( comAutoScreenshot ) {
+		autoScreenshotPending = true;
+	}
+	if ( developer.GetBool() ) {
+		Printf( "AutoScreenshot g_cvar=%d g_sys=%d com_autoScreenshot=%d\n",
+			gAutoScreenshot ? 1 : 0,
+			gAutoScreenshotCvar ? 1 : 0,
+			comAutoScreenshot ? 1 : 0 );
+	}
+	if ( autoScreenshotPending ) {
+		Printf( "AutoScreenshot: armed (delay %d ms)\n", g_autoScreenshotDelayMs.GetInteger() );
+	}
 
 	Printf( "---------------------------------------------\n" );
 }
@@ -3928,8 +3951,98 @@ bool idGameLocal::Draw( int clientNum ) {
 // bdube: debugging HUD
 	gameDebug.DrawHud( );
 // RAVEN END
-
+	CheckAutoScreenshot();
 	return true;
+}
+
+/*
+================
+idGameLocal::CheckAutoScreenshot
+
+Take a one-shot screenshot after map load, for automated diagnostics.
+================
+*/
+void idGameLocal::CheckAutoScreenshot( void ) {
+	const bool gAutoScreenshot = g_autoScreenshot.GetBool();
+	const bool gAutoScreenshotCvar = cvarSystem->GetCVarBool( "g_autoScreenshot" );
+	const bool comAutoScreenshot = cvarSystem->GetCVarBool( "com_autoScreenshot" );
+	const bool wantAutoScreenshot = gAutoScreenshot || gAutoScreenshotCvar || comAutoScreenshot;
+
+	if ( wantAutoScreenshot ) {
+		if ( !autoScreenshotPending ) {
+			autoScreenshotPending = true;
+			autoScreenshotStartTime = Sys_Milliseconds();
+		}
+	} else if ( autoScreenshotPending ) {
+		autoScreenshotPending = false;
+	}
+
+	if ( !autoScreenshotPending ) {
+		return;
+	}
+
+	const int nowMs = Sys_Milliseconds();
+	const int delayMs = g_autoScreenshotDelayMs.GetInteger();
+	if ( delayMs > 0 && ( nowMs - autoScreenshotStartTime ) < delayMs ) {
+		return;
+	}
+
+	idStr shotName;
+	shotName = va( "screenshots/auto_%d.tga", nowMs );
+	// Log basic render diagnostics before capture.
+	int numLights = 0;
+	int numLightDefs = 0;
+	int numAmbientLights = 0;
+	for ( int i = 0; i < MAX_GENTITIES; ++i ) {
+		idEntity *ent = entities[ i ];
+		if ( !ent ) {
+			continue;
+		}
+		if ( ent->IsType( idLight::Type ) ) {
+			idLight *light = static_cast<idLight *>( ent );
+			numLights++;
+			if ( light->GetLightDefHandle() != -1 ) {
+				numLightDefs++;
+			}
+			if ( light->IsAmbient() ) {
+				numAmbientLights++;
+			}
+		}
+	}
+	common->Printf( "AutoScreenshot: lights total=%d defs=%d ambient=%d r_skipRender=%d r_skipInteractions=%d r_skipAmbient=%d r_skipDiffuse=%d r_forceAmbient=%d\n",
+		numLights, numLightDefs, numAmbientLights,
+		cvarSystem->GetCVarBool( "r_skipRender" ) ? 1 : 0,
+		cvarSystem->GetCVarBool( "r_skipInteractions" ) ? 1 : 0,
+		cvarSystem->GetCVarBool( "r_skipAmbient" ) ? 1 : 0,
+		cvarSystem->GetCVarBool( "r_skipDiffuse" ) ? 1 : 0,
+		cvarSystem->GetCVarBool( "r_forceAmbient" ) ? 1 : 0 );
+	if ( developer.GetBool() ) {
+		idPlayer *localPlayer = GetLocalPlayer();
+		const renderView_t *view = localPlayer ? localPlayer->GetRenderView() : NULL;
+		if ( view && gameRenderWorld ) {
+			const int areaNum = gameRenderWorld->PointInArea( view->vieworg );
+			common->Printf( "AutoScreenshot: vieworg=(%.1f %.1f %.1f) area=%d numAreas=%d numPortals=%d\n",
+				view->vieworg.x, view->vieworg.y, view->vieworg.z,
+				areaNum,
+				gameRenderWorld->NumAreas(),
+				gameRenderWorld->NumPortals() );
+		} else {
+			common->Printf( "AutoScreenshot: vieworg unavailable (player=%p view=%p renderWorld=%p)\n",
+				localPlayer, view, gameRenderWorld );
+		}
+		cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "listRenderLightDefs\nlistRenderEntityDefs\n" );
+	}
+
+	renderSystem->CaptureRenderToFile( shotName.c_str(), true );
+	common->Printf( "AutoScreenshot: wrote %s at %d ms\n", shotName.c_str(), nowMs - autoScreenshotStartTime );
+	if ( g_autoScreenshotQuit.GetBool() ) {
+		cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "quit\n" );
+	}
+
+	autoScreenshotPending = false;
+	g_autoScreenshot.SetBool( false );
+	cvarSystem->SetCVarBool( "g_autoScreenshot", false );
+	cvarSystem->SetCVarBool( "com_autoScreenshot", false );
 }
 
 /*
@@ -8566,6 +8679,10 @@ idGameLocal::GetBotItemEntry
 int idGameLocal::GetBotItemEntry( const char* name )
 {
 	if ( !name || !name[0] ) {
+		return 9;
+	}
+	if ( !botItemTable ) {
+		gameLocal.Warning( "GetBotItemEntry: bot_itemtable missing, returning default for %s\n", name );
 		return 9;
 	}
 

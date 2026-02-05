@@ -48,6 +48,7 @@ int BitsForFormat( textureFormat_t format ) {
 		case FMT_DXT1:		return 4;
 		case FMT_DXT5:		return 8;
 		case FMT_DEPTH:		return 32;
+		case FMT_DEPTH_STENCIL:	return 32;
 		case FMT_X16:		return 16;
 		case FMT_Y16_X16:	return 32;
 		default:
@@ -720,6 +721,14 @@ void idImage::Reload( bool force ) {
 	if ( generatorFunction ) {
 		common->DPrintf( "regenerating %s.\n", GetName() );
 		generatorFunction( this );
+		return;
+	}
+
+	// persistent images are runtime render targets, not file-backed
+	if ( opts.isPersistant ) {
+		common->DPrintf( "reallocating persistent %s.\n", GetName() );
+		DeriveOpts();
+		AllocImage();
 		return;
 	}
 

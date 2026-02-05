@@ -207,10 +207,10 @@ void idSoundVoice_OpenAL::DestroyInternal()
 			idLib::Printf( "%dms: %i destroyed\n", Sys_Milliseconds(), openalSource );
 		}
 
+		// Detach buffers before deleting the source to avoid AL_INVALID_NAME on shutdown.
+		alSourcei( openalSource, AL_BUFFER, 0 );
 		alDeleteSources( 1, &openalSource );
 		openalSource = 0;
-
-		alSourcei( openalSource, AL_BUFFER, 0 );
 
 		if( openalStreamingBuffer[0] && openalStreamingBuffer[1] && openalStreamingBuffer[2] )
 		{

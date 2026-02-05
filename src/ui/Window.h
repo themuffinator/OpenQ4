@@ -278,6 +278,7 @@ public:
 	virtual void ArchiveToDictionary(idDict *dict, bool useNames = true);
 	virtual void InitFromDictionary(idDict *dict, bool byName = true);
 	virtual void PostParse();
+	virtual void Init();
 	virtual void Activate( bool activate, idStr &act );
 	virtual void Trigger();
 	virtual void GainFocus();

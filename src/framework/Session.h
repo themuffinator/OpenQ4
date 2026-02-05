@@ -94,6 +94,8 @@ public:
 	// Returns true if a multiplayer game is running.
 	// CVars and commands are checked differently in multiplayer mode.
 	virtual bool	IsMultiplayer() = 0;
+	// Returns true while a savegame is being loaded.
+	virtual bool	IsLoadingSaveGame() const = 0;
 
 	// Processes the given event.
 	virtual	bool	ProcessEvent( const sysEvent_t *event ) = 0;

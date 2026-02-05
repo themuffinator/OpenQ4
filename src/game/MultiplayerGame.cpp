@@ -5005,6 +5005,7 @@ bool idMultiplayerGame::Draw( int clientNum ) {
 // bdube: debugging HUD
 	gameDebug.DrawHud();
 // RAVEN END
+	gameLocal.CheckAutoScreenshot();
 	return true;
 }
 

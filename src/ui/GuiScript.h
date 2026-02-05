@@ -81,8 +81,9 @@ protected:
 class idGuiScriptList {
 	idList<idGuiScript*> list;
 public:
-	idGuiScriptList() { list.SetGranularity( 4 ); };
-	~idGuiScriptList() { list.DeleteContents(true); };
+	idGuiScriptList();
+	~idGuiScriptList();
+	static bool IsValid( const idGuiScriptList *list );
 	void Execute(idWindow *win);
 	void Append(idGuiScript* gs) {
 		list.Append(gs);

@@ -2,6 +2,10 @@
 
 
 
+#if defined( _WIN32 )
+#include <windows.h>
+#endif
+
 #if defined( MACOS_X )
 #include <signal.h>
 #include <sys/types.h>
@@ -614,10 +618,15 @@ void AssertFailed( const char *file, int line, const char *expression ) {
 	if ( idLib::sys ) {
 		idLib::sys->DebugPrintf( "\n\nASSERTION FAILED!\n%s(%d): '%s'\n", file, line, expression );
 	}
+	if ( idLib::common ) {
+		idLib::common->Warning( "ASSERTION FAILED! %s(%d): '%s'", file, line, expression );
+	}
 #ifdef _WIN32
 // RAVEN BEGIN
 // jnewquist: Visual Studio platform independent breakpoint
-	__debugbreak();
+	if ( IsDebuggerPresent() ) {
+		__debugbreak();
+	}
 // RAVEN END
 #elif defined( __linux__ )
 	__asm__ __volatile__ ("int $0x03");

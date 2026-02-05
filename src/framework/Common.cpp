@@ -81,6 +81,7 @@ idCVar com_timestampPrints( "com_timestampPrints", "0", CVAR_SYSTEM, "print time
 idCVar com_timescale( "timescale", "1", CVAR_SYSTEM | CVAR_FLOAT, "scales the time", 0.1f, 10.0f );
 idCVar com_logFile( "logFile", "0", CVAR_SYSTEM | CVAR_NOCHEAT, "1 = buffer log, 2 = flush after each print", 0, 2, idCmdSystem::ArgCompletion_Integer<0,2> );
 idCVar com_logFileName( "logFileName", "qconsole.log", CVAR_SYSTEM | CVAR_NOCHEAT, "name of log file, if empty, qconsole.log will be used" );
+idCVar com_autoScreenshot( "com_autoScreenshot", "0", CVAR_SYSTEM | CVAR_BOOL | CVAR_NOCHEAT, "take a one-shot screenshot after map load (diagnostic)" );
 idCVar com_makingBuild( "com_makingBuild", "0", CVAR_BOOL | CVAR_SYSTEM, "1 when making a build" );
 idCVar com_updateLoadSize( "com_updateLoadSize", "0", CVAR_BOOL | CVAR_SYSTEM | CVAR_NOCHEAT, "update the load size after loading a map" );
 idCVar com_videoRam( "com_videoRam", "64", CVAR_INTEGER | CVAR_SYSTEM | CVAR_NOCHEAT | CVAR_ARCHIVE, "holds the last amount of detected video ram" );
@@ -2438,12 +2439,14 @@ void idCommonLocal::Frame( void ) {
 
 		idAsyncNetwork::RunFrame();
 
-		if ( idAsyncNetwork::IsActive() ) {
-			if ( idAsyncNetwork::serverDedicated.GetInteger() != 1 ) {
-				session->GuiFrameEvents();
-				session->UpdateScreen( false );
-			}
-		} else {
+	if ( idAsyncNetwork::IsActive() ) {
+		if ( idAsyncNetwork::serverDedicated.GetInteger() != 1 ) {
+			// Keep netplay flow the same as stock, but ensure audio mixes each frame.
+			soundSystem->Render();
+			session->GuiFrameEvents();
+			session->UpdateScreen( false );
+		}
+	} else {
 			session->Frame();
 
 			// normal, in-sequence screen update
@@ -2816,6 +2819,24 @@ void idCommonLocal::Init( int argc, const char **argv, const char *cmdline ) {
 		// game specific initialization
 		InitGame();
 
+		// dump parsed command line for diagnostics (only when developer + logFile are enabled)
+		if ( com_developer.GetBool() && com_logFile.GetInteger() ) {
+			Printf( "Command line (parsed):\n" );
+			for ( int i = 0; i < com_numConsoleLines; ++i ) {
+				if ( !com_consoleLines[ i ].Argc() ) {
+					continue;
+				}
+				Printf( "  %d:", i );
+				for ( int j = 0; j < com_consoleLines[ i ].Argc(); ++j ) {
+					Printf( " %s", com_consoleLines[ i ].Argv( j ) );
+				}
+				Printf( "\n" );
+			}
+			Printf( "CVar snapshot: g_autoScreenshot=%s com_autoScreenshot=%s\n",
+				cvarSystem->GetCVarString( "g_autoScreenshot" ),
+				cvarSystem->GetCVarString( "com_autoScreenshot" ) );
+		}
+
 		// don't add startup commands if no CD key is present
 #if ID_ENFORCE_KEY
 		if ( !session->CDKeysAreValid( false ) || !AddStartupCommands() ) {
@@ -2935,7 +2956,7 @@ void idCommonLocal::InitGame( void ) {
 	// initialize string database right off so we can use it for loading messages
 	InitLanguageDict();
 
-	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_104344" ) );
+	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_104343" ) );
 
 	// load the font, etc
 	console->LoadGraphics();
@@ -2943,17 +2964,23 @@ void idCommonLocal::InitGame( void ) {
 	// init journalling, etc
 	eventLoop->Init();
 
-	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_104345" ) );
+	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_104343" ) );
 
 	// exec the startup scripts
-	cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "exec editor.cfg\n" );
+	if ( fileSystem->ReadFile( "editor.cfg", NULL ) >= 0 ) {
+		cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "exec editor.cfg\n" );
+	}
 	cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "exec default.cfg\n" );
 
 	// skip the config file if "safe" is on the command line
 	if ( !SafeMode() ) {
-		cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "exec " CONFIG_FILE "\n" );
+		if ( fileSystem->ReadFile( CONFIG_FILE, NULL ) >= 0 ) {
+			cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "exec " CONFIG_FILE "\n" );
+		}
 	}
-	cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "exec autoexec.cfg\n" );
+	if ( fileSystem->ReadFile( "autoexec.cfg", NULL ) >= 0 ) {
+		cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "exec autoexec.cfg\n" );
+	}
 
 	// reload the language dictionary now that we've loaded config files
 	cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "reloadLanguage\n" );

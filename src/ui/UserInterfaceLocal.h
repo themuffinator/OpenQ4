@@ -100,6 +100,7 @@ private:
 	bool						loading;
 	bool						interactive;
 	bool						uniqued;
+	bool						initialized;
 
 	idDict						state;
 	idWindow *					desktop;

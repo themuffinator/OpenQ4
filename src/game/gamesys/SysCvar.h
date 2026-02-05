@@ -328,6 +328,9 @@ extern idCVar	rb_showContacts;
 // RAVEN END
 
 extern idCVar	g_testPostProcess;
+extern idCVar	g_autoScreenshot;
+extern idCVar	g_autoScreenshotDelayMs;
+extern idCVar	g_autoScreenshotQuit;
 
 extern idCVar	g_testModelRotate;
 extern idCVar	g_testModelAnimate;

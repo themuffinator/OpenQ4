@@ -91,6 +91,12 @@ void idGameLocal::InitGameRenderSystem(void) {
 	gameRender.noPostProcessMaterial = declManager->FindMaterial("postprocess/nopostprocess", false);
 	gameRender.casPostProcessMaterial = declManager->FindMaterial("postprocess/casupscale", false);
 	gameRender.resolvePostProcessMaterial = declManager->FindMaterial("postprocess/resolvepostprocess", false);
+	gameRender.postProcessAvailable = (gameRender.noPostProcessMaterial != NULL) &&
+		(gameRender.casPostProcessMaterial != NULL) &&
+		(gameRender.resolvePostProcessMaterial != NULL);
+	if (!gameRender.postProcessAvailable) {
+		common->Warning("Postprocess materials missing; falling back to direct render.");
+	}
 }
 
 /*
@@ -110,6 +116,16 @@ idGameLocal::RenderScene
 ====================
 */
 void idGameLocal::RenderScene(const renderView_t *view, idRenderWorld *renderWorld, idCamera* portalSky) {
+	if (!gameRender.postProcessAvailable || gameRender.forwardRenderPassRT == NULL || gameRender.forwardRenderPassResolvedRT == NULL) {
+		// Fallback for stock Quake 4 assets: render directly to the backbuffer.
+		if (portalSky) {
+			renderView_t portalSkyView = *view;
+			portalSky->GetViewParms(&portalSkyView);
+			gameRenderWorld->RenderScene(&portalSkyView);
+		}
+		renderWorld->RenderScene(view);
+		return;
+	}
 	// Minimum render is used for screen captures(such as envcapture) calls, caller is responsible for all rendertarget setup.
 	//if (view->minimumRender)
 	//{

@@ -34,3 +34,4 @@
 # Debug folders
 /build/*/
 /build_debug/*/
+/_save/*/

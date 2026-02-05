@@ -245,6 +245,13 @@ static infoParm_t	infoParms[] = {
 	{"aassolid",	0,	0,	CONTENTS_AAS_SOLID },	// solid for AAS
 	{"aasobstacle",	0,	0,	CONTENTS_AAS_OBSTACLE },// used to compile an obstacle into AAS that can be enabled/disabled
 	{"flashlight_trigger",	0,	0,	CONTENTS_FLASHLIGHT_TRIGGER }, // used for triggers that are activated by the flashlight
+	{"sightclip",	0,	0,	CONTENTS_SIGHTCLIP },	// blocks sight for actors and cameras
+	{"shotclip",	0,	0,	CONTENTS_PROJECTILE },	// blocks hitscan shots
+	{"largeshotclip",	0,	0,	CONTENTS_LARGESHOTCLIP },	// blocks large shots
+	{"notacticalfeatures",	0,	0,	CONTENTS_NOTACTICALFEATURES },	// don't place tactical features here
+	{"vehicleclip",	0,	0,	CONTENTS_VEHICLECLIP },	// solid to vehicles
+	{"flyclip",	0,	0,	CONTENTS_FLYCLIP },		// solid to vehicles
+	{"itemclip",	0,	0,	CONTENTS_ITEMCLIP },	// item collision
 	{"nonsolid",	1,	0,	0 },					// clears the solid flag
 	{"nullNormal",	0,	SURF_NULLNORMAL,0 },		// renderbump will draw as 0x80 0x80 0x80
 
@@ -556,6 +563,10 @@ int idMaterial::ParseTerm( idLexer &src ) {
 	if ( !token.Icmp( "DecalSpawn" ) ) {
 		pd->registersAreConstant = false;
 		return EXP_REG_PARM5;
+	}
+	if ( !token.Icmp( "VertexRandomizer" ) ) {
+		pd->registersAreConstant = false;
+		return EXP_REG_VERTEX_RANDOM;
 	}
 	if ( !token.Icmp( "parm6" ) ) {
 		pd->registersAreConstant = false;
@@ -2519,6 +2530,7 @@ void idMaterial::EvaluateRegisters( float *registers, const float shaderParms[MA
 	registers[EXP_REG_GLOBAL5] = view->renderView.shaderParms[5];
 	registers[EXP_REG_GLOBAL6] = view->renderView.shaderParms[6];
 	registers[EXP_REG_GLOBAL7] = view->renderView.shaderParms[7];
+	registers[EXP_REG_VERTEX_RANDOM] = shaderParms[SHADERPARM_DIVERSITY];
 
 	op = ops;
 	for ( i = 0 ; i < numOps ; i++, op++ ) {

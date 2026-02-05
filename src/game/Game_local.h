@@ -325,6 +325,7 @@ struct rvmGameRender_t {
 	const idMaterial* casPostProcessMaterial;
 	const idMaterial* blackPostProcessMaterial;
 	const idMaterial* resolvePostProcessMaterial;
+	bool postProcessAvailable;
 };
 // jmarshall end
 
@@ -407,6 +408,8 @@ public:
 	int						time;					// in msec
 	int						msec;					// time since last update in milliseconds
 	int						mHz;					// hertz
+	int						autoScreenshotStartTime;
+	bool					autoScreenshotPending;
 
 	int						vacuumAreaNum;			// -1 if level doesn't have any outside areas
 
@@ -498,6 +501,7 @@ public:
 // RAVEN END
 	virtual void			RepeaterFrame( const userOrigin_t *clientOrigins, bool lastCatchupFrame, int spoolTime = 0 ) {};
 	virtual bool			Draw( int clientNum );
+	void					CheckAutoScreenshot( void );
 	virtual escReply_t		HandleESC( idUserInterface **gui );
 	virtual idUserInterface	*StartMenu( void );
 	virtual const char *	HandleGuiCommands( const char *menuCommand );

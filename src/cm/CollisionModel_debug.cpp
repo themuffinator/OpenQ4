@@ -59,11 +59,25 @@ const char *cm_contentsNameByIndex[] = {
 	"ikclip",						// 7
 	"blood",						// 8
 	"body",							// 9
-	"corpse",						// 10
-	"trigger",						// 11
-	"aas_solid",					// 12
-	"aas_obstacle",					// 13
-	"flashlight_trigger",			// 14
+	"shotclip",						// 10
+	"corpse",						// 11
+	"rendermodel",					// 12
+	"trigger",						// 13
+	"aas_solid",					// 14
+	"aas_obstacle",					// 15
+	"flashlight_trigger",			// 16
+	"sightclip",					// 17
+	"largeshotclip",				// 18
+	"notacticalfeatures",			// 19
+	"vehicleclip",					// 20
+	"areaportal",					// 21
+	"nocsg",						// 22
+	"flyclip",						// 23
+	"itemclip",						// 24
+	"projectileclip",				// 25
+	"fog",							// 26
+	"lava",							// 27
+	"slime",						// 28
 	NULL
 };
 
@@ -78,11 +92,25 @@ int cm_contentsFlagByIndex[] = {
 	CONTENTS_IKCLIP,				// 7
 	CONTENTS_BLOOD,					// 8
 	CONTENTS_BODY,					// 9
-	CONTENTS_CORPSE,				// 10
-	CONTENTS_TRIGGER,				// 11
-	//CONTENTS_LAVA,					// 12
-	//CONTENTS_SLIME,					// 13
-	CONTENTS_FLASHLIGHT_TRIGGER,	// 14
+	CONTENTS_PROJECTILE,			// 10
+	CONTENTS_CORPSE,				// 11
+	CONTENTS_RENDERMODEL,			// 12
+	CONTENTS_TRIGGER,				// 13
+	CONTENTS_AAS_SOLID,				// 14
+	CONTENTS_AAS_OBSTACLE,			// 15
+	CONTENTS_FLASHLIGHT_TRIGGER,	// 16
+	CONTENTS_SIGHTCLIP,				// 17
+	CONTENTS_LARGESHOTCLIP,			// 18
+	CONTENTS_NOTACTICALFEATURES,	// 19
+	CONTENTS_VEHICLECLIP,			// 20
+	CONTENTS_AREAPORTAL,			// 21
+	CONTENTS_NOCSG,					// 22
+	CONTENTS_FLYCLIP,				// 23
+	CONTENTS_ITEMCLIP,				// 24
+	CONTENTS_PROJECTILECLIP,		// 25
+	CONTENTS_FOG,					// 26
+	CONTENTS_LAVA,					// 27
+	CONTENTS_SLIME,					// 28
 	0
 };
 

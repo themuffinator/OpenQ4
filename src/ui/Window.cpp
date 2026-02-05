@@ -32,6 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "DeviceContext.h"
 #include "Window.h"
 #include "UserInterfaceLocal.h"
+#include "../framework/Session.h"
 #include "EditWindow.h"
 #include "ChoiceWindow.h"
 #include "SliderWindow.h"
@@ -55,6 +56,7 @@ bool idWindow::registerIsTemporary[MAX_EXPRESSION_REGISTERS];		// statics to ass
 
 idCVar idWindow::gui_debug( "gui_debug", "0", CVAR_GUI | CVAR_BOOL, "" );
 idCVar idWindow::gui_edit( "gui_edit", "0", CVAR_GUI | CVAR_BOOL, "" );
+extern idCVar gui_debugScript;
 
 extern idCVar r_skipGuiShaders;		// 1 = don't render any gui elements on surfaces
 
@@ -567,6 +569,21 @@ void idWindow::Activate( bool activate,	idStr &act ) {
 
 	if ( act.Length() ) {
 		act += " ; ";
+	}
+}
+
+/*
+================
+idWindow::Init
+================
+*/
+void idWindow::Init() {
+	if ( session == NULL || !session->IsLoadingSaveGame() ) {
+		RunScript( ON_INIT );
+	}
+	int c = children.Num();
+	for ( int i = 0; i < c; i++ ) {
+		children[i]->Init();
 	}
 }
 
@@ -1151,6 +1168,10 @@ void idWindow::Time() {
 		for (int i = 0; i < c; i++) {
 			if ( timeLineEvents[i]->pending && gui->GetTime() - timeLine >= timeLineEvents[i]->time ) {
 				timeLineEvents[i]->pending = false;
+				if ( gui_debugScript.GetInteger() > 1 ) {
+					common->Printf("GUI: onTime window=%s time=%d gui=%s\n",
+						GetName(), timeLineEvents[i]->time, gui->GetSourceFile());
+				}
 				RunScriptList( timeLineEvents[i]->event );
 			}
 		}
@@ -2952,6 +2973,10 @@ idWindow::RunScriptList
 */
 bool idWindow::RunScriptList(idGuiScriptList *src) {
 	if (src == NULL) {
+		return false;
+	}
+	if ( !idGuiScriptList::IsValid( src ) ) {
+		common->Warning( "GUI: skipping invalid script list %p for window %p", src, this );
 		return false;
 	}
 	src->Execute(this);

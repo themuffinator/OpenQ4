@@ -398,13 +398,31 @@ void idCollisionModelManagerLocal::ParsePolygons( idLexer *src, idCollisionModel
 	idVec3 normal;
 	idToken token;
 
-	if ( src->CheckTokenType( TT_NUMBER, 0, &token ) ) {
-		model->polygonBlock = (cm_polygonBlock_t *) Mem_Alloc( sizeof( cm_polygonBlock_t ) + token.GetIntValue() );
-		model->polygonBlock->bytesRemaining = token.GetIntValue();
-		model->polygonBlock->next = ( (byte *) model->polygonBlock ) + sizeof( cm_polygonBlock_t );
+	if ( !src->ReadToken( &token ) ) {
+		src->Error( "ParsePolygons: unexpected end of file" );
+	}
+	if ( token == "{" ) {
+		// no preamble
+	} else if ( token.type == TT_NUMBER ) {
+		const int first = token.GetIntValue();
+		if ( !src->ReadToken( &token ) ) {
+			src->Error( "ParsePolygons: unexpected end of file after preamble" );
+		}
+		if ( token == "{" ) {
+			// legacy block size preamble
+			model->polygonBlock = (cm_polygonBlock_t *) Mem_Alloc( sizeof( cm_polygonBlock_t ) + first );
+			model->polygonBlock->bytesRemaining = first;
+			model->polygonBlock->next = ( (byte *) model->polygonBlock ) + sizeof( cm_polygonBlock_t );
+		} else if ( token.type == TT_NUMBER ) {
+			// Quake 4 .cm format: numPolygons numPolygonEdges
+			src->ExpectTokenString( "{" );
+		} else {
+			src->Error( "ParsePolygons: expected '{' but found '%s'", token.c_str() );
+		}
+	} else {
+		src->Error( "ParsePolygons: expected '{' but found '%s'", token.c_str() );
 	}
 
-	src->ExpectTokenString( "{" );
 	while ( !src->CheckTokenString( "}" ) ) {
 		// parse polygon
 		numEdges = src->ParseInt();
@@ -425,6 +443,18 @@ void idCollisionModelManagerLocal::ParsePolygons( idLexer *src, idCollisionModel
 		p->material = declManager->FindMaterial( token );
 		p->contents = p->material->GetContentFlags();
 		p->checkcount = 0;
+		if ( src->ReadToken( &token ) ) {
+			if ( token == "(" ) {
+				idVec2 texBounds[3];
+				src->UnreadToken( &token );
+				src->Parse1DMatrix( 2, texBounds[0].ToFloatPtr() );
+				src->Parse1DMatrix( 2, texBounds[1].ToFloatPtr() );
+				src->Parse1DMatrix( 2, texBounds[2].ToFloatPtr() );
+				src->ParseInt(); // primitive num
+			} else {
+				src->UnreadToken( &token );
+			}
+		}
 		// filter polygon into tree
 		R_FilterPolygonIntoTree( model, model->node, NULL, p );
 	}
@@ -441,13 +471,31 @@ void idCollisionModelManagerLocal::ParseBrushes( idLexer *src, idCollisionModelL
 	idVec3 normal;
 	idToken token;
 
-	if ( src->CheckTokenType( TT_NUMBER, 0, &token ) ) {
-		model->brushBlock = (cm_brushBlock_t *) Mem_Alloc( sizeof( cm_brushBlock_t ) + token.GetIntValue() );
-		model->brushBlock->bytesRemaining = token.GetIntValue();
-		model->brushBlock->next = ( (byte *) model->brushBlock ) + sizeof( cm_brushBlock_t );
+	if ( !src->ReadToken( &token ) ) {
+		src->Error( "ParseBrushes: unexpected end of file" );
+	}
+	if ( token == "{" ) {
+		// no preamble
+	} else if ( token.type == TT_NUMBER ) {
+		const int first = token.GetIntValue();
+		if ( !src->ReadToken( &token ) ) {
+			src->Error( "ParseBrushes: unexpected end of file after preamble" );
+		}
+		if ( token == "{" ) {
+			// legacy block size preamble
+			model->brushBlock = (cm_brushBlock_t *) Mem_Alloc( sizeof( cm_brushBlock_t ) + first );
+			model->brushBlock->bytesRemaining = first;
+			model->brushBlock->next = ( (byte *) model->brushBlock ) + sizeof( cm_brushBlock_t );
+		} else if ( token.type == TT_NUMBER ) {
+			// Quake 4 .cm format: numBrushes numBrushPlanes
+			src->ExpectTokenString( "{" );
+		} else {
+			src->Error( "ParseBrushes: expected '{' but found '%s'", token.c_str() );
+		}
+	} else {
+		src->Error( "ParseBrushes: expected '{' but found '%s'", token.c_str() );
 	}
 
-	src->ExpectTokenString( "{" );
 	while ( !src->CheckTokenString( "}" ) ) {
 		// parse brush
 		numPlanes = src->ParseInt();
@@ -465,11 +513,18 @@ void idCollisionModelManagerLocal::ParseBrushes( idLexer *src, idCollisionModelL
 		src->ReadToken( &token );
 		if ( token.type == TT_NUMBER ) {
 			b->contents = token.GetIntValue();		// old .cm files use a single integer
+			b->primitiveNum = 0;
 		} else {
 			b->contents = ContentsFromString( token );
+			// Quake 4 .cm brush entries may optionally include a primitive number on the same line.
+			// Only consume a token if it appears before a line break to avoid eating the next brush count.
+			if ( src->ReadTokenOnLine( &token ) && token.type == TT_NUMBER ) {
+				b->primitiveNum = token.GetIntValue();
+			} else {
+				b->primitiveNum = 0;
+			}
 		}
 		b->checkcount = 0;
-		b->primitiveNum = 0;
 		// filter brush into tree
 		R_FilterBrushIntoTree( model, model->node, NULL, b );
 	}
@@ -498,8 +553,18 @@ bool idCollisionModelManagerLocal::ParseCollisionModel( idLexer *src ) {
 	if (token.Cmpn(PROC_CLIPMODEL_STRING_PRFX, strlen(PROC_CLIPMODEL_STRING_PRFX)) == 0) {
 		numInlinedProcClipModels++;
 	}
-
-	src->ExpectTokenString( "{" );
+	// Quake 4 .cm files may include an extra numeric token after the model name (e.g. "1").
+	// Accept and ignore it to keep compatibility with shipped assets.
+	if ( !src->ReadToken( &token ) ) {
+		src->Error( "ParseCollisionModel: unexpected end of file after model name" );
+	}
+	if ( token != "{" ) {
+		if ( token.type == TT_NUMBER ) {
+			src->ExpectTokenString( "{" );
+		} else {
+			src->Error( "ParseCollisionModel: expected '{' but found '%s'", token.c_str() );
+		}
+	}
 	while ( !src->CheckTokenString( "}" ) ) {
 
 		src->ReadToken( &token );

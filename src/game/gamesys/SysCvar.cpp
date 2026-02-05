@@ -525,6 +525,9 @@ idCVar g_currentPlayback(			"g_currentPlayback",		"",				CVAR_GAME, "name of pla
 // RAVEN END
 idCVar g_testModelRotate(			"g_testModelRotate",		"0",			CVAR_GAME, "test model rotation speed" );
 idCVar g_testPostProcess(			"g_testPostProcess",		"",				CVAR_GAME, "name of material to draw over screen" );
+idCVar g_autoScreenshot(			"g_autoScreenshot",			"0",			CVAR_GAME | CVAR_BOOL | CVAR_NOCHEAT, "when enabled, take a screenshot after map load" );
+idCVar g_autoScreenshotDelayMs(	"g_autoScreenshotDelayMs",	"10000",		CVAR_GAME | CVAR_INTEGER | CVAR_NOCHEAT, "delay in ms after map load before taking an auto screenshot" );
+idCVar g_autoScreenshotQuit(		"g_autoScreenshotQuit",		"1",			CVAR_GAME | CVAR_BOOL | CVAR_NOCHEAT, "quit after taking an auto screenshot" );
 idCVar g_testModelAnimate(			"g_testModelAnimate",		"0",			CVAR_GAME | CVAR_INTEGER, "test model animation,\n"
 																							"0 = cycle anim with origin reset\n"
 																							"1 = cycle anim with fixed origin\n"
