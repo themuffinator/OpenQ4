@@ -1,0 +1,6 @@
+option(
+  'use_pch',
+  type: 'boolean',
+  value: true,
+  description: 'Enable precompiled headers (src/idlib/precompiled.h).',
+)

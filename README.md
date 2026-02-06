@@ -23,6 +23,26 @@ OpenQ4 is an open-source, drop-in engine replacement for Quake 4.
 - This repository is engine-only and does not ship game assets (audio, textures, or media).
 - Users must supply their own Quake 4 game data (e.g., `q4base` PK4s) to run the game.
 
+**Build (Meson + Ninja)**
+- Install Meson and Ninja.
+- Meson currently expects the Microsoft `cl.exe` toolchain for OpenQ4.
+- Recommended workflow (inspired by WORR-2):
+  - `powershell -ExecutionPolicy Bypass -File tools/build/meson_setup.ps1 setup --wipe build_meson . --backend ninja --buildtype debug --wrap-mode=forcefallback`
+  - `powershell -ExecutionPolicy Bypass -File tools/build/meson_setup.ps1 compile -C build_meson`
+- `tools/build/meson_setup.ps1` auto-loads Visual Studio build tools when needed and exports `WINDRES` via `tools/build/rc.cmd`.
+- Equivalent commands from an already-open VS Developer shell:
+  - `meson setup --wipe build_meson . --backend ninja --buildtype debug --wrap-mode=forcefallback`
+  - `meson compile -C build_meson`
+- Output binary:
+  - `build_meson/OpenQ4.exe`
+
+**External Dependencies (Meson Subprojects)**
+- `subprojects/glew`
+- `subprojects/stb_vorbis`
+- `subprojects/openal-soft-prebuilt`
+- These subprojects are used by Meson to keep third-party dependency wiring self-contained.
+- The legacy CMake build in `src/CMakeLists.txt` remains available.
+
 **Rules**
 - Always strive for binary compatibility with original Quake 4 game modules (DLLs).
 - Preserve behavior expected by the Quake 4 SDK and shipped game data.
@@ -41,3 +61,5 @@ OpenQ4 is an open-source, drop-in engine replacement for Quake 4.
 - id Software.
 - Raven Software.
 - Sean Barrett (stb_vorbis).
+- Nigel Stewart, Milan Ikits, Marcelo E. Magallon, and Lev Povalahev (GLEW).
+- OpenAL Soft contributors.

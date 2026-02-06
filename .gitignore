@@ -32,6 +32,11 @@
 *.app
 
 # Debug folders
-/build/*/
-/build_debug/*/
-/_save/*/
+/build/
+/build_debug/
+/build_meson/
+/build_meson_msvc/
+/build_meson_clangcl/
+/_save/
+/tmp/meson_extref_test*/
+/subprojects/.wraplock

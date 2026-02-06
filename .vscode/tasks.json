@@ -2,7 +2,51 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build OpenQ4 (Debug)",
+      "label": "Configure OpenQ4 (Meson Debug)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}\\tools\\build\\meson_setup.ps1",
+        "setup",
+        "--wipe",
+        "${workspaceFolder}\\build_meson",
+        "${workspaceFolder}",
+        "--backend",
+        "ninja",
+        "--buildtype",
+        "debug",
+        "--wrap-mode=forcefallback"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Build OpenQ4 (Meson Debug)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}\\tools\\build\\meson_setup.ps1",
+        "compile",
+        "-C",
+        "${workspaceFolder}\\build_meson"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [
+        "$msCompile"
+      ]
+    },
+    {
+      "label": "Build OpenQ4 (CMake Debug)",
       "type": "shell",
       "command": "cmake",
       "args": [
@@ -13,7 +57,7 @@
       ],
       "group": {
         "kind": "build",
-        "isDefault": true
+        "isDefault": false
       },
       "problemMatcher": [
         "$msCompile"
