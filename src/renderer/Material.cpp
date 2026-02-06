@@ -2097,14 +2097,57 @@ void idMaterial::ParseMaterial( idLexer &src ) {
 			src.ParseRestOfLine( renderBump );
 			continue;
 		}
+		// Quake 4 material guide directives are metadata/preprocessor hints.
+		// Treat them as no-op at runtime so shipped materials don't default.
+		else if ( !token.Icmp( "inlineGuide" ) || !token.Icmp( "guide" ) ) {
+			idToken guideName;
+			if ( src.ReadToken( &guideName ) ) {
+				if ( src.CheckTokenString( "(" ) ) {
+					int parenDepth = 1;
+					idToken guideToken;
+					while ( parenDepth > 0 && src.ReadToken( &guideToken ) ) {
+						if ( guideToken == "(" ) {
+							parenDepth++;
+						} else if ( guideToken == ")" ) {
+							parenDepth--;
+						}
+					}
+				}
+			}
+			continue;
+		}
 		// diffusemap for stage shortcut
 		else if ( !token.Icmp( "diffusemap" ) ) {
-			//str = R_ParsePastImageProgram( src );
-// jmarshall - calling ParsePastImageProgram twice is a perf hit on load, and causes parsing problems during the stage parse.
 			idStr str;
 			src.ReadRestOfLine(str);
+			int parenDepth = 0;
+			for ( int i = 0; i < str.Length(); i++ ) {
+				if ( str[i] == '(' ) {
+					parenDepth++;
+				} else if ( str[i] == ')' && parenDepth > 0 ) {
+					parenDepth--;
+				}
+			}
+			if ( str.Length() > 0 && parenDepth > 0 ) {
+				idToken continuation;
+				while ( parenDepth > 0 && src.ReadToken( &continuation ) ) {
+					str += " ";
+					str += continuation;
+					if ( continuation == "(" ) {
+						parenDepth++;
+					} else if ( continuation == ")" ) {
+						parenDepth--;
+					}
+				}
+			}
+			if ( str.Length() == 0 ) {
+				str = R_ParsePastImageProgram( src );
+			}
+			if ( str.Length() == 0 ) {
+				src.Warning( "diffusemap expects an image program in '%s'", GetName() );
+				continue;
+			}
 			idStr::snPrintf( buffer, sizeof( buffer ), "blend diffusemap\nmap %s\n}\n", str.c_str());
-// jmarshall end
 			newSrc.LoadMemory( buffer, strlen(buffer), "diffusemap" );
 			newSrc.SetFlags( LEXFL_NOFATALERRORS | LEXFL_NOSTRINGCONCAT | LEXFL_NOSTRINGESCAPECHARS | LEXFL_ALLOWPATHNAMES );
 			ParseStage( newSrc, trpDefault );
@@ -2113,11 +2156,36 @@ void idMaterial::ParseMaterial( idLexer &src ) {
 		}
 		// specularmap for stage shortcut
 		else if ( !token.Icmp( "specularmap" ) ) {
-// jmarshall - calling ParsePastImageProgram twice is a perf hit on load, and causes parsing problems during the stage parse.
 			idStr str;
 			src.ReadRestOfLine(str);
+			int parenDepth = 0;
+			for ( int i = 0; i < str.Length(); i++ ) {
+				if ( str[i] == '(' ) {
+					parenDepth++;
+				} else if ( str[i] == ')' && parenDepth > 0 ) {
+					parenDepth--;
+				}
+			}
+			if ( str.Length() > 0 && parenDepth > 0 ) {
+				idToken continuation;
+				while ( parenDepth > 0 && src.ReadToken( &continuation ) ) {
+					str += " ";
+					str += continuation;
+					if ( continuation == "(" ) {
+						parenDepth++;
+					} else if ( continuation == ")" ) {
+						parenDepth--;
+					}
+				}
+			}
+			if ( str.Length() == 0 ) {
+				str = R_ParsePastImageProgram( src );
+			}
+			if ( str.Length() == 0 ) {
+				src.Warning( "specularmap expects an image program in '%s'", GetName() );
+				continue;
+			}
 			idStr::snPrintf( buffer, sizeof( buffer ), "blend specularmap\nmap %s\n}\n", str.c_str());
-// jmarshall end
 			newSrc.LoadMemory( buffer, strlen(buffer), "specularmap" );
 			newSrc.SetFlags( LEXFL_NOFATALERRORS | LEXFL_NOSTRINGCONCAT | LEXFL_NOSTRINGESCAPECHARS | LEXFL_ALLOWPATHNAMES );
 			ParseStage( newSrc, trpDefault );
@@ -2126,11 +2194,36 @@ void idMaterial::ParseMaterial( idLexer &src ) {
 		}
 		// normalmap for stage shortcut
 		else if ( !token.Icmp( "bumpmap" ) ) {
-// jmarshall - calling ParsePastImageProgram twice is a perf hit on load, and causes parsing problems during the stage parse.
 			idStr str;
 			src.ReadRestOfLine(str);
+			int parenDepth = 0;
+			for ( int i = 0; i < str.Length(); i++ ) {
+				if ( str[i] == '(' ) {
+					parenDepth++;
+				} else if ( str[i] == ')' && parenDepth > 0 ) {
+					parenDepth--;
+				}
+			}
+			if ( str.Length() > 0 && parenDepth > 0 ) {
+				idToken continuation;
+				while ( parenDepth > 0 && src.ReadToken( &continuation ) ) {
+					str += " ";
+					str += continuation;
+					if ( continuation == "(" ) {
+						parenDepth++;
+					} else if ( continuation == ")" ) {
+						parenDepth--;
+					}
+				}
+			}
+			if ( str.Length() == 0 ) {
+				str = R_ParsePastImageProgram( src );
+			}
+			if ( str.Length() == 0 ) {
+				src.Warning( "bumpmap expects an image program in '%s'", GetName() );
+				continue;
+			}
 			idStr::snPrintf( buffer, sizeof( buffer ), "blend bumpmap\nmap %s\n}\n", str.c_str() );
-// jmarshall end
 			newSrc.LoadMemory( buffer, strlen(buffer), "bumpmap" );
 			newSrc.SetFlags( LEXFL_NOFATALERRORS | LEXFL_NOSTRINGCONCAT | LEXFL_NOSTRINGESCAPECHARS | LEXFL_ALLOWPATHNAMES );
 			ParseStage( newSrc, trpDefault );

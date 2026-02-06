@@ -637,23 +637,35 @@ idGuiScriptList::Execute
 =========================
 */
 void idGuiScriptList::Execute(idWindow *win) {
-	int c = list.Num();
-	for (int i = 0; i < c; i++) {
+	// Script handlers can trigger GUI changes that mutate or even destroy this
+	// list while we are iterating. Re-evaluate list validity/count each step.
+	for ( int i = 0; ; i++ ) {
+		if ( !idGuiScriptList::IsValid( this ) ) {
+			return;
+		}
+		if ( i >= list.Num() ) {
+			break;
+		}
+
 		idGuiScript *gs = list[i];
-		assert(gs);
-		if (gs->conditionReg >= 0) {
-			if (win->HasOps()) {
-				float f = win->EvalRegs(gs->conditionReg);
-				if (f) {
-					if (gs->ifList) {
-						win->RunScriptList(gs->ifList);
+		if ( !gs ) {
+			continue;
+		}
+
+		if ( gs->conditionReg >= 0 ) {
+			if ( win->HasOps() ) {
+				float f = win->EvalRegs( gs->conditionReg );
+				if ( f ) {
+					if ( gs->ifList ) {
+						win->RunScriptList( gs->ifList );
 					}
-				} else if (gs->elseList) {
-					win->RunScriptList(gs->elseList);
+				} else if ( gs->elseList ) {
+					win->RunScriptList( gs->elseList );
 				}
 			}
 		}
-		gs->Execute(win);
+
+		gs->Execute( win );
 	}
 }
 

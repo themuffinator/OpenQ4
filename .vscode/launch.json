@@ -53,7 +53,7 @@
         "si_gameType",
         "DM",
         "+spawnServer",
-        "mp/q4dm1"
+        "mp/q4dm3"
       ],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal"

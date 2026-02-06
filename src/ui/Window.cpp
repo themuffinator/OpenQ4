@@ -834,10 +834,15 @@ const char *idWindow::HandleEvent(const sysEvent_t *event, bool *updateVisuals) 
 					return "";
 				} 
 
-				int c = children.Num();
-				while (--c >= 0) {
-					if (children[c]->visible && children[c]->Contains(children[c]->drawRect, gui->CursorX(), gui->CursorY()) && !(children[c]->noEvents)) {
-						idWindow *child = children[c];
+				for ( int c = children.Num() - 1; c >= 0; c-- ) {
+					if ( c >= children.Num() ) {
+						continue;
+					}
+					idWindow *child = children[c];
+					if ( child == NULL ) {
+						continue;
+					}
+					if ( child->visible && child->Contains( child->drawRect, gui->CursorX(), gui->CursorY() ) && !( child->noEvents ) ) {
 						if (event->evValue2) {
 							BringToTop(child);
 							SetFocus(child);
@@ -850,13 +855,15 @@ const char *idWindow::HandleEvent(const sysEvent_t *event, bool *updateVisuals) 
 							//	SetCapture(child);
 							//}
 							SetFocus(child);
+							const bool childIsModal = ( child->flags & WIN_MODAL ) != 0;
 							const char *childRet = child->HandleEvent(event, updateVisuals);
 							if (childRet && *childRet) {
 								return childRet;
 							} 
-							if (child->flags & WIN_MODAL) {
+							if ( childIsModal ) {
 								return "";
 							}
+							return "";
 						} else {
 							if (event->evValue2) {
 								SetFocus(child);
@@ -883,10 +890,15 @@ const char *idWindow::HandleEvent(const sysEvent_t *event, bool *updateVisuals) 
 					return "";
 				}
 
-				int c = children.Num();
-				while (--c >= 0) {
-					if (children[c]->visible && children[c]->Contains(children[c]->drawRect, gui->CursorX(), gui->CursorY()) && !(children[c]->noEvents)) {
-						idWindow *child = children[c];
+				for ( int c = children.Num() - 1; c >= 0; c-- ) {
+					if ( c >= children.Num() ) {
+						continue;
+					}
+					idWindow *child = children[c];
+					if ( child == NULL ) {
+						continue;
+					}
+					if ( child->visible && child->Contains( child->drawRect, gui->CursorX(), gui->CursorY() ) && !( child->noEvents ) ) {
 						if (event->evValue2) {
 							BringToTop(child);
 							SetFocus(child);
@@ -895,24 +907,32 @@ const char *idWindow::HandleEvent(const sysEvent_t *event, bool *updateVisuals) 
 							if ((gui_edit.GetBool() && (child->flags & WIN_SELECTED)) || (!gui_edit.GetBool() && (child->flags & WIN_MOVABLE))) {
 								SetCapture(child);
 							}
+							const bool childIsModal = ( child->flags & WIN_MODAL ) != 0;
 							const char *childRet = child->HandleEvent(event, updateVisuals);
 							if (childRet && *childRet) {
 								return childRet;
 							} 
-							if (child->flags & WIN_MODAL) {
+							if ( childIsModal ) {
 								return "";
 							}
+							return "";
 						}
 					}
 				}
 			} else if (event->evValue == K_MOUSE3) {
 				if (gui_edit.GetBool()) {
-					int c = children.Num();
-					for (int i = 0; i < c; i++) {
-						if (children[i]->drawRect.Contains(gui->CursorX(), gui->CursorY())) {
+					for ( int i = 0; i < children.Num(); i++ ) {
+						if ( i >= children.Num() ) {
+							break;
+						}
+						idWindow *child = children[i];
+						if ( child == NULL ) {
+							continue;
+						}
+						if ( child->drawRect.Contains(gui->CursorX(), gui->CursorY()) ) {
 							if (event->evValue2) {
-								children[i]->flags ^= WIN_SELECTED;
-								if (children[i]->flags & WIN_SELECTED) {
+								child->flags ^= WIN_SELECTED;
+								if ( child->flags & WIN_SELECTED ) {
 									flags &= ~WIN_SELECTED;
 									return "childsel";
 								}
