@@ -54,8 +54,11 @@ OpenQ4 is an open-source, drop-in engine replacement for Quake 4.
 
 **Platform And Architecture Direction**
 - SDL3 + Meson are the forward-looking portability foundation.
+- SDL3 backend now includes integrated gamepad/joystick input (hotplug, JOY/AUX bind events, and dual-stick analog movement/look routing).
+- Controller tuning cvars: `in_joystick`, `in_joystickDeadZone`, `in_joystickTriggerThreshold`.
 - x64 (`x86_64`) is the active architecture baseline.
 - Cross-platform goal is full support on Windows, Linux, and macOS.
+- Engine-side screen UI now supports dynamic aspect handling across both wide and narrow/tall display ratios (with live relayout on resize/aspect change).
 - Detailed roadmap and staging policy: `doc/platform-support.md`.
 - Input parity audit checklist and current SDL3 gaps: `doc/input-key-matrix.md`.
 - Release completion checklist for changelog drafting: `doc/release-completion.md`.

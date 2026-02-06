@@ -751,6 +751,23 @@ void idPlayerView::RenderPlayerView( idUserInterface *hud ) {
 	if ( !view ) {
 		return;
 	}
+
+	if ( cvarSystem->GetCVarInteger( "r_aspectRatio" ) == -1 ) {
+		renderView_t *mutableView = player->GetRenderView();
+		if ( mutableView ) {
+			idCamera *camera = player->GetPrivateCameraView();
+			if ( !camera ) {
+				camera = gameLocal.GetCamera();
+			}
+
+			if ( camera ) {
+				camera->GetViewParms( mutableView );
+			} else {
+				gameLocal.CalcFov( player->CalcFov( true ), mutableView->fov_x, mutableView->fov_y );
+			}
+			view = mutableView;
+		}
+	}
 	
 	bool guiRendered = false;
 

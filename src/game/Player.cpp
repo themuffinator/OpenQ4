@@ -3822,7 +3822,18 @@ void idPlayer::EnterCinematic( void ) {
    		cinematicHud->HandleNamedEvent ( "cinematicStart" );
 // RAVEN BEGIN
 // jnewquist: Option to adjust vertical fov instead of horizontal for non 4:3 modes
-		if ( cvarSystem->GetCVarInteger( "r_aspectRatio" ) != 0 ) {
+		bool hideLetterbox = false;
+		const int aspectChoice = cvarSystem->GetCVarInteger( "r_aspectRatio" );
+		if ( aspectChoice == -1 ) {
+			const int screenWidth = renderSystem->GetScreenWidth();
+			const int screenHeight = renderSystem->GetScreenHeight();
+			if ( screenWidth > 0 && screenHeight > 0 ) {
+				hideLetterbox = ( static_cast<float>( screenWidth ) / static_cast<float>( screenHeight ) ) > ( 4.0f / 3.0f );
+			}
+		} else {
+			hideLetterbox = ( aspectChoice != 0 );
+		}
+		if ( hideLetterbox ) {
 			cinematicHud->HandleNamedEvent ( "hideLetterbox" );
 		}
 // RAVEN END

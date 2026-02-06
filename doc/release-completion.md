@@ -14,12 +14,14 @@ Process:
 - [x] SDL3 backend integrated as the default platform path (legacy Win32 backend remains transitional).
 - [x] Meson + Ninja build system introduced as canonical build path.
 - [x] External dependencies moved to Meson subprojects/wraps (`sdl3`, `glew`, `stb_vorbis`, `openal-soft-prebuilt`).
+- [x] Ogg Vorbis (`.ogg`) playback support integrated (decoded via `stb_vorbis`).
 - [x] C++23-targeting baseline enabled on MSVC (`cpp_std=vc++latest`).
 - [x] MSVC 2026 toolchain direction documented and implemented as an optional enforceable baseline (`-Denforce_msvc_2026=true`).
 - [x] Meson setup wrapper improved to auto-recover missing/stale build directories and avoid VS tool discovery null-crash.
 - [x] Windows SDL3 key/input parity improvements: backspace fix, control-char synthesis, locale-aware RightAlt behavior.
 - [x] Manual key matrix audit completed and documented for console, GUI edit fields, chat, binds, numpad, and modifiers.
 - [x] GUI scaling behavior updated to preserve uniform/aspect-correct rendering on window resize.
+- [x] Engine-side console/UI relayout now handles wide and narrow/tall aspect ratios, with live updates on screen size/aspect changes.
 - [x] Platform/architecture roadmap documentation added for Windows/Linux/macOS direction with x64 baseline.
 - [x] Legacy/redundant build-system artifacts reduced (CMake path retired from active source tree).
 

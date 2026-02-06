@@ -31,6 +31,62 @@ If you have questions concerning this license or the applicable additional terms
 
 static autoComplete_t	globalAutoComplete;
 
+static void DrawScaledSmallChar( float x, float y, float charWidth, int ch, const idMaterial *shader ) {
+	int row, col;
+	float frow, fcol;
+	float size;
+
+	ch &= 255;
+	if ( ch == ' ' ) {
+		return;
+	}
+
+	if ( y < -SMALLCHAR_HEIGHT ) {
+		return;
+	}
+
+	row = ch >> 4;
+	col = ch & 15;
+	frow = row * 0.0625f;
+	fcol = col * 0.0625f;
+	size = 0.0625f;
+
+	renderSystem->DrawStretchPic( x, y, charWidth, SMALLCHAR_HEIGHT,
+		fcol, frow, fcol + size, frow + size, shader );
+}
+
+static void DrawScaledSmallStringExt( float x, float y, float charWidth, const char *string, const idVec4 &setColor, bool forceColor, const idMaterial *shader ) {
+	idVec4 color;
+	const unsigned char *s;
+	float xx;
+
+	s = reinterpret_cast<const unsigned char *>( string );
+	xx = x;
+	renderSystem->SetColor( setColor );
+
+	while ( *s ) {
+		if ( idStr::IsColor( reinterpret_cast<const char *>( s ) ) ) {
+			if ( !forceColor ) {
+				if ( *( s + 1 ) == C_COLOR_DEFAULT ) {
+					renderSystem->SetColor( setColor );
+				} else {
+					color = idStr::ColorForIndex( *( s + 1 ) );
+					color[3] = setColor[3];
+					renderSystem->SetColor( color );
+				}
+			}
+			s += 2;
+			continue;
+		}
+
+		DrawScaledSmallChar( xx, y, charWidth, *s, shader );
+		xx += charWidth;
+		s++;
+	}
+
+	renderSystem->SetColor( colorWhite );
+}
+
 /*
 ===============
 FindMatches
@@ -534,9 +590,14 @@ void idEditField::Draw( int x, int y, int width, bool showCursor, const idMateri
 	int		prestep;
 	int		cursorChar;
 	char	str[MAX_EDIT_LINE];
-	int		size;
+	float	size;
 
-	size = SMALLCHAR_WIDTH;
+	if ( widthInChars > 0 && width > 0 ) {
+		size = static_cast<float>( width ) / static_cast<float>( widthInChars );
+	} else {
+		size = SMALLCHAR_WIDTH;
+	}
+	size = idMath::ClampFloat( 1.0f, 64.0f, size );
 
 	drawLen = widthInChars;
 	len = strlen( buffer ) + 1;
@@ -575,7 +636,11 @@ void idEditField::Draw( int x, int y, int width, bool showCursor, const idMateri
 	str[ drawLen ] = 0;
 
 	// draw it
-	renderSystem->DrawSmallStringExt( x, y, str, colorWhite, false, shader );
+	if ( idMath::Fabs( size - SMALLCHAR_WIDTH ) < 0.001f ) {
+		renderSystem->DrawSmallStringExt( x, y, str, colorWhite, false, shader );
+	} else {
+		DrawScaledSmallStringExt( static_cast<float>( x ), static_cast<float>( y ), size, str, colorWhite, false, shader );
+	}
 
 	// draw the cursor
 	if ( !showCursor ) {
@@ -600,5 +665,9 @@ void idEditField::Draw( int x, int y, int width, bool showCursor, const idMateri
 	//	}
 	//}
 
-	renderSystem->DrawSmallChar( x + ( cursor - prestep ) * size, y, cursorChar, shader );
+	if ( idMath::Fabs( size - SMALLCHAR_WIDTH ) < 0.001f ) {
+		renderSystem->DrawSmallChar( x + idMath::FtoiFast( ( cursor - prestep ) * size ), y, cursorChar, shader );
+	} else {
+		DrawScaledSmallChar( x + ( cursor - prestep ) * size, static_cast<float>( y ), size, cursorChar, shader );
+	}
 }

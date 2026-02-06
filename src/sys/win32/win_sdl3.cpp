@@ -29,6 +29,7 @@ along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <SDL3/SDL.h>
 
+#include <cmath>
 #include <cstdint>
 
 // WGL_ARB_extensions_string
@@ -58,6 +59,16 @@ static SDL_Window *s_sdlWindow = NULL;
 static SDL_GLContext s_sdlContext = NULL;
 static bool s_sdlVideoActive = false;
 static bool s_sdlTextInputActive = false;
+static bool s_sdlGamepadSubsystemActive = false;
+static bool s_sdlJoystickSubsystemActive = false;
+static SDL_Gamepad *s_sdlGamepad = NULL;
+static SDL_Joystick *s_sdlJoystick = NULL;
+static SDL_JoystickID s_sdlGamepadId = 0;
+static SDL_JoystickID s_sdlJoystickId = 0;
+
+static idCVar in_joystick("in_joystick", "1", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_BOOL, "enable joystick/gamepad input");
+static idCVar in_joystickDeadZone("in_joystickDeadZone", "0.18", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_FLOAT, "joystick axis dead zone", 0.0f, 0.95f);
+static idCVar in_joystickTriggerThreshold("in_joystickTriggerThreshold", "0.35", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_FLOAT, "trigger button press threshold", 0.0f, 1.0f);
 
 static const unsigned char s_scantokey[128] = {
 	0,          27,    '1',       '2',        '3',    '4',         '5',      '6',
@@ -111,6 +122,11 @@ typedef struct {
 	int		time;
 } sdlMouseEvent_t;
 
+typedef struct {
+	int		axis;
+	int		value;
+} sdlJoystickAxisEvent_t;
+
 static const int SDL3_INPUT_QUEUE_SIZE = 512;
 static const int SDL3_INPUT_QUEUE_MASK = SDL3_INPUT_QUEUE_SIZE - 1;
 
@@ -127,6 +143,16 @@ static sdlKeyboardEvent_t s_polledKeyboard[SDL3_INPUT_QUEUE_SIZE];
 static sdlMouseEvent_t s_polledMouse[SDL3_INPUT_QUEUE_SIZE];
 static int s_polledKeyboardCount = 0;
 static int s_polledMouseCount = 0;
+static sdlJoystickAxisEvent_t s_polledJoystick[MAX_JOYSTICK_AXIS];
+static int s_polledJoystickCount = 0;
+
+static int s_joystickAxisState[MAX_JOYSTICK_AXIS] = { 0 };
+static bool s_gamepadButtonsDown[SDL_GAMEPAD_BUTTON_COUNT] = { false };
+static bool s_gamepadLeftTriggerDown = false;
+static bool s_gamepadRightTriggerDown = false;
+static const int SDL3_MAX_JOYSTICK_BUTTONS = 48;
+static bool s_joystickButtonsDown[SDL3_MAX_JOYSTICK_BUTTONS] = { false };
+static Uint8 s_joystickHatState = SDL_HAT_CENTERED;
 
 void* GLimp_ExtensionPointer(const char* name);
 
@@ -151,6 +177,7 @@ static void SDL3_ClearInputQueues(void) {
 	s_mouseHead = s_mouseTail = 0;
 	s_polledKeyboardCount = 0;
 	s_polledMouseCount = 0;
+	s_polledJoystickCount = 0;
 	Sys_LeaveCriticalSection(CRITICAL_SECTION_ONE);
 }
 
@@ -180,6 +207,438 @@ static void SDL3_QueueMouseInput(int action, int value, int time) {
 	s_mouseQueue[s_mouseHead].time = time;
 	s_mouseHead = next;
 	Sys_LeaveCriticalSection(CRITICAL_SECTION_ONE);
+}
+
+static int SDL3_ClampJoystickValue(int value) {
+	if (value < -127) {
+		return -127;
+	}
+	if (value > 127) {
+		return 127;
+	}
+	return value;
+}
+
+static float SDL3_ClampUnit(float value) {
+	if (value < 0.0f) {
+		return 0.0f;
+	}
+	if (value > 1.0f) {
+		return 1.0f;
+	}
+	return value;
+}
+
+static int SDL3_NormalizeSignedAxis(Sint16 value, float deadZone) {
+	float normalized = static_cast<float>(value) / 32767.0f;
+	if (normalized < -1.0f) {
+		normalized = -1.0f;
+	} else if (normalized > 1.0f) {
+		normalized = 1.0f;
+	}
+
+	const float absValue = fabsf(normalized);
+	if (absValue <= deadZone) {
+		return 0;
+	}
+
+	const float adjusted = (absValue - deadZone) / (1.0f - deadZone);
+	const float signedAdjusted = (normalized < 0.0f) ? -adjusted : adjusted;
+	return SDL3_ClampJoystickValue(static_cast<int>(roundf(signedAdjusted * 127.0f)));
+}
+
+static int SDL3_NormalizeTriggerAxis(Sint16 value, float deadZone) {
+	float normalized = static_cast<float>(value) / 32767.0f;
+	normalized = SDL3_ClampUnit(normalized);
+
+	if (normalized <= deadZone) {
+		return 0;
+	}
+
+	const float adjusted = (normalized - deadZone) / (1.0f - deadZone);
+	return SDL3_ClampJoystickValue(static_cast<int>(roundf(adjusted * 127.0f)));
+}
+
+static const int s_joyKeys[32] = {
+	K_JOY1, K_JOY2, K_JOY3, K_JOY4, K_JOY5, K_JOY6, K_JOY7, K_JOY8,
+	K_JOY9, K_JOY10, K_JOY11, K_JOY12, K_JOY13, K_JOY14, K_JOY15, K_JOY16,
+	K_JOY17, K_JOY18, K_JOY19, K_JOY20, K_JOY21, K_JOY22, K_JOY23, K_JOY24,
+	K_JOY25, K_JOY26, K_JOY27, K_JOY28, K_JOY29, K_JOY30, K_JOY31, K_JOY32
+};
+
+static const int s_auxKeys[16] = {
+	K_AUX1, K_AUX2, K_AUX3, K_AUX4, K_AUX5, K_AUX6, K_AUX7, K_AUX8,
+	K_AUX9, K_AUX10, K_AUX11, K_AUX12, K_AUX13, K_AUX14, K_AUX15, K_AUX16
+};
+
+static int SDL3_JoyKeyFromOrdinal(int ordinal) {
+	if (ordinal < 0) {
+		return 0;
+	}
+
+	if (ordinal < static_cast<int>(sizeof(s_joyKeys) / sizeof(s_joyKeys[0]))) {
+		return s_joyKeys[ordinal];
+	}
+
+	ordinal -= static_cast<int>(sizeof(s_joyKeys) / sizeof(s_joyKeys[0]));
+	if (ordinal < static_cast<int>(sizeof(s_auxKeys) / sizeof(s_auxKeys[0]))) {
+		return s_auxKeys[ordinal];
+	}
+
+	return 0;
+}
+
+static int SDL3_MapGamepadButton(Uint8 button) {
+	switch (button) {
+		case SDL_GAMEPAD_BUTTON_LEFT_SHOULDER: return K_JOY1;
+		case SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER: return K_JOY2;
+		case SDL_GAMEPAD_BUTTON_SOUTH: return K_JOY3;
+		case SDL_GAMEPAD_BUTTON_EAST: return K_JOY4;
+		case SDL_GAMEPAD_BUTTON_NORTH: return K_JOY5;
+		case SDL_GAMEPAD_BUTTON_WEST: return K_JOY6;
+		case SDL_GAMEPAD_BUTTON_START: return K_JOY7;
+		case SDL_GAMEPAD_BUTTON_BACK: return K_JOY8;
+		case SDL_GAMEPAD_BUTTON_DPAD_UP: return K_JOY9;
+		case SDL_GAMEPAD_BUTTON_DPAD_DOWN: return K_JOY10;
+		case SDL_GAMEPAD_BUTTON_DPAD_RIGHT: return K_JOY11;
+		case SDL_GAMEPAD_BUTTON_DPAD_LEFT: return K_JOY12;
+		case SDL_GAMEPAD_BUTTON_LEFT_STICK: return K_JOY13;
+		case SDL_GAMEPAD_BUTTON_RIGHT_STICK: return K_JOY14;
+		case SDL_GAMEPAD_BUTTON_GUIDE: return K_JOY17;
+		case SDL_GAMEPAD_BUTTON_TOUCHPAD: return K_JOY18;
+		case SDL_GAMEPAD_BUTTON_RIGHT_PADDLE1: return K_JOY19;
+		case SDL_GAMEPAD_BUTTON_LEFT_PADDLE1: return K_JOY20;
+		case SDL_GAMEPAD_BUTTON_RIGHT_PADDLE2: return K_JOY21;
+		case SDL_GAMEPAD_BUTTON_LEFT_PADDLE2: return K_JOY22;
+		case SDL_GAMEPAD_BUTTON_MISC1: return K_JOY23;
+		case SDL_GAMEPAD_BUTTON_MISC2: return K_JOY24;
+		case SDL_GAMEPAD_BUTTON_MISC3: return K_JOY25;
+		case SDL_GAMEPAD_BUTTON_MISC4: return K_JOY26;
+		case SDL_GAMEPAD_BUTTON_MISC5: return K_JOY27;
+		case SDL_GAMEPAD_BUTTON_MISC6: return K_JOY28;
+		default:
+			break;
+	}
+
+	return 0;
+}
+
+static void SDL3_ClearJoystickStateUnlocked(void) {
+	memset(s_joystickAxisState, 0, sizeof(s_joystickAxisState));
+}
+
+static void SDL3_ClearJoystickState(void) {
+	Sys_EnterCriticalSection(CRITICAL_SECTION_ONE);
+	SDL3_ClearJoystickStateUnlocked();
+	Sys_LeaveCriticalSection(CRITICAL_SECTION_ONE);
+}
+
+static void SDL3_PostControllerKeyEvent(int key, bool down, int eventTime) {
+	if (key == 0) {
+		return;
+	}
+
+	Sys_QueEvent(eventTime, SE_KEY, key, down ? 1 : 0, 0, NULL);
+	SDL3_QueueKeyboardInput(key, down, eventTime);
+}
+
+static void SDL3_UpdateTriggerButtons(int leftTrigger, int rightTrigger, int eventTime) {
+	const float threshold = SDL3_ClampUnit(in_joystickTriggerThreshold.GetFloat());
+	const int pressThreshold = static_cast<int>(roundf(threshold * 127.0f));
+	const bool leftDown = leftTrigger >= pressThreshold;
+	const bool rightDown = rightTrigger >= pressThreshold;
+
+	if (leftDown != s_gamepadLeftTriggerDown) {
+		s_gamepadLeftTriggerDown = leftDown;
+		SDL3_PostControllerKeyEvent(K_JOY16, leftDown, eventTime);
+	}
+	if (rightDown != s_gamepadRightTriggerDown) {
+		s_gamepadRightTriggerDown = rightDown;
+		SDL3_PostControllerKeyEvent(K_JOY15, rightDown, eventTime);
+	}
+}
+
+static void SDL3_UpdateGamepadAxes(int eventTime) {
+	if (!s_sdlGamepad) {
+		SDL3_ClearJoystickState();
+		return;
+	}
+
+	const float deadZone = SDL3_ClampUnit(in_joystickDeadZone.GetFloat());
+
+	const int moveX = SDL3_NormalizeSignedAxis(SDL_GetGamepadAxis(s_sdlGamepad, SDL_GAMEPAD_AXIS_LEFTX), deadZone);
+	const int moveY = -SDL3_NormalizeSignedAxis(SDL_GetGamepadAxis(s_sdlGamepad, SDL_GAMEPAD_AXIS_LEFTY), deadZone);
+	const int lookX = SDL3_NormalizeSignedAxis(SDL_GetGamepadAxis(s_sdlGamepad, SDL_GAMEPAD_AXIS_RIGHTX), deadZone);
+	const int lookY = SDL3_NormalizeSignedAxis(SDL_GetGamepadAxis(s_sdlGamepad, SDL_GAMEPAD_AXIS_RIGHTY), deadZone);
+	const int leftTrigger = SDL3_NormalizeTriggerAxis(SDL_GetGamepadAxis(s_sdlGamepad, SDL_GAMEPAD_AXIS_LEFT_TRIGGER), deadZone);
+	const int rightTrigger = SDL3_NormalizeTriggerAxis(SDL_GetGamepadAxis(s_sdlGamepad, SDL_GAMEPAD_AXIS_RIGHT_TRIGGER), deadZone);
+
+	Sys_EnterCriticalSection(CRITICAL_SECTION_ONE);
+	s_joystickAxisState[AXIS_SIDE] = lookX;
+	s_joystickAxisState[AXIS_FORWARD] = lookY;
+	s_joystickAxisState[AXIS_UP] = SDL3_ClampJoystickValue(rightTrigger - leftTrigger);
+	s_joystickAxisState[AXIS_ROLL] = 127;
+	s_joystickAxisState[AXIS_YAW] = moveX;
+	s_joystickAxisState[AXIS_PITCH] = moveY;
+	Sys_LeaveCriticalSection(CRITICAL_SECTION_ONE);
+
+	SDL3_UpdateTriggerButtons(leftTrigger, rightTrigger, eventTime);
+}
+
+static void SDL3_UpdateJoystickAxes(void) {
+	if (!s_sdlJoystick) {
+		SDL3_ClearJoystickState();
+		return;
+	}
+
+	const float deadZone = SDL3_ClampUnit(in_joystickDeadZone.GetFloat());
+	const int numAxes = SDL_GetNumJoystickAxes(s_sdlJoystick);
+	const bool hasLookAxis = numAxes >= 4;
+
+	int moveX = 0;
+	int moveY = 0;
+	int lookX = 0;
+	int lookY = 0;
+	int up = 0;
+
+	if (numAxes > 0) {
+		moveX = SDL3_NormalizeSignedAxis(SDL_GetJoystickAxis(s_sdlJoystick, 0), deadZone);
+	}
+	if (numAxes > 1) {
+		moveY = -SDL3_NormalizeSignedAxis(SDL_GetJoystickAxis(s_sdlJoystick, 1), deadZone);
+	}
+	if (numAxes > 2) {
+		lookX = SDL3_NormalizeSignedAxis(SDL_GetJoystickAxis(s_sdlJoystick, 2), deadZone);
+	}
+	if (numAxes > 3) {
+		lookY = SDL3_NormalizeSignedAxis(SDL_GetJoystickAxis(s_sdlJoystick, 3), deadZone);
+	}
+	if (numAxes > 5) {
+		const int axis4 = SDL3_NormalizeSignedAxis(SDL_GetJoystickAxis(s_sdlJoystick, 4), deadZone);
+		const int axis5 = SDL3_NormalizeSignedAxis(SDL_GetJoystickAxis(s_sdlJoystick, 5), deadZone);
+		up = SDL3_ClampJoystickValue(axis4 - axis5);
+	} else if (numAxes > 4) {
+		up = SDL3_NormalizeSignedAxis(SDL_GetJoystickAxis(s_sdlJoystick, 4), deadZone);
+	}
+
+	Sys_EnterCriticalSection(CRITICAL_SECTION_ONE);
+	s_joystickAxisState[AXIS_SIDE] = lookX;
+	s_joystickAxisState[AXIS_FORWARD] = lookY;
+	s_joystickAxisState[AXIS_UP] = up;
+	s_joystickAxisState[AXIS_ROLL] = hasLookAxis ? 127 : 0;
+	s_joystickAxisState[AXIS_YAW] = moveX;
+	s_joystickAxisState[AXIS_PITCH] = moveY;
+	Sys_LeaveCriticalSection(CRITICAL_SECTION_ONE);
+}
+
+static void SDL3_SetJoystickHat(Uint8 newHat, int eventTime) {
+	const Uint8 oldHat = s_joystickHatState;
+	const bool oldUp = (oldHat & SDL_HAT_UP) != 0;
+	const bool oldDown = (oldHat & SDL_HAT_DOWN) != 0;
+	const bool oldRight = (oldHat & SDL_HAT_RIGHT) != 0;
+	const bool oldLeft = (oldHat & SDL_HAT_LEFT) != 0;
+	const bool newUp = (newHat & SDL_HAT_UP) != 0;
+	const bool newDown = (newHat & SDL_HAT_DOWN) != 0;
+	const bool newRight = (newHat & SDL_HAT_RIGHT) != 0;
+	const bool newLeft = (newHat & SDL_HAT_LEFT) != 0;
+
+	if (oldUp != newUp) {
+		SDL3_PostControllerKeyEvent(K_JOY9, newUp, eventTime);
+	}
+	if (oldDown != newDown) {
+		SDL3_PostControllerKeyEvent(K_JOY10, newDown, eventTime);
+	}
+	if (oldRight != newRight) {
+		SDL3_PostControllerKeyEvent(K_JOY11, newRight, eventTime);
+	}
+	if (oldLeft != newLeft) {
+		SDL3_PostControllerKeyEvent(K_JOY12, newLeft, eventTime);
+	}
+
+	s_joystickHatState = newHat;
+}
+
+static void SDL3_ReleaseGamepadState(int eventTime) {
+	for (int i = 0; i < SDL_GAMEPAD_BUTTON_COUNT; ++i) {
+		if (!s_gamepadButtonsDown[i]) {
+			continue;
+		}
+		s_gamepadButtonsDown[i] = false;
+		SDL3_PostControllerKeyEvent(SDL3_MapGamepadButton(static_cast<Uint8>(i)), false, eventTime);
+	}
+
+	if (s_gamepadLeftTriggerDown) {
+		s_gamepadLeftTriggerDown = false;
+		SDL3_PostControllerKeyEvent(K_JOY16, false, eventTime);
+	}
+	if (s_gamepadRightTriggerDown) {
+		s_gamepadRightTriggerDown = false;
+		SDL3_PostControllerKeyEvent(K_JOY15, false, eventTime);
+	}
+}
+
+static void SDL3_ReleaseJoystickState(int eventTime) {
+	for (int i = 0; i < SDL3_MAX_JOYSTICK_BUTTONS; ++i) {
+		if (!s_joystickButtonsDown[i]) {
+			continue;
+		}
+		s_joystickButtonsDown[i] = false;
+		SDL3_PostControllerKeyEvent(SDL3_JoyKeyFromOrdinal(i), false, eventTime);
+	}
+
+	SDL3_SetJoystickHat(SDL_HAT_CENTERED, eventTime);
+}
+
+static void SDL3_CloseGamepad(int eventTime) {
+	if (!s_sdlGamepad) {
+		return;
+	}
+
+	SDL3_ReleaseGamepadState(eventTime);
+	SDL_CloseGamepad(s_sdlGamepad);
+	s_sdlGamepad = NULL;
+	s_sdlGamepadId = 0;
+	SDL3_ClearJoystickState();
+}
+
+static void SDL3_CloseJoystick(int eventTime) {
+	if (!s_sdlJoystick) {
+		return;
+	}
+
+	SDL3_ReleaseJoystickState(eventTime);
+	SDL_CloseJoystick(s_sdlJoystick);
+	s_sdlJoystick = NULL;
+	s_sdlJoystickId = 0;
+	SDL3_ClearJoystickState();
+}
+
+static bool SDL3_OpenGamepad(SDL_JoystickID instanceId) {
+	SDL_Gamepad *pad = SDL_OpenGamepad(instanceId);
+	if (!pad) {
+		return false;
+	}
+
+	SDL3_CloseJoystick(Sys_Milliseconds());
+
+	s_sdlGamepad = pad;
+	s_sdlGamepadId = instanceId;
+	memset(s_gamepadButtonsDown, 0, sizeof(s_gamepadButtonsDown));
+	s_gamepadLeftTriggerDown = false;
+	s_gamepadRightTriggerDown = false;
+
+	SDL3_UpdateGamepadAxes(Sys_Milliseconds());
+
+	const char *name = SDL_GetGamepadName(pad);
+	if (name && name[0] != '\0') {
+		common->Printf("controller: opened SDL gamepad '%s'\n", name);
+	} else {
+		common->Printf("controller: opened SDL gamepad\n");
+	}
+	return true;
+}
+
+static bool SDL3_OpenJoystick(SDL_JoystickID instanceId) {
+	if (SDL_IsGamepad(instanceId)) {
+		return false;
+	}
+
+	SDL_Joystick *joystick = SDL_OpenJoystick(instanceId);
+	if (!joystick) {
+		return false;
+	}
+
+	s_sdlJoystick = joystick;
+	s_sdlJoystickId = instanceId;
+	memset(s_joystickButtonsDown, 0, sizeof(s_joystickButtonsDown));
+	s_joystickHatState = SDL_HAT_CENTERED;
+
+	SDL3_UpdateJoystickAxes();
+
+	const char *name = SDL_GetJoystickName(joystick);
+	if (name && name[0] != '\0') {
+		common->Printf("controller: opened SDL joystick '%s'\n", name);
+	} else {
+		common->Printf("controller: opened SDL joystick\n");
+	}
+	return true;
+}
+
+static void SDL3_OpenFirstController(void) {
+	if (!in_joystick.GetBool() || s_sdlGamepad || s_sdlJoystick) {
+		return;
+	}
+
+	int gamepadCount = 0;
+	SDL_JoystickID *gamepads = SDL_GetGamepads(&gamepadCount);
+	if (gamepads) {
+		for (int i = 0; i < gamepadCount; ++i) {
+			if (SDL3_OpenGamepad(gamepads[i])) {
+				break;
+			}
+		}
+		SDL_free(gamepads);
+	}
+
+	if (s_sdlGamepad) {
+		return;
+	}
+
+	int joystickCount = 0;
+	SDL_JoystickID *joysticks = SDL_GetJoysticks(&joystickCount);
+	if (joysticks) {
+		for (int i = 0; i < joystickCount; ++i) {
+			if (SDL3_OpenJoystick(joysticks[i])) {
+				break;
+			}
+		}
+		SDL_free(joysticks);
+	}
+}
+
+static void SDL3_InitControllerSubsystems(void) {
+	if (!in_joystick.GetBool()) {
+		SDL3_CloseGamepad(Sys_Milliseconds());
+		SDL3_CloseJoystick(Sys_Milliseconds());
+		SDL3_ClearJoystickState();
+		return;
+	}
+
+	if (!s_sdlGamepadSubsystemActive) {
+		if (SDL_InitSubSystem(SDL_INIT_GAMEPAD)) {
+			s_sdlGamepadSubsystemActive = true;
+			SDL_SetGamepadEventsEnabled(true);
+		} else {
+			common->Printf("SDL3: could not initialize gamepad subsystem: %s\n", SDL_GetError());
+		}
+	}
+
+	if (!s_sdlJoystickSubsystemActive) {
+		if (SDL_InitSubSystem(SDL_INIT_JOYSTICK)) {
+			s_sdlJoystickSubsystemActive = true;
+			SDL_SetJoystickEventsEnabled(true);
+		} else {
+			common->Printf("SDL3: could not initialize joystick subsystem: %s\n", SDL_GetError());
+		}
+	}
+
+	SDL3_OpenFirstController();
+}
+
+static void SDL3_ShutdownControllerSubsystems(void) {
+	SDL3_CloseGamepad(Sys_Milliseconds());
+	SDL3_CloseJoystick(Sys_Milliseconds());
+
+	if (s_sdlGamepadSubsystemActive) {
+		SDL_QuitSubSystem(SDL_INIT_GAMEPAD);
+		s_sdlGamepadSubsystemActive = false;
+	}
+	if (s_sdlJoystickSubsystemActive) {
+		SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
+		s_sdlJoystickSubsystemActive = false;
+	}
+
+	SDL3_ClearJoystickState();
 }
 
 static int SDL3_MapScancode(SDL_Scancode scancode) {
@@ -528,14 +987,13 @@ static void SDL3_HandleWindowEvent(const SDL_WindowEvent &event, int eventTime) 
 
 		case SDL_EVENT_WINDOW_RESTORED:
 			win32.activeApp = true;
+			SDL3_RefreshWindowPlacement();
 			break;
 
 		case SDL_EVENT_WINDOW_RESIZED:
 		case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
-			if (event.data1 > 0 && event.data2 > 0) {
-				glConfig.vidWidth = event.data1;
-				glConfig.vidHeight = event.data2;
-			}
+			// Query the drawable size directly to avoid stale/asymmetric event payloads.
+			SDL3_RefreshWindowPlacement();
 			break;
 
 		default:
@@ -548,6 +1006,15 @@ static void SDL3_HandleWindowEvent(const SDL_WindowEvent &event, int eventTime) 
 bool Sys_SDL_PumpEvents(void) {
 	if (!s_sdlVideoActive || !s_sdlWindow) {
 		return false;
+	}
+
+	if (in_joystick.IsModified()) {
+		if (in_joystick.GetBool()) {
+			SDL3_InitControllerSubsystems();
+		} else {
+			SDL3_ShutdownControllerSubsystems();
+		}
+		in_joystick.ClearModified();
 	}
 
 	SDL_Event event;
@@ -648,10 +1115,90 @@ bool Sys_SDL_PumpEvents(void) {
 				break;
 			}
 
+			case SDL_EVENT_GAMEPAD_ADDED:
+				if (in_joystick.GetBool()) {
+					if (s_sdlJoystick) {
+						SDL3_CloseJoystick(eventTime);
+					}
+					if (!s_sdlGamepad) {
+						(void)SDL3_OpenGamepad(event.gdevice.which);
+					}
+				}
+				break;
+
+			case SDL_EVENT_GAMEPAD_REMOVED:
+				if (s_sdlGamepad && event.gdevice.which == s_sdlGamepadId) {
+					SDL3_CloseGamepad(eventTime);
+					SDL3_OpenFirstController();
+				}
+				break;
+
+			case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
+			case SDL_EVENT_GAMEPAD_BUTTON_UP:
+				if (in_joystick.GetBool() && s_sdlGamepad && event.gbutton.which == s_sdlGamepadId) {
+					const int button = static_cast<int>(event.gbutton.button);
+					if (button >= 0 && button < SDL_GAMEPAD_BUTTON_COUNT) {
+						const bool down = event.gbutton.down;
+						if (s_gamepadButtonsDown[button] != down) {
+							s_gamepadButtonsDown[button] = down;
+							SDL3_PostControllerKeyEvent(SDL3_MapGamepadButton(event.gbutton.button), down, eventTime);
+						}
+					}
+				}
+				break;
+
+			case SDL_EVENT_GAMEPAD_AXIS_MOTION:
+				if (in_joystick.GetBool() && s_sdlGamepad && event.gaxis.which == s_sdlGamepadId) {
+					SDL3_UpdateGamepadAxes(eventTime);
+				}
+				break;
+
+			case SDL_EVENT_JOYSTICK_ADDED:
+				if (in_joystick.GetBool() && !s_sdlGamepad && !s_sdlJoystick && !SDL_IsGamepad(event.jdevice.which)) {
+					(void)SDL3_OpenJoystick(event.jdevice.which);
+				}
+				break;
+
+			case SDL_EVENT_JOYSTICK_REMOVED:
+				if (s_sdlJoystick && event.jdevice.which == s_sdlJoystickId) {
+					SDL3_CloseJoystick(eventTime);
+					SDL3_OpenFirstController();
+				}
+				break;
+
+			case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
+			case SDL_EVENT_JOYSTICK_BUTTON_UP:
+				if (in_joystick.GetBool() && s_sdlJoystick && event.jbutton.which == s_sdlJoystickId) {
+					const int button = static_cast<int>(event.jbutton.button);
+					if (button >= 0 && button < SDL3_MAX_JOYSTICK_BUTTONS) {
+						const bool down = event.jbutton.down;
+						if (s_joystickButtonsDown[button] != down) {
+							s_joystickButtonsDown[button] = down;
+							SDL3_PostControllerKeyEvent(SDL3_JoyKeyFromOrdinal(button), down, eventTime);
+						}
+					}
+				}
+				break;
+
+			case SDL_EVENT_JOYSTICK_HAT_MOTION:
+				if (in_joystick.GetBool() && s_sdlJoystick && event.jhat.which == s_sdlJoystickId) {
+					SDL3_SetJoystickHat(event.jhat.value, eventTime);
+				}
+				break;
+
+			case SDL_EVENT_JOYSTICK_AXIS_MOTION:
+				if (in_joystick.GetBool() && s_sdlJoystick && event.jaxis.which == s_sdlJoystickId) {
+					SDL3_UpdateJoystickAxes();
+				}
+				break;
+
 			default:
 				break;
 		}
 	}
+
+	// Keep render dimensions in sync even if the platform misses or coalesces resize events.
+	SDL3_RefreshWindowPlacement();
 
 	return true;
 }
@@ -861,7 +1408,19 @@ void Sys_InitInput(void) {
 		common->Printf("Mouse control not active.\n");
 	}
 
+	SDL3_InitControllerSubsystems();
+	if (in_joystick.GetBool()) {
+		if (s_sdlGamepad || s_sdlJoystick) {
+			common->Printf("joystick: SDL3 initialized.\n");
+		} else {
+			common->Printf("joystick: SDL3 initialized (no device detected).\n");
+		}
+	} else {
+		common->Printf("Joystick control not active.\n");
+	}
+
 	win32.in_mouse.ClearModified();
+	in_joystick.ClearModified();
 	SDL3_ClearInputQueues();
 	common->Printf("------------------------------------\n");
 }
@@ -874,6 +1433,7 @@ void Sys_ShutdownInput(void) {
 		s_sdlTextInputActive = false;
 	}
 
+	SDL3_ShutdownControllerSubsystems();
 	SDL3_ClearInputQueues();
 }
 
@@ -941,6 +1501,39 @@ int Sys_ReturnMouseInputEvent(const int n, int &action, int &value) {
 }
 
 void Sys_EndMouseInputEvents(void) {
+}
+
+int Sys_PollJoystickInputEvents(void) {
+	if (!in_joystick.GetBool()) {
+		s_polledJoystickCount = 0;
+		return 0;
+	}
+
+	Sys_EnterCriticalSection(CRITICAL_SECTION_ONE);
+	s_polledJoystickCount = 0;
+	for (int axis = 0; axis < MAX_JOYSTICK_AXIS; ++axis) {
+		s_polledJoystick[s_polledJoystickCount].axis = axis;
+		s_polledJoystick[s_polledJoystickCount].value = s_joystickAxisState[axis];
+		s_polledJoystickCount++;
+	}
+	Sys_LeaveCriticalSection(CRITICAL_SECTION_ONE);
+
+	return s_polledJoystickCount;
+}
+
+int Sys_ReturnJoystickInputEvent(const int n, int &axis, int &value) {
+	if (n < 0 || n >= s_polledJoystickCount) {
+		axis = 0;
+		value = 0;
+		return 0;
+	}
+
+	axis = s_polledJoystick[n].axis;
+	value = s_polledJoystick[n].value;
+	return 1;
+}
+
+void Sys_EndJoystickInputEvents(void) {
 }
 
 void GLimp_SetGamma(unsigned short red[256], unsigned short green[256], unsigned short blue[256]) {
@@ -1038,6 +1631,7 @@ void GLimp_Shutdown(void) {
 	common->Printf("Shutting down OpenGL subsystem (SDL3 backend)\n");
 
 	IN_DeactivateMouse();
+	SDL3_ShutdownControllerSubsystems();
 	if (s_sdlWindow && s_sdlTextInputActive) {
 		(void)SDL_StopTextInput(s_sdlWindow);
 		s_sdlTextInputActive = false;

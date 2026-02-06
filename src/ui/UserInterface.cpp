@@ -77,6 +77,9 @@ void idUserInterfaceManagerLocal::WritePrecacheCommands( idFile *f ) {
 }
 
 void idUserInterfaceManagerLocal::SetSize( float width, float height ) {
+	if ( width > 0.0f && height > 0.0f ) {
+		screenRect = idRectangle( 0.0f, 0.0f, width, height );
+	}
 	dc.SetSize( width, height );
 }
 
@@ -389,6 +392,7 @@ void idUserInterfaceLocal::Redraw( int _time ) {
 			initialized = true;
 			desktop->Init();
 		}
+		uiManagerLocal.SetSize( desktop->forceAspectWidth, desktop->forceAspectHeight );
 		if ( gui_debugScript.GetInteger() > 4 ) {
 			static int lastDebugRedrawTime = -10000;
 			if ( _time - lastDebugRedrawTime >= 250 ) {

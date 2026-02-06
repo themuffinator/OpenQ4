@@ -675,6 +675,12 @@ idUsercmdGenLocal::JoystickMove
 */
 void idUsercmdGenLocal::JoystickMove( void ) {
 	float	anglespeed;
+	// AXIS_ROLL is used as a backend capability flag: non-zero means dedicated look axes are available.
+	const bool hasDedicatedLookAxis = joystickAxis[AXIS_ROLL] != 0;
+	const int lookAxisX = hasDedicatedLookAxis ? joystickAxis[AXIS_SIDE] : joystickAxis[AXIS_YAW];
+	const int lookAxisY = hasDedicatedLookAxis ? joystickAxis[AXIS_FORWARD] : -joystickAxis[AXIS_PITCH];
+	const int moveAxisX = joystickAxis[AXIS_YAW];
+	const int moveAxisY = joystickAxis[AXIS_PITCH];
 
 	if ( toggled_run.on ^ ( in_alwaysRun.GetBool() && idAsyncNetwork::IsActive() ) ) {
 		anglespeed = idMath::M_MS2SEC * USERCMD_MSEC * in_angleSpeedKey.GetFloat();
@@ -682,12 +688,19 @@ void idUsercmdGenLocal::JoystickMove( void ) {
 		anglespeed = idMath::M_MS2SEC * USERCMD_MSEC;
 	}
 
-	if ( !ButtonState( UB_STRAFE ) ) {
-		viewangles[YAW] += anglespeed * in_yawSpeed.GetFloat() * joystickAxis[AXIS_SIDE];
-		viewangles[PITCH] += anglespeed * in_pitchSpeed.GetFloat() * joystickAxis[AXIS_FORWARD];
+	if ( hasDedicatedLookAxis || !ButtonState( UB_STRAFE ) ) {
+		viewangles[YAW] += anglespeed * in_yawSpeed.GetFloat() * lookAxisX;
+		viewangles[PITCH] += anglespeed * in_pitchSpeed.GetFloat() * lookAxisY;
+	}
+
+	if ( hasDedicatedLookAxis ) {
+		cmd.rightmove = idMath::ClampChar( cmd.rightmove + moveAxisX );
+		cmd.forwardmove = idMath::ClampChar( cmd.forwardmove + moveAxisY );
 	} else {
-		cmd.rightmove = idMath::ClampChar( cmd.rightmove + joystickAxis[AXIS_SIDE] );
-		cmd.forwardmove = idMath::ClampChar( cmd.forwardmove + joystickAxis[AXIS_FORWARD] );
+		if ( ButtonState( UB_STRAFE ) ) {
+			cmd.rightmove = idMath::ClampChar( cmd.rightmove + moveAxisX );
+			cmd.forwardmove = idMath::ClampChar( cmd.forwardmove + moveAxisY );
+		}
 	}
 
 	cmd.upmove = idMath::ClampChar( cmd.upmove + joystickAxis[AXIS_UP] );
@@ -1035,7 +1048,22 @@ idUsercmdGenLocal::Joystick
 ===============
 */
 void idUsercmdGenLocal::Joystick( void ) {
+	int numEvents;
+
 	memset( joystickAxis, 0, sizeof( joystickAxis ) );
+
+	numEvents = Sys_PollJoystickInputEvents();
+	for ( int i = 0; i < numEvents; i++ ) {
+		int axis;
+		int value;
+		if ( Sys_ReturnJoystickInputEvent( i, axis, value ) ) {
+			if ( axis >= 0 && axis < MAX_JOYSTICK_AXIS ) {
+				joystickAxis[ axis ] = idMath::ClampChar( value );
+			}
+		}
+	}
+
+	Sys_EndJoystickInputEvents();
 }
 
 /*

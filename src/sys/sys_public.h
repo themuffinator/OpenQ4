@@ -358,6 +358,11 @@ int				Sys_PollMouseInputEvents( void );
 int				Sys_ReturnMouseInputEvent( const int n, int &action, int &value );
 void			Sys_EndMouseInputEvents( void );
 
+// joystick input polling
+int				Sys_PollJoystickInputEvents( void );
+int				Sys_ReturnJoystickInputEvent( const int n, int &axis, int &value );
+void			Sys_EndJoystickInputEvents( void );
+
 // when the console is down, or the game is about to perform a lengthy
 // operation like map loading, the system can release the mouse cursor
 // when in windowed mode

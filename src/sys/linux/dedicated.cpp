@@ -54,6 +54,12 @@ void Sys_EndKeyboardInputEvents( void ) { }
 
 int Sys_ReturnKeyboardInputEvent( const int n, int &action, bool &state ) { return 0; }
 
+int Sys_PollJoystickInputEvents( void ) { return 0; }
+
+int Sys_ReturnJoystickInputEvent( const int n, int &axis, int &value ) { return 0; }
+
+void Sys_EndJoystickInputEvents( void ) { }
+
 unsigned char Sys_MapCharForKey( int key ) { return (unsigned char)key; }
 
 /*
