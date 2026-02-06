@@ -341,7 +341,8 @@ idPlayer::State_Torso_Pain
 ================
 */
 stateResult_t idPlayer::State_Torso_Pain ( const stateParms_t& parms ) {
-	PlayAnim ( ANIMCHANNEL_TORSO, painAnim.Length()?painAnim:"pain", parms.blendFrames );
+	const char* painAnimName = painAnim.Length() ? painAnim.c_str() : "pain";
+	PlayAnim ( ANIMCHANNEL_TORSO, painAnimName, parms.blendFrames );
 	PostAnimState ( ANIMCHANNEL_TORSO, "Wait_TorsoAnim", 4  );
 	PostAnimState ( ANIMCHANNEL_TORSO, "Torso_Idle", 4 );
 	return SRESULT_DONE;

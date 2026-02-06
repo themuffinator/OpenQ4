@@ -8738,8 +8738,10 @@ idMultiplayerGame::GetPlayerRankText
 ===============
 */
 char* idMultiplayerGame::GetPlayerRankText( idPlayer* player ) {
+	static char emptyRankText[] = "";
+
 	if( player == NULL ) {
-		return "";
+		return emptyRankText;
 	}
 
 	bool tied = false;

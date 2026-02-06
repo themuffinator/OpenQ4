@@ -2183,7 +2183,7 @@ ID_INLINE type idCurve_NonUniformBSpline<type>::GetCurrentValue( const float tim
 
 	clampedTime = idCurve_Spline<type>::ClampedTime( time );
 	i = idCurve<type>::IndexForTime( clampedTime );
-	Basis( i-1, this->order, clampedTime, bvals );
+	this->Basis( i-1, this->order, clampedTime, bvals );
 	v = this->values[0] - this->values[0];
 	for ( j = 0; j < this->order; j++ ) {
 		k = i + j - ( this->order >> 1 );
@@ -2212,7 +2212,7 @@ ID_INLINE type idCurve_NonUniformBSpline<type>::GetCurrentFirstDerivative( const
 
 	clampedTime = idCurve_Spline<type>::ClampedTime( time );
 	i = idCurve<type>::IndexForTime( clampedTime );
-	BasisFirstDerivative( i-1, this->order, clampedTime, bvals );
+	this->BasisFirstDerivative( i-1, this->order, clampedTime, bvals );
 	v = this->values[0] - this->values[0];
 	for ( j = 0; j < this->order; j++ ) {
 		k = i + j - ( this->order >> 1 );
@@ -2241,7 +2241,7 @@ ID_INLINE type idCurve_NonUniformBSpline<type>::GetCurrentSecondDerivative( cons
 
 	clampedTime = idCurve_Spline<type>::ClampedTime( time );
 	i = idCurve<type>::IndexForTime( clampedTime );
-	BasisSecondDerivative( i-1, this->order, clampedTime, bvals );
+	this->BasisSecondDerivative( i-1, this->order, clampedTime, bvals );
 	v = this->values[0] - this->values[0];
 	for ( j = 0; j < this->order; j++ ) {
 		k = i + j - ( this->order >> 1 );
@@ -2445,7 +2445,7 @@ ID_INLINE type idCurve_NURBS<type>::GetCurrentValue( const float time ) const {
 
 	clampedTime = idCurve_Spline<type>::ClampedTime( time );
 	i = idCurve<type>::IndexForTime( clampedTime );
-	Basis( i-1, this->order, clampedTime, bvals );
+	this->Basis( i-1, this->order, clampedTime, bvals );
 	v = this->values[0] - this->values[0];
 	w = 0.0f;
 	for ( j = 0; j < this->order; j++ ) {
@@ -2479,8 +2479,8 @@ ID_INLINE type idCurve_NURBS<type>::GetCurrentFirstDerivative( const float time 
 
 	clampedTime = idCurve_Spline<type>::ClampedTime( time );
 	i = idCurve<type>::IndexForTime( clampedTime );
-	Basis( i-1, this->order, clampedTime, bvals );
-	BasisFirstDerivative( i-1, this->order, clampedTime, d1vals );
+	this->Basis( i-1, this->order, clampedTime, bvals );
+	this->BasisFirstDerivative( i-1, this->order, clampedTime, d1vals );
 	vb = vd1 = this->values[0] - this->values[0];
 	wb = wd1 = 0.0f;
 	for ( j = 0; j < this->order; j++ ) {
@@ -2520,9 +2520,9 @@ ID_INLINE type idCurve_NURBS<type>::GetCurrentSecondDerivative( const float time
 
 	clampedTime = idCurve_Spline<type>::ClampedTime( time );
 	i = idCurve<type>::IndexForTime( clampedTime );
-	Basis( i-1, this->order, clampedTime, bvals );
-	BasisFirstDerivative( i-1, this->order, clampedTime, d1vals );
-	BasisSecondDerivative( i-1, this->order, clampedTime, d2vals );
+	this->Basis( i-1, this->order, clampedTime, bvals );
+	this->BasisFirstDerivative( i-1, this->order, clampedTime, d1vals );
+	this->BasisSecondDerivative( i-1, this->order, clampedTime, d2vals );
 	vb = vd1 = vd2 = this->values[0] - this->values[0];
 	wb = wd1 = wd2 = 0.0f;
 	for ( j = 0; j < this->order; j++ ) {

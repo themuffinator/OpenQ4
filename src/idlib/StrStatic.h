@@ -73,7 +73,7 @@ public:
 	{
 		buffer[ 0 ] = '\0';
 		SetStaticBuffer( buffer, _size_ );
-		CopyRange( text.c_str(), start, end );
+		idStr::operator=( idStr( text.c_str(), start, end ) );
 	}
 
 	ID_INLINE	idStrStatic( const char* text ) :
@@ -89,7 +89,7 @@ public:
 	{
 		buffer[ 0 ] = '\0';
 		SetStaticBuffer( buffer, _size_ );
-		CopyRange( text, start, end );
+		idStr::operator=( idStr( text, start, end ) );
 	}
 
 	ID_INLINE	explicit idStrStatic( const bool b ) :

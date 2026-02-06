@@ -15,6 +15,7 @@ OpenQ4 is an open-source, drop-in engine replacement for Quake 4.
 - Maintain feature parity for both single-player and multiplayer.
 - Modernize rendering, audio, and platform support while preserving Quake 4 behavior.
 - Keep documentation current as significant changes land.
+- Reach full support for modern systems across Windows, Linux, and macOS with x64 as the active baseline architecture.
 
 **Audio**
 - WAV and Ogg Vorbis (`.ogg`) assets are supported (Ogg decoded via stb_vorbis).
@@ -25,11 +26,19 @@ OpenQ4 is an open-source, drop-in engine replacement for Quake 4.
 
 **Build (Meson + Ninja)**
 - Install Meson and Ninja.
-- Meson currently expects the Microsoft `cl.exe` toolchain for OpenQ4.
+- Current actively validated target is Windows x64 with Microsoft `cl.exe`.
+- Language baseline target is C++23 semantics (`cpp_std=vc++latest` on MSVC).
+- Toolchain direction is MSVC 19.46+ (Visual Studio 2026 baseline), with compatibility fallback to older installed MSVC when strict enforcement is disabled.
+- MSVC strict string-literal conformance is temporarily disabled (`/Zc:strictStrings-`) to keep legacy idTech4-era code building during migration.
+- Linux and macOS bring-up are staged (see `doc/platform-support.md`), with SDL3 + Meson as the required path.
 - Recommended workflow (inspired by WORR-2):
   - `powershell -ExecutionPolicy Bypass -File tools/build/meson_setup.ps1 setup --wipe build_meson . --backend ninja --buildtype debug --wrap-mode=forcefallback`
   - `powershell -ExecutionPolicy Bypass -File tools/build/meson_setup.ps1 compile -C build_meson`
-- `tools/build/meson_setup.ps1` auto-loads Visual Studio build tools when needed and exports `WINDRES` via `tools/build/rc.cmd`.
+- `tools/build/meson_setup.ps1` auto-loads Visual Studio build tools when needed (prefers VS 2026+/major 18 when available), and exports `WINDRES` via `tools/build/rc.cmd`.
+- `tools/build/meson_setup.ps1 compile` now auto-regenerates `build_meson` if it is missing or stale, which resolves "not a meson build directory" errors.
+- Non-Windows wrapper: `tools/build/meson_setup.sh` (passes through to `meson`).
+- Optional strict baseline gate:
+  - `-Denforce_msvc_2026=true` to fail configure when MSVC is older than 19.46.
 - Equivalent commands from an already-open VS Developer shell:
   - `meson setup --wipe build_meson . --backend ninja --buildtype debug --wrap-mode=forcefallback`
   - `meson compile -C build_meson`
@@ -40,8 +49,16 @@ OpenQ4 is an open-source, drop-in engine replacement for Quake 4.
 - `subprojects/glew`
 - `subprojects/stb_vorbis`
 - `subprojects/openal-soft-prebuilt`
+- `subprojects/sdl3.wrap` (SDL3 fallback via WrapDB, plus local packagefile patch for Win32 WGL/OpenGL enablement)
 - These subprojects are used by Meson to keep third-party dependency wiring self-contained.
-- The legacy CMake build in `src/CMakeLists.txt` remains available.
+
+**Platform And Architecture Direction**
+- SDL3 + Meson are the forward-looking portability foundation.
+- x64 (`x86_64`) is the active architecture baseline.
+- Cross-platform goal is full support on Windows, Linux, and macOS.
+- Detailed roadmap and staging policy: `doc/platform-support.md`.
+- Input parity audit checklist and current SDL3 gaps: `doc/input-key-matrix.md`.
+- Release completion checklist for changelog drafting: `doc/release-completion.md`.
 
 **Rules**
 - Always strive for binary compatibility with original Quake 4 game modules (DLLs).

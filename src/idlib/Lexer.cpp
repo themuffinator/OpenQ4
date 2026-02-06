@@ -486,8 +486,8 @@ punctuation_t default_punctuations[] = {
 	{"#",P_PRECOMP},					// pre-compiler
 	{"$",P_DOLLAR},
 // RAVEN BEGIN
-	{"¡",P_INVERTED_PLING},
-	{"¿",P_INVERTED_QUERY},
+	{"ï¿½",P_INVERTED_PLING},
+	{"ï¿½",P_INVERTED_QUERY},
 // RAVEN END
 	{NULL, 0}
 };
@@ -1174,7 +1174,7 @@ idLexer::ReadPunctuation
 */
 int idLexer::ReadPunctuation( idToken *token ) {
 	int l, n, i;
-	char *p;
+	const char *p;
 	const punctuation_t *punc;
 
 #ifdef PUNCTABLE
@@ -2600,11 +2600,11 @@ void idLexer::WriteBinaryToken(idToken *tok)
 			{
 				TextCompiler::WriteValue<unsigned char>(BTT_MAKEPUNCTUATION_PREFIX(BTT_PUNC_TIMESEQUAL), mBinaryFile, swapBytes);
 			}
-			else if(*tok == "¡")
+			else if(*tok == "ï¿½")
 			{
 				TextCompiler::WriteValue<unsigned char>(BTT_PUNC_INVERTEDPLING, mBinaryFile, swapBytes);
 			}
-			else if(*tok == "¿")
+			else if(*tok == "ï¿½")
 			{
 				TextCompiler::WriteValue<unsigned char>(BTT_PUNC_INVERTEDQUERY, mBinaryFile, swapBytes);
 			}
@@ -3621,10 +3621,10 @@ int Lexer::ReadToken(idToken *token)
 					*token = "||";
 					break;
 				case BTT_PUNC_INVERTEDPLING:
-					*token = "¡";
+					*token = "ï¿½";
 					break;
 				case BTT_PUNC_INVERTEDQUERY:
-					*token = "¿";
+					*token = "ï¿½";
 					break;
 				default:
 					assert(false);		// unrecognized punctuation
@@ -3975,3 +3975,4 @@ void idLexer::SetBaseFolder(const char* path)
 {
 	idStr::Copynz(baseFolder, path, sizeof(baseFolder));
 }
+

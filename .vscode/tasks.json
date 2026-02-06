@@ -44,24 +44,6 @@
       "problemMatcher": [
         "$msCompile"
       ]
-    },
-    {
-      "label": "Build OpenQ4 (CMake Debug)",
-      "type": "shell",
-      "command": "cmake",
-      "args": [
-        "--build",
-        "${workspaceFolder}\\build_debug",
-        "--config",
-        "Debug"
-      ],
-      "group": {
-        "kind": "build",
-        "isDefault": false
-      },
-      "problemMatcher": [
-        "$msCompile"
-      ]
     }
   ]
 }

@@ -395,7 +395,7 @@ idHashTable<Type>::GetSpread
 */
 template< class Type >
 int idHashTable<Type>::GetSpread( void ) const {
-	int i, average, error, e;
+	int i, average, error, e, numItems;
 	hashnode_s	*node;
 
 	// if no items in hash

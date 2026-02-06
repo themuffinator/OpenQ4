@@ -48,6 +48,10 @@ If you have questions concerning this license or the applicable additional terms
 #include "rc/CreateResourceIDs.h"
 #include "../../renderer/tr_local.h"
 
+#ifdef USE_SDL3
+bool Sys_SDL_PumpEvents(void);
+#endif
+
 idCVar Win32Vars_t::sys_arch("sys_arch", "", CVAR_SYSTEM | CVAR_INIT, "");
 idCVar Win32Vars_t::sys_cpustring("sys_cpustring", "detect", CVAR_SYSTEM | CVAR_INIT, "");
 idCVar Win32Vars_t::in_mouse("in_mouse", "1", CVAR_SYSTEM | CVAR_BOOL, "enable mouse input");
@@ -782,6 +786,10 @@ This allows windows to be moved during renderbump
 */
 void Sys_PumpEvents(void) {
 	MSG msg;
+
+#ifdef USE_SDL3
+	(void)Sys_SDL_PumpEvents();
+#endif
 
 	// pump the message loop
 	while (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) {

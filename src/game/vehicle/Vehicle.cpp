@@ -555,7 +555,7 @@ void rvVehicle::Think ( void ) {
 
 		// If the vehicle is flipped then kick out all drivers
 		if ( HasDrivers() && IsFlipped ( ) && GetPhysics()->GetLinearVelocity ( ).LengthSqr() < (100.0f * 100.0f)) {
-			if ( spawnArgs.GetBool( "locked_flip_death", false ) ) {
+			if ( spawnArgs.GetBool( "locked_flip_death", "0" ) ) {
 				Killed( this, this, 999999999, GetPhysics()->GetLinearVelocity(), 0 );
 			} else if ( vfl.flipEject ) {
 				for ( i = 0; i < positions.Num(); i ++ ) {

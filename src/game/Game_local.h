@@ -712,7 +712,7 @@ public:
 	// used to skip one when registering entities, leaving an empty entity in the array
 	void					SkipEntityIndex( void );
 
-	bool					RequirementMet( idEntity *activator, const idStr &requires, int removeItem );
+	bool					RequirementMet( idEntity *activator, const idStr &requirement, int removeItem );
 
 // RITUAL BEGIN
 // squirrel: accessor for si_weaponStay checks

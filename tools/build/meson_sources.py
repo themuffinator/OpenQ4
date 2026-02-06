@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import pathlib
 import sys
 
@@ -88,6 +89,16 @@ SOURCE_GLOBS = [
     "game/weapon/*.cpp",
 ]
 
+LEGACY_WIN32_SOURCES = {
+    "src/sys/win32/win_glimp.cpp",
+    "src/sys/win32/win_input.cpp",
+    "src/sys/win32/win_wndproc.cpp",
+}
+
+SDL3_WIN32_SOURCES = {
+    "src/sys/win32/win_sdl3.cpp",
+}
+
 
 def add_source(
     source_set: set[str], ordered_sources: list[str], rel_path: pathlib.Path
@@ -98,12 +109,49 @@ def add_source(
         ordered_sources.append(normalized)
 
 
-def main() -> int:
+def remove_source(
+    source_set: set[str], ordered_sources: list[str], normalized: str
+) -> None:
+    if normalized not in source_set:
+        return
+    source_set.remove(normalized)
+    ordered_sources[:] = [path for path in ordered_sources if path != normalized]
+
+
+def parse_args(argv: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--host-system",
+        choices=("windows", "linux", "darwin"),
+        default="windows",
+        help="Meson host system for source selection.",
+    )
+    parser.add_argument(
+        "--platform-backend",
+        choices=("sdl3", "legacy_win32"),
+        default="sdl3",
+        help="Win32 platform backend source selection.",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str]) -> int:
+    args = parse_args(argv)
+
     repo_root = pathlib.Path(__file__).resolve().parents[2]
     src_root = repo_root / "src"
 
     if not src_root.is_dir():
         print(f"Missing source root: {src_root}", file=sys.stderr)
+        return 1
+
+    if args.host_system != "windows":
+        print(
+            "Meson source selection for this host is staged. "
+            "Current active target is Windows x64. "
+            "See doc/platform-support.md for Linux/macOS roadmap.",
+            file=sys.stderr,
+        )
         return 1
 
     source_set: set[str] = set()
@@ -126,6 +174,19 @@ def main() -> int:
                     pathlib.Path("src") / match.relative_to(src_root),
                 )
 
+    if args.platform_backend == "sdl3":
+        for path in LEGACY_WIN32_SOURCES:
+            remove_source(source_set, ordered_sources, path)
+        for path in SDL3_WIN32_SOURCES:
+            full_path = repo_root / path
+            if not full_path.is_file():
+                print(f"Missing expected SDL3 backend file: {full_path}", file=sys.stderr)
+                return 1
+            add_source(source_set, ordered_sources, pathlib.Path(path))
+    else:
+        for path in SDL3_WIN32_SOURCES:
+            remove_source(source_set, ordered_sources, path)
+
     if not ordered_sources:
         print("No source files discovered.", file=sys.stderr)
         return 1
@@ -135,4 +196,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(main(sys.argv[1:]))

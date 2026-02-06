@@ -143,6 +143,8 @@ private:
 	idStr				fontName;
 	float				xScale;
 	float				yScale;
+	float				xOffset;
+	float				yOffset;
 
 	float				vidHeight;
 	float				vidWidth;

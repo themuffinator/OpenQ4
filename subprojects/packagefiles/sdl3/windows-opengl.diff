@@ -1,0 +1,13 @@
+diff --git a/meson.build b/meson.build
+index 3891123..f6bf2f1 100644
+--- a/meson.build
++++ b/meson.build
+@@ -363,6 +363,8 @@ elif host_machine.system() == 'windows'
+  cdata.set('SDL_PROCESS_WINDOWS', 1)
+  cdata.set('SDL_SENSOR_WINDOWS', 1)
+  cdata.set('SDL_POWER_WINDOWS', 1)
++ cdata.set('SDL_VIDEO_OPENGL', 1)
++ cdata.set('SDL_VIDEO_OPENGL_WGL', 1)
+  cdata.set('SDL_VIDEO_RENDER_D3D12', 1)
+  cdata.set('SDL_GPU_VULKAN', 1)
+  cdata.set('SDL_GPU_D3D12', 1)

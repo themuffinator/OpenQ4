@@ -128,7 +128,7 @@ int CurrNumAllocations[MA_MAX];
 // Descriptions that go with each tag.  When updating the tag enum in Heap.h please 
 // update this list as well.
 // (also update the list in rvHeap.cpp)
-char *TagNames[] = {
+const char *TagNames[] = {
 	"none",
 	"New operation",
 	"default",

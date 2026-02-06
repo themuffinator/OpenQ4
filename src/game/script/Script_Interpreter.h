@@ -80,8 +80,8 @@ public:
 	int					CurrentLine( void ) const;
 	const char			*CurrentFile( void ) const;
 
-	void				Error( char *fmt, ... ) const;
-	void				Warning( char *fmt, ... ) const;
+	void				Error( const char *fmt, ... ) const;
+	void				Warning( const char *fmt, ... ) const;
 	void				DisplayInfo( void ) const;
 
 	bool				BeginMultiFrameEvent( idEntity *ent, const idEventDef *event );

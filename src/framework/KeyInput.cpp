@@ -30,9 +30,9 @@ If you have questions concerning this license or the applicable additional terms
 
 
 typedef struct {
-	char	*name;
+	const char	*name;
 	int		keynum;
-	char	*strId;	// localized string id
+	const char	*strId;	// localized string id
 } keyname_t;
 
 // keys that can be set without a special name
@@ -204,7 +204,7 @@ idKey *		keys = NULL;
 
 #ifdef ID_DOOM_LEGACY
 
-char *		cheatCodes[] = {
+const char *		cheatCodes[] = {
 	"iddqd",		// Invincibility
 	"idkfa",		// All weapons, keys, ammo, and 200% armor
 	"idfa",			// Reset ammunition
@@ -238,7 +238,7 @@ idKeyInput::ArgCompletion_KeyName
 ===================
 */
 void idKeyInput::ArgCompletion_KeyName( const idCmdArgs &args, void(*callback)( const char *s ) ) {
-	keyname_t *kn;
+	const keyname_t *kn;
 	int i;
 
 	for( i = 0; i < sizeof( unnamedkeys ) - 1; i++ ) {
@@ -294,7 +294,7 @@ to be configured even if they don't have defined names.
 ===================
 */
 int idKeyInput::StringToKeyNum( const char *str ) {
-	keyname_t	*kn;
+	const keyname_t	*kn;
 	
 	if ( !str || !str[0] ) {
 		return -1;
@@ -347,7 +347,7 @@ given keynum.
 ===================
 */
 const char *idKeyInput::KeyNumToString( int keynum, bool localized ) {
-	keyname_t	*kn;	
+	const keyname_t	*kn;	
 	static	char	tinystr[5];
 	int			i, j;
 

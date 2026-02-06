@@ -15,11 +15,15 @@ This file describes project goals, rules, and upstream credits for anyone workin
 - Preserve behavior required by original Quake 4 game DLLs.
 - Maintain full single-player and multiplayer parity.
 - Modernize the engine while preserving Quake 4 compatibility.
+- Establish a cross-platform foundation targeting modern systems (Windows, Linux, macOS; x64 first) through SDL3 and Meson.
 
 **Rules**
 - Keep compatibility with original Quake 4 binaries (DLLs) as the primary requirement.
 - Prefer changes that match Quake 4 SDK expectations and shipped content behavior.
 - Document significant changes in the documentation and keep `README.md` accurate.
+- Prefer platform abstractions through SDL3 and avoid introducing new platform-specific dependencies in shared engine code when an SDL3 path exists.
+- Keep Meson as the primary build entry point and keep dependency management through Meson subprojects.
+- Treat x64 as the baseline architecture for active support while staging additional modern architectures incrementally.
 - Keep credits accurate and add new attributions when incorporating upstream work.
 - Avoid adding engine-side content files (e.g., custom material scripts) unless absolutely required for compatibility; the drop-in goal is to run with the original game assets and only the OpenQ4 executable (plus minimal external libs).
 - Any existing custom `q4base/` content is treated as an expedient bootstrap, not a long-term solution. The goal is to remove this reliance by fixing engine compatibility issues rather than shipping replacement assets.

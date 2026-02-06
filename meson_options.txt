@@ -4,3 +4,18 @@ option(
   value: true,
   description: 'Enable precompiled headers (src/idlib/precompiled.h).',
 )
+
+option(
+  'platform_backend',
+  type: 'combo',
+  choices: ['sdl3', 'legacy_win32'],
+  value: 'sdl3',
+  description: 'Window/input backend on Windows (SDL3 is the portability default; legacy_win32 is transitional).',
+)
+
+option(
+  'enforce_msvc_2026',
+  type: 'boolean',
+  value: false,
+  description: 'Fail configure when MSVC is older than the VS 2026 baseline (19.46+).',
+)

@@ -262,10 +262,10 @@ bool idDeviceContext::ClippedCoords(float *x, float *y, float *w, float *h, floa
 
 void idDeviceContext::AdjustCoords(float *x, float *y, float *w, float *h) {
 	if (x) {
-		*x *= xScale;
+		*x = (*x * xScale) + xOffset;
 	}
 	if (y) {
-		*y *= yScale;
+		*y = (*y * yScale) + yOffset;
 	}
 	if (w) {
 		*w *= xScale;
@@ -753,10 +753,33 @@ void idDeviceContext::SetSize(float width, float height) {
 	vidWidth = VIRTUAL_WIDTH;
 	vidHeight = VIRTUAL_HEIGHT;
 	xScale = yScale = 0.0f;
-	if ( width != 0.0f && height != 0.0f ) {
+	xOffset = yOffset = 0.0f;
+
+	if ( width <= 0.0f || height <= 0.0f ) {
+		return;
+	}
+
+	const float windowWidth = static_cast<float>( glConfig.vidWidth );
+	const float windowHeight = static_cast<float>( glConfig.vidHeight );
+
+	if ( windowWidth <= 0.0f || windowHeight <= 0.0f ) {
 		xScale = vidWidth * ( 1.0f / width );
 		yScale = vidHeight * ( 1.0f / height );
+		return;
 	}
+
+	// Preserve GUI aspect ratio by fitting into the current window and centering.
+	const float uniformPhysicalScale = Min( windowWidth / width, windowHeight / height );
+	const float drawWidth = width * uniformPhysicalScale;
+	const float drawHeight = height * uniformPhysicalScale;
+
+	const float virtualPerPhysicalX = vidWidth / windowWidth;
+	const float virtualPerPhysicalY = vidHeight / windowHeight;
+
+	xScale = uniformPhysicalScale * virtualPerPhysicalX;
+	yScale = uniformPhysicalScale * virtualPerPhysicalY;
+	xOffset = ( windowWidth - drawWidth ) * 0.5f * virtualPerPhysicalX;
+	yOffset = ( windowHeight - drawHeight ) * 0.5f * virtualPerPhysicalY;
 }
 
 int idDeviceContext::CharWidth( const char c, float scale ) {

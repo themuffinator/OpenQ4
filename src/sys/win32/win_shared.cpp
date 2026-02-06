@@ -35,11 +35,18 @@ If you have questions concerning this license or the applicable additional terms
 #include <lmwksta.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <limits.h>
 #include <direct.h>
 #include <io.h>
 #include <conio.h>
 
 #ifndef	ID_DEDICATED
+#ifndef INT_MAX
+#define INT_MAX 2147483647
+#endif
+#ifndef INT_MIN
+#define INT_MIN (-2147483647 - 1)
+#endif
 #include <comdef.h>
 #include <comutil.h>
 #include <Wbemidl.h>

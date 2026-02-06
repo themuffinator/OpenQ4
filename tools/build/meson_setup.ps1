@@ -20,7 +20,18 @@ function Get-VsDevCmdPath {
         throw "Could not locate vswhere.exe."
     }
 
-    $installPath = (& $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath).Trim()
+    $component = "Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
+    # Prefer Visual Studio 2026+ (major 18) when installed.
+    $installPathRaw = & $vswhere -latest -version "[18.0,19.0)" -products * -requires $component -property installationPath
+    $installPath = if ($null -eq $installPathRaw) { "" } else { "$installPathRaw".Trim() }
+    if ([string]::IsNullOrWhiteSpace($installPath)) {
+        $installPathRaw = & $vswhere -latest -products * -requires $component -property installationPath
+        $installPath = if ($null -eq $installPathRaw) { "" } else { "$installPathRaw".Trim() }
+        if (-not [string]::IsNullOrWhiteSpace($installPath)) {
+            Write-Warning "Visual Studio 2026+ was not found. Falling back to latest available toolchain at '$installPath'."
+        }
+    }
+
     if ([string]::IsNullOrWhiteSpace($installPath)) {
         throw "No Visual Studio installation with C++ tools was found."
     }
@@ -40,7 +51,65 @@ function Quote-CmdArg([string]$Value) {
     return $Value
 }
 
+function Invoke-Meson {
+    param(
+        [string[]]$MesonArgs,
+        [string]$VsDevCmdPath
+    )
+
+    if ([string]::IsNullOrWhiteSpace($VsDevCmdPath)) {
+        & meson @MesonArgs
+        return $LASTEXITCODE
+    }
+
+    $mesonCmd = "meson " + (($MesonArgs | ForEach-Object { Quote-CmdArg $_ }) -join " ")
+    $fullCmd = '"' + $VsDevCmdPath + '" -arch=x64 -host_arch=x64 >nul && ' + $mesonCmd
+    & $env:ComSpec /d /c $fullCmd
+    return $LASTEXITCODE
+}
+
+function Get-CompileBuildDirInfo {
+    param(
+        [string[]]$MesonArgs,
+        [string]$DefaultBuildDir
+    )
+
+    $result = [PSCustomObject]@{
+        BuildDir = $DefaultBuildDir
+        HasExplicit = $false
+    }
+
+    for ($i = 0; $i -lt $MesonArgs.Length; $i++) {
+        $arg = $MesonArgs[$i]
+        if ($arg -eq "-C" -and ($i + 1) -lt $MesonArgs.Length) {
+            $result.BuildDir = $MesonArgs[$i + 1]
+            $result.HasExplicit = $true
+            break
+        }
+
+        if ($arg.StartsWith("-C") -and $arg.Length -gt 2) {
+            $result.BuildDir = $arg.Substring(2)
+            $result.HasExplicit = $true
+            break
+        }
+    }
+
+    $result.BuildDir = [System.IO.Path]::GetFullPath($result.BuildDir)
+    return $result
+}
+
+function Test-MesonBuildDirectory {
+    param([string]$BuildDir)
+
+    $coreData = Join-Path $BuildDir "meson-private\coredata.dat"
+    $ninjaFile = Join-Path $BuildDir "build.ninja"
+    return (Test-Path $coreData) -and (Test-Path $ninjaFile)
+}
+
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$repoRoot = [System.IO.Path]::GetFullPath((Join-Path $scriptDir "..\.."))
+$defaultBuildDir = Join-Path $repoRoot "build_meson"
+
 $rcWrapper = Join-Path $scriptDir "rc.cmd"
 if (-not (Test-Path $rcWrapper)) {
     throw "WINDRES wrapper not found at '$rcWrapper'."
@@ -48,15 +117,42 @@ if (-not (Test-Path $rcWrapper)) {
 
 $env:WINDRES = $rcWrapper
 
-$cl = Get-Command cl -ErrorAction SilentlyContinue
-if ($null -ne $cl) {
-    & meson @Args
-    exit $LASTEXITCODE
+$vsDevCmd = $null
+if ($null -eq (Get-Command cl -ErrorAction SilentlyContinue)) {
+    $vsDevCmd = Get-VsDevCmdPath
 }
 
-$vsDevCmd = Get-VsDevCmdPath
-$mesonCmd = "meson " + (($Args | ForEach-Object { Quote-CmdArg $_ }) -join " ")
-$fullCmd = '"' + $vsDevCmd + '" -arch=x64 -host_arch=x64 >nul && ' + $mesonCmd
+$effectiveArgs = @($Args)
+if ($effectiveArgs.Length -gt 0 -and $effectiveArgs[0] -eq "compile") {
+    $buildInfo = Get-CompileBuildDirInfo -MesonArgs $effectiveArgs -DefaultBuildDir $defaultBuildDir
 
-& $env:ComSpec /d /c $fullCmd
-exit $LASTEXITCODE
+    if (-not (Test-MesonBuildDirectory $buildInfo.BuildDir)) {
+        Write-Host "Meson build directory '$($buildInfo.BuildDir)' is missing or invalid. Running meson setup..."
+        $setupArgs = @(
+            "setup",
+            "--wipe",
+            $buildInfo.BuildDir,
+            $repoRoot,
+            "--backend",
+            "ninja",
+            "--buildtype",
+            "debug",
+            "--wrap-mode=forcefallback"
+        )
+        $setupCode = Invoke-Meson -MesonArgs $setupArgs -VsDevCmdPath $vsDevCmd
+        if ($setupCode -ne 0) {
+            exit $setupCode
+        }
+    }
+
+    if (-not $buildInfo.HasExplicit) {
+        $remainingArgs = @()
+        if ($effectiveArgs.Length -gt 1) {
+            $remainingArgs = $effectiveArgs[1..($effectiveArgs.Length - 1)]
+        }
+        $effectiveArgs = @("compile", "-C", $buildInfo.BuildDir) + $remainingArgs
+    }
+}
+
+$exitCode = Invoke-Meson -MesonArgs $effectiveArgs -VsDevCmdPath $vsDevCmd
+exit $exitCode
