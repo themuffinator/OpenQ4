@@ -2276,6 +2276,14 @@ gameReturn_t idGameLocal::ClientPrediction( int clientNum, const usercmd_t *clie
 	// service any pending events
 	idEvent::ServiceEvents();
 
+	if ( gameRenderWorld && !mpInteractionsGenerated ) {
+		if ( developer.GetBool() ) {
+			common->Printf( "Deferred GenerateAllInteractions (ClientPrediction)\n" );
+		}
+		gameRenderWorld->GenerateAllInteractions();
+		mpInteractionsGenerated = true;
+	}
+
 	// show any debug info for this frame
 	if ( isNewFrame ) {
 		RunDebugInfo();

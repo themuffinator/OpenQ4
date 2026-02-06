@@ -449,6 +449,11 @@ Does not write to the demo file, which will only be done for visible lights
 */
 void idRenderWorldLocal::UpdateLightDef( qhandle_t lightHandle, const renderLight_t *rlight ) {
 	if ( r_skipUpdates.GetBool() ) {
+		static bool s_warned = false;
+		if ( !s_warned ) {
+			common->Warning( "UpdateLightDef skipped due to r_skipUpdates=1" );
+			s_warned = true;
+		}
 		return;
 	}
 

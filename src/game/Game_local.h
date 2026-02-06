@@ -423,6 +423,7 @@ public:
 	bool					isMultiplayer;			// set if the game is run in multiplayer mode
 	bool					isServer;				// set if the game is run for a dedicated or listen server
 	bool					isClient;				// set if the game is run for a client
+	bool					mpInteractionsGenerated; // true once interactions are generated after the first game frame
 													// discriminates between the RunFrame path and the ClientPrediction path
 													// NOTE: on a listen server, isClient is false
 // RAVEN BEGIN

@@ -1681,8 +1681,8 @@ void idSessionLocal::ExecuteMapChange( bool noFadeWipe ) {
 	int	msec = Sys_Milliseconds() - start;
 	common->Printf( "%6d msec to load %s\n", msec, mapString.c_str() );
 
-	// let the renderSystem generate interactions now that everything is spawned
-	rw->GenerateAllInteractions();
+	// let the game trigger interaction generation after the first game frame
+	// so lights and entities have presented to the render world.
 
 	common->PrintWarnings();
 

@@ -375,6 +375,18 @@ void idLight::Spawn( void ) {
 		return;
 	}
 
+	static int s_lightSpawnLogCount = 0;
+	if ( s_lightSpawnLogCount < 16 ) {
+		const char *shaderName = renderLight.shader ? renderLight.shader->GetName() : "<null>";
+		common->Printf( "LightSpawn: name='%s' shader='%s' point=%d radius=(%.1f %.1f %.1f) origin=(%.1f %.1f %.1f)\n",
+			GetName(),
+			shaderName,
+			renderLight.pointLight ? 1 : 0,
+			renderLight.lightRadius[0], renderLight.lightRadius[1], renderLight.lightRadius[2],
+			renderLight.origin[0], renderLight.origin[1], renderLight.origin[2] );
+		++s_lightSpawnLogCount;
+	}
+
 	// we need the origin and axis relative to the physics origin/axis
 	localLightOrigin = ( renderLight.origin - GetPhysics()->GetOrigin() ) * GetPhysics()->GetAxis().Transpose();
 	localLightAxis = renderLight.axis * GetPhysics()->GetAxis().Transpose();
@@ -834,11 +846,28 @@ idLight::PresentLightDefChange
 ================
 */
 void idLight::PresentLightDefChange( void ) {
+	const bool wasMissingHandle = ( lightDefHandle == -1 );
+
 	// let the renderer apply it to the world
 	if ( ( lightDefHandle != -1 ) ) {
 		gameRenderWorld->UpdateLightDef( lightDefHandle, &renderLight );
 	} else {
 		lightDefHandle = gameRenderWorld->AddLightDef( &renderLight );
+	}
+
+	static int s_lightPresentLogCount = 0;
+	if ( s_lightPresentLogCount < 16 ) {
+		const char *shaderName = renderLight.shader ? renderLight.shader->GetName() : "<null>";
+		common->Printf( "LightPresent: %s name='%s' handle=%d skipUpdates=%d shader='%s' point=%d radius=(%.1f %.1f %.1f) origin=(%.1f %.1f %.1f)\n",
+			wasMissingHandle ? "add" : "update",
+			GetName(),
+			lightDefHandle,
+			cvarSystem->GetCVarBool( "r_skipUpdates" ) ? 1 : 0,
+			shaderName,
+			renderLight.pointLight ? 1 : 0,
+			renderLight.lightRadius[0], renderLight.lightRadius[1], renderLight.lightRadius[2],
+			renderLight.origin[0], renderLight.origin[1], renderLight.origin[2] );
+		++s_lightPresentLogCount;
 	}
 }
 
@@ -907,6 +936,12 @@ idLight::Think
 */
 void idLight::Think( void ) {
 	idVec4 color;
+
+	static int s_lightThinkLogCount = 0;
+	if ( s_lightThinkLogCount < 16 ) {
+		common->Printf( "LightThink: name='%s' handle=%d thinkFlags=0x%X\n", GetName(), lightDefHandle, thinkFlags );
+		++s_lightThinkLogCount;
+	}
 
 	if ( thinkFlags & TH_THINK ) {
 		if ( fadeEnd > 0 ) {

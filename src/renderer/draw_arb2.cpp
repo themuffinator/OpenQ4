@@ -34,6 +34,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "cg_explicit.h"
 
 CGcontext cg_context;
+static bool g_interactionVertexProgramPackedColorParams = false;
 
 static void cg_error_callback( void ) {
 	CGerror i = cgGetError();
@@ -86,22 +87,34 @@ void	RB_ARB2_DrawInteraction( const drawInteraction_t *din ) {
 	}
 
 	static const float zero[4] = { 0, 0, 0, 0 };
-	static const float one[4] = { 1, 1, 1, 1 };
-	static const float negOne[4] = { -1, -1, -1, -1 };
+	float modulate = 0.0f;
+	float add = 1.0f;
 
 	switch ( din->vertexColor ) {
 	case SVC_IGNORE:
-		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, zero );
-		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, one );
+		modulate = 0.0f;
+		add = 1.0f;
 		break;
 	case SVC_MODULATE:
-		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, one );
-		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, zero );
+		modulate = 1.0f;
+		add = 0.0f;
 		break;
 	case SVC_INVERSE_MODULATE:
-		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, negOne );
-		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, one );
+		modulate = -1.0f;
+		add = 1.0f;
 		break;
+	}
+
+	if ( g_interactionVertexProgramPackedColorParams ) {
+		// Stock Quake 4 interaction.vfp packs vertex-color mode as env[16].xy.
+		const float packed[4] = { modulate, add, 0.0f, 0.0f };
+		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, packed );
+		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, zero );
+	} else {
+		float modulateVec[4] = { modulate, modulate, modulate, modulate };
+		float addVec[4] = { add, add, add, add };
+		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, modulateVec );
+		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, addVec );
 	}
 
 	// set the constant colors
@@ -422,6 +435,14 @@ void R_LoadARBProgram( int progIndex ) {
 		return;
 	}
 	end[3] = 0;
+
+	if ( progs[progIndex].ident == VPROG_INTERACTION ) {
+		g_interactionVertexProgramPackedColorParams =
+			( strstr( start, "program.env[16].x" ) != NULL ) &&
+			( strstr( start, "program.env[16].y" ) != NULL );
+		common->Printf( ": interaction color mode = %s\n",
+			g_interactionVertexProgramPackedColorParams ? "packed env16.xy" : "vector env16/env17" );
+	}
 
 	glBindProgramARB( progs[progIndex].target, progs[progIndex].ident );
 	glGetError();
