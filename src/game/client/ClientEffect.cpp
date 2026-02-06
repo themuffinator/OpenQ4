@@ -41,6 +41,7 @@ void rvClientEffect::Init ( const idDecl *effect ) {
 	
 	renderEffect.declEffect	= effect;
 	renderEffect.startTime	= -1.0f;
+	renderEffect.inConnectedArea = true;
 	renderEffect.referenceSoundHandle = -1;
 	effectDefHandle = -1;
 	endOriginJoint	= INVALID_JOINT;
@@ -348,6 +349,7 @@ rvClientEffect::Restore
 void rvClientEffect::Restore( idRestoreGame *savefile ) {
 	savefile->ReadRenderEffect( renderEffect );
 	effectDefHandle = -1;
+	renderEffect.referenceSoundHandle = -1;
 	savefile->ReadJoint( endOriginJoint );
 }
 

@@ -1578,6 +1578,9 @@ void idSessionLocal::ExecuteMapChange( bool noFadeWipe ) {
 		declManager->BeginLevelLoad();
 		renderSystem->BeginLevelLoad();
 		soundSystem->BeginLevelLoad();
+		if ( bse ) {
+			bse->BeginLevelLoad();
+		}
 	}
 
 	uiManager->BeginLevelLoad();
@@ -1665,6 +1668,9 @@ void idSessionLocal::ExecuteMapChange( bool noFadeWipe ) {
 		renderSystem->EndLevelLoad();
 		soundSystem->EndLevelLoad();
 		declManager->EndLevelLoad();
+		if ( bse ) {
+			bse->EndLevelLoad();
+		}
 		SetBytesNeededForMapLoad( mapString.c_str(), fileSystem->GetReadCount() );
 	}
 	uiManager->EndLevelLoad();

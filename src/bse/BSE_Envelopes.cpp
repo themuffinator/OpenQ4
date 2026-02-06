@@ -57,12 +57,12 @@ bool rvEnvParms::Compare(const rvEnvParms& comp) const
 {
 	return this->mTable == comp.mTable
 		&& this->mIsCount == comp.mIsCount
-		&& comp.mRate.x == comp.mRate.x
-		&& comp.mRate.y == comp.mRate.y
-		&& comp.mRate.z == comp.mRate.z
-		&& comp.mEnvOffset.x == comp.mEnvOffset.x
-		&& comp.mEnvOffset.y == comp.mEnvOffset.y
-		&& comp.mEnvOffset.z == comp.mEnvOffset.z;
+		&& this->mRate.x == comp.mRate.x
+		&& this->mRate.y == comp.mRate.y
+		&& this->mRate.z == comp.mRate.z
+		&& this->mEnvOffset.x == comp.mEnvOffset.x
+		&& this->mEnvOffset.y == comp.mEnvOffset.y
+		&& this->mEnvOffset.z == comp.mEnvOffset.z;
 }
 
 /*
@@ -72,7 +72,16 @@ rvEnvParms::operator=
 */
 void rvEnvParms::operator=(const rvEnvParms& copy)
 {
-	*this = copy;
+	if (this == &copy) {
+		return;
+	}
+
+	mTable = copy.mTable;
+	mIsCount = copy.mIsCount;
+	mStatic = copy.mStatic;
+	mFastLookUp = copy.mFastLookUp;
+	mEnvOffset = copy.mEnvOffset;
+	mRate = copy.mRate;
 }
 
 void rvEnvParms::Evaluate(class rvEnvParms1Particle& env, float time, float oneOverDuration, float* dest)
@@ -221,6 +230,122 @@ void rvEnvParms::Finalize(void)
 		&& this->mRate.z == this->mRate.x
 		&& this->mEnvOffset.y == this->mEnvOffset.x
 		&& this->mEnvOffset.z == this->mEnvOffset.x;
+}
+
+void rvEnvParms1::Init(const rvEnvParms& copy, float duration) {
+	mTable = copy.mTable;
+	mEnvOffset = copy.mEnvOffset.x;
+	mStart = 0.0f;
+	mEnd = 0.0f;
+	mRate = copy.mRate.x;
+}
+
+void rvEnvParms1::Evaluate(const float time, float* dest) {
+	if (!dest) {
+		return;
+	}
+	if (mTable) {
+		const float value = mTable->TableLookup(mRate * time + mEnvOffset);
+		*dest = mStart + (mEnd - mStart) * value;
+	}
+	else {
+		*dest = mStart;
+	}
+}
+
+void rvEnvParms2::Init(const rvEnvParms& copy, float duration) {
+	mTable = copy.mTable;
+	mEnvOffset.Set(copy.mEnvOffset.x, copy.mEnvOffset.y);
+	mFastLookup = (copy.mRate.x == copy.mRate.y) && (copy.mEnvOffset.x == copy.mEnvOffset.y);
+	mStart.Zero();
+	mEnd.Zero();
+	mRate.Set(copy.mRate.x, copy.mRate.y);
+}
+
+void rvEnvParms2::Evaluate(const float time, float* dest) {
+	if (!dest) {
+		return;
+	}
+	if (mTable) {
+		if (mFastLookup) {
+			const float value = mTable->TableLookup(mRate.x * time + mEnvOffset.x);
+			dest[0] = mStart.x + (mEnd.x - mStart.x) * value;
+			dest[1] = mStart.y + (mEnd.y - mStart.y) * value;
+		}
+		else {
+			const float valueX = mTable->TableLookup(mRate.x * time + mEnvOffset.x);
+			const float valueY = mTable->TableLookup(mRate.y * time + mEnvOffset.y);
+			dest[0] = mStart.x + (mEnd.x - mStart.x) * valueX;
+			dest[1] = mStart.y + (mEnd.y - mStart.y) * valueY;
+		}
+	}
+	else {
+		dest[0] = mStart.x;
+		dest[1] = mStart.y;
+	}
+}
+
+void rvEnvParms3::Init(const rvEnvParms& copy, float duration) {
+	mTable = copy.mTable;
+	mEnvOffset = copy.mEnvOffset;
+	mFastLookup = (copy.mRate.x == copy.mRate.y) && (copy.mRate.x == copy.mRate.z) && (copy.mEnvOffset.x == copy.mEnvOffset.y) && (copy.mEnvOffset.x == copy.mEnvOffset.z);
+	mStart.Zero();
+	mEnd.Zero();
+	mRate = copy.mRate;
+}
+
+void rvEnvParms3::Evaluate(const float time, float* dest) {
+	if (!dest) {
+		return;
+	}
+	if (mTable) {
+		if (mFastLookup) {
+			const float value = mTable->TableLookup(mRate.x * time + mEnvOffset.x);
+			dest[0] = mStart.x + (mEnd.x - mStart.x) * value;
+			dest[1] = mStart.y + (mEnd.y - mStart.y) * value;
+			dest[2] = mStart.z + (mEnd.z - mStart.z) * value;
+		}
+		else {
+			const float valueX = mTable->TableLookup(mRate.x * time + mEnvOffset.x);
+			const float valueY = mTable->TableLookup(mRate.y * time + mEnvOffset.y);
+			const float valueZ = mTable->TableLookup(mRate.z * time + mEnvOffset.z);
+			dest[0] = mStart.x + (mEnd.x - mStart.x) * valueX;
+			dest[1] = mStart.y + (mEnd.y - mStart.y) * valueY;
+			dest[2] = mStart.z + (mEnd.z - mStart.z) * valueZ;
+		}
+	}
+	else {
+		dest[0] = mStart.x;
+		dest[1] = mStart.y;
+		dest[2] = mStart.z;
+	}
+}
+
+void rvEnvParms1Particle::Init(const rvEnvParms& copy, float duration) {
+	mStart = 0.0f;
+	mEnd = 0.0f;
+}
+
+void rvEnvParms1Particle::Evaluate(const rvEnvParms& params, const float time, float oneOverDuration, float* dest) {
+	const_cast<rvEnvParms&>(params).Evaluate(*this, time, oneOverDuration, dest);
+}
+
+void rvEnvParms2Particle::Init(const rvEnvParms& copy, float duration) {
+	mStart.Zero();
+	mEnd.Zero();
+}
+
+void rvEnvParms2Particle::Evaluate(const rvEnvParms& params, const float time, float oneOverDuration, float* dest) {
+	const_cast<rvEnvParms&>(params).Evaluate(*this, time, oneOverDuration, dest);
+}
+
+void rvEnvParms3Particle::Init(const rvEnvParms& copy, float duration) {
+	mStart.Zero();
+	mEnd.Zero();
+}
+
+void rvEnvParms3Particle::Evaluate(const rvEnvParms& params, const float time, float oneOverDuration, float* dest) {
+	const_cast<rvEnvParms&>(params).Evaluate(*this, time, oneOverDuration, dest);
 }
 
 void rvEnvParms3Particle::Rotate(const rvAngles& angles)

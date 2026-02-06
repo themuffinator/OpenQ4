@@ -8,6 +8,42 @@
 #include "BSE.h"
 #include "BSE_SpawnDomains.h"
 
+namespace {
+int BSE_ParseSegmentType(const idToken& token) {
+	if (token == "effect") {
+		return SEG_EFFECT;
+	}
+	if (token == "emitter") {
+		return SEG_EMITTER;
+	}
+	if (token == "spawner") {
+		return SEG_SPAWNER;
+	}
+	if (token == "trail") {
+		return SEG_TRAIL;
+	}
+	if (token == "sound") {
+		return SEG_SOUND;
+	}
+	if (token == "decal") {
+		return SEG_DECAL;
+	}
+	if (token == "light") {
+		return SEG_LIGHT;
+	}
+	if (token == "delay") {
+		return SEG_DELAY;
+	}
+	if (token == "shake") {
+		return SEG_SHAKE;
+	}
+	if (token == "tunnel") {
+		return SEG_TUNNEL;
+	}
+	return SEG_NONE;
+}
+}
+
 void rvDeclEffect::Init()
 {
 	mMinDuration = 0.0;
@@ -24,9 +60,9 @@ bool rvDeclEffect::SetDefaultText()
 {
 	char generated[1024]; // [esp+4h] [ebp-404h]
 
-	idStr::snPrintf(generated, sizeof(generated), "effect %s // IMPLICITLY GENERATED\n");
+	idStr::snPrintf(generated, sizeof(generated), "effect %s // IMPLICITLY GENERATED\n%s", GetName(), DefaultDefinition());
 	SetText(generated);
-	return false;
+	return true;
 }
 
 size_t rvDeclEffect::Size(void) const {
@@ -136,6 +172,9 @@ void rvDeclEffect::SetMaxDuration(float duration)
 
 void rvDeclEffect::Finish() {
 	rvSegmentTemplate* segment;
+	const int preservedFlags = mFlags & ETFLAG_EDITOR_MODIFIED;
+	mFlags = preservedFlags;
+
 	for (int j = 0; j < mSegmentTemplates.Num(); j++)
 	{
 		segment = &mSegmentTemplates[j];
@@ -149,10 +188,14 @@ void rvDeclEffect::Finish() {
 			if (segment->GetParticleTemplate()->UsesEndOrigin())
 				mFlags |= ETFLAG_USES_ENDORIGIN;
 
-			if ((mFlags & 0x200) != 0)
+			if (segment->GetParticleTemplate()->GetHasPhysics() || segment->GetHasPhysics())
 				mFlags |= ETFLAG_HAS_PHYSICS;
-			if ((mFlags & 0x40) != 0)
+			if (segment->GetAttenuateEmitter())
 				mFlags |= ETFLAG_ATTENUATES;
+			if (segment->GetUseMaterialColor())
+				mFlags |= ETFLAG_USES_MATERIAL_COLOR;
+			if (segment->GetOrientateIdentity())
+				mFlags |= ETFLAG_ORIENTATE_IDENTITY;
 
 			segment->EvaluateTrailSegment(this);
 			segment->SetMinDuration(this);
@@ -162,91 +205,32 @@ void rvDeclEffect::Finish() {
 }
 
 bool rvDeclEffect::Parse(const char* text, const int textLength) {
-#if 1
-	return true;
-#else
 	idParser src;
-	idToken	token, token2;
-	rvSegmentTemplate segment;
+	idToken	token;
+
+	FreeData();
+	mFlags = 0;
+	mMinDuration = 0.0f;
+	mMaxDuration = 0.0f;
+	mCutOffDistance = 0.0f;
+	mSize = 512.0f;
 
 	src.LoadMemory(text, textLength, GetFileName());
 	src.SetFlags(DECL_LEXER_FLAGS);
-	src.SkipUntilString("{");
+	if (!src.SkipUntilString("{")) {
+		src.Warning("^4BSE:^1 Expected '{' in effect '%s'", GetName());
+		return false;
+	}
 
 	if (src.ReadToken(&token))
 	{
 		while (token != "}")
 		{
-			segment.Init(this);
-			if (token == "tunnel")
-			{
-				segment.Parse(this, SEG_TUNNEL, &src);
-				if (segment.Finish(this)) {
-					mSegmentTemplates.Append(segment);
-				}
-			}
-			else if (token == "shake")
-			{
-				segment.Parse(this, SEG_SHAKE, &src);
-				if (segment.Finish(this)) {
-					mSegmentTemplates.Append(segment);
-				}
-			}
-			else if (token == "delay")
-			{
-				segment.Parse(this, SEG_DELAY, &src);
-				if (segment.Finish(this)) {
-					mSegmentTemplates.Append(segment);
-				}
-			}
-			else if (token == "light")
-			{
-				segment.Parse(this, SEG_LIGHT, &src);
-				if (segment.Finish(this)) {
-					mSegmentTemplates.Append(segment);
-				}
-			}
-			else if (token == "decal")
-			{
-				segment.Parse(this, SEG_DECAL, &src);
-				if (segment.Finish(this)) {
-					mSegmentTemplates.Append(segment);
-				}
-			}
-			else if (token == "sound")
-			{
-				segment.Parse(this, SEG_SOUND, &src);
-				if (segment.Finish(this)) {
-					mSegmentTemplates.Append(segment);
-				}
-			}
-			else if (token == "trail")
-			{
-				segment.Parse(this, SEG_TRAIL, &src);
-				if (segment.Finish(this)) {
-					mSegmentTemplates.Append(segment);
-				}
-			}
-			else if (token == "spawner")
-			{
-				segment.Parse(this, SEG_SPAWNER, &src);
-
-				if (segment.Finish(this)) {
-					mSegmentTemplates.Append(segment);
-				}
-			}
-			else if (token == "emitter")
-			{
-				segment.Parse(this, SEG_EMITTER, &src);
-
-				if (segment.Finish(this)) {
-					mSegmentTemplates.Append(segment);
-				}
-			}
-			else if (token == "effect")
-			{
-				segment.Parse(this, SEG_EFFECT, &src);
-
+			const int segmentType = BSE_ParseSegmentType(token);
+			if (segmentType != SEG_NONE) {
+				rvSegmentTemplate segment;
+				segment.Init(this);
+				segment.Parse(this, segmentType, &src);
 				if (segment.Finish(this)) {
 					mSegmentTemplates.Append(segment);
 				}
@@ -260,15 +244,20 @@ bool rvDeclEffect::Parse(const char* text, const int textLength) {
 			}
 			else
 			{
-				src.Error("^4BSE:^1 Invalid segment type '%s' (file: %s, line: %d)\n", token, GetFileName(), src.GetLineNum());
+				src.Warning("^4BSE:^1 Invalid segment type '%s' (file: %s, line: %d)\n", token.c_str(), GetFileName(), src.GetLineNum());
+				if (src.CheckTokenString("{")) {
+					src.SkipBracedSection(false);
+				}
 			}
 
-			src.ReadToken(&token);
+			if (!src.ReadToken(&token)) {
+				src.Warning("^4BSE:^1 Unexpected end of effect '%s'", GetName());
+				break;
+			}
 		}
 	}
 
 	Finish();
 
 	return true;
-#endif
 }

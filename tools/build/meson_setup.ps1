@@ -22,10 +22,10 @@ function Get-VsDevCmdPath {
 
     $component = "Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
     # Prefer Visual Studio 2026+ (major 18) when installed.
-    $installPathRaw = & $vswhere -latest -version "[18.0,19.0)" -products * -requires $component -property installationPath
+    $installPathRaw = & $vswhere -latest -prerelease -version "[18.0,19.0)" -products * -requires $component -property installationPath
     $installPath = if ($null -eq $installPathRaw) { "" } else { "$installPathRaw".Trim() }
     if ([string]::IsNullOrWhiteSpace($installPath)) {
-        $installPathRaw = & $vswhere -latest -products * -requires $component -property installationPath
+        $installPathRaw = & $vswhere -latest -prerelease -products * -requires $component -property installationPath
         $installPath = if ($null -eq $installPathRaw) { "" } else { "$installPathRaw".Trim() }
         if (-not [string]::IsNullOrWhiteSpace($installPath)) {
             Write-Warning "Visual Studio 2026+ was not found. Falling back to latest available toolchain at '$installPath'."

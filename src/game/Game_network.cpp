@@ -3143,6 +3143,7 @@ void idGameLocal::ProcessUnreliableMessage( const idBitMsg &msg ) {
 			rvClientEffect*		effect;
 			effectCategory_t	category;
 			const idDecl		*decl;
+			idMat3				axis;
 				
 			decl = idGameLocal::ReadDecl( msg, DECL_EFFECT );
 
@@ -3162,10 +3163,19 @@ void idGameLocal::ProcessUnreliableMessage( const idBitMsg &msg ) {
 
 			category = ( effectCategory_t )msg.ReadByte();
 
+			if ( !decl ) {
+				break;
+			}
+			if ( bse->Filtered( decl->GetName(), category ) ) {
+				break;
+			}
+
 			if ( bse->CanPlayRateLimited( category ) ) {
+				axis = quat.ToMat3();
 				effect = new rvClientEffect( decl );
 				effect->SetOrigin( origin );
-				effect->SetAxis( quat.ToMat3() );
+				effect->SetAxis( axis );
+				effect->SetGravity( GetCurrentGravity( origin, axis ) );
 				effect->Play( time, loop, origin2 );
 			}
 			

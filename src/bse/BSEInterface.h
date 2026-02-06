@@ -28,6 +28,9 @@ extern	idCVar				bse_scale;
 extern	idCVar				bse_singleEffect;
 extern	idCVar				bse_maxParticles;
 
+class idRenderModel;
+struct viewDef_s;
+
 // Interface to the effects system
 
 class rvBSEManager
@@ -40,6 +43,7 @@ public:
 
 	virtual	bool				PlayEffect( class rvRenderEffectLocal *def, float time ) = 0;
 	virtual	bool				ServiceEffect( class rvRenderEffectLocal *def, float time ) = 0;
+	virtual idRenderModel*		RenderEffect( class rvRenderEffectLocal *def, const struct viewDef_s *view ) = 0;
 	virtual	void				StopEffect( rvRenderEffectLocal *def ) = 0;
 	virtual	void				FreeEffect( rvRenderEffectLocal *def ) = 0;
 	virtual	float				EffectDuration( const rvRenderEffectLocal *def ) = 0;

@@ -1,4 +1,8 @@
 EXPORTS
+    alAuxiliaryEffectSlotf
+    alAuxiliaryEffectSlotfv
+    alAuxiliaryEffectSloti
+    alAuxiliaryEffectSlotiv
     alBuffer3f
     alBuffer3i
     alBufferData
@@ -6,15 +10,33 @@ EXPORTS
     alBufferfv
     alBufferi
     alBufferiv
+    alDeleteAuxiliaryEffectSlots
     alDeleteBuffers
+    alDeleteEffects
+    alDeleteFilters
     alDeleteSources
     alDisable
     alDistanceModel
     alDopplerFactor
     alDopplerVelocity
+    alEffectf
+    alEffectfv
+    alEffecti
+    alEffectiv
     alEnable
+    alFilterf
+    alFilterfv
+    alFilteri
+    alFilteriv
+    alGenAuxiliaryEffectSlots
     alGenBuffers
+    alGenEffects
+    alGenFilters
     alGenSources
+    alGetAuxiliaryEffectSlotf
+    alGetAuxiliaryEffectSlotfv
+    alGetAuxiliaryEffectSloti
+    alGetAuxiliaryEffectSlotiv
     alGetBoolean
     alGetBooleanv
     alGetBuffer3f
@@ -25,8 +47,16 @@ EXPORTS
     alGetBufferiv
     alGetDouble
     alGetDoublev
+    alGetEffectf
+    alGetEffectfv
+    alGetEffecti
+    alGetEffectiv
     alGetEnumValue
     alGetError
+    alGetFilterf
+    alGetFilterfv
+    alGetFilteri
+    alGetFilteriv
     alGetFloat
     alGetFloatv
     alGetInteger
@@ -45,9 +75,12 @@ EXPORTS
     alGetSourcei
     alGetSourceiv
     alGetString
+    alIsAuxiliaryEffectSlot
     alIsBuffer
+    alIsEffect
     alIsEnabled
     alIsExtensionPresent
+    alIsFilter
     alIsSource
     alListener3f
     alListener3i
@@ -89,8 +122,11 @@ EXPORTS
     alcGetString
     alcGetThreadContext
     alcIsExtensionPresent
+    alcIsRenderFormatSupportedSOFT
+    alcLoopbackOpenDeviceSOFT
     alcMakeContextCurrent
     alcOpenDevice
     alcProcessContext
+    alcRenderSamplesSOFT
     alcSetThreadContext
     alcSuspendContext

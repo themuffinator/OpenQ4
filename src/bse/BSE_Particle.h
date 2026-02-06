@@ -162,7 +162,7 @@ public:
 	
 	virtual		void			EvaluateSize( rvEnvParms *size, const float time, float oneOverDuration, float *dest ) { assert( 0 ); }
 	virtual		void			EvaluateRotation( rvEnvParms *rotation, const float time, float oneOverDuration, float *dest ) { assert( 0 ); }
-	virtual		void			EvaluateLength( rvEnvParms *length, const float time, float oneOverDuration, idVec3 &dest ) { assert( 0 ); }
+	virtual		void			EvaluateLength( rvEnvParms *length, const float time, float oneOverDuration, idVec3 &dest ) { dest.Zero(); }
 	
 
 				void			InitTintEnv( rvEnvParms &env, float duration ) { mTintEnv.Init( env, duration ); }
@@ -171,7 +171,7 @@ public:
 				void			InitOffsetEnv( rvEnvParms &env, float duration ) { mOffsetEnv.Init( env, duration ); }
 	virtual		void			InitSizeEnv( rvEnvParms &env, float duration ) { assert( 0 ); }
 	virtual		void			InitRotationEnv( rvEnvParms &env, float duration ) { assert( 0 ); }
-	virtual		void			InitLengthEnv( rvEnvParms &env, float duration ) { assert( 0 ); }
+	virtual		void			InitLengthEnv( rvEnvParms &env, float duration ) {}
 
 	virtual		float			*GetInitSize( void ) { assert( 0 ); return( NULL ); }
 	virtual		float			*GetDestSize( void ) { assert( 0 ); return( NULL ); }
@@ -180,8 +180,8 @@ public:
 	virtual		float			*GetDestRotation( void ) { assert( 0 ); return( NULL ); }
 	virtual		void			ScaleRotation( float constant ) {}
 
-	virtual		float			*GetInitLength( void ) { assert( 0 );  return( NULL ); }
-	virtual		float			*GetDestLength( void ) { assert( 0 );  return( NULL ); }
+	virtual		float			*GetInitLength( void ) { return( NULL ); }
+	virtual		float			*GetDestLength( void ) { return( NULL ); }
 
 				void			Attenuate( float atten, rvParticleParms &parms, rvEnvParms1 &result );
 				void			Attenuate( float atten, rvParticleParms &parms, rvEnvParms2 &result );
@@ -627,6 +627,7 @@ public:
 	friend		class				rvLinkedParticle;
 	friend		class				sdOrientedLinkedParticle;
 	friend      class rvSegmentTemplate;
+	friend		class				rvSegment;
 
 									rvParticleTemplate( void ) : mFlags(0) { }
 									~rvParticleTemplate( void ) {}

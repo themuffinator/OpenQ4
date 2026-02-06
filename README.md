@@ -1,14 +1,6 @@
 # OpenQ4
 
-OpenQ4 is an open-source, drop-in engine replacement for Quake 4.
-
-**Project Metadata**
-- Name: OpenQ4
-- Author: themuffinator
-- Company: DarkMatter Productions
-- Version: 0.0.1
-- Website: `www.darkmatter-quake.com`
-- Repository: `https://github.com/themuffinator/OpenQ4`
+OpenQ4 is an open-source, drop-in engine replacement for Quake 4 currently under development and based upon [Quake4Doom](https://github.com/idSoftware/Quake4Doom)..
 
 **Goals**
 - Provide a drop-in replacement engine for Quake 4 with compatibility for original game DLLs.
@@ -22,7 +14,7 @@ OpenQ4 is an open-source, drop-in engine replacement for Quake 4.
 
 **Assets**
 - This repository is engine-only and does not ship game assets (audio, textures, or media).
-- Users must supply their own Quake 4 game data (e.g., `q4base` PK4s) to run the game.
+- Users must provide their own genuine Quake 4 installation to run the game.
 
 **Build (Meson + Ninja)**
 - Install Meson and Ninja.
@@ -46,10 +38,10 @@ OpenQ4 is an open-source, drop-in engine replacement for Quake 4.
   - `build_meson/OpenQ4.exe`
 
 **External Dependencies (Meson Subprojects)**
-- `subprojects/glew`
-- `subprojects/stb_vorbis`
-- `subprojects/openal-soft-prebuilt`
-- `subprojects/sdl3.wrap` (SDL3 fallback via WrapDB, plus local packagefile patch for Win32 WGL/OpenGL enablement)
+- `subprojects/glew` (GLEW 2.3.1 source snapshot, vendored)
+- `subprojects/stb_vorbis` (stb_vorbis 1.22, vendored)
+- `subprojects/openal-soft-prebuilt` (OpenAL Soft 1.25.1 headers/defs; Win64 import lib provided locally)
+- `subprojects/sdl3.wrap` (SDL3 3.4.0 fallback via WrapDB, plus local packagefile patch for Win32 WGL/OpenGL enablement)
 - These subprojects are used by Meson to keep third-party dependency wiring self-contained.
 
 **Platform And Architecture Direction**
@@ -76,10 +68,10 @@ OpenQ4 is an open-source, drop-in engine replacement for Quake 4.
 - Quake 4 engine decompiled (Hex-Rays): `E:\_SOURCE\_CODE\Quake4Decompiled-main`
 
 **Credits**
-- Justin Marshall.
-- Robert Backebans.
-- id Software.
-- Raven Software.
+- Justin Marshall (Quake4Doom, BSE reverse engineering efforts).
+- Robert Backebans (RBDOOM3).
+- id Software (idTech4/Quake 4).
+- Raven Software (Quake 4).
 - Sean Barrett (stb_vorbis).
 - Nigel Stewart, Milan Ikits, Marcelo E. Magallon, and Lev Povalahev (GLEW).
 - OpenAL Soft contributors.

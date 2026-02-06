@@ -477,7 +477,7 @@ public:
 
 	virtual void			DisplayDebugInfo(const struct renderEffect_s* parms, const struct viewDef_s* view, idBounds& bounds);
 	void					InitModel(idRenderModel* model);
-	//idRenderModel* Render(idRenderModel* model, const struct renderEffect_s* owner, const viewDef_t* view); // <-- jmarshall
+	idRenderModel* Render(idRenderModel* model, const struct renderEffect_s* owner, const struct viewDef_s* view);
 	const char* GetDeclName(void);
 	rvSegment* GetTrailSegment(int child) { return(&mSegments[child]); }
 	rvSegment* GetTrailSegment(const idStr& name);
@@ -571,6 +571,7 @@ public:
 
 	virtual	bool				PlayEffect(class rvRenderEffectLocal* def, float time);
 	virtual	bool				ServiceEffect(class rvRenderEffectLocal* def, float time);
+	virtual idRenderModel*		RenderEffect(class rvRenderEffectLocal* def, const struct viewDef_s* view);
 	virtual	void				StopEffect(rvRenderEffectLocal* def);
 	virtual	void				FreeEffect(rvRenderEffectLocal* def);
 	virtual	float				EffectDuration(const rvRenderEffectLocal* def);

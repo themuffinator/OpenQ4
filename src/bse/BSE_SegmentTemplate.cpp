@@ -25,7 +25,7 @@ bool rvSegmentTemplate::GetSoundLooping()
 }
 
 void rvSegmentTemplate::EvaluateTrailSegment(rvDeclEffect* et) {
-	if (mParticleTemplate.mTrailInfo->mTrailType)
+	if (mParticleTemplate.mTrailInfo->mTrailType && !mParticleTemplate.mTrailInfo->mTrailTypeName.IsEmpty())
 	{
 		// jmarshall - WindowName isn't defined and doesn't make sense here
 				// if (idStr::Cmp(v3->mTrailTypeName.data, (const char*)&WindowName))
@@ -159,51 +159,27 @@ void rvSegmentTemplate::Duplicate(const rvSegmentTemplate& copy)
 
 void rvSegmentTemplate::Init(rvDeclEffect* decl)
 {
-	mSoundShader = NULL;
-	mFlags = 0;
-	mSegType = 0;
-	mLocalStartTime.Zero();				// Start time of segment wrt effect
-	mLocalDuration.Zero();					// Min and max duration
-	mAttenuation.Zero();					// How effect fades off to the distance
-	mParticleCap = 0;
-	mScale = 0;
-	mDetail = 0;
-
-	// Emitter parms	
-	mCount.Zero();							// The count of particles from a spawner
-	mDensity.Zero();						// Sets count or rate based on volume, area or length
-	mTrailSegmentIndex = 0;
-
-	mNumEffects = 0;
-	for (int i = 0; i < BSE_NUM_SPAWNABLE; i++)
-		mEffects[i] = NULL;
-
-	mSoundShader = NULL;
-	mSoundVolume.Zero();					// Starting volume of sound in decibels
-	mFreqShift.Zero();						// Frequency shift of sound
-
-	mDecalAxis = 0;
 	mDeclEffect = decl;
-	mFlags = 1;
-	mSegType = 0;
-	mLocalStartTime.y = 0.0;
-	mLocalStartTime.x = 0.0;
-	mParticleTemplate.mImpactEffects[3] = NULL;
-	mParticleTemplate.mImpactEffects[2] = NULL;
-	mParticleTemplate.mTimeoutEffects[0] = NULL;
-	mParticleTemplate.mNumTimeoutEffects = 0.0;
-	mParticleTemplate.mTimeoutEffects[1] = NULL;
-	mParticleTemplate.mTimeoutEffects[2] = NULL;
-	mParticleTemplate.mTimeoutEffects[3] = NULL;
-	mParticleTemplate.mFlags = 1.0;
-	mParticleTemplate.mTraceModelIndex = 1.0;
-	mParticleTemplate.mMaterial = NULL;
-	mParticleTemplate.mType = 0.0;
-	mParticleTemplate.mModel = NULL;
-	mParticleTemplate.mEntityDefName = "";
-	mParticleTemplate.mGravity.x = 1.0;
-	mParticleTemplate.mGravity.y = 1.0;
-	mParticleTemplate.mDuration.x = 3;
+	mSegmentName = "";
+	mFlags = STFLAG_ENABLED;
+	mSegType = SEG_NONE;
+	mLocalStartTime.Zero();
+	mLocalDuration.Zero();
+	mAttenuation.Zero();
+	mParticleCap = 0.0f;
+	mScale = 1.0f;
+	mDetail = 0.0f;
+	mCount.Set(1.0f, 1.0f);
+	mDensity.Zero();
+	mTrailSegmentIndex = -1;
+	mNumEffects = 0;
+	for (int i = 0; i < BSE_NUM_SPAWNABLE; ++i) {
+		mEffects[i] = NULL;
+	}
+	mSoundShader = NULL;
+	mSoundVolume.Zero();
+	mFreqShift.Set(1.0f, 1.0f);
+	mDecalAxis = 0;
 	mParticleTemplate.Init();
 }
 
@@ -391,10 +367,12 @@ bool rvSegmentTemplate::Parse(rvDeclEffect* effect, int segmentType, idParser* l
 
 	mSegType = segmentType;
 
-	if (lexer->ExpectTokenString("{") && lexer->ReadToken(&token))
+	if (!(lexer->ExpectTokenString("{") && lexer->ReadToken(&token))) {
+		return false;
+	}
+
+	while (token != "}")
 	{
-		while (token != "}")
-		{
 			if (token == "decalAxis")
 			{
 				mDecalAxis = lexer->ParseInt();
@@ -441,21 +419,25 @@ bool rvSegmentTemplate::Parse(rvDeclEffect* effect, int segmentType, idParser* l
 			}
 			else if (token == "channel")
 			{
-				lexer->ReadToken(&token); // is this ignored?
+				if (!lexer->ReadToken(&token)) {
+					return false;
+				}
 			}
 			else if (token == "effect")
 			{
-				lexer->ReadToken(&token);
+				if (!lexer->ReadToken(&token)) {
+					return false;
+				}
 				if (mNumEffects >= 4)
 				{
 					common->FatalError("Unable to add effect '%s' - too many effects\n", token.c_str());
 				}
 				else
 				{
-					mEffects[this->mNumEffects++] = (rvDeclEffect*)declManager->FindType(DECL_EFFECT, token);
+					mEffects[this->mNumEffects++] = declManager->FindEffect(token);
 				}
 			}
-			else if (token == "freqShift")
+			else if (idStr::Icmp(token.c_str(), "freqShift") == 0)
 			{
 				mFreqShift.x = lexer->ParseFloat();
 				lexer->ExpectTokenString(",");
@@ -475,7 +457,9 @@ bool rvSegmentTemplate::Parse(rvDeclEffect* effect, int segmentType, idParser* l
 			}
 			else if (token == "soundShader")
 			{
-				lexer->ReadToken(&token);
+				if (!lexer->ReadToken(&token)) {
+					return false;
+				}
 				mSoundShader = (idSoundShader*)declManager->FindSound(token);
 				// jmarshall: legacy sound engine didn't expose gettimelength!
 								//float effecta = mSoundShader->(double)v11->GetTimeLength((idSoundShader*)v11) * 0.001;
@@ -558,10 +542,12 @@ bool rvSegmentTemplate::Parse(rvDeclEffect* effect, int segmentType, idParser* l
 			}
 			else
 			{
-				common->Warning("^4BSE:^1 Invalid segment parameter '%s' (file: %s, line: %d", token.c_str(), lexer->GetFileName(), lexer->GetLineNum());
+				common->Warning("^4BSE:^1 Invalid segment parameter '%s' (file: %s, line: %d)", token.c_str(), lexer->GetFileName(), lexer->GetLineNum());
 			}
 
-			lexer->ReadToken(&token);
-		}
+			if (!lexer->ReadToken(&token)) {
+				return false;
+			}
 	}
+	return true;
 }

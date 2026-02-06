@@ -10,6 +10,8 @@
 #include "BSE_SpawnDomains.h"
 
 #include "../renderer/Model_local.h"
+#include "../renderer/tr_local.h"
+#include "../sound/sound.h"
 //#include "../renderer/RenderCommon.h"
 
 void rvBSE::Init(const rvDeclEffect* declEffect, renderEffect_s* parms, float time)
@@ -126,10 +128,9 @@ void rvBSE::Init(const rvDeclEffect* declEffect, renderEffect_s* parms, float ti
 	this->mCurrentVelocity.x = 0.0;
 	UpdateFromOwner(parms, time, 1);
 	this->mReferenceSound = 0;
-// jmarshall
-	//if ((declEffect->mFlags & 1) != 0)
-	//	this->mReferenceSound = common->SW()->AllocSoundEmitter();
-// jmarshall end
+	if (parms->referenceSoundHandle > 0) {
+		this->mReferenceSound = soundSystem->EmitterForIndex(SOUNDWORLD_GAME, parms->referenceSoundHandle);
+	}
 	UpdateSegments(time);
 	this->mOriginDistanceToCamera = 0.0;
 	this->mShortestDistanceToCamera = 0.0;
@@ -159,6 +160,26 @@ float rvBSE::GetAttenuation(rvSegmentTemplate* st) const
 	return result;
 }
 
+float rvBSE::GetOriginAttenuation(rvSegmentTemplate* st) const
+{
+	float result = 0.0f;
+
+	if (st->mAttenuation.x <= 0.0f && st->mAttenuation.y <= 0.0f) {
+		return st->mScale * mAttenuation;
+	}
+
+	if (st->mAttenuation.x + 1.0f > mOriginDistanceToCamera) {
+		return st->mScale * mAttenuation;
+	}
+
+	if (st->mAttenuation.y - 1.0f >= mOriginDistanceToCamera) {
+		const float lerp = (mOriginDistanceToCamera - st->mAttenuation.x) / (st->mAttenuation.y - st->mAttenuation.x);
+		result = (1.0f - lerp) * st->mScale * mAttenuation;
+	}
+
+	return result;
+}
+
 void rvBSE::UpdateSoundEmitter(rvSegmentTemplate* st, rvSegment* seg)
 {
 	idSoundEmitter* v4; // ecx
@@ -174,6 +195,9 @@ void rvBSE::UpdateSoundEmitter(rvSegmentTemplate* st, rvSegment* seg)
 	parms.soundClass = 0;
 	//parms.soundArea = 0;
 	v6 = 0;
+	if (!this->mReferenceSound) {
+		return;
+	}
 	if ((this->mFlags & 8) != 0)
 	{
 		if (st->GetSoundLooping() && (seg->mFlags & 2) != 0)
@@ -183,7 +207,7 @@ void rvBSE::UpdateSoundEmitter(rvSegmentTemplate* st, rvSegment* seg)
 	{
 		v4 = this->mReferenceSound;
 		parms.shakes = seg->mSoundVolume;
-		*(float*)&parms.soundClass = seg->mFreqShift;
+		parms.frequencyShift = seg->mFreqShift;
 		v4->UpdateEmitter(mCurrentOrigin, 0, (soundShaderParms_t*)&parms.maxDistance);
 	}
 }
@@ -242,56 +266,21 @@ const char* rvBSE::GetDeclName()
 
 void rvBSE::UpdateAttenuation()
 {
-	double v2; // st7
-	double v3; // st7
-	float fovx; // [esp+Ch] [ebp-50h]
-	float fovxb; // [esp+Ch] [ebp-50h]
-	float fovxa; // [esp+Ch] [ebp-50h]
-	float fovxc; // [esp+Ch] [ebp-50h]
-	float v8; // [esp+10h] [ebp-4Ch] BYREF
-	float v9; // [esp+14h] [ebp-48h]
-	float v10; // [esp+18h] [ebp-44h]
-	idVec3 origin; // [esp+1Ch] [ebp-40h] BYREF
-	idVec3 localOrigin; // [esp+28h] [ebp-34h] BYREF
-	idMat3 axis; // [esp+34h] [ebp-28h] BYREF
-
-	if ((this->mDeclEffect->mFlags & 4) != 0)
-	{
-		game->GetPlayerView(origin, axis);
-		fovx = (mCurrentOrigin - origin).LengthFast();  //idVec3::Dist(&this->mCurrentOrigin, (idVec3*)&origin.y);
-		v2 = 1.0;
-		if (fovx >= 1.0)
-		{
-			v2 = fovx;
-			if (fovx > 131072.0)
-				v2 = 131072.0;
-		}
-		fovxb = v2;
-		this->mOriginDistanceToCamera = fovxb;
-		v9 = origin.y - this->mCurrentOrigin.x;
-		v10 = origin.z - this->mCurrentOrigin.y;
-		origin.x = localOrigin.x - this->mCurrentOrigin.z;
-		localOrigin.y = this->mCurrentAxis[2].x * origin.x
-			+ this->mCurrentAxis[0].x * v9
-			+ this->mCurrentAxis[1].x * v10;
-		localOrigin.z = this->mCurrentAxis[1].y * v10
-			+ this->mCurrentAxis[0].y * v9
-			+ this->mCurrentAxis[2].y * origin.x;
-		axis[0].x = v9 * this->mCurrentAxis[0].z
-			+ v10 * this->mCurrentAxis[1].z
-			+ origin.x * this->mCurrentAxis[2].z;
-		fovxa = mCurrentLocalBounds.ShortestDistance(localOrigin);
-		v3 = 1.0;
-		if (fovxa < 1.0 || (v3 = fovxa, fovxa <= 131072.0))
-		{
-			fovxc = v3;
-			this->mShortestDistanceToCamera = fovxc;
-		}
-		else
-		{
-			this->mShortestDistanceToCamera = 131072.0;
-		}
+	if ((this->mDeclEffect->mFlags & ETFLAG_ATTENUATES) == 0) {
+		return;
 	}
+
+	idVec3 viewOrigin;
+	idMat3 viewAxis;
+	game->GetPlayerView(viewOrigin, viewAxis);
+
+	const float originDistance = (mCurrentOrigin - viewOrigin).LengthFast();
+	mOriginDistanceToCamera = idMath::ClampFloat(1.0f, 131072.0f, originDistance);
+
+	// Transform the camera into effect local space and measure against local bounds.
+	const idVec3 localView = mCurrentAxisTransposed * (viewOrigin - mCurrentOrigin);
+	const float shortest = mCurrentLocalBounds.ShortestDistance(localView);
+	mShortestDistanceToCamera = idMath::ClampFloat(1.0f, 131072.0f, shortest);
 }
 
 void rvBSE::LoopInstant(float time)
@@ -383,7 +372,7 @@ bool rvBSE::Service(renderEffect_t* parms, float time, bool spawn, bool& forcePu
 			v8 = 0;
 			do
 			{
-				spawna = (double)(this->mSegments.Num() - v7) * -10.0;
+				spawna = 0.0f;
 				mSegments[v8].Check(this, time, spawna);
 				++v7;
 				++v8;
@@ -482,7 +471,80 @@ void rvBSE::InitModel(idRenderModel* model)
 	}
 }
 
-// jmarshall
+idRenderModel* rvBSE::Render(idRenderModel* model, const struct renderEffect_s* owner, const struct viewDef_s* view)
+{
+	if (!bse_render.GetInteger() || !owner || !view) {
+		return NULL;
+	}
+
+	idRenderModelStatic* renderModel = dynamic_cast<idRenderModelStatic*>(model);
+	if (model && !renderModel) {
+		delete model;
+		model = NULL;
+	}
+
+	if (!renderModel) {
+		renderModel = new idRenderModelStatic();
+		renderModel->InitEmpty("_bse_runtime");
+		InitModel(renderModel);
+	}
+	else {
+		// Runtime particles mutate vertex/index data every frame.
+		// Invalidate vertex/index caches so new data is uploaded.
+		renderModel->FreeVertexCache();
+	}
+
+	mViewAxis = view->renderView.viewaxis;
+	mViewOrg = view->renderView.vieworg;
+
+	float time = view->floatTime;
+	for (int i = 0; i < mSegments.Num(); ++i) {
+		mSegments[i].ClearSurface(this, renderModel);
+		if (mSegments[i].Active()) {
+			mSegments[i].Render(this, owner, renderModel, time);
+			mSegments[i].RenderTrail(this, owner, renderModel, time);
+		}
+	}
+
+	// BSE runtime geometry is rebuilt every frame and includes strip-like particle
+	// topology that can intentionally share points. Avoid full static-surface cleanup
+	// here and only update per-surface/model bounds for culling.
+	idBounds modelBounds;
+	modelBounds.Clear();
+	bool hasBounds = false;
+	for (int i = 0; i < renderModel->NumSurfaces(); ++i) {
+		const modelSurface_t* surf = renderModel->Surface(i);
+		if (!surf || !surf->geometry) {
+			continue;
+		}
+
+		srfTriangles_t* tri = surf->geometry;
+		if (tri->numVerts <= 0 || tri->numIndexes <= 0) {
+			tri->bounds.Clear();
+			continue;
+		}
+
+		R_BoundTriSurf(tri);
+		if (!hasBounds) {
+			modelBounds = tri->bounds;
+			hasBounds = true;
+		}
+		else {
+			modelBounds.AddBounds(tri->bounds);
+		}
+	}
+
+	if (!hasBounds) {
+		modelBounds.Zero();
+	}
+	renderModel->bounds = modelBounds;
+	mLastRenderBounds = modelBounds;
+	mGrownRenderBounds = mLastRenderBounds;
+	mGrownRenderBounds.ExpandSelf(20.0f);
+	mForcePush = true;
+	return renderModel;
+}
+
 #if 0
 idRenderModel* rvBSE::Render(idRenderModel* model, const struct renderEffect_s* owner, const viewDef_t* view)
 {
@@ -540,13 +602,11 @@ LABEL_18:
 	return renderModel;
 }
 #endif
-// jmarshall end
 
 void rvBSE::Destroy()
 {
 	mSegments.Clear();
-	if (mReferenceSound)
-		mReferenceSound->Free(false);
+	mReferenceSound = NULL;
 }
 
 
@@ -624,483 +684,69 @@ void rvBSE::DisplayDebugInfo(const struct renderEffect_s* parms, const struct vi
 
 void __thiscall rvBSE::UpdateFromOwner(renderEffect_s* parms, float time, bool init)
 {
-	// jmarshall - todo
-	/*
-		renderEffect_s* v4; // edx
-		rvBSE* v5; // ebx
-		float* v6; // ebp
-		double v7; // st7
-		double v8; // st7
-		renderEffect_s* v9; // ecx
-		float* v10; // eax
-		double v11; // st7
-		double v12; // st7
-		double v13; // st6
-		double v14; // st5
-		float* v15; // esi
-		float v16; // edi
-		float v17; // xmm1_4
-		float v18; // xmm3_4
-		float v19; // xmm5_4
-		double v20; // st4
-		float* v21; // esi
-		float v22; // xmm1_4
-		float v23; // xmm3_4
-		float v24; // xmm5_4
-		float* v25; // eax
-		double v26; // st7
-		float* v27; // esi
-		float v28; // edi
-		float v29; // xmm1_4
-		float v30; // xmm3_4
-		float v31; // xmm5_4
-		double v32; // st4
-		float* v33; // esi
-		float v34; // xmm1_4
-		float v35; // xmm3_4
-		float v36; // xmm5_4
-		float* v37; // ecx
-		int v38; // eax
-		signed int v39; // edx
-		double v40; // st7
-		idRenderWorldVtbl* v41; // edx
-		double v42; // st7
-		double v43; // st7
-		float* v44; // esi
-		float v45; // xmm1_4
-		float v46; // xmm3_4
-		float v47; // xmm5_4
-		double v48; // st4
-		float* v49; // esi
-		float v50; // xmm1_4
-		float v51; // xmm3_4
-		float v52; // xmm5_4
-		float* v53; // eax
-		signed int v54; // ecx
-		double v55; // st7
-		float* v56; // esi
-		float v57; // edi
-		float v58; // xmm1_4
-		float v59; // xmm3_4
-		float v60; // xmm5_4
-		double v61; // st7
-		idMat3* v62; // eax
-		double v63; // st7
-		double v64; // st7
-		idVec4* v65; // [esp+4h] [ebp-B4h]
-		float* v66; // [esp+8h] [ebp-B0h]
-		float* v67; // [esp+Ch] [ebp-ACh]
-		int v68; // [esp+10h] [ebp-A8h]
-		int v69; // [esp+14h] [ebp-A4h]
-		float v70; // [esp+28h] [ebp-90h]
-		float v71; // [esp+2Ch] [ebp-8Ch]
-		float v72; // [esp+30h] [ebp-88h]
-		float v73; // [esp+34h] [ebp-84h]
-		float length; // [esp+38h] [ebp-80h]
-		idVec3 size; // [esp+3Ch] [ebp-7Ch]
-		idVec3 corner; // [esp+48h] [ebp-70h]
-		idVec3 dir; // [esp+54h] [ebp-64h]
-		float v78; // [esp+60h] [ebp-58h]
-		float v79; // [esp+64h] [ebp-54h]
-		float v80; // [esp+68h] [ebp-50h]
-		float v81; // [esp+6Ch] [ebp-4Ch]
-		float v82; // [esp+70h] [ebp-48h]
-		float v83; // [esp+74h] [ebp-44h]
-		float v84; // [esp+78h] [ebp-40h]
-		float v85; // [esp+7Ch] [ebp-3Ch]
-		float v86; // [esp+80h] [ebp-38h]
-		float v87; // [esp+84h] [ebp-34h]
-		float v88; // [esp+88h] [ebp-30h]
-		float v89; // [esp+8Ch] [ebp-2Ch]
-		float v90; // [esp+90h] [ebp-28h]
-		idMat3 result; // [esp+94h] [ebp-24h]
+	mLastTime = mCurrentTime;
+	mLastOrigin = mCurrentOrigin;
 
-		v4 = parms;
-		v5 = this;
-		this->mLastTime = this->mCurrentTime;
-		v6 = &this->mCurrentOrigin.x;
-		this->mLastOrigin.x = this->mCurrentOrigin.x;
-		this->mLastOrigin.y = this->mCurrentOrigin.y;
-		this->mLastOrigin.z = this->mCurrentOrigin.z;
-		this->mCurrentTime = time;
-		*v6 = parms->origin.x;
-		v6[1] = parms->origin.y;
-		v6[2] = parms->origin.z;
-		memcpy(&this->mCurrentAxis, &parms->axis, sizeof(this->mCurrentAxis));
-		v70 = this->mCurrentAxis[2].z;
-		v71 = this->mCurrentAxis[1].z;
-		v85 = this->mCurrentAxis[0].z;
-		v86 = this->mCurrentAxis[2].y;
-		v88 = this->mCurrentAxis[1].y;
-		v90 = this->mCurrentAxis[0].y;
-		v89 = this->mCurrentAxis[2].x;
-		v87 = this->mCurrentAxis[1].x;
-		size.x = this->mCurrentAxis[0].x;
-		dir.y = size.x;
-		dir.z = v87;
-		v78 = v89;
-		v79 = v90;
-		v80 = v88;
-		v81 = v86;
-		v82 = v85;
-		v83 = v71;
-		v84 = v70;
-		qmemcpy(&this->mCurrentAxisTransposed, &dir.y, sizeof(this->mCurrentAxisTransposed));
-		size.x = this->mCurrentAxis.mat[2].z;
-		v90 = this->mCurrentAxis.mat[1].z;
-		v85 = this->mCurrentAxis.mat[0].z;
-		v89 = this->mCurrentAxis.mat[2].y;
-		v88 = this->mCurrentAxis.mat[1].y;
-		v71 = this->mCurrentAxis.mat[0].y;
-		v87 = this->mCurrentAxis.mat[2].x;
-		v86 = this->mCurrentAxis.mat[1].x;
-		v70 = this->mCurrentAxis.mat[0].x;
-		size.y = v4->windVector.x * v70 + v4->windVector.y * v71 + v4->windVector.z * v85;
-		size.z = v4->windVector.x * v86 + v4->windVector.y * v88 + v4->windVector.z * v90;
-		corner.x = v4->windVector.y * v89 + v4->windVector.x * v87 + v4->windVector.z * size.x;
-		this->mCurrentWindVector.x = size.y;
-		this->mCurrentWindVector.y = size.z;
-		this->mCurrentWindVector.z = corner.x;
-		v7 = v5->mCurrentTime - v5->mLastTime;
-		if (v7 > 0.002000000094994903)
-		{
-			size.y = *v6 - this->mLastOrigin.x;
-			size.z = this->mCurrentOrigin.y - this->mLastOrigin.y;
-			corner.x = this->mCurrentOrigin.z - this->mLastOrigin.z;
-			v70 = v7;
-			v70 = 1.0 / v70;
-			dir.y = v70 * size.y;
-			dir.z = size.z * v70;
-			v78 = v70 * corner.x;
-			this->mCurrentVelocity.x = dir.y;
-			this->mCurrentVelocity.y = dir.z;
-			this->mCurrentVelocity.z = v78;
-		}
-		this->mGravity.x = parms->gravity.x;
-		this->mGravity.y = parms->gravity.y;
-		this->mGravity.z = parms->gravity.z;
-		this->mGravityDir.x = this->mGravity.x;
-		this->mGravityDir.y = this->mGravity.y;
-		this->mGravityDir.z = this->mGravity.z;
-		v70 = this->mGravityDir.y * this->mGravityDir.y
-			+ this->mGravityDir.x * this->mGravityDir.x
-			+ this->mGravityDir.z * this->mGravityDir.z;
-		v70 = sqrt(v70);
-		if (v70 >= 0.00000011920929)
-		{
-			v70 = 1.0 / v70;
-			v8 = v70;
-			this->mGravityDir.x = this->mGravityDir.x * v70;
-			this->mGravityDir.y = this->mGravityDir.y * v8;
-			this->mGravityDir.z = v8 * this->mGravityDir.z;
-		}
-		v9 = parms;
-		if (parms->useRenderBounds || parms->isStatic)
-		{
-			if (v5->mGrownRenderBounds.b[1].x >= (double)v5->mGrownRenderBounds.b[0].x)
-			{
-				v37 = &dir.y;
-				size.y = v5->mGrownRenderBounds.b[1].x + 10.0;
-				v38 = (int)&v5->mCurrentWorldBounds.b[0].y;
-				v39 = 2;
-				size.z = v5->mGrownRenderBounds.b[1].y + 10.0;
-				corner.x = v5->mGrownRenderBounds.b[1].z + 10.0;
-				v72 = v5->mGrownRenderBounds.b[0].x - 10.0;
-				v73 = v5->mGrownRenderBounds.b[0].y - 10.0;
-				length = v5->mGrownRenderBounds.b[0].z - 10.0;
-				dir.y = v72;
-				dir.z = v73;
-				v78 = length;
-				v79 = size.y;
-				v80 = size.z;
-				v81 = corner.x;
-				do
-				{
-					v40 = *v37;
-					v37 += 3;
-					*(float*)(v38 - 4) = v40;
-					v38 += 12;
-					--v39;
-					*(float*)(v38 - 12) = *(float*)((char*)&dir.y - (char*)&v5->mCurrentWorldBounds + v38 - 12);
-					*(float*)(v38 - 8) = *(float*)((char*)&dir.z - (char*)&v5->mCurrentWorldBounds + v38 - 12);
-				} while (v39);
-				idBounds::FromTransformedBounds(
-					&v5->mCurrentWorldBounds,
-					&v5->mCurrentWorldBounds,
-					&vec3_origin,
-					&v5->mCurrentAxis);
-				v9 = parms;
-				v5->mCurrentWorldBounds.b[0].x = v5->mCurrentWorldBounds.b[0].x + *v6;
-				v5->mCurrentWorldBounds.b[0].y = v6[1] + v5->mCurrentWorldBounds.b[0].y;
-				v5->mCurrentWorldBounds.b[0].z = v6[2] + v5->mCurrentWorldBounds.b[0].z;
-				v5->mCurrentWorldBounds.b[1].x = *v6 + v5->mCurrentWorldBounds.b[1].x;
-				v5->mCurrentWorldBounds.b[1].y = v6[1] + v5->mCurrentWorldBounds.b[1].y;
-				v5->mCurrentWorldBounds.b[1].z = v5->mCurrentWorldBounds.b[1].z + v6[2];
-				v13 = size.z;
-				v14 = corner.x;
-				v12 = size.y;
-			}
-			else
-			{
-				size.y = v5->mDeclEffect->mSize;
-				v70 = COERCE_FLOAT(&v72);
-				size.z = size.y;
-				v25 = (float*)&v5->mCurrentWorldBounds;
-				corner.x = size.y;
-				v71 = *(float*)&v25;
-				v25[2] = 1.0e30;
-				v25[1] = 1.0e30;
-				*v25 = 1.0e30;
-				size.x = -1.0e30;
-				v26 = size.x;
-				v25[5] = size.x;
-				v25[4] = v26;
-				v25[3] = v26;
-				v12 = size.y;
-				v72 = size.y + *v6;
-				v13 = size.z;
-				v73 = v6[1] + size.z;
-				v14 = corner.x;
-				length = v6[2] + corner.x;
-				v27 = (float*)LODWORD(v71);
-				v28 = v70;
-				v29 = *(float*)LODWORD(v70);
-				*(float*)LODWORD(v71) = fminf(*(float*)LODWORD(v71), *(float*)LODWORD(v70));
-				v30 = *(float*)(LODWORD(v28) + 4);
-				v27[1] = fminf(v27[1], v30);
-				v31 = *(float*)(LODWORD(v28) + 8);
-				v27[2] = fminf(v27[2], v31);
-				v27[3] = fmaxf(v29, v27[3]);
-				v27[4] = fmaxf(v30, v27[4]);
-				v27[5] = fmaxf(v31, v27[5]);
-				v32 = *v6 - v12;
-				v70 = COERCE_FLOAT(&v72);
-				LODWORD(v71) = (char*)v5 + 396;
-				v72 = v32;
-				v73 = v6[1] - v13;
-				length = v6[2] - v14;
-				v33 = (float*)&v5->mCurrentWorldBounds;
-				v34 = v72;
-				*v33 = fminf(v5->mCurrentWorldBounds.b[0].x, v72);
-				v35 = v73;
-				v33[1] = fminf(v5->mCurrentWorldBounds.b[0].y, v73);
-				v36 = length;
-				v33[2] = fminf(v5->mCurrentWorldBounds.b[0].z, length);
-				v33[3] = fmaxf(v34, v5->mCurrentWorldBounds.b[1].x);
-				v33[4] = fmaxf(v35, v5->mCurrentWorldBounds.b[1].y);
-				v33[5] = fmaxf(v36, v5->mCurrentWorldBounds.b[1].z);
+	mCurrentTime = time;
+	mCurrentOrigin = parms->origin;
+	mCurrentAxis = parms->axis;
+	mCurrentAxisTransposed = mCurrentAxis.Transpose();
+
+	const float dt = mCurrentTime - mLastTime;
+	if (dt > 0.002f) {
+		mCurrentVelocity = (mCurrentOrigin - mLastOrigin) * (1.0f / dt);
+	}
+	else {
+		mCurrentVelocity.Zero();
+	}
+
+	mGravity = parms->gravity;
+	mGravityDir = mGravity;
+	const float gravityLengthSqr = mGravityDir.LengthSqr();
+	if (gravityLengthSqr > 0.0f) {
+		mGravityDir *= idMath::InvSqrt(gravityLengthSqr);
+	}
+
+	SetLooping(parms->loop);
+	SetHasEndOrigin(parms->hasEndOrigin);
+	SetOrientateIdentity((mDeclEffect->mFlags & ETFLAG_ORIENTATE_IDENTITY) != 0);
+	SetFlag(parms->ambient, EFLAG_AMBIENT);
+
+	const idVec3 halfSize(mDeclEffect->mSize, mDeclEffect->mSize, mDeclEffect->mSize);
+
+	mCurrentWorldBounds.Clear();
+	mCurrentWorldBounds.AddPoint(mCurrentOrigin + halfSize);
+	mCurrentWorldBounds.AddPoint(mCurrentOrigin - halfSize);
+
+	if (parms->hasEndOrigin && (mDeclEffect->mFlags & ETFLAG_USES_ENDORIGIN) != 0) {
+		const bool endOriginChanged = init || parms->endOrigin != mCurrentEndOrigin || mCurrentOrigin != mLastOrigin;
+		mCurrentEndOrigin = parms->endOrigin;
+		mCurrentWorldBounds.AddPoint(mCurrentEndOrigin + halfSize);
+		mCurrentWorldBounds.AddPoint(mCurrentEndOrigin - halfSize);
+		SetEndOriginChanged(endOriginChanged);
+	}
+	else {
+		mCurrentEndOrigin = parms->endOrigin;
+		SetEndOriginChanged(false);
+	}
+
+	mCurrentLocalBounds.Clear();
+	for (int ix = 0; ix < 2; ++ix) {
+		for (int iy = 0; iy < 2; ++iy) {
+			for (int iz = 0; iz < 2; ++iz) {
+				const idVec3 corner(
+					mCurrentWorldBounds[ix].x,
+					mCurrentWorldBounds[iy].y,
+					mCurrentWorldBounds[iz].z);
+				const idVec3 local = mCurrentAxisTransposed * (corner - mCurrentOrigin);
+				mCurrentLocalBounds.AddPoint(local);
 			}
 		}
-		else
-		{
-			size.y = v5->mDeclEffect->mSize;
-			v70 = COERCE_FLOAT(&v72);
-			size.z = size.y;
-			v10 = (float*)&v5->mCurrentWorldBounds;
-			corner.x = size.y;
-			v71 = *(float*)&v10;
-			v10[2] = 1.0e30;
-			v10[1] = 1.0e30;
-			*v10 = 1.0e30;
-			size.x = -1.0e30;
-			v11 = size.x;
-			v10[5] = size.x;
-			v10[4] = v11;
-			v10[3] = v11;
-			v12 = size.y;
-			v72 = *v6 + size.y;
-			v13 = size.z;
-			v73 = v6[1] + size.z;
-			v14 = corner.x;
-			length = v6[2] + corner.x;
-			v15 = (float*)LODWORD(v71);
-			v16 = v70;
-			v17 = *(float*)LODWORD(v70);
-			*(float*)LODWORD(v71) = fminf(*(float*)LODWORD(v71), *(float*)LODWORD(v70));
-			v18 = *(float*)(LODWORD(v16) + 4);
-			v15[1] = fminf(v15[1], v18);
-			v19 = *(float*)(LODWORD(v16) + 8);
-			v15[2] = fminf(v15[2], v19);
-			v15[3] = fmaxf(v17, v15[3]);
-			v15[4] = fmaxf(v18, v15[4]);
-			v15[5] = fmaxf(v19, v15[5]);
-			v20 = *v6 - v12;
-			v70 = COERCE_FLOAT(&v72);
-			LODWORD(v71) = (char*)v5 + 396;
-			v72 = v20;
-			v73 = v6[1] - v13;
-			length = v6[2] - v14;
-			v21 = (float*)&v5->mCurrentWorldBounds;
-			v22 = v72;
-			*v21 = fminf(v5->mCurrentWorldBounds.b[0].x, v72);
-			v23 = v73;
-			v21[1] = fminf(v5->mCurrentWorldBounds.b[0].y, v73);
-			v24 = length;
-			v21[2] = fminf(v5->mCurrentWorldBounds.b[0].z, length);
-			v21[3] = fmaxf(v22, v5->mCurrentWorldBounds.b[1].x);
-			v21[4] = fmaxf(v23, v5->mCurrentWorldBounds.b[1].y);
-			v21[5] = fmaxf(v24, v5->mCurrentWorldBounds.b[1].z);
-			v5->mForcePush = 0;
-		}
-		if (bse_debug.internalVar->integerValue > 2)
-		{
-			v41 = session->rw->vfptr;
-			v69 = 0;
-			v68 = 10000;
-			v67 = &v5->mLastOrigin.x;
-			((void(__stdcall*)(idVec4*, float*, idVec3*, signed int, _DWORD))v41->DebugLine)(
-				&colorWhite,
-				v6,
-				&v5->mLastOrigin,
-				10000,
-				0);
-			v72 = *v6;
-			v42 = v5->mCurrentOrigin.y;
-			v69 = 0;
-			v73 = v42;
-			v68 = 10000;
-			v43 = v5->mCurrentOrigin.z + 10.0;
-			v67 = &v72;
-			v66 = v6;
-			v65 = &colorGreen;
-			length = v43;
-			((void(__stdcall*)(idVec4*, float*, float*, signed int, _DWORD))session->rw->vfptr->DebugLine)(
-				&colorGreen,
-				v6,
-				&v72,
-				10000,
-				0);
-			v13 = size.z;
-			v9 = parms;
-			v14 = corner.x;
-			v12 = size.y;
-		}
-		if (((unsigned int)v5->mFlags >> 1) & 1
-			&& ((unsigned int)v5->mDeclEffect->mFlags >> 1) & 1
-			&& (init
-				|| v9->endOrigin.x != v5->mCurrentEndOrigin.x
-				|| v9->endOrigin.y != v5->mCurrentEndOrigin.y
-				|| v9->endOrigin.z != v5->mCurrentEndOrigin.z
-				|| v5->mLastOrigin.x != *v6
-				|| v5->mLastOrigin.y != v6[1]
-				|| v5->mLastOrigin.z != v6[2]))
-		{
-			v5->mCurrentEndOrigin.x = v9->endOrigin.x;
-			LODWORD(v71) = (char*)v5 + 396;
-			v5->mCurrentEndOrigin.y = v9->endOrigin.y;
-			v5->mCurrentEndOrigin.z = v9->endOrigin.z;
-			v70 = COERCE_FLOAT(&v72);
-			v72 = v12 + v5->mCurrentEndOrigin.x;
-			v73 = v5->mCurrentEndOrigin.y + v13;
-			length = v5->mCurrentEndOrigin.z + v14;
-			v44 = (float*)LODWORD(v71);
-			v45 = v72;
-			*(float*)LODWORD(v71) = fminf(*(float*)LODWORD(v71), v72);
-			v46 = v73;
-			v44[1] = fminf(v44[1], v73);
-			v47 = length;
-			v44[2] = fminf(v44[2], length);
-			v44[3] = fmaxf(v45, v44[3]);
-			v44[4] = fmaxf(v46, v44[4]);
-			v44[5] = fmaxf(v47, v44[5]);
-			v48 = v5->mCurrentEndOrigin.x;
-			v70 = COERCE_FLOAT(&v72);
-			LODWORD(v71) = (char*)v5 + 396;
-			v72 = v48 - v12;
-			v73 = v5->mCurrentEndOrigin.y - v13;
-			length = v5->mCurrentEndOrigin.z - v14;
-			v49 = (float*)&v5->mCurrentWorldBounds;
-			v50 = v72;
-			*v49 = fminf(v5->mCurrentWorldBounds.b[0].x, v72);
-			v51 = v73;
-			v49[1] = fminf(v5->mCurrentWorldBounds.b[0].y, v73);
-			v52 = length;
-			v49[2] = fminf(v5->mCurrentWorldBounds.b[0].z, length);
-			v49[3] = fmaxf(v50, v5->mCurrentWorldBounds.b[1].x);
-			v49[4] = fmaxf(v51, v5->mCurrentWorldBounds.b[1].y);
-			v49[5] = fmaxf(v52, v5->mCurrentWorldBounds.b[1].z);
-			v5->mFlags |= 4u;
-		}
-		v53 = (float*)&v5->mCurrentLocalBounds;
-		v53[2] = 1.0e30;
-		v54 = 0;
-		v53[1] = 1.0e30;
-		v70 = COERCE_FLOAT((idVec3*)((char*)&corner + 4));
-		LODWORD(v71) = (char*)v5 + 372;
-		*v53 = 1.0e30;
-		size.x = -1.0e30;
-		v55 = size.x;
-		v53[5] = size.x;
-		v53[4] = v55;
-		v53[3] = v55;
-		do
-		{
-			corner.y = *((float*)&v5->vfptr + 3 * ((v54 & 1) + 33));
-			corner.z = v5->mCurrentWorldBounds.b[(v54 >> 1) & 1].y;
-			dir.x = v5->mCurrentWorldBounds.b[(v54 >> 2) & 1].z;
-			corner.y = corner.y - *v6;
-			corner.z = corner.z - v6[1];
-			dir.x = dir.x - v6[2];
-			v72 = v5->mCurrentAxisTransposed.mat[2].x * dir.x
-				+ v5->mCurrentAxisTransposed.mat[0].x * corner.y
-				+ corner.z * v5->mCurrentAxisTransposed.mat[1].x;
-			v73 = v5->mCurrentAxisTransposed.mat[0].y * corner.y
-				+ v5->mCurrentAxisTransposed.mat[1].y * corner.z
-				+ dir.x * v5->mCurrentAxisTransposed.mat[2].y;
-			length = dir.x * v5->mCurrentAxisTransposed.mat[2].z
-				+ corner.y * v5->mCurrentAxisTransposed.mat[0].z
-				+ corner.z * v5->mCurrentAxisTransposed.mat[1].z;
-			corner.y = v72;
-			corner.z = v73;
-			dir.x = length;
-			v56 = (float*)LODWORD(v71);
-			v57 = v70;
-			v58 = *(float*)LODWORD(v70);
-			*(float*)LODWORD(v71) = fminf(*(float*)LODWORD(v71), *(float*)LODWORD(v70));
-			v59 = *(float*)(LODWORD(v57) + 4);
-			v56[1] = fminf(v56[1], v59);
-			v60 = *(float*)(LODWORD(v57) + 8);
-			v56[2] = fminf(v56[2], v60);
-			v56[3] = fmaxf(v58, v56[3]);
-			v56[4] = fmaxf(v59, v56[4]);
-			v56[5] = fmaxf(v60, v56[5]);
-			++v54;
-		} while (v54 < 8);
-		dir.y = v5->mCurrentEndOrigin.x - *v6;
-		dir.z = v5->mCurrentEndOrigin.y - v6[1];
-		v78 = v5->mCurrentEndOrigin.z - v6[2];
-		v70 = dir.y * dir.y + dir.z * dir.z + v78 * v78;
-		v70 = sqrt(v70);
-		v61 = v70;
-		if (v70 >= 0.00000011920929)
-		{
-			v70 = 1.0 / v61;
-			dir.y = v70 * dir.y;
-			dir.z = dir.z * v70;
-			v78 = v70 * v78;
-		}
-		else
-		{
-			v61 = 0.0;
-		}
-		size.x = v61;
-		v62 = idVec3::ToMat3((idVec3*)((char*)&dir + 4), &result);
-		v63 = size.x / 100.0;
-		qmemcpy(&v5->mLightningAxis, v62, sizeof(v5->mLightningAxis));
-		v70 = v63;
-		v64 = v70;
-		v5->mLightningAxis.mat[0].x = v5->mLightningAxis.mat[0].x * v70;
-		v5->mLightningAxis.mat[0].y = v64 * v5->mLightningAxis.mat[0].y;
-		v5->mLightningAxis.mat[0].z = v64 * v5->mLightningAxis.mat[0].z;
-		v5->mTint.x = parms->shaderParms[0];
-		v5->mTint.y = parms->shaderParms[1];
-		v5->mTint.z = parms->shaderParms[2];
-		v5->mTint.w = parms->shaderParms[3];
-		v5->mBrightness = parms->shaderParms[6];
-		v5->mSuppressLightsInViewID = parms->suppressLightsInViewID;
-		v5->mAttenuation = parms->attenuation;
-		v5->mMaterialColor.x = parms->materialColor.x;
-		v5->mMaterialColor.y = parms->materialColor.y;
-		v5->mMaterialColor.z = parms->materialColor.z;
-	*/
+	}
+
+	mCurrentWindVector.Zero();
+	mTint.Set(parms->shaderParms[0], parms->shaderParms[1], parms->shaderParms[2], parms->shaderParms[3]);
+	mBrightness = parms->shaderParms[6];
+	mAttenuation = parms->attenuation;
+	mSuppressLightsInViewID = parms->suppressSurfaceInViewID;
 }

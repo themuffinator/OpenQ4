@@ -1126,8 +1126,6 @@ void R_RenderView( viewDef_t *parms ) {
 	// constrain the view frustum to the view lights and entities
 	R_ConstrainViewFrustum();
 
-	R_AddEffectSurfaces();
-
 	// make sure that interactions exist for all light / entity combinations
 	// that are visible
 	// add any pre-generated light shadows, and calculate the light shader values
@@ -1136,6 +1134,9 @@ void R_RenderView( viewDef_t *parms ) {
 	// adds ambient surfaces and create any necessary interaction surfaces to add to the light
 	// lists
 	R_AddModelSurfaces();
+
+	// submit dynamic effect surfaces after the model pass has initialized drawSurf lists
+	R_AddEffectSurfaces();
 
 	// any viewLight that didn't have visible surfaces can have it's shadows removed
 	R_RemoveUnecessaryViewLights();

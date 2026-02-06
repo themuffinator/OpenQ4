@@ -3029,6 +3029,12 @@ void idCommonLocal::InitGame( void ) {
 	// initialize the user interfaces
 	uiManager->Init();
 
+	// initialize the BSE system before the game DLL starts creating effects
+	if ( bse && !bse->Init() ) {
+		common->FatalError( "couldn't initialize BSE system" );
+		return;
+	}
+
 	// startup the script debugger
 	// DebuggerServerInit();
 
@@ -3094,11 +3100,16 @@ void idCommonLocal::ShutdownGame( bool reloading ) {
 	// shut down the renderSystem
 	renderSystem->Shutdown();
 
-	// shutdown the decl manager
-	declManager->Shutdown();
-
 	// unload the game dll
 	UnloadGameDLL();
+
+	// shut down the BSE manager after the game releases effect defs
+	if ( bse ) {
+		bse->Shutdown();
+	}
+
+	// shutdown the decl manager
+	declManager->Shutdown();
 
 	// dump warnings to "warnings.txt"
 #ifdef DEBUG

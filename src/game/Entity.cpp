@@ -5978,16 +5978,11 @@ bool idEntity::ClientReceiveEvent( int event, int time, const idBitMsg &msg ) {
 // bdube: new events
 		case EVENT_PLAYEFFECT_JOINT: {
 			const idDecl*		effect;
-			idCQuat				quat;
 			idVec3				origin;
 			rvClientEffect*		clientEffect;
 			effectCategory_t	category;
 			jointHandle_t		jointHandle;
 			bool				loop;
-
-			// TMP - not quite sure this is still used for anything
-			common->Warning( "FIXME: idEntity::PlayEffect happens" );
-			assert( false );
 		
 			effect = idGameLocal::ReadDecl( msg, DECL_EFFECT );
 			jointHandle = ( jointHandle_t )msg.ReadLong();
@@ -5996,6 +5991,13 @@ bool idEntity::ClientReceiveEvent( int event, int time, const idBitMsg &msg ) {
 			origin.y = msg.ReadFloat( );
 			origin.z = msg.ReadFloat( );
 			category = ( effectCategory_t )msg.ReadByte();
+
+			if ( !effect ) {
+				return true;
+			}
+			if ( bse->Filtered( effect->GetName(), category ) ) {
+				return true;
+			}
 
 			if ( bse->CanPlayRateLimited( category ) ) {
 			// mwhitlock: Dynamic memory consolidation
@@ -6006,6 +6008,7 @@ bool idEntity::ClientReceiveEvent( int event, int time, const idBitMsg &msg ) {
 				clientEffect->SetOrigin ( vec3_origin );
 				clientEffect->SetAxis ( mat3_identity );
 				clientEffect->Bind( this, jointHandle );
+				clientEffect->SetGravity( gameLocal.GetCurrentGravity( this ) );
 
 				clientEffect->Play( time, loop, origin );
 			}
@@ -6037,6 +6040,13 @@ bool idEntity::ClientReceiveEvent( int event, int time, const idBitMsg &msg ) {
 			origin2.z = msg.ReadFloat( );
 			category = ( effectCategory_t )msg.ReadByte();
 
+			if ( !effect ) {
+				return true;
+			}
+			if ( bse->Filtered( effect->GetName(), category ) ) {
+				return true;
+			}
+
 			if ( bse->CanPlayRateLimited( category ) ) {
 				// mwhitlock: Dynamic memory consolidation
 				RV_PUSH_SYS_HEAP_ID(RV_HEAP_ID_MULTIPLE_FRAME);
@@ -6046,6 +6056,7 @@ bool idEntity::ClientReceiveEvent( int event, int time, const idBitMsg &msg ) {
 				clientEffect->SetOrigin ( origin );
 				clientEffect->SetAxis ( quat.ToMat3() );
 				clientEffect->Bind ( this );
+				clientEffect->SetGravity( gameLocal.GetCurrentGravity( this ) );
 
 				clientEffect->Play ( time, loop, origin2 );
 			}

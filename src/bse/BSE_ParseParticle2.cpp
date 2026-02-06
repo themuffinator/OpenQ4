@@ -22,11 +22,101 @@ bool rvParticleTemplate::sInited = false;
 
 float rvSegmentTemplate::mSegmentBaseCosts[SEG_COUNT];
 
+namespace {
+static rvParticleParms* BSE_DuplicateParm(rvParticleParms* source) {
+	if (source == NULL || source->mStatic) {
+		return source;
+	}
+
+	rvParticleParms* copy = new rvParticleParms();
+	*copy = *source;
+	copy->mStatic = 0;
+	return copy;
+}
+
+static rvEnvParms* BSE_DuplicateEnv(rvEnvParms* source) {
+	if (source == NULL || source->mStatic) {
+		return source;
+	}
+
+	rvEnvParms* copy = new rvEnvParms();
+	*copy = *source;
+	copy->mStatic = 0;
+	return copy;
+}
+
+static void BSE_AssignParmPtr(rvParticleParms*& dest, rvParticleParms* source) {
+	if (dest != source && dest != NULL && !dest->mStatic) {
+		delete dest;
+	}
+	dest = source;
+}
+
+static void BSE_AssignEnvPtr(rvEnvParms*& dest, rvEnvParms* source) {
+	if (dest != source && dest != NULL && !dest->mStatic) {
+		delete dest;
+	}
+	dest = source;
+}
+
+static void BSE_DeleteOwnedParm(rvParticleParms*& value, rvParticleParms** seen, int& seenCount) {
+	if (value == NULL || value->mStatic) {
+		value = NULL;
+		return;
+	}
+
+	for (int i = 0; i < seenCount; ++i) {
+		if (seen[i] == value) {
+			value = NULL;
+			return;
+		}
+	}
+
+	seen[seenCount++] = value;
+	delete value;
+	value = NULL;
+}
+
+static void BSE_DeleteOwnedEnv(rvEnvParms*& value, rvEnvParms** seen, int& seenCount) {
+	if (value == NULL || value->mStatic) {
+		value = NULL;
+		return;
+	}
+
+	for (int i = 0; i < seenCount; ++i) {
+		if (seen[i] == value) {
+			value = NULL;
+			return;
+		}
+	}
+
+	seen[seenCount++] = value;
+	delete value;
+	value = NULL;
+}
+}
+
 void rvParticleTemplate::AllocTrail()
 {
-	if (mTrailInfo != NULL) {
-		mTrailInfo = new rvTrailInfo();
-	}	
+	if (mTrailInfo != NULL && !mTrailInfo->mStatic) {
+		return;
+	}
+
+	rvTrailInfo* info = new rvTrailInfo();
+	*info = sTrailInfo;
+	info->mStatic = 0;
+	mTrailInfo = info;
+}
+
+void rvParticleTemplate::AllocElectricityInfo() {
+	if (mElecInfo != NULL && !mElecInfo->mStatic) {
+		return;
+	}
+
+	rvElectricityInfo* info = new rvElectricityInfo();
+	*info = sElectricityInfo;
+	info->mStatic = 0;
+	mElecInfo = info;
 }
 
 bool rvParticleTemplate::ParseBlendParms(rvDeclEffect* effect, idParser* src)
@@ -144,7 +234,9 @@ bool rvParticleTemplate::ParseImpact(rvDeclEffect* effect, idParser* src)
 		else
 		{
 			//idParser::ReadToken(src, (idToken*)((char*)&token + 4));
-			src->ReadToken(&token);
+			if (!src->ReadToken(&token)) {
+				return false;
+			}
 			if (v4->mNumImpactEffects >= 4)
 			{
 				src->Error("too many impact effects");
@@ -218,7 +310,9 @@ bool rvParticleTemplate::ParseTimeout(rvDeclEffect* effect, idParser* src)
 				}
 				else
 				{
-					src->ReadToken(&token);
+					if (!src->ReadToken(&token)) {
+						return false;
+					}
 					if (v3->mNumTimeoutEffects >= 4)
 					{
 						//v8 = v4->scriptstack;
@@ -373,7 +467,9 @@ rvEnvParms* rvParticleTemplate::ParseMotionParms(idParser* src, int count, rvEnv
 					//	v7,
 					//	1);
 
-					src->ReadToken(&token);
+					if (!src->ReadToken(&token)) {
+						goto LABEL_25;
+					}
 					v6->mTable = declManager->FindTable(token);
 				}
 				if (!src->ReadToken(&token))
@@ -382,19 +478,7 @@ rvEnvParms* rvParticleTemplate::ParseMotionParms(idParser* src, int count, rvEnv
 			v6->Finalize();
 			if (v6->Compare(*def))
 			{
-				if (v6)
-				{
-// jmarshall - unknown memory
-					//v13 = sdPoolAllocator<rvEnvParms, &char const* const sdPoolAllocator_rvEnvParms, 128, sdLockingPolicy_None>::GetMemoryManager()->allocator;
-					//if (v13)
-					//{
-					//	LODWORD(v6[-1].mRate.z) = v13->free;
-					//	--v13->active;
-					//	++v13->numFree;
-					//	v13->free = (sdDetails::sdPoolAlloc<rvEnvParms, 128>::element_t*) & v6[-1].mRate.z;
-					//}
-// jmarshall - unknown memory
-				}
+				delete v6;
 				v16 = -1;
 				//idStr::FreeData((idStr*)&token.data);
 				result = def;
@@ -411,16 +495,7 @@ rvEnvParms* rvParticleTemplate::ParseMotionParms(idParser* src, int count, rvEnv
 		LABEL_25:
 			if (v6)
 			{
-// jmarshall - unknown memory
-				//v12 = sdPoolAllocator<rvEnvParms, &char const* const sdPoolAllocator_rvEnvParms, 128, sdLockingPolicy_None>::GetMemoryManager()->allocator;
-				//if (v12)
-				//{
-				//	LODWORD(v6[-1].mRate.z) = v12->free;
-				//	--v12->active;
-				//	++v12->numFree;
-				//	v12->free = (sdDetails::sdPoolAlloc<rvEnvParms, 128>::element_t*) & v6[-1].mRate.z;
-				//}
-// jmarshall - unknown memory
+				delete v6;
 			}
 			v16 = -1;
 		//	idStr::FreeData((idStr*)&token.data);
@@ -497,52 +572,52 @@ bool rvParticleTemplate::ParseMotionDomains(rvDeclEffect* effect, idParser* src)
 										}
 										else
 										{
-											v3->mpLengthEnvelope = rvParticleTemplate::ParseMotionParms(
+											BSE_AssignEnvPtr(v3->mpLengthEnvelope, rvParticleTemplate::ParseMotionParms(
 												v4,
 												3,
-												&rvParticleTemplate::sDefaultEnvelope);
+												&rvParticleTemplate::sDefaultEnvelope));
 										}
 									}
 									else
 									{
-										v3->mpOffsetEnvelope = rvParticleTemplate::ParseMotionParms(
+										BSE_AssignEnvPtr(v3->mpOffsetEnvelope, rvParticleTemplate::ParseMotionParms(
 											v4,
 											3,
-											&rvParticleTemplate::sDefaultEnvelope);
+											&rvParticleTemplate::sDefaultEnvelope));
 									}
 								}
 								else
 								{
-									v3->mpAngleEnvelope = rvParticleTemplate::ParseMotionParms(
+									BSE_AssignEnvPtr(v3->mpAngleEnvelope, rvParticleTemplate::ParseMotionParms(
 										v4,
 										3,
-										&rvParticleTemplate::sDefaultEnvelope);
+										&rvParticleTemplate::sDefaultEnvelope));
 								}
 							}
 							else
 							{
-								v3->mpRotateEnvelope = rvParticleTemplate::ParseMotionParms(
+								BSE_AssignEnvPtr(v3->mpRotateEnvelope, rvParticleTemplate::ParseMotionParms(
 									v4,
 									(unsigned __int8)v3->mNumRotateParms,
-									&rvParticleTemplate::sDefaultEnvelope);
+									&rvParticleTemplate::sDefaultEnvelope));
 							}
 						}
 						else
 						{
-							v3->mpSizeEnvelope = rvParticleTemplate::ParseMotionParms(
+							BSE_AssignEnvPtr(v3->mpSizeEnvelope, rvParticleTemplate::ParseMotionParms(
 								v4,
 								(unsigned __int8)v3->mNumSizeParms,
-								&rvParticleTemplate::sDefaultEnvelope);
+								&rvParticleTemplate::sDefaultEnvelope));
 						}
 					}
 					else
 					{
-						v3->mpFadeEnvelope = rvParticleTemplate::ParseMotionParms(v4, 1, &rvParticleTemplate::sDefaultEnvelope);
+						BSE_AssignEnvPtr(v3->mpFadeEnvelope, rvParticleTemplate::ParseMotionParms(v4, 1, &rvParticleTemplate::sDefaultEnvelope));
 					}
 				}
 				else
 				{
-					v3->mpTintEnvelope = rvParticleTemplate::ParseMotionParms(v4, 3, &rvParticleTemplate::sDefaultEnvelope);
+					BSE_AssignEnvPtr(v3->mpTintEnvelope, rvParticleTemplate::ParseMotionParms(v4, 3, &rvParticleTemplate::sDefaultEnvelope));
 				}
 				if (!src->ReadToken(&token))
 					goto LABEL_27;
@@ -790,22 +865,22 @@ bool rvParticleTemplate::CheckCommonParms(idParser* src, rvParticleParms& parms)
 
 rvParticleParms* rvParticleTemplate::ParseSpawnParms(rvDeclEffect* effect, idParser* src, int count, rvParticleParms* def) {
 	idToken token;
-	rvParticleParms* v7; 
 	rvParticleParms* v8; 
 
 	if (!src->ExpectTokenString("{")) {
 		return def;
 	}
 
-	src->ReadToken(&token);
+	if (!src->ReadToken(&token)) {
+		return def;
+	}
 
 	if (token == "}") {
 		return def;
 	}
 
-	// jmarshall: mem leak potential
-	v7 = new rvParticleParms();
-	v8 = v7;
+	v8 = new rvParticleParms();
+	v8->Init();
 
 	if (token == "box") {
 		v8->mSpawnType = count + 16;
@@ -861,7 +936,10 @@ rvParticleParms* rvParticleTemplate::ParseSpawnParms(rvDeclEffect* effect, idPar
 	}
 	else if (token == "model") {
 		v8->mSpawnType = count + 44;
-		src->ReadToken(&token);
+		if (!src->ReadToken(&token)) {
+			delete v8;
+			return def;
+		}
 
 		idRenderModel* model = renderModelManager->FindModel(token);
 		if (model == NULL) {
@@ -889,6 +967,7 @@ rvParticleParms* rvParticleTemplate::ParseSpawnParms(rvDeclEffect* effect, idPar
 		src->Parse1DMatrix(count, v8->mMins.ToFloatPtr(), true);
 		src->ExpectTokenString(",");
 		src->Parse1DMatrix(count, v8->mMaxs.ToFloatPtr(), true);
+		src->CheckTokenString(",");
 
 		v8->mRange = src->ParseFloat();
 
@@ -926,127 +1005,139 @@ rvParticleParms* rvParticleTemplate::ParseSpawnParms(rvDeclEffect* effect, idPar
 		return v8;
 	}
 
-	return v8;
+	src->Error("Invalid spawn type %s\n", token.c_str());
+	while (token != "}") {
+		if (!src->ReadToken(&token)) {
+			break;
+		}
+	}
+	delete v8;
+
+	return def;
 }
 
 bool rvParticleTemplate::ParseSpawnDomains(rvDeclEffect* effect, idParser* src) {
 	idToken token;
 
-	src->ExpectTokenString("{");
-	while (true) {
-		src->ReadToken(&token);
+	if (!src->ExpectTokenString("{")) {
+		return false;
+	}
 
-		if (token == "}")
-			break;
+	while (src->ReadToken(&token)) {
+		if (token == "}") {
+			return true;
+		}
 
 		if (token == "windStrength") {
-			mpSpawnWindStrength = ParseSpawnParms(effect, src, 1, &rvParticleTemplate::sSPF_NONE_1);
+			BSE_AssignParmPtr(mpSpawnWindStrength, ParseSpawnParms(effect, src, 1, &rvParticleTemplate::sSPF_NONE_1));
 		}
 		else if (token == "length") {
-			mpSpawnLength = ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_NONE_3);
+			BSE_AssignParmPtr(mpSpawnLength, ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_NONE_3));
 		}
 		else if (token == "offset") {
-			mpSpawnOffset = ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_NONE_3);
+			BSE_AssignParmPtr(mpSpawnOffset, ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_NONE_3));
 		}
 		else if (token == "angle") {
-			mpSpawnAngle = ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_NONE_3);
+			BSE_AssignParmPtr(mpSpawnAngle, ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_NONE_3));
 		}
 		else if (token == "rotate") {
-			mpSpawnRotate = ParseSpawnParms(effect, src, mNumRotateParms, &rvParticleTemplate::sSPF_NONE_3);
+			BSE_AssignParmPtr(mpSpawnRotate, ParseSpawnParms(effect, src, mNumRotateParms, &rvParticleTemplate::sSPF_NONE_3));
 		}
 		else if (token == "size") {
-			mpSpawnSize = ParseSpawnParms(effect, src, mNumSizeParms, &rvParticleTemplate::sSPF_ONE_3);
+			BSE_AssignParmPtr(mpSpawnSize, ParseSpawnParms(effect, src, mNumSizeParms, &rvParticleTemplate::sSPF_ONE_3));
 		}
 		else if (token == "fade") {
-			mpSpawnFade = ParseSpawnParms(effect, src, 1, &rvParticleTemplate::sSPF_ONE_1);
+			BSE_AssignParmPtr(mpSpawnFade, ParseSpawnParms(effect, src, 1, &rvParticleTemplate::sSPF_ONE_1));
 		}
 		else if (token == "tint") {
-			mpSpawnTint = ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_ONE_3);
+			BSE_AssignParmPtr(mpSpawnTint, ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_ONE_3));
 		}
 		else if (token == "friction") {
-			mpSpawnFriction = ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_NONE_3);
+			BSE_AssignParmPtr(mpSpawnFriction, ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_NONE_3));
 		}
 		else if (token == "acceleration") {
-			mpSpawnAcceleration = ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_NONE_3);
+			BSE_AssignParmPtr(mpSpawnAcceleration, ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_NONE_3));
 		}
 		else if (token == "velocity") {
-			mpSpawnVelocity = ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_NONE_3);
+			BSE_AssignParmPtr(mpSpawnVelocity, ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_NONE_3));
 		}
 		else if (token == "direction") {
-			mpSpawnDirection = rvParticleTemplate::ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_NONE_3);
+			BSE_AssignParmPtr(mpSpawnDirection, ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_NONE_3));
 			mFlags |= 0x4000u;
 		}
 		else if (token == "position") {
-			mpSpawnPosition = rvParticleTemplate::ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_NONE_3);
+			BSE_AssignParmPtr(mpSpawnPosition, ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_NONE_3));
 		}
 		else {
 			src->Error("Invalid spawn type %s\n", token.c_str());
 		}
 	}
 
-	return true;
+	return false;
 }
 
 bool rvParticleTemplate::ParseDeathDomains(rvDeclEffect* effect, idParser* src) {
 	idToken token;
 
-	src->ExpectTokenString("{");
-	while (true) {
-		src->ReadToken(&token);
+	if (!src->ExpectTokenString("{")) {
+		return false;
+	}
 
-		if (token == "}")
-			break;
+	while (src->ReadToken(&token)) {
+		if (token == "}") {
+			return true;
+		}
 
 		if (token == "length") {
 			rvParticleParms* v13 = ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_NONE_3);
 			bool v7 = mpLengthEnvelope == &rvParticleTemplate::sEmptyEnvelope;
-			mpDeathLength = v13;
+			BSE_AssignParmPtr(mpDeathLength, v13);
 			if (v7) {
-				mpLengthEnvelope = &rvParticleTemplate::sDefaultEnvelope;
+				BSE_AssignEnvPtr(mpLengthEnvelope, &rvParticleTemplate::sDefaultEnvelope);
 			}
 		}
 		else if (token == "offset") {
 			rvParticleParms* v13 = ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_NONE_3);
 			bool v7 = mpOffsetEnvelope == &rvParticleTemplate::sEmptyEnvelope;
-			mpDeathOffset = v13;
+			BSE_AssignParmPtr(mpDeathOffset, v13);
 			if (v7) {
-				mpOffsetEnvelope = &rvParticleTemplate::sDefaultEnvelope;
+				BSE_AssignEnvPtr(mpOffsetEnvelope, &rvParticleTemplate::sDefaultEnvelope);
 			}
 		}
 		else if (token == "angle") {
 			rvParticleParms* v13 = ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_NONE_3);
 			bool v7 = mpAngleEnvelope == &rvParticleTemplate::sEmptyEnvelope;
-			mpDeathAngle = v13;
+			BSE_AssignParmPtr(mpDeathAngle, v13);
 			if (v7) {
-				mpAngleEnvelope = &rvParticleTemplate::sDefaultEnvelope;
+				BSE_AssignEnvPtr(mpAngleEnvelope, &rvParticleTemplate::sDefaultEnvelope);
 			}
 		}
 		else if (token == "rotate") {
 			rvParticleParms* v10 = ParseSpawnParms(effect, src, mNumRotateParms, &rvParticleTemplate::sSPF_NONE_3);
-			mpDeathRotate = v10;
+			BSE_AssignParmPtr(mpDeathRotate, v10);
 			if (mpRotateEnvelope == &rvParticleTemplate::sEmptyEnvelope) {
-				mpRotateEnvelope = &rvParticleTemplate::sDefaultEnvelope;
+				BSE_AssignEnvPtr(mpRotateEnvelope, &rvParticleTemplate::sDefaultEnvelope);
 			}
 		}
 		else if (token == "size") {
 			rvParticleParms* v9 = ParseSpawnParms(effect, src, mNumSizeParms, &rvParticleTemplate::sSPF_ONE_3);
-			mpDeathSize = v9;
+			BSE_AssignParmPtr(mpDeathSize, v9);
 			if (mpSizeEnvelope == &rvParticleTemplate::sEmptyEnvelope) {
-				mpSizeEnvelope = &rvParticleTemplate::sDefaultEnvelope;
+				BSE_AssignEnvPtr(mpSizeEnvelope, &rvParticleTemplate::sDefaultEnvelope);
 			}
 		}
 		else if (token == "fade") {
 			rvParticleParms* v8 = ParseSpawnParms(effect, src, 1, &rvParticleTemplate::sSPF_NONE_1);
-			mpDeathFade = v8;
+			BSE_AssignParmPtr(mpDeathFade, v8);
 			if (mpFadeEnvelope == &rvParticleTemplate::sEmptyEnvelope) {
-				mpFadeEnvelope = &rvParticleTemplate::sDefaultEnvelope;
+				BSE_AssignEnvPtr(mpFadeEnvelope, &rvParticleTemplate::sDefaultEnvelope);
 			}
 		}
 		else if (token == "tint") {
 			rvParticleParms* v6 = ParseSpawnParms(effect, src, 3, &rvParticleTemplate::sSPF_NONE_3);
-			mpDeathTint = v6;
+			BSE_AssignParmPtr(mpDeathTint, v6);
 			if (mpTintEnvelope == &rvParticleTemplate::sEmptyEnvelope) {
-				mpTintEnvelope = &rvParticleTemplate::sDefaultEnvelope;
+				BSE_AssignEnvPtr(mpTintEnvelope, &rvParticleTemplate::sDefaultEnvelope);
 			}
 		}
 		else {
@@ -1054,30 +1145,38 @@ bool rvParticleTemplate::ParseDeathDomains(rvDeclEffect* effect, idParser* src) 
 		}
 	}
 
-	return true;
+	return false;
 }
 
 bool rvParticleTemplate::Parse(rvDeclEffect* effect, idParser* src) {
 	idToken token;
 
-	src->ExpectTokenString("{");	
-	while (true) {
-		src->ReadToken(&token);
-
-		if (token == "}")
-			break;
+	if (!src->ExpectTokenString("{")) {
+		return false;
+	}
+	while (src->ReadToken(&token)) {
+		if (token == "}") {
+			Finish();
+			return true;
+		}
 
 		if (token == "windDeviationAngle") {
 			mWindDeviationAngle = src->ParseFloat();
 		}
 		else if (token == "timeout") {
-			ParseTimeout(effect, src);
+			if (!ParseTimeout(effect, src)) {
+				return false;
+			}
 		}
 		else if (token == "impact") {
-			ParseImpact(effect, src);
+			if (!ParseImpact(effect, src)) {
+				return false;
+			}
 		}
 		else if (token == "model") {
-			src->ReadToken(&token);
+			if (!src->ReadToken(&token)) {
+				return false;
+			}
 			mModel = renderModelManager->FindModel(token);
 
 			if (mModel == NULL) {
@@ -1102,14 +1201,20 @@ bool rvParticleTemplate::Parse(rvDeclEffect* effect, idParser* src) {
 			mFlags |= 0x20000u;
 		}
 		else if (token == "blend") {
-			ParseBlendParms(effect, src);
+			if (!ParseBlendParms(effect, src)) {
+				return false;
+			}
 		}
 		else if (token == "entityDef") {
-			src->ReadToken(&token);
+			if (!src->ReadToken(&token)) {
+				return false;
+			}
 			mEntityDefName = token;
 		}
 		else if (token == "material") {
-			src->ReadToken(&token);
+			if (!src->ReadToken(&token)) {
+				return false;
+			}
 			mMaterial = declManager->FindMaterial(token);
 		}
 		else if (token == "trailScale") {
@@ -1134,22 +1239,62 @@ bool rvParticleTemplate::Parse(rvDeclEffect* effect, idParser* src) {
 		}
 		else if (token == "trailMaterial") {
 			AllocTrail();
-			src->ReadToken(&token);
+			if (!src->ReadToken(&token)) {
+				return false;
+			}
 			mTrailInfo->mTrailMaterial = declManager->FindMaterial(token);
 		}
 		else if (token == "trailType") {
-			src->ReadToken(&token);
+			AllocTrail();
+			if (!src->ReadToken(&token)) {
+				return false;
+			}
 
 			if (token == "burn") {
 				mTrailInfo->mTrailType = 1;
+				mTrailInfo->mTrailTypeName = "";
 			}
 			else if (token == "motion") {
 				mTrailInfo->mTrailType = 2;
+				mTrailInfo->mTrailTypeName = "";
 			}
 			else {
 				mTrailInfo->mTrailType = 3;
 				mTrailInfo->mTrailTypeName = token;
 			}
+		}
+		else if (token == "fork") {
+			AllocElectricityInfo();
+			int forks = src->ParseInt();
+			if (forks < 0) {
+				forks = 0;
+			} else if (forks > BSE_MAX_FORKS) {
+				forks = BSE_MAX_FORKS;
+			}
+			mElecInfo->mNumForks = forks;
+		}
+		else if (token == "forkMins") {
+			AllocElectricityInfo();
+			src->Parse1DMatrix(3, mElecInfo->mForkSizeMins.ToFloatPtr(), true);
+		}
+		else if (token == "forkMaxs") {
+			AllocElectricityInfo();
+			src->Parse1DMatrix(3, mElecInfo->mForkSizeMaxs.ToFloatPtr(), true);
+		}
+		else if (token == "jitterSize") {
+			AllocElectricityInfo();
+			src->Parse1DMatrix(3, mElecInfo->mJitterSize.ToFloatPtr(), true);
+		}
+		else if (token == "jitterRate") {
+			AllocElectricityInfo();
+			mElecInfo->mJitterRate = src->ParseFloat();
+		}
+		else if (token == "jitterTable") {
+			AllocElectricityInfo();
+			if (!src->ReadToken(&token)) {
+				return false;
+			}
+			mElecInfo->mJitterTable = declManager->FindTable(token, false);
 		}
 		else if (token == "gravity") {
 			mGravity.x = src->ParseFloat();
@@ -1217,26 +1362,103 @@ bool rvParticleTemplate::Parse(rvDeclEffect* effect, idParser* src) {
 			mFlags |= 0x800u;
 		}
 		else if (token == "motion") {
-			ParseMotionDomains(effect, src);
+			if (!ParseMotionDomains(effect, src)) {
+				return false;
+			}
 		}
 		else if (token == "end") {
-			ParseDeathDomains(effect, src);
+			if (!ParseDeathDomains(effect, src)) {
+				return false;
+			}
 		}
 		else if (token == "start") {
-			ParseSpawnDomains(effect, src);
+			if (!ParseSpawnDomains(effect, src)) {
+				return false;
+			}
 		}
 		else {
 			src->Error("Invalid particle keyword %s\n", token.c_str());
 		}
 	}
-
-	Finish();
-
-	return true;
+	return false;
 }
 
 void rvParticleTemplate::Duplicate(rvParticleTemplate const& copy) {
+	if (this == &copy) {
+		return;
+	}
 
+	Purge();
+	PurgeTraceModel();
+	*this = copy;
+
+	if (copy.mTrailInfo != NULL && !copy.mTrailInfo->mStatic) {
+		mTrailInfo = new rvTrailInfo(*copy.mTrailInfo);
+		mTrailInfo->mStatic = 0;
+	}
+
+	if (copy.mElecInfo != NULL && !copy.mElecInfo->mStatic) {
+		mElecInfo = new rvElectricityInfo(*copy.mElecInfo);
+		mElecInfo->mStatic = 0;
+	}
+
+	mpSpawnPosition = BSE_DuplicateParm(copy.mpSpawnPosition);
+	mpSpawnDirection = BSE_DuplicateParm(copy.mpSpawnDirection);
+	mpSpawnVelocity = BSE_DuplicateParm(copy.mpSpawnVelocity);
+	mpSpawnAcceleration = BSE_DuplicateParm(copy.mpSpawnAcceleration);
+	mpSpawnFriction = BSE_DuplicateParm(copy.mpSpawnFriction);
+	mpSpawnTint = BSE_DuplicateParm(copy.mpSpawnTint);
+	mpSpawnFade = BSE_DuplicateParm(copy.mpSpawnFade);
+	mpSpawnSize = BSE_DuplicateParm(copy.mpSpawnSize);
+	mpSpawnRotate = BSE_DuplicateParm(copy.mpSpawnRotate);
+	mpSpawnAngle = BSE_DuplicateParm(copy.mpSpawnAngle);
+	mpSpawnOffset = BSE_DuplicateParm(copy.mpSpawnOffset);
+	mpSpawnLength = BSE_DuplicateParm(copy.mpSpawnLength);
+	mpSpawnWindStrength = BSE_DuplicateParm(copy.mpSpawnWindStrength);
+	mpDeathTint = BSE_DuplicateParm(copy.mpDeathTint);
+	mpDeathFade = BSE_DuplicateParm(copy.mpDeathFade);
+	mpDeathSize = BSE_DuplicateParm(copy.mpDeathSize);
+	mpDeathRotate = BSE_DuplicateParm(copy.mpDeathRotate);
+	mpDeathAngle = BSE_DuplicateParm(copy.mpDeathAngle);
+	mpDeathOffset = BSE_DuplicateParm(copy.mpDeathOffset);
+	mpDeathLength = BSE_DuplicateParm(copy.mpDeathLength);
+
+	mpTintEnvelope = BSE_DuplicateEnv(copy.mpTintEnvelope);
+	mpFadeEnvelope = BSE_DuplicateEnv(copy.mpFadeEnvelope);
+	mpSizeEnvelope = BSE_DuplicateEnv(copy.mpSizeEnvelope);
+	mpRotateEnvelope = BSE_DuplicateEnv(copy.mpRotateEnvelope);
+	mpAngleEnvelope = BSE_DuplicateEnv(copy.mpAngleEnvelope);
+	mpOffsetEnvelope = BSE_DuplicateEnv(copy.mpOffsetEnvelope);
+	mpLengthEnvelope = BSE_DuplicateEnv(copy.mpLengthEnvelope);
+
+	if (mpSpawnPosition == NULL) { mpSpawnPosition = &rvParticleTemplate::sSPF_NONE_3; }
+	if (mpSpawnDirection == NULL) { mpSpawnDirection = &rvParticleTemplate::sSPF_NONE_3; }
+	if (mpSpawnVelocity == NULL) { mpSpawnVelocity = &rvParticleTemplate::sSPF_NONE_3; }
+	if (mpSpawnAcceleration == NULL) { mpSpawnAcceleration = &rvParticleTemplate::sSPF_NONE_3; }
+	if (mpSpawnFriction == NULL) { mpSpawnFriction = &rvParticleTemplate::sSPF_NONE_3; }
+	if (mpSpawnTint == NULL) { mpSpawnTint = &rvParticleTemplate::sSPF_ONE_3; }
+	if (mpSpawnFade == NULL) { mpSpawnFade = &rvParticleTemplate::sSPF_ONE_1; }
+	if (mpSpawnSize == NULL) { mpSpawnSize = &rvParticleTemplate::sSPF_ONE_3; }
+	if (mpSpawnRotate == NULL) { mpSpawnRotate = &rvParticleTemplate::sSPF_NONE_3; }
+	if (mpSpawnAngle == NULL) { mpSpawnAngle = &rvParticleTemplate::sSPF_NONE_3; }
+	if (mpSpawnOffset == NULL) { mpSpawnOffset = &rvParticleTemplate::sSPF_NONE_3; }
+	if (mpSpawnLength == NULL) { mpSpawnLength = &rvParticleTemplate::sSPF_NONE_3; }
+	if (mpSpawnWindStrength == NULL) { mpSpawnWindStrength = &rvParticleTemplate::sSPF_NONE_1; }
+	if (mpDeathTint == NULL) { mpDeathTint = &rvParticleTemplate::sSPF_NONE_3; }
+	if (mpDeathFade == NULL) { mpDeathFade = &rvParticleTemplate::sSPF_NONE_1; }
+	if (mpDeathSize == NULL) { mpDeathSize = &rvParticleTemplate::sSPF_ONE_3; }
+	if (mpDeathRotate == NULL) { mpDeathRotate = &rvParticleTemplate::sSPF_NONE_3; }
+	if (mpDeathAngle == NULL) { mpDeathAngle = &rvParticleTemplate::sSPF_NONE_3; }
+	if (mpDeathOffset == NULL) { mpDeathOffset = &rvParticleTemplate::sSPF_NONE_3; }
+	if (mpDeathLength == NULL) { mpDeathLength = &rvParticleTemplate::sSPF_NONE_3; }
+
+	if (mpTintEnvelope == NULL) { mpTintEnvelope = &rvParticleTemplate::sEmptyEnvelope; }
+	if (mpFadeEnvelope == NULL) { mpFadeEnvelope = &rvParticleTemplate::sEmptyEnvelope; }
+	if (mpSizeEnvelope == NULL) { mpSizeEnvelope = &rvParticleTemplate::sEmptyEnvelope; }
+	if (mpRotateEnvelope == NULL) { mpRotateEnvelope = &rvParticleTemplate::sEmptyEnvelope; }
+	if (mpAngleEnvelope == NULL) { mpAngleEnvelope = &rvParticleTemplate::sEmptyEnvelope; }
+	if (mpOffsetEnvelope == NULL) { mpOffsetEnvelope = &rvParticleTemplate::sEmptyEnvelope; }
+	if (mpLengthEnvelope == NULL) { mpLengthEnvelope = &rvParticleTemplate::sEmptyEnvelope; }
 }
 
 void  rvParticleTemplate::Finish()
@@ -1416,6 +1638,15 @@ void rvParticleTemplate::InitStatic()
 	{
 		rvParticleTemplate::sInited = 1;
 		rvParticleTemplate::sTrailInfo.mTrailType = 0;
+		rvParticleTemplate::sTrailInfo.mStatic = 1;
+		rvParticleTemplate::sTrailInfo.mPad = 0;
+		rvParticleTemplate::sTrailInfo.mTrailTypeName = "";
+		rvParticleTemplate::sTrailInfo.mTrailMaterial = declManager->FindMaterial("_default");
+		rvParticleTemplate::sTrailInfo.mTrailTime.x = 0.0f;
+		rvParticleTemplate::sTrailInfo.mTrailTime.y = 0.0f;
+		rvParticleTemplate::sTrailInfo.mTrailCount.x = 0.0f;
+		rvParticleTemplate::sTrailInfo.mTrailCount.y = 0.0f;
+		rvParticleTemplate::sTrailInfo.mTrailScale = 0.0f;
 		//unk_7E672A = 1;
 		//v0 = sdSingleton<sdDeclTypeHolder>::GetInstance();
 		//v1 = ((int(__stdcall*)(int, const char*, signed int))declManager->vfptr->FindType)(
@@ -1585,6 +1816,14 @@ void rvParticleTemplate::Init(void)
 	v1->mNumFrames = 0;
 	v1->mNumImpactEffects = 0;
 	v1->mNumTimeoutEffects = 0;
+	v1->mImpactEffects[0] = NULL;
+	v1->mImpactEffects[1] = NULL;
+	v1->mImpactEffects[2] = NULL;
+	v1->mImpactEffects[3] = NULL;
+	v1->mTimeoutEffects[0] = NULL;
+	v1->mTimeoutEffects[1] = NULL;
+	v1->mTimeoutEffects[2] = NULL;
+	v1->mTimeoutEffects[3] = NULL;
 	// jmarshall: no idea
 	//v3 = &v1->mTimeoutEffects[0];
 	// jmarshall end
@@ -1610,6 +1849,7 @@ void rvParticleTemplate::SetParameterCounts()
 	switch (this->mType)
 	{
 	case 1:
+	case 4:
 		this->mNumSizeParms = 2;
 		this->mNumRotateParms = 1;
 		v1 = &rvParticleTemplate::sSPF_ONE_2;
@@ -1630,11 +1870,6 @@ void rvParticleTemplate::SetParameterCounts()
 		v1 = &rvParticleTemplate::sSPF_ONE_2;
 		v2 = &rvParticleTemplate::sSPF_NONE_3;
 		goto LABEL_11;
-	case 4:
-		this->mNumSizeParms = 3;
-		this->mNumRotateParms = 1;
-		v2 = &rvParticleTemplate::sSPF_NONE_1;
-		goto LABEL_10;
 	case 5:
 		this->mNumSizeParms = 3;
 		this->mNumRotateParms = 3;
@@ -1670,13 +1905,97 @@ void rvParticleTemplate::PurgeTraceModel(void) {
 	v2 = this->mTraceModelIndex;
 	if (v2 != -1)
 	{
-		//bse->FreeTraceModel(v2); // jmarshall: todo
+		bse->FreeTraceModel(v2);
 		v1->mTraceModelIndex = -1;
 	}
 }
 
 void rvParticleTemplate::Purge() {
-	// TODO
+	PurgeTraceModel();
+
+	rvParticleParms* seenParms[20];
+	int seenParmCount = 0;
+	BSE_DeleteOwnedParm(mpSpawnPosition, seenParms, seenParmCount);
+	BSE_DeleteOwnedParm(mpSpawnDirection, seenParms, seenParmCount);
+	BSE_DeleteOwnedParm(mpSpawnVelocity, seenParms, seenParmCount);
+	BSE_DeleteOwnedParm(mpSpawnAcceleration, seenParms, seenParmCount);
+	BSE_DeleteOwnedParm(mpSpawnFriction, seenParms, seenParmCount);
+	BSE_DeleteOwnedParm(mpSpawnTint, seenParms, seenParmCount);
+	BSE_DeleteOwnedParm(mpSpawnFade, seenParms, seenParmCount);
+	BSE_DeleteOwnedParm(mpSpawnSize, seenParms, seenParmCount);
+	BSE_DeleteOwnedParm(mpSpawnRotate, seenParms, seenParmCount);
+	BSE_DeleteOwnedParm(mpSpawnAngle, seenParms, seenParmCount);
+	BSE_DeleteOwnedParm(mpSpawnOffset, seenParms, seenParmCount);
+	BSE_DeleteOwnedParm(mpSpawnLength, seenParms, seenParmCount);
+	BSE_DeleteOwnedParm(mpSpawnWindStrength, seenParms, seenParmCount);
+	BSE_DeleteOwnedParm(mpDeathTint, seenParms, seenParmCount);
+	BSE_DeleteOwnedParm(mpDeathFade, seenParms, seenParmCount);
+	BSE_DeleteOwnedParm(mpDeathSize, seenParms, seenParmCount);
+	BSE_DeleteOwnedParm(mpDeathRotate, seenParms, seenParmCount);
+	BSE_DeleteOwnedParm(mpDeathAngle, seenParms, seenParmCount);
+	BSE_DeleteOwnedParm(mpDeathOffset, seenParms, seenParmCount);
+	BSE_DeleteOwnedParm(mpDeathLength, seenParms, seenParmCount);
+
+	rvEnvParms* seenEnvs[7];
+	int seenEnvCount = 0;
+	BSE_DeleteOwnedEnv(mpTintEnvelope, seenEnvs, seenEnvCount);
+	BSE_DeleteOwnedEnv(mpFadeEnvelope, seenEnvs, seenEnvCount);
+	BSE_DeleteOwnedEnv(mpSizeEnvelope, seenEnvs, seenEnvCount);
+	BSE_DeleteOwnedEnv(mpRotateEnvelope, seenEnvs, seenEnvCount);
+	BSE_DeleteOwnedEnv(mpAngleEnvelope, seenEnvs, seenEnvCount);
+	BSE_DeleteOwnedEnv(mpOffsetEnvelope, seenEnvs, seenEnvCount);
+	BSE_DeleteOwnedEnv(mpLengthEnvelope, seenEnvs, seenEnvCount);
+
+	if (mTrailInfo != NULL && !mTrailInfo->mStatic) {
+		delete mTrailInfo;
+	}
+	if (mElecInfo != NULL && !mElecInfo->mStatic) {
+		delete mElecInfo;
+	}
+
+	mTrailInfo = &rvParticleTemplate::sTrailInfo;
+	mElecInfo = &rvParticleTemplate::sElectricityInfo;
+
+	mpSpawnPosition = &rvParticleTemplate::sSPF_NONE_3;
+	mpSpawnDirection = &rvParticleTemplate::sSPF_NONE_3;
+	mpSpawnVelocity = &rvParticleTemplate::sSPF_NONE_3;
+	mpSpawnAcceleration = &rvParticleTemplate::sSPF_NONE_3;
+	mpSpawnFriction = &rvParticleTemplate::sSPF_NONE_3;
+	mpSpawnRotate = &rvParticleTemplate::sSPF_NONE_3;
+	mpSpawnAngle = &rvParticleTemplate::sSPF_NONE_3;
+	mpSpawnOffset = &rvParticleTemplate::sSPF_NONE_3;
+	mpSpawnLength = &rvParticleTemplate::sSPF_NONE_3;
+	mpSpawnTint = &rvParticleTemplate::sSPF_ONE_3;
+	mpSpawnFade = &rvParticleTemplate::sSPF_ONE_1;
+	mpSpawnSize = &rvParticleTemplate::sSPF_ONE_3;
+	mpSpawnWindStrength = &rvParticleTemplate::sSPF_NONE_1;
+
+	mpTintEnvelope = &rvParticleTemplate::sEmptyEnvelope;
+	mpFadeEnvelope = &rvParticleTemplate::sEmptyEnvelope;
+	mpSizeEnvelope = &rvParticleTemplate::sEmptyEnvelope;
+	mpRotateEnvelope = &rvParticleTemplate::sEmptyEnvelope;
+	mpAngleEnvelope = &rvParticleTemplate::sEmptyEnvelope;
+	mpOffsetEnvelope = &rvParticleTemplate::sEmptyEnvelope;
+	mpLengthEnvelope = &rvParticleTemplate::sEmptyEnvelope;
+
+	mpDeathTint = &rvParticleTemplate::sSPF_NONE_3;
+	mpDeathFade = &rvParticleTemplate::sSPF_NONE_1;
+	mpDeathSize = &rvParticleTemplate::sSPF_ONE_3;
+	mpDeathRotate = &rvParticleTemplate::sSPF_NONE_3;
+	mpDeathAngle = &rvParticleTemplate::sSPF_NONE_3;
+	mpDeathOffset = &rvParticleTemplate::sSPF_NONE_3;
+	mpDeathLength = &rvParticleTemplate::sSPF_NONE_3;
+
+	mNumImpactEffects = 0;
+	mNumTimeoutEffects = 0;
+	mImpactEffects[0] = NULL;
+	mImpactEffects[1] = NULL;
+	mImpactEffects[2] = NULL;
+	mImpactEffects[3] = NULL;
+	mTimeoutEffects[0] = NULL;
+	mTimeoutEffects[1] = NULL;
+	mTimeoutEffects[2] = NULL;
+	mTimeoutEffects[3] = NULL;
 }
 
 float rvParticleTemplate::CostTrail(float cost) const

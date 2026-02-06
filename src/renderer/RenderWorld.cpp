@@ -187,10 +187,22 @@ qhandle_t idRenderWorldLocal::AddEffectDef(const renderEffect_t* reffect, int ti
 		effectsDef[effectHandle] = new rvRenderEffectLocal();
 	}
 
-	effectsDef[effectHandle]->parms = *reffect;
-	effectsDef[effectHandle]->gameTime = time;
+	rvRenderEffectLocal* def = effectsDef[effectHandle];
+	def->parms = *reffect;
+	def->gameTime = time;
+	def->serviceTime = time - 1;
+	def->newEffect = true;
+	def->expired = false;
+	def->effect = NULL;
+	def->index = effectHandle;
+	def->world = this;
+	def->dynamicModel = NULL;
+	def->dynamicModelFrameCount = 0;
+	def->referenceBounds.Clear();
 
-	bse->PlayEffect(effectsDef[effectHandle], tr.frameShaderTime);
+	if (!bse->PlayEffect(def, tr.frameShaderTime)) {
+		def->expired = true;
+	}
 
 	return effectHandle;
 }
@@ -205,17 +217,31 @@ bool idRenderWorldLocal::UpdateEffectDef(qhandle_t effectHandle, const renderEff
 	if (effectHandle < 0 || effectHandle > LUDICROUS_INDEX) {
 		common->Error("idRenderWorld::UpdateEffectDef: index = %i", effectHandle);
 	}
-	//while (effectHandle >= effectsDef.Num()) {
-	//	effectsDef.Append(NULL);
-	//}
+	if (effectHandle >= effectsDef.Num() || effectsDef[effectHandle] == NULL) {
+		return true;
+	}
 
-	effectsDef[effectHandle]->parms = *reffect;
-	effectsDef[effectHandle]->gameTime = time;
+	rvRenderEffectLocal* def = effectsDef[effectHandle];
+	def->parms = *reffect;
+	def->gameTime = time;
 
-	return true; 
+	return def->expired;
 }
 
 void idRenderWorldLocal::FreeEffectDef(qhandle_t effectHandle) {
+	if (effectHandle < 0 || effectHandle >= effectsDef.Num()) {
+		return;
+	}
+	if (effectsDef[effectHandle] == NULL) {
+		return;
+	}
+
+	if (effectsDef[effectHandle]->dynamicModel) {
+		delete effectsDef[effectHandle]->dynamicModel;
+		effectsDef[effectHandle]->dynamicModel = NULL;
+		effectsDef[effectHandle]->dynamicModelFrameCount = 0;
+	}
+
 	bse->FreeEffect(effectsDef[effectHandle]);
 
 	if (effectsDef[effectHandle] != NULL)
@@ -225,6 +251,9 @@ void idRenderWorldLocal::FreeEffectDef(qhandle_t effectHandle) {
 }
 
 void idRenderWorldLocal::StopEffectDef(qhandle_t effectHandle) { 
+	if (effectHandle < 0 || effectHandle >= effectsDef.Num()) {
+		return;
+	}
 	if (effectsDef[effectHandle] == NULL)
 		return;
 
@@ -232,11 +261,14 @@ void idRenderWorldLocal::StopEffectDef(qhandle_t effectHandle) {
 }
 
 const class rvRenderEffectLocal* idRenderWorldLocal::GetEffectDef(qhandle_t effectHandle) const { 
+	if (effectHandle < 0 || effectHandle >= effectsDef.Num()) {
+		return NULL;
+	}
 	return effectsDef[effectHandle]; 
 }
 
 bool idRenderWorldLocal::EffectDefHasSound(const renderEffect_s* reffect) { 
-	return false; 
+	return bse->CheckDefForSound(reffect); 
 }
 
 /*

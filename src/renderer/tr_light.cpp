@@ -1458,10 +1458,130 @@ void R_AddEffectSurfaces(void) {
 	idRenderWorldLocal* world = tr.viewDef->renderWorld;
 
 	for (int i = 0; i < world->effectsDef.Num(); i++) {
-		if (world->effectsDef[i] == NULL)
+		rvRenderEffectLocal* def = world->effectsDef[i];
+		if (!def) {
 			continue;
+		}
 
-		bse->ServiceEffect(world->effectsDef[i], tr.frameShaderTime);
+		// Keep simulation/sound state moving even when the effect isn't rendered this frame.
+		if (bse->ServiceEffect(def, tr.frameShaderTime)) {
+			if (def->dynamicModel) {
+				delete def->dynamicModel;
+				def->dynamicModel = NULL;
+				def->dynamicModelFrameCount = 0;
+			}
+			continue;
+		}
+
+		if (!def->effect) {
+			continue;
+		}
+
+		// View-model and view-only effects may not live in a portal-connected area
+		// but still need to render for their target view.
+		if (!def->parms.inConnectedArea &&
+			def->parms.allowSurfaceInViewID == 0 &&
+			def->parms.weaponDepthHackInViewID == 0) {
+			continue;
+		}
+
+		if (!r_skipSuppress.GetBool()) {
+			if (def->parms.suppressSurfaceInViewID && def->parms.suppressSurfaceInViewID == tr.viewDef->renderView.viewID) {
+				continue;
+			}
+			if (def->parms.allowSurfaceInViewID && def->parms.allowSurfaceInViewID != tr.viewDef->renderView.viewID) {
+				continue;
+			}
+		}
+
+		def->dynamicModel = bse->RenderEffect(def, tr.viewDef);
+		if (!def->dynamicModel) {
+			def->dynamicModelFrameCount = 0;
+			continue;
+		}
+		def->dynamicModelFrameCount = tr.frameCount;
+
+		idRenderModel* model = def->dynamicModel;
+		if (model->NumSurfaces() <= 0) {
+			continue;
+		}
+
+		const idBounds localBounds = model->Bounds(NULL);
+		if (localBounds.IsCleared()) {
+			continue;
+		}
+		def->referenceBounds = localBounds;
+
+		viewEntity_t* vEffect = (viewEntity_t*)R_ClearedFrameAlloc(sizeof(*vEffect));
+		vEffect->entityDef = NULL;
+		vEffect->weaponDepthHack = (def->parms.weaponDepthHackInViewID != 0 && def->parms.weaponDepthHackInViewID == tr.viewDef->renderView.viewID);
+		vEffect->modelDepthHack = def->parms.modelDepthHack;
+		R_AxisToModelMatrix(def->parms.axis, def->parms.origin, vEffect->modelMatrix);
+		myGlMultMatrix(vEffect->modelMatrix, tr.viewDef->worldSpace.modelViewMatrix, vEffect->modelViewMatrix);
+
+		if (R_CullLocalBox(localBounds, vEffect->modelMatrix, 5, tr.viewDef->frustum)) {
+			continue;
+		}
+
+		idBounds projectionBounds;
+		tr.viewDef->viewFrustum.ProjectionBounds(idBox(localBounds, def->parms.origin, def->parms.axis), projectionBounds);
+		vEffect->scissorRect = R_ScreenRectFromViewFrustumBounds(projectionBounds);
+		vEffect->scissorRect.Intersect(tr.viewDef->scissor);
+		if (vEffect->scissorRect.IsEmpty()) {
+			continue;
+		}
+
+		renderEntity_t renderParms;
+		memset(&renderParms, 0, sizeof(renderParms));
+		renderParms.origin = def->parms.origin;
+		renderParms.axis = def->parms.axis;
+		renderParms.suppressSurfaceInViewID = def->parms.suppressSurfaceInViewID;
+		renderParms.allowSurfaceInViewID = def->parms.allowSurfaceInViewID;
+		renderParms.modelDepthHack = def->parms.modelDepthHack;
+		renderParms.weaponDepthHackInViewID = def->parms.weaponDepthHackInViewID;
+		renderParms.referenceSoundHandle = def->parms.referenceSoundHandle;
+		for (int parm = 0; parm < MAX_ENTITY_SHADER_PARMS; ++parm) {
+			renderParms.shaderParms[parm] = def->parms.shaderParms[parm];
+		}
+
+		const int total = model->NumSurfaces();
+		for (int s = 0; s < total; ++s) {
+			if (r_singleSurface.GetInteger() >= 0 && s != r_singleSurface.GetInteger()) {
+				continue;
+			}
+
+			const modelSurface_t* surf = model->Surface(s);
+			if (!surf || !surf->geometry || !surf->geometry->numIndexes) {
+				continue;
+			}
+
+			srfTriangles_t* tri = surf->geometry;
+			if (R_CullLocalBox(tri->bounds, vEffect->modelMatrix, 5, tr.viewDef->frustum)) {
+				continue;
+			}
+
+			const idMaterial* shader = surf->shader;
+			R_GlobalShaderOverride(&shader);
+			if (!shader || !shader->IsDrawn()) {
+				continue;
+			}
+
+			if (!R_CreateAmbientCache(tri, shader->ReceivesLighting())) {
+				continue;
+			}
+			vertexCache.Touch(tri->ambientCache);
+
+			if (r_useIndexBuffers.GetBool() && !tri->indexCache) {
+				vertexCache.Alloc(tri->indexes, tri->numIndexes * sizeof(tri->indexes[0]), &tri->indexCache, true);
+			}
+			if (tri->indexCache) {
+				vertexCache.Touch(tri->indexCache);
+			}
+
+			R_AddDrawSurf(tri, vEffect, &renderParms, shader, vEffect->scissorRect);
+			tri->ambientViewCount = tr.viewCount;
+			def->visibleCount = tr.viewCount;
+		}
 	}
 }
 

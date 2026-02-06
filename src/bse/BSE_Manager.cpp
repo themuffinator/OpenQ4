@@ -20,6 +20,8 @@ idCVar bse_debris("bse_debris", "1", CVAR_BOOL, "disable effect debris");
 idCVar bse_singleEffect("bse_singleEffect", "", 0, "set to the name of the effect that is only played");
 idCVar bse_rateLimit("bse_rateLimit", "1", CVAR_FLOAT, "rate limit for spawned effects");
 idCVar bse_rateCost("bse_rateCost", "1", CVAR_FLOAT, "rate cost multiplier for spawned effects");
+idCVar bse_scale("bse_scale", "1", CVAR_FLOAT, "global BSE scaling for spawn/detail");
+idCVar bse_maxParticles("bse_maxParticles", "2048", CVAR_INTEGER, "maximum per-segment particle allocation");
 
 float effectCosts[EC_MAX] = { 0, 2, 0.1 }; // dd 0.0, 2 dup(0.1)
 
@@ -38,7 +40,12 @@ rvBSEManagerLocal::Init
 bool rvBSEManagerLocal::Init(void) {
 	common->Printf("----------------- BSE Init ------------------\n");
 
+	declManager->FindEffect("_default");
+	declManager->FindMaterial("_default");
+	declManager->FindMaterial("gfx/effects/particles_shapes/motionblur");
+	declManager->FindType(DECL_TABLE, "halfsintable", true);
 	renderModelManager->FindModel("_default");
+	pauseTime = -1.0f;
 
 	common->Printf("--------- BSE Created Successfully ----------\n");
 	return true;
@@ -52,10 +59,14 @@ rvBSEManagerLocal::Shutdown
 bool rvBSEManagerLocal::Shutdown(void) {
 	common->Printf("--------------- BSE Shutdown ----------------\n");
 
+	for (int i = 0; i < mTraceModels.Num(); ++i) {
+		delete mTraceModels[i];
+	}
 	mTraceModels.Clear();
 	mEffectRates[0] = 0.0f;
 	mEffectRates[1] = 0.0f;
 	mEffectRates[2] = 0.0f;
+	pauseTime = -1.0f;
 
 	common->Printf("---------------------------------------------\n");
 	return true;
@@ -103,59 +114,94 @@ void rvBSEManagerLocal::FreeTraceModel(int index)
 }
 
 bool rvBSEManagerLocal::PlayEffect(class rvRenderEffectLocal* def, float time) {
-	const rvDeclEffect* v3; // esi
+	if (!bse_enabled.GetBool() || !def || !def->parms.declEffect) {
+		return false;
+	}
 
-	v3 = (const rvDeclEffect *)def->parms.declEffect;
-	idStr effectName = def->parms.declEffect->GetName();
+	const rvDeclEffect* v3 = (const rvDeclEffect*)def->parms.declEffect;
+	const idStr effectName = def->parms.declEffect->GetName();
 
-	if (Filtered(effectName, EC_IGNORE))
-		return 0;
+	if (Filtered(effectName, EC_IGNORE)) {
+		def->effect = NULL;
+		def->expired = true;
+		return false;
+	}
 	if (bse_debug.GetInteger())
 	{
 		common->Printf("Playing effect: %s at %g\n", effectName.c_str(), time);
 	}
 	++v3->mPlayCount;
-	rvBSE* bse = effects.Alloc();
-	def->effect = bse;
-	bse->Init(v3, &def->parms, time);
-	return 1;
+	rvBSE* effectState = effects.Alloc();
+	if (!effectState) {
+		def->effect = NULL;
+		def->expired = true;
+		return false;
+	}
+	def->effect = effectState;
+	def->expired = false;
+	def->newEffect = true;
+	effectState->Init(v3, &def->parms, time);
+	return true;
 }
 
 bool rvBSEManagerLocal::ServiceEffect(class rvRenderEffectLocal* def, float time) {
-	rvBSE* v5; // ebp
-	idStr v6; // eax
-	idBounds v9; // eax
+	if (!def || !def->effect) {
+		if (def) {
+			def->expired = true;
+		}
+		return true;
+	}
+
+	if (!bse_enabled.GetBool()) {
+		def->expired = true;
+		return true;
+	}
 
 	bool forcePush = false;
 
-	if (-1.0 == this->pauseTime)
-		this->pauseTime = time;
-	if (this->pauseTime > 0.0)
-		time = this->pauseTime;
-	v5 = def->effect;
-	if (!v5)
-		return 1;
-	v6 = def->parms.declEffect->GetName();
-	if (Filtered(v6, EC_IGNORE))
-		return true;
-	if (v5->Service(&def->parms, time, def->gameTime > def->serviceTime, forcePush))
-	{
+	if (pauseTime >= 0.0f) {
+		time = pauseTime;
+	}
+
+	const idStr effectName = def->parms.declEffect ? def->parms.declEffect->GetName() : "";
+	if (Filtered(effectName.c_str(), EC_IGNORE)) {
+		def->expired = true;
 		return true;
 	}
+
+	if (def->effect->Service(&def->parms, time, def->gameTime > def->serviceTime, forcePush)) {
+		def->expired = true;
+		return true;
+	}
+
+	def->expired = false;
+	def->newEffect = false;
 	def->serviceTime = def->gameTime;
-	v9 = v5->GetCurrentLocalBounds();
-	def->referenceBounds[0].x = v9[0][0];
-	def->referenceBounds[0].y = v9[0][1];
-	def->referenceBounds[0].z = v9[0][2];
-	def->referenceBounds[1].x = v9[1][0];
-	def->referenceBounds[1].y = v9[1][1];
-	def->referenceBounds[1].z = v9[1][2];
+	const idBounds currentLocalBounds = def->effect->GetCurrentLocalBounds();
+	def->referenceBounds = currentLocalBounds;
 	if (bse_speeds.GetBool())
 		++rvBSEManagerLocal::mPerfCounters[0];
 	if (bse_debug.GetInteger())
-		v5->EvaluateCost();
+		def->effect->EvaluateCost();
 
-	return 0;
+	return false;
+}
+
+idRenderModel* rvBSEManagerLocal::RenderEffect(class rvRenderEffectLocal* def, const struct viewDef_s* view) {
+	if (!def || !def->effect) {
+		if (def && def->dynamicModel) {
+			delete def->dynamicModel;
+			def->dynamicModel = NULL;
+			def->dynamicModelFrameCount = 0;
+		}
+		return NULL;
+	}
+
+	def->dynamicModel = def->effect->Render(def->dynamicModel, &def->parms, view);
+	if (!def->dynamicModel) {
+		def->dynamicModelFrameCount = 0;
+	}
+	return def->dynamicModel;
 }
 
 void rvBSEManagerLocal::StopEffect(rvRenderEffectLocal* def) {
@@ -167,18 +213,16 @@ void rvBSEManagerLocal::StopEffect(rvRenderEffectLocal* def) {
 			common->Printf("Stopping effect %s\n", effectName.c_str());
 		}
 		def->effect->SetStopped(true);
+		def->newEffect = false;
 	}
-	else
+	else if (def)
 	{
-		def->newEffect = 0;
-		def->expired = 1;
+		def->newEffect = false;
+		def->expired = true;
 	}
 }
 
 void rvBSEManagerLocal::FreeEffect(rvRenderEffectLocal* def) {
-	int v1; // eax
-	rvBSE* v2; // eax
-
 	if (def && def->index >= 0 && def->effect)
 	{
 		if (bse_debug.GetInteger())
@@ -187,29 +231,41 @@ void rvBSEManagerLocal::FreeEffect(rvRenderEffectLocal* def) {
 			common->Printf("Freeing effect %s\n", effectName.c_str());
 		}
 		def->effect->Destroy();
-		v2 = def->effect;
-		// jmarshall - not sure what this is
-				//if (v2)
-				//{
-				//	v2[1].vfptr = (rvBSEVtbl*)unk_11F4D64;
-				//	--unk_11F4D6C;
-				//	unk_11F4D64 = v2;
-				//}
-		// jmarshall end
-		def->effect = 0;
+		effects.Free(def->effect);
+		def->effect = NULL;
+	}
+	if (def) {
+		def->newEffect = false;
+		def->expired = true;
 	}
 }
 
 float rvBSEManagerLocal::EffectDuration(const rvRenderEffectLocal* def) {
-	return 0;
+	if (!def) {
+		return 0.0f;
+	}
+	if (def->effect) {
+		return def->effect->GetDuration();
+	}
+	if (def->parms.declEffect) {
+		const rvDeclEffect* decl = (const rvDeclEffect*)def->parms.declEffect;
+		return decl->GetMaxDuration();
+	}
+	return 0.0f;
 }
 
 bool rvBSEManagerLocal::CheckDefForSound(const renderEffect_t* def) {
-	return true;
+	if (!def || !def->declEffect) {
+		return false;
+	}
+	const rvDeclEffect* decl = (const rvDeclEffect*)def->declEffect;
+	return decl->GetHasSound();
 }
 
 void rvBSEManagerLocal::BeginLevelLoad(void) {
-
+	mEffectRates[0] = 0.0f;
+	mEffectRates[1] = 0.0f;
+	mEffectRates[2] = 0.0f;
 }
 
 void rvBSEManagerLocal::EndLevelLoad(void) {
@@ -219,6 +275,8 @@ void rvBSEManagerLocal::EndLevelLoad(void) {
 }
 
 void rvBSEManagerLocal::StartFrame(void) {
+	UpdateRateTimes();
+
 	if (bse_speeds.GetInteger())
 	{
 		rvBSEManagerLocal::mPerfCounters[0] = 0;
@@ -240,13 +298,42 @@ void rvBSEManagerLocal::EndFrame(void) {
 }
 
 bool rvBSEManagerLocal::Filtered(const char* name, effectCategory_t category) {
-	return false;
+	if (!name) {
+		return true;
+	}
+
+	const char* singleFilter = bse_singleEffect.GetString();
+	if (singleFilter && singleFilter[0] != '\0') {
+		if (idStr::FindText(name, singleFilter, false) < 0) {
+			return true;
+		}
+	}
+
+	return !CanPlayRateLimited(category);
 }
 
 void rvBSEManagerLocal::UpdateRateTimes(void) {
-
+	const float decay = Max(0.0f, bse_rateCost.GetFloat()) * 0.1f;
+	for (int i = 0; i < EC_MAX; ++i) {
+		mEffectRates[i] = Max(0.0f, mEffectRates[i] - decay);
+	}
 }
 
 bool rvBSEManagerLocal::CanPlayRateLimited(effectCategory_t category) {
+	if (category <= EC_IGNORE || category >= EC_MAX) {
+		return true;
+	}
+
+	const float limit = Max(0.0f, bse_rateLimit.GetFloat());
+	if (limit <= 0.0f) {
+		return true;
+	}
+
+	const float cost = effectCosts[category] * Max(0.0f, bse_rateCost.GetFloat());
+	if (mEffectRates[category] + cost > limit) {
+		return false;
+	}
+
+	mEffectRates[category] += cost;
 	return true;
 }
