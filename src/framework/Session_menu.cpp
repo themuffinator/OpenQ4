@@ -74,7 +74,7 @@ void idSessionLocal::StartMenu( bool playIntro ) {
 	if(fileSystem->HasD3XP()) {
 		guiMainMenu->SetStateString("game_list", common->GetLanguageDict()->GetString( "#str_07202" ));
 	} else {
-		guiMainMenu->SetStateString("game_list", common->GetLanguageDict()->GetString( "#str_07212" ));
+		guiMainMenu->SetStateString("game_list", common->GetLanguageDict()->GetString( "#str_107212" ));
 	}
 
 	console->Close();
@@ -1283,34 +1283,34 @@ const char* idSessionLocal::MessageBox( msgBoxType_t type, const char *message, 
 			guiMsg->SetStateString( "visible_right", "0" );
 			break;
 		case MSG_OK:
-			guiMsg->SetStateString( "mid", common->GetLanguageDict()->GetString( "#str_04339" ) );
+			guiMsg->SetStateString( "mid", common->GetLanguageDict()->GetString( "#str_104339" ) );
 			guiMsg->SetStateString( "visible_mid", "1" );
 			guiMsg->SetStateString( "visible_left", "0" );
 			guiMsg->SetStateString( "visible_right", "0" );
 			break;
 		case MSG_ABORT:
-			guiMsg->SetStateString( "mid", common->GetLanguageDict()->GetString( "#str_04340" ) );
+			guiMsg->SetStateString( "mid", common->GetLanguageDict()->GetString( "#str_104340" ) );
 			guiMsg->SetStateString( "visible_mid", "1" );
 			guiMsg->SetStateString( "visible_left", "0" );
 			guiMsg->SetStateString( "visible_right", "0" );
 			break;
 		case MSG_OKCANCEL:
-			guiMsg->SetStateString( "left", common->GetLanguageDict()->GetString( "#str_04339" ) );
-			guiMsg->SetStateString( "right", common->GetLanguageDict()->GetString( "#str_04340" ) );
+			guiMsg->SetStateString( "left", common->GetLanguageDict()->GetString( "#str_104339" ) );
+			guiMsg->SetStateString( "right", common->GetLanguageDict()->GetString( "#str_104340" ) );
 			guiMsg->SetStateString( "visible_mid", "0" );
 			guiMsg->SetStateString( "visible_left", "1" );
 			guiMsg->SetStateString( "visible_right", "1" );
 			break;
 		case MSG_YESNO:
-			guiMsg->SetStateString( "left", common->GetLanguageDict()->GetString( "#str_04341" ) );
-			guiMsg->SetStateString( "right", common->GetLanguageDict()->GetString( "#str_04342" ) );
+			guiMsg->SetStateString( "left", common->GetLanguageDict()->GetString( "#str_104341" ) );
+			guiMsg->SetStateString( "right", common->GetLanguageDict()->GetString( "#str_104342" ) );
 			guiMsg->SetStateString( "visible_mid", "0" );
 			guiMsg->SetStateString( "visible_left", "1" );
 			guiMsg->SetStateString( "visible_right", "1" );
 			break;
 		case MSG_PROMPT:
-			guiMsg->SetStateString( "left", common->GetLanguageDict()->GetString( "#str_04339" ) );
-			guiMsg->SetStateString( "right", common->GetLanguageDict()->GetString( "#str_04340" ) );
+			guiMsg->SetStateString( "left", common->GetLanguageDict()->GetString( "#str_104339" ) );
+			guiMsg->SetStateString( "right", common->GetLanguageDict()->GetString( "#str_104340" ) );
 			guiMsg->SetStateString( "visible_mid", "0" );
 			guiMsg->SetStateString( "visible_left", "1" );
 			guiMsg->SetStateString( "visible_right", "1" );
@@ -1318,8 +1318,8 @@ const char* idSessionLocal::MessageBox( msgBoxType_t type, const char *message, 
 			guiMsg->HandleNamedEvent( "Prompt" );
 			break;
 		case MSG_CDKEY:
-			guiMsg->SetStateString( "left", common->GetLanguageDict()->GetString( "#str_04339" ) );
-			guiMsg->SetStateString( "right", common->GetLanguageDict()->GetString( "#str_04340" ) );
+			guiMsg->SetStateString( "left", common->GetLanguageDict()->GetString( "#str_104339" ) );
+			guiMsg->SetStateString( "right", common->GetLanguageDict()->GetString( "#str_104340" ) );
 			guiMsg->SetStateString( "visible_msgbox", "0" );
 			guiMsg->SetStateString( "visible_cdkey", "1" );
 			guiMsg->SetStateString( "visible_hasxp", fileSystem->HasD3XP() ? "1" : "0" );

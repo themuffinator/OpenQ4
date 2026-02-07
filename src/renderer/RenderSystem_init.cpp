@@ -51,6 +51,9 @@ idCVar r_multiSamples( "r_multiSamples", "0", CVAR_RENDERER | CVAR_ARCHIVE | CVA
 idCVar r_mode( "r_mode", "3", CVAR_ARCHIVE | CVAR_RENDERER | CVAR_INTEGER, "video mode number" );
 idCVar r_displayRefresh( "r_displayRefresh", "0", CVAR_RENDERER | CVAR_INTEGER | CVAR_NOCHEAT, "optional display refresh rate option for vid mode", 0.0f, 200.0f );
 idCVar r_fullscreen( "r_fullscreen", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "0 = windowed, 1 = full screen" );
+idCVar r_borderless( "r_borderless", "0", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "1 = borderless window mode when r_fullscreen is 0" );
+idCVar r_windowWidth( "r_windowWidth", "1280", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "windowed mode width" );
+idCVar r_windowHeight( "r_windowHeight", "720", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "windowed mode height" );
 idCVar r_aspectRatio( "r_aspectRatio", "-1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "aspect ratio: -1 = auto, 0 = 4:3, 1 = 16:9, 2 = 16:10" );
 idCVar r_customWidth( "r_customWidth", "720", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "custom screen width. set r_mode to -1 to activate" );
 idCVar r_customHeight( "r_customHeight", "486", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "custom screen height. set r_mode to -1 to activate" );
@@ -457,6 +460,18 @@ static bool R_GetModeInfo( int *width, int *height, int mode ) {
     return true;
 }
 
+static void R_GetWindowedModeInfo( int *width, int *height ) {
+	const int clampedWidth = idMath::ClampInt( 320, 16384, r_windowWidth.GetInteger() );
+	const int clampedHeight = idMath::ClampInt( 240, 16384, r_windowHeight.GetInteger() );
+
+	if ( width ) {
+		*width = clampedWidth;
+	}
+	if ( height ) {
+		*height = clampedHeight;
+	}
+}
+
 
 /*
 ==================
@@ -494,11 +509,15 @@ void R_InitOpenGL( void ) {
 	//
 	for ( i = 0 ; i < 2 ; i++ ) {
 		// set the parameters we are trying
-		R_GetModeInfo( &glConfig.vidWidth, &glConfig.vidHeight, r_mode.GetInteger() );
-
-		parms.width = glConfig.vidWidth;
-		parms.height = glConfig.vidHeight;
 		parms.fullScreen = r_fullscreen.GetBool();
+		if ( parms.fullScreen ) {
+			R_GetModeInfo( &parms.width, &parms.height, r_mode.GetInteger() );
+		} else {
+			R_GetWindowedModeInfo( &parms.width, &parms.height );
+		}
+		glConfig.vidWidth = parms.width;
+		glConfig.vidHeight = parms.height;
+		parms.borderless = !parms.fullScreen && r_borderless.GetBool();
 		parms.displayHz = r_displayRefresh.GetInteger();
 		parms.multiSamples = r_multiSamples.GetInteger();
 		parms.stereo = false;
@@ -516,6 +535,7 @@ void R_InitOpenGL( void ) {
 		// and try again
 		r_mode.SetInteger( 3 );
 		r_fullscreen.SetInteger( 1 );
+		r_borderless.SetInteger( 0 );
 		r_displayRefresh.SetInteger( 0 );
 		r_multiSamples.SetInteger( 0 );
 	}
@@ -1554,6 +1574,10 @@ void GfxInfo_f( const idCmdArgs &args ) {
 		"windowed",
 		"fullscreen"
 	};
+	const char *modeString = fsstrings[r_fullscreen.GetBool()];
+	if ( !r_fullscreen.GetBool() && r_borderless.GetBool() ) {
+		modeString = "borderless";
+	}
 
 	common->Printf( "\nGL_VENDOR: %s\n", glConfig.vendor_string );
 	common->Printf( "GL_RENDERER: %s\n", glConfig.renderer_string );
@@ -1567,7 +1591,7 @@ void GfxInfo_f( const idCmdArgs &args ) {
 	common->Printf( "GL_MAX_TEXTURE_COORDS_ARB: %d\n", glConfig.maxTextureCoords );
 	common->Printf( "GL_MAX_TEXTURE_IMAGE_UNITS_ARB: %d\n", glConfig.maxTextureImageUnits );
 	common->Printf( "\nPIXELFORMAT: color(%d-bits) Z(%d-bit) stencil(%d-bits)\n", glConfig.colorBits, glConfig.depthBits, glConfig.stencilBits );
-	common->Printf( "MODE: %d, %d x %d %s hz:", r_mode.GetInteger(), glConfig.vidWidth, glConfig.vidHeight, fsstrings[r_fullscreen.GetBool()] );
+	common->Printf( "MODE: %d, %d x %d %s hz:", r_mode.GetInteger(), glConfig.vidWidth, glConfig.vidHeight, modeString );
 
 	if ( glConfig.displayFrequency ) {
 		common->Printf( "%d\n", glConfig.displayFrequency );
@@ -1688,9 +1712,13 @@ void R_VidRestart_f( const idCmdArgs &args ) {
 		globalImages->ReloadImages(true);
 	} else {
 		glimpParms_t	parms;
-		parms.width = glConfig.vidWidth;
-		parms.height = glConfig.vidHeight;
 		parms.fullScreen = ( forceWindow ) ? false : r_fullscreen.GetBool();
+		if ( parms.fullScreen ) {
+			R_GetModeInfo( &parms.width, &parms.height, r_mode.GetInteger() );
+		} else {
+			R_GetWindowedModeInfo( &parms.width, &parms.height );
+		}
+		parms.borderless = !parms.fullScreen && r_borderless.GetBool();
 		parms.displayHz = r_displayRefresh.GetInteger();
 		parms.multiSamples = r_multiSamples.GetInteger();
 		parms.stereo = false;

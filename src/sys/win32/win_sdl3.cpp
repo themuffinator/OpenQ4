@@ -65,10 +65,13 @@ static SDL_Gamepad *s_sdlGamepad = NULL;
 static SDL_Joystick *s_sdlJoystick = NULL;
 static SDL_JoystickID s_sdlGamepadId = 0;
 static SDL_JoystickID s_sdlJoystickId = 0;
+static bool s_sdlDisplayCommandRegistered = false;
+static bool s_sdlDisplaySummaryLogged = false;
 
 static idCVar in_joystick("in_joystick", "1", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_BOOL, "enable joystick/gamepad input");
 static idCVar in_joystickDeadZone("in_joystickDeadZone", "0.18", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_FLOAT, "joystick axis dead zone", 0.0f, 0.95f);
 static idCVar in_joystickTriggerThreshold("in_joystickTriggerThreshold", "0.35", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_FLOAT, "trigger button press threshold", 0.0f, 1.0f);
+static idCVar r_screen("r_screen", "-1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "SDL3 display index to target (-1 = auto/current display)");
 
 static const unsigned char s_scantokey[128] = {
 	0,          27,    '1',       '2',        '3',    '4',         '5',      '6',
@@ -157,6 +160,17 @@ static bool s_haveAbsoluteMousePosition = false;
 static int s_absoluteMouseX = 0;
 static int s_absoluteMouseY = 0;
 static bool s_menuMouseRouteActive = false;
+static bool s_haveMenuMousePosition = false;
+static float s_menuMouseX = 0.0f;
+static float s_menuMouseY = 0.0f;
+static float s_menuMouseRemainderX = 0.0f;
+static float s_menuMouseRemainderY = 0.0f;
+static bool s_ignoreNextMenuWarpMotion = false;
+static float s_menuWarpWindowX = 0.0f;
+static float s_menuWarpWindowY = 0.0f;
+static bool s_menuMouseInsideWindow = true;
+static bool s_windowAspectSnapActive = false;
+static float s_windowAspectSnapRatio = 0.0f;
 
 void* GLimp_ExtensionPointer(const char* name);
 
@@ -184,6 +198,15 @@ static void SDL3_ClearInputQueues(void) {
 	s_polledJoystickCount = 0;
 	Sys_LeaveCriticalSection(CRITICAL_SECTION_ONE);
 	s_haveAbsoluteMousePosition = false;
+	s_haveMenuMousePosition = false;
+	s_menuMouseX = 0.0f;
+	s_menuMouseY = 0.0f;
+	s_menuMouseRemainderX = 0.0f;
+	s_menuMouseRemainderY = 0.0f;
+	s_ignoreNextMenuWarpMotion = false;
+	s_menuWarpWindowX = 0.0f;
+	s_menuWarpWindowY = 0.0f;
+	s_menuMouseInsideWindow = true;
 }
 
 static void SDL3_QueueKeyboardInput(int key, bool down, int time) {
@@ -216,6 +239,47 @@ static void SDL3_QueueMouseInput(int action, int value, int time) {
 
 static bool SDL3_ShouldRouteMenuMouse(void) {
 	return (session != NULL) && session->IsGUIActive();
+}
+
+static bool SDL3_IsMouseCaptured(void) {
+	if (!s_sdlWindow) {
+		return false;
+	}
+	return SDL_GetWindowRelativeMouseMode(s_sdlWindow) || SDL_GetWindowMouseGrab(s_sdlWindow);
+}
+
+static void SDL3_ResetMenuMouseTracking(void) {
+	s_haveMenuMousePosition = false;
+	s_menuMouseX = 0.0f;
+	s_menuMouseY = 0.0f;
+	s_menuMouseRemainderX = 0.0f;
+	s_menuMouseRemainderY = 0.0f;
+	s_ignoreNextMenuWarpMotion = false;
+	s_menuWarpWindowX = 0.0f;
+	s_menuWarpWindowY = 0.0f;
+}
+
+static void SDL3_InvalidateMenuMouseRouting(void) {
+	SDL3_ResetMenuMouseTracking();
+	s_menuMouseRouteActive = false;
+}
+
+static void SDL3_UpdateCursorVisibility(void) {
+	if (!s_sdlWindow) {
+		return;
+	}
+
+	if (SDL3_IsMouseCaptured()) {
+		(void)SDL_HideCursor();
+		return;
+	}
+
+	if (SDL3_ShouldRouteMenuMouse() && win32.activeApp && (win32.cdsFullscreen || s_menuMouseInsideWindow)) {
+		(void)SDL_HideCursor();
+		return;
+	}
+
+	(void)SDL_ShowCursor();
 }
 
 static int SDL3_RoundToInt(float value) {
@@ -327,6 +391,15 @@ static void SDL3_SyncSystemMouseToActiveGUICursor(void) {
 	const float windowMouseY = pixelMouseY * transform.pixelToWindowY;
 
 	SDL_WarpMouseInWindow(s_sdlWindow, windowMouseX, windowMouseY);
+	s_ignoreNextMenuWarpMotion = true;
+	s_menuWarpWindowX = windowMouseX;
+	s_menuWarpWindowY = windowMouseY;
+	s_menuMouseInsideWindow = true;
+	s_haveMenuMousePosition = true;
+	s_menuMouseX = clampedCursorX;
+	s_menuMouseY = clampedCursorY;
+	s_menuMouseRemainderX = 0.0f;
+	s_menuMouseRemainderY = 0.0f;
 	activeGui->SetCursor(clampedCursorX, clampedCursorY);
 }
 
@@ -926,6 +999,257 @@ static int SDL3_MapMouseButton(Uint8 button) {
 	}
 }
 
+typedef struct {
+	SDL_DisplayID id;
+	int index;
+} sdl3DisplaySelection_t;
+
+static int SDL3_FindDisplayIndex(const SDL_DisplayID *displays, int displayCount, SDL_DisplayID displayId) {
+	if (displayId == 0 || displays == NULL || displayCount <= 0) {
+		return -1;
+	}
+
+	for (int i = 0; i < displayCount; ++i) {
+		if (displays[i] == displayId) {
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+static void SDL3_PrintDisplayList(void) {
+	int displayCount = 0;
+	SDL_DisplayID *displays = SDL_GetDisplays(&displayCount);
+	if (displays == NULL || displayCount <= 0) {
+		common->Printf("SDL3: no displays detected (%s)\n", SDL_GetError());
+		if (displays != NULL) {
+			SDL_free(displays);
+		}
+		return;
+	}
+
+	const SDL_DisplayID primaryDisplay = SDL_GetPrimaryDisplay();
+	common->Printf("SDL3: detected %d display(s):\n", displayCount);
+
+	for (int i = 0; i < displayCount; ++i) {
+		const SDL_DisplayID display = displays[i];
+		const char *name = SDL_GetDisplayName(display);
+		if (name == NULL || name[0] == '\0') {
+			name = "<unnamed>";
+		}
+
+		SDL_Rect bounds;
+		if (SDL_GetDisplayBounds(display, &bounds)) {
+			common->Printf("  [%d]%s %s (%dx%d @ %d,%d)\n",
+				i,
+				(display == primaryDisplay) ? " *" : "",
+				name,
+				bounds.w,
+				bounds.h,
+				bounds.x,
+				bounds.y);
+		} else {
+			common->Printf("  [%d]%s %s (bounds unavailable: %s)\n",
+				i,
+				(display == primaryDisplay) ? " *" : "",
+				name,
+				SDL_GetError());
+		}
+	}
+
+	SDL_free(displays);
+}
+
+static sdl3DisplaySelection_t SDL3_ResolveTargetDisplay(bool warnOnInvalidScreenIndex) {
+	sdl3DisplaySelection_t selection;
+	selection.id = 0;
+	selection.index = -1;
+
+	const int requestedScreen = r_screen.GetInteger();
+	const SDL_DisplayID currentDisplay = s_sdlWindow ? SDL_GetDisplayForWindow(s_sdlWindow) : 0;
+	const SDL_DisplayID primaryDisplay = SDL_GetPrimaryDisplay();
+
+	int displayCount = 0;
+	SDL_DisplayID *displays = SDL_GetDisplays(&displayCount);
+
+	if (displays != NULL && displayCount > 0) {
+		if (requestedScreen >= 0) {
+			if (requestedScreen < displayCount) {
+				selection.id = displays[requestedScreen];
+				selection.index = requestedScreen;
+			} else {
+				selection.id = (primaryDisplay != 0) ? primaryDisplay : displays[0];
+				selection.index = SDL3_FindDisplayIndex(displays, displayCount, selection.id);
+				if (warnOnInvalidScreenIndex) {
+					common->Printf(
+						"SDL3: r_screen %d is out of range for %d display(s); using display %d.\n",
+						requestedScreen, displayCount, selection.index);
+				}
+			}
+		} else {
+			if (currentDisplay != 0) {
+				selection.id = currentDisplay;
+				selection.index = SDL3_FindDisplayIndex(displays, displayCount, currentDisplay);
+			}
+
+			if (selection.id == 0) {
+				selection.id = (primaryDisplay != 0) ? primaryDisplay : displays[0];
+				selection.index = SDL3_FindDisplayIndex(displays, displayCount, selection.id);
+			}
+		}
+	} else {
+		if (warnOnInvalidScreenIndex) {
+			common->Printf("SDL3: could not enumerate displays; falling back to primary display.\n");
+		}
+		selection.id = primaryDisplay;
+		selection.index = -1;
+	}
+
+	if (displays != NULL) {
+		SDL_free(displays);
+	}
+
+	return selection;
+}
+
+static void SDL3_GetWindowPositionOnDisplay(SDL_DisplayID display, int width, int height, int &targetX, int &targetY) {
+	targetX = win32.win_xpos.GetInteger();
+	targetY = win32.win_ypos.GetInteger();
+
+	if (display == 0) {
+		return;
+	}
+
+	SDL_Rect bounds;
+	if (!SDL_GetDisplayBounds(display, &bounds)) {
+		return;
+	}
+
+	if (r_screen.GetInteger() >= 0) {
+		const int maxX = bounds.x + bounds.w - width;
+		const int maxY = bounds.y + bounds.h - height;
+
+		if (maxX < bounds.x) {
+			targetX = bounds.x;
+		} else {
+			targetX = idMath::ClampInt(bounds.x, maxX, targetX);
+		}
+
+		if (maxY < bounds.y) {
+			targetY = bounds.y;
+		} else {
+			targetY = idMath::ClampInt(bounds.y, maxY, targetY);
+		}
+	}
+}
+
+static void SDL3_ListDisplays_f(const idCmdArgs &args) {
+	(void)args;
+	SDL3_PrintDisplayList();
+
+	const sdl3DisplaySelection_t selectedDisplay = SDL3_ResolveTargetDisplay(false);
+	const char *name = selectedDisplay.id ? SDL_GetDisplayName(selectedDisplay.id) : NULL;
+	if (name == NULL || name[0] == '\0') {
+		name = "<unnamed>";
+	}
+
+	common->Printf("SDL3: r_screen = %d, selected display = %d (%s)\n",
+		r_screen.GetInteger(),
+		selectedDisplay.index,
+		name);
+}
+
+static float SDL3_FindNearestCommonAspectRatio(int width, int height) {
+	if (width <= 0 || height <= 0) {
+		return 0.0f;
+	}
+
+	static const float commonAspectRatios[] = {
+		5.0f / 4.0f,
+		4.0f / 3.0f,
+		3.0f / 2.0f,
+		16.0f / 10.0f,
+		16.0f / 9.0f,
+		21.0f / 9.0f,
+		32.0f / 9.0f
+	};
+
+	const float currentAspect = static_cast<float>(width) / static_cast<float>(height);
+	float nearestAspect = commonAspectRatios[0];
+	float nearestDelta = fabsf(currentAspect - nearestAspect);
+
+	for (int i = 1; i < static_cast<int>(sizeof(commonAspectRatios) / sizeof(commonAspectRatios[0])); ++i) {
+		const float candidate = commonAspectRatios[i];
+		const float delta = fabsf(currentAspect - candidate);
+		if (delta < nearestDelta) {
+			nearestDelta = delta;
+			nearestAspect = candidate;
+		}
+	}
+
+	return nearestAspect;
+}
+
+static void SDL3_DisableWindowAspectSnap(void) {
+	if (!s_windowAspectSnapActive) {
+		return;
+	}
+
+	if (s_sdlWindow && !SDL_SetWindowAspectRatio(s_sdlWindow, 0.0f, 0.0f)) {
+		common->Printf("SDL3: failed to clear aspect ratio lock: %s\n", SDL_GetError());
+	}
+
+	s_windowAspectSnapActive = false;
+	s_windowAspectSnapRatio = 0.0f;
+}
+
+static void SDL3_EnableWindowAspectSnapFromCurrentSize(void) {
+	if (!s_sdlWindow || win32.cdsFullscreen || r_borderless.GetBool()) {
+		return;
+	}
+
+	int width = 0;
+	int height = 0;
+	if (!SDL_GetWindowSize(s_sdlWindow, &width, &height) || width <= 0 || height <= 0) {
+		return;
+	}
+
+	const float targetAspect = SDL3_FindNearestCommonAspectRatio(width, height);
+	if (targetAspect <= 0.0f) {
+		return;
+	}
+
+	if (s_windowAspectSnapActive && fabsf(s_windowAspectSnapRatio - targetAspect) < 0.0005f) {
+		return;
+	}
+
+	if (!SDL_SetWindowAspectRatio(s_sdlWindow, targetAspect, targetAspect)) {
+		common->Printf("SDL3: failed to set aspect ratio lock: %s\n", SDL_GetError());
+		return;
+	}
+
+	s_windowAspectSnapActive = true;
+	s_windowAspectSnapRatio = targetAspect;
+}
+
+static void SDL3_UpdateWindowAspectSnap(bool sawResizeEvent) {
+	if (!s_sdlWindow || win32.cdsFullscreen || r_borderless.GetBool()) {
+		SDL3_DisableWindowAspectSnap();
+		return;
+	}
+
+	const bool shiftDown = (SDL_GetModState() & SDL_KMOD_SHIFT) != 0;
+	if (!shiftDown) {
+		SDL3_DisableWindowAspectSnap();
+		return;
+	}
+
+	if (sawResizeEvent) {
+		SDL3_EnableWindowAspectSnapFromCurrentSize();
+	}
+}
+
 static void SDL3_RefreshWindowPlacement(void) {
 	if (!s_sdlWindow) {
 		return;
@@ -946,8 +1270,12 @@ static void SDL3_RefreshWindowPlacement(void) {
 	}
 
 	if (SDL_GetWindowSize(s_sdlWindow, &width, &height) && !win32.cdsFullscreen) {
-		(void)width;
-		(void)height;
+		if (!r_borderless.GetBool() && width > 0 && height > 0) {
+			r_windowWidth.SetInteger(width);
+			r_windowHeight.SetInteger(height);
+			r_windowWidth.ClearModified();
+			r_windowHeight.ClearModified();
+		}
 	}
 
 	if (!SDL_GetWindowSizeInPixels(s_sdlWindow, &pixelWidth, &pixelHeight)) {
@@ -966,11 +1294,24 @@ static bool SDL3_ApplyScreenParms(glimpParms_t parms) {
 		return false;
 	}
 
+	SDL3_DisableWindowAspectSnap();
+
+	const bool useBorderlessWindow = !parms.fullScreen && parms.borderless;
+	const sdl3DisplaySelection_t selectedDisplay = SDL3_ResolveTargetDisplay(true);
+	SDL_DisplayID display = selectedDisplay.id;
+	if (display == 0) {
+		display = SDL_GetPrimaryDisplay();
+	}
+
 	if (parms.fullScreen) {
-		SDL_DisplayID display = SDL_GetDisplayForWindow(s_sdlWindow);
-		if (display == 0) {
-			display = SDL_GetPrimaryDisplay();
+		if (!SDL_SetWindowBordered(s_sdlWindow, true)) {
+			common->Printf("SDL3: failed to restore window borders: %s\n", SDL_GetError());
 		}
+
+		int targetX = 0;
+		int targetY = 0;
+		SDL3_GetWindowPositionOnDisplay(display, parms.width, parms.height, targetX, targetY);
+		(void)SDL_SetWindowPosition(s_sdlWindow, targetX, targetY);
 
 		SDL_DisplayMode mode;
 		memset(&mode, 0, sizeof(mode));
@@ -995,12 +1336,35 @@ static bool SDL3_ApplyScreenParms(glimpParms_t parms) {
 		}
 		(void)SDL_SetWindowFullscreenMode(s_sdlWindow, NULL);
 
-		if (!SDL_SetWindowSize(s_sdlWindow, parms.width, parms.height)) {
-			common->Printf("SDL3: failed to resize window: %s\n", SDL_GetError());
+		if (!SDL_SetWindowBordered(s_sdlWindow, !useBorderlessWindow)) {
+			common->Printf("SDL3: failed to set border mode: %s\n", SDL_GetError());
 		}
 
-		if (!SDL_SetWindowPosition(s_sdlWindow, win32.win_xpos.GetInteger(), win32.win_ypos.GetInteger())) {
-			common->Printf("SDL3: failed to move window: %s\n", SDL_GetError());
+		if (useBorderlessWindow) {
+			SDL_Rect bounds;
+			if (display != 0 && SDL_GetDisplayBounds(display, &bounds)) {
+				if (!SDL_SetWindowSize(s_sdlWindow, bounds.w, bounds.h)) {
+					common->Printf("SDL3: failed to resize borderless window: %s\n", SDL_GetError());
+				}
+				if (!SDL_SetWindowPosition(s_sdlWindow, bounds.x, bounds.y)) {
+					common->Printf("SDL3: failed to place borderless window: %s\n", SDL_GetError());
+				}
+			} else {
+				if (!SDL_SetWindowSize(s_sdlWindow, parms.width, parms.height)) {
+					common->Printf("SDL3: failed to resize window: %s\n", SDL_GetError());
+				}
+			}
+		} else {
+			if (!SDL_SetWindowSize(s_sdlWindow, parms.width, parms.height)) {
+				common->Printf("SDL3: failed to resize window: %s\n", SDL_GetError());
+			}
+
+			int targetX = 0;
+			int targetY = 0;
+			SDL3_GetWindowPositionOnDisplay(display, parms.width, parms.height, targetX, targetY);
+			if (!SDL_SetWindowPosition(s_sdlWindow, targetX, targetY)) {
+				common->Printf("SDL3: failed to move window: %s\n", SDL_GetError());
+			}
 		}
 	}
 
@@ -1038,7 +1402,8 @@ static void SDL3_LoadWGLExtensions(void) {
 }
 
 static void SDL3_InitDesktopMode(void) {
-	const SDL_DisplayID display = SDL_GetPrimaryDisplay();
+	const sdl3DisplaySelection_t selectedDisplay = SDL3_ResolveTargetDisplay(false);
+	const SDL_DisplayID display = (selectedDisplay.id != 0) ? selectedDisplay.id : SDL_GetPrimaryDisplay();
 	const SDL_DisplayMode *desktopMode = SDL_GetDesktopDisplayMode(display);
 	if (desktopMode) {
 		win32.desktopBitsPixel = SDL_BITSPERPIXEL(desktopMode->format);
@@ -1079,7 +1444,10 @@ static void SDL3_HandleWindowEvent(const SDL_WindowEvent &event, int eventTime) 
 			win32.activeApp = true;
 			idKeyInput::ClearStates();
 			com_editorActive = false;
+			s_menuMouseInsideWindow = true;
+			SDL3_InvalidateMenuMouseRouting();
 			Sys_GrabMouseCursor(true);
+			SDL3_UpdateCursorVisibility();
 			if (session != NULL) {
 				session->SetPlayingSoundWorld();
 			}
@@ -1088,6 +1456,9 @@ static void SDL3_HandleWindowEvent(const SDL_WindowEvent &event, int eventTime) 
 		case SDL_EVENT_WINDOW_FOCUS_LOST:
 			win32.activeApp = false;
 			win32.movingWindow = false;
+			s_menuMouseInsideWindow = false;
+			SDL3_InvalidateMenuMouseRouting();
+			SDL3_UpdateCursorVisibility();
 			if (session != NULL) {
 				session->SetPlayingSoundWorld();
 			}
@@ -1100,21 +1471,43 @@ static void SDL3_HandleWindowEvent(const SDL_WindowEvent &event, int eventTime) 
 				win32.win_xpos.ClearModified();
 				win32.win_ypos.ClearModified();
 			}
+			SDL3_InvalidateMenuMouseRouting();
 			break;
 
 		case SDL_EVENT_WINDOW_MINIMIZED:
 			win32.activeApp = false;
+			s_menuMouseInsideWindow = false;
+			SDL3_InvalidateMenuMouseRouting();
+			SDL3_UpdateCursorVisibility();
 			break;
 
 		case SDL_EVENT_WINDOW_RESTORED:
 			win32.activeApp = true;
+			s_menuMouseInsideWindow = true;
 			SDL3_RefreshWindowPlacement();
+			SDL3_InvalidateMenuMouseRouting();
+			SDL3_UpdateCursorVisibility();
 			break;
 
 		case SDL_EVENT_WINDOW_RESIZED:
 		case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
 			// Query the drawable size directly to avoid stale/asymmetric event payloads.
 			SDL3_RefreshWindowPlacement();
+			SDL3_InvalidateMenuMouseRouting();
+			break;
+
+		case SDL_EVENT_WINDOW_MOUSE_ENTER:
+			s_menuMouseInsideWindow = true;
+			if (SDL3_ShouldRouteMenuMouse() && !SDL3_IsMouseCaptured()) {
+				SDL3_SyncSystemMouseToActiveGUICursor();
+			}
+			SDL3_UpdateCursorVisibility();
+			break;
+
+		case SDL_EVENT_WINDOW_MOUSE_LEAVE:
+			s_menuMouseInsideWindow = false;
+			SDL3_ResetMenuMouseTracking();
+			SDL3_UpdateCursorVisibility();
 			break;
 
 		default:
@@ -1138,11 +1531,15 @@ bool Sys_SDL_PumpEvents(void) {
 		in_joystick.ClearModified();
 	}
 
+	bool sawResizeEvent = false;
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		const int eventTime = SDL3_EventMilliseconds(event.common.timestamp);
 
 		if (event.type >= SDL_EVENT_WINDOW_FIRST && event.type <= SDL_EVENT_WINDOW_LAST) {
+			if (event.window.type == SDL_EVENT_WINDOW_RESIZED) {
+				sawResizeEvent = true;
+			}
 			SDL3_HandleWindowEvent(event.window, eventTime);
 			continue;
 		}
@@ -1176,6 +1573,8 @@ bool Sys_SDL_PumpEvents(void) {
 
 					SDL3_QueueKeyboardInput(key, down, eventTime);
 				}
+
+				SDL3_UpdateWindowAspectSnap(false);
 				break;
 			}
 
@@ -1192,23 +1591,59 @@ bool Sys_SDL_PumpEvents(void) {
 			{
 				int dx = 0;
 				int dy = 0;
+				const bool mouseCaptured = SDL3_IsMouseCaptured();
 
-				if (win32.mouseGrabbed) {
+				if (mouseCaptured) {
 					dx = static_cast<int>(event.motion.xrel);
 					dy = static_cast<int>(event.motion.yrel);
 					s_haveAbsoluteMousePosition = false;
+					SDL3_ResetMenuMouseTracking();
 				} else if (SDL3_ShouldRouteMenuMouse()) {
-					idUserInterface *activeGui = session->GetActiveGUI();
-					float cursorX = 0.0f;
-					float cursorY = 0.0f;
-					if (activeGui != NULL && SDL3_MapWindowMouseToGuiCursor(event.motion.x, event.motion.y, cursorX, cursorY)) {
-						dx = SDL3_RoundToInt(cursorX - activeGui->CursorX());
-						dy = SDL3_RoundToInt(cursorY - activeGui->CursorY());
-						s_haveAbsoluteMousePosition = false;
+					float menuMouseX = 0.0f;
+					float menuMouseY = 0.0f;
+					const bool warpMotionEvent = s_ignoreNextMenuWarpMotion &&
+						fabsf(event.motion.x - s_menuWarpWindowX) <= 1.0f &&
+						fabsf(event.motion.y - s_menuWarpWindowY) <= 1.0f;
+
+					if (warpMotionEvent) {
+						s_ignoreNextMenuWarpMotion = false;
+						if (SDL3_MapWindowMouseToGuiCursor(event.motion.x, event.motion.y, menuMouseX, menuMouseY)) {
+							s_menuMouseX = menuMouseX;
+							s_menuMouseY = menuMouseY;
+							s_haveMenuMousePosition = true;
+							s_menuMouseRemainderX = 0.0f;
+							s_menuMouseRemainderY = 0.0f;
+							s_haveAbsoluteMousePosition = false;
+						}
+					} else {
+						if (s_ignoreNextMenuWarpMotion) {
+							s_ignoreNextMenuWarpMotion = false;
+						}
+
+						if (SDL3_MapWindowMouseToGuiCursor(event.motion.x, event.motion.y, menuMouseX, menuMouseY)) {
+							if (!s_haveMenuMousePosition) {
+								s_menuMouseX = menuMouseX;
+								s_menuMouseY = menuMouseY;
+								s_haveMenuMousePosition = true;
+							} else {
+								const float deltaX = (menuMouseX - s_menuMouseX) + s_menuMouseRemainderX;
+								const float deltaY = (menuMouseY - s_menuMouseY) + s_menuMouseRemainderY;
+								dx = SDL3_RoundToInt(deltaX);
+								dy = SDL3_RoundToInt(deltaY);
+								s_menuMouseRemainderX = deltaX - static_cast<float>(dx);
+								s_menuMouseRemainderY = deltaY - static_cast<float>(dy);
+								s_menuMouseX = menuMouseX;
+								s_menuMouseY = menuMouseY;
+							}
+							s_haveAbsoluteMousePosition = false;
+						} else {
+							SDL3_ResetMenuMouseTracking();
+						}
 					}
 				} else {
 					const int absoluteX = static_cast<int>(event.motion.x);
 					const int absoluteY = static_cast<int>(event.motion.y);
+					SDL3_ResetMenuMouseTracking();
 					if (!s_haveAbsoluteMousePosition) {
 						s_absoluteMouseX = absoluteX;
 						s_absoluteMouseY = absoluteY;
@@ -1221,7 +1656,7 @@ bool Sys_SDL_PumpEvents(void) {
 					}
 				}
 
-				if ((win32.mouseGrabbed || SDL3_ShouldRouteMenuMouse()) && (dx != 0 || dy != 0)) {
+				if ((mouseCaptured || SDL3_ShouldRouteMenuMouse()) && (dx != 0 || dy != 0)) {
 					Sys_QueEvent(eventTime, SE_MOUSE, dx, dy, 0, NULL);
 					if (dx != 0) {
 						SDL3_QueueMouseInput(M_DELTAX, dx, eventTime);
@@ -1235,7 +1670,7 @@ bool Sys_SDL_PumpEvents(void) {
 
 			case SDL_EVENT_MOUSE_BUTTON_DOWN:
 			case SDL_EVENT_MOUSE_BUTTON_UP:
-				if (win32.mouseGrabbed || SDL3_ShouldRouteMenuMouse()) {
+				if (SDL3_IsMouseCaptured() || SDL3_ShouldRouteMenuMouse()) {
 					const int key = SDL3_MapMouseButton(event.button.button);
 					if (key != 0) {
 						const bool down = event.button.down;
@@ -1348,6 +1783,7 @@ bool Sys_SDL_PumpEvents(void) {
 
 	// Keep render dimensions in sync even if the platform misses or coalesces resize events.
 	SDL3_RefreshWindowPlacement();
+	SDL3_UpdateWindowAspectSnap(sawResizeEvent);
 
 	return true;
 }
@@ -1460,7 +1896,7 @@ unsigned char Sys_MapCharForKey(int key) {
 }
 
 void IN_ActivateMouse(void) {
-	if (!s_sdlWindow || !win32.in_mouse.GetBool() || win32.mouseGrabbed) {
+	if (!s_sdlWindow || !win32.in_mouse.GetBool() || SDL3_IsMouseCaptured()) {
 		return;
 	}
 
@@ -1476,24 +1912,26 @@ void IN_ActivateMouse(void) {
 
 	(void)SDL_HideCursor();
 	(void)SDL_GetRelativeMouseState(NULL, NULL);
-	win32.mouseGrabbed = true;
+	win32.mouseGrabbed = SDL3_IsMouseCaptured();
+	SDL3_ResetMenuMouseTracking();
+	SDL3_UpdateCursorVisibility();
 }
 
 void IN_DeactivateMouse(void) {
-	if (!s_sdlWindow || !win32.mouseGrabbed) {
+	if (!s_sdlWindow || !SDL3_IsMouseCaptured()) {
 		return;
 	}
 
 	(void)SDL_SetWindowRelativeMouseMode(s_sdlWindow, false);
 	(void)SDL_SetWindowMouseGrab(s_sdlWindow, false);
 	if (SDL3_ShouldRouteMenuMouse()) {
-		(void)SDL_HideCursor();
 		SDL3_SyncSystemMouseToActiveGUICursor();
 	} else {
-		(void)SDL_ShowCursor();
+		SDL3_ResetMenuMouseTracking();
 	}
-	win32.mouseGrabbed = false;
+	win32.mouseGrabbed = SDL3_IsMouseCaptured();
 	s_haveAbsoluteMousePosition = false;
+	SDL3_UpdateCursorVisibility();
 }
 
 void IN_DeactivateMouseIfWindowed(void) {
@@ -1503,6 +1941,8 @@ void IN_DeactivateMouseIfWindowed(void) {
 }
 
 void IN_Frame(void) {
+	win32.mouseGrabbed = SDL3_IsMouseCaptured();
+
 	bool shouldGrab = true;
 	const bool routeMenuMouse = SDL3_ShouldRouteMenuMouse();
 
@@ -1533,11 +1973,14 @@ void IN_Frame(void) {
 		}
 	}
 
-	if (routeMenuMouse && !s_menuMouseRouteActive) {
+	if (routeMenuMouse && !s_menuMouseRouteActive && !s_haveMenuMousePosition) {
 		// Match WORR-style behavior: align OS cursor to menu cursor when menu routing starts.
 		SDL3_SyncSystemMouseToActiveGUICursor();
+	} else if (!routeMenuMouse && s_menuMouseRouteActive) {
+		SDL3_ResetMenuMouseTracking();
 	}
 	s_menuMouseRouteActive = routeMenuMouse;
+	SDL3_UpdateCursorVisibility();
 }
 
 void Sys_GrabMouseCursor(bool grabIt) {
@@ -1556,8 +1999,11 @@ void Sys_InitInput(void) {
 	win32.activeApp = true;
 	win32.mouseReleased = false;
 	win32.movingWindow = false;
-	win32.mouseGrabbed = false;
+	win32.mouseGrabbed = SDL3_IsMouseCaptured();
 	s_menuMouseRouteActive = false;
+	SDL3_ResetMenuMouseTracking();
+	s_menuMouseInsideWindow = true;
+	SDL3_UpdateCursorVisibility();
 
 	if (s_sdlWindow && !s_sdlTextInputActive) {
 		if (SDL_StartTextInput(s_sdlWindow)) {
@@ -1721,6 +2167,16 @@ bool GLimp_Init(glimpParms_t parms) {
 		s_sdlVideoActive = true;
 	}
 
+	if (!s_sdlDisplayCommandRegistered) {
+		cmdSystem->AddCommand("listDisplays", SDL3_ListDisplays_f, CMD_FL_SYSTEM, "lists SDL3 displays and monitor indices");
+		s_sdlDisplayCommandRegistered = true;
+	}
+
+	if (!s_sdlDisplaySummaryLogged) {
+		SDL3_PrintDisplayList();
+		s_sdlDisplaySummaryLogged = true;
+	}
+
 	SDL3_InitDesktopMode();
 
 	SDL_GL_ResetAttributes();
@@ -1740,6 +2196,9 @@ bool GLimp_Init(glimpParms_t parms) {
 	}
 
 	SDL_WindowFlags flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY;
+	if (!parms.fullScreen && parms.borderless) {
+		flags |= SDL_WINDOW_BORDERLESS;
+	}
 	s_sdlWindow = SDL_CreateWindow(GAME_NAME, parms.width, parms.height, flags);
 	if (!s_sdlWindow) {
 		common->Printf("SDL3: could not create window: %s\n", SDL_GetError());
@@ -1796,6 +2255,7 @@ bool GLimp_SetScreenParms(glimpParms_t parms) {
 void GLimp_Shutdown(void) {
 	common->Printf("Shutting down OpenGL subsystem (SDL3 backend)\n");
 
+	SDL3_DisableWindowAspectSnap();
 	IN_DeactivateMouse();
 	SDL3_ShutdownControllerSubsystems();
 	if (s_sdlWindow && s_sdlTextInputActive) {

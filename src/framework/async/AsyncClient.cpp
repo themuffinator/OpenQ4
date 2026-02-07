@@ -1966,7 +1966,7 @@ void idAsyncClient::HandleDownloads( void ) {
 		// timing out on no reply
 		updateState = UPDATE_DONE;
 		if ( showUpdateMessage ) {
-			session->MessageBox( MSG_OK, common->GetLanguageDict()->GetString ( "#str_04839" ), common->GetLanguageDict()->GetString ( "#str_04837" ), true );
+			session->MessageBox( MSG_OK, common->GetLanguageDict()->GetString ( "#str_104839" ), common->GetLanguageDict()->GetString ( "#str_104837" ), true );
 			showUpdateMessage = false;
 		}
 		common->DPrintf( "No update available\n" );

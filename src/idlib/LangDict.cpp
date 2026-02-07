@@ -146,6 +146,40 @@ const char *idLangDict::GetString( const char *str ) const {
 		}
 	}
 
+	// Quake 4 content uses "#str_1xxxxx" while some legacy engine paths still
+	// request Doom 3-era "#str_xxxxx" ids. If the legacy id misses, retry with
+	// a Quake 4-style remap before reporting an unknown string.
+	const int legacyDigits = 5;
+	const int legacyLength = STRTABLE_ID_LENGTH + legacyDigits;
+	bool triedLegacyRemap = false;
+	if ( idStr::Length( str ) == legacyLength ) {
+		bool hasOnlyDigits = true;
+		for ( int i = STRTABLE_ID_LENGTH; i < legacyLength; ++i ) {
+			if ( str[i] < '0' || str[i] > '9' ) {
+				hasOnlyDigits = false;
+				break;
+			}
+		}
+
+		if ( hasOnlyDigits ) {
+			triedLegacyRemap = true;
+			char remapped[STRTABLE_ID_LENGTH + legacyDigits + 2];
+			idStr::snPrintf( remapped, sizeof( remapped ), "%s1%s", STRTABLE_ID, str + STRTABLE_ID_LENGTH );
+			hashKey = GetHashKey( remapped );
+			for ( int i = hash.First( hashKey ); i != -1; i = hash.Next( i ) ) {
+				if ( args[i].key.Cmp( remapped ) == 0 ) {
+					return args[i].value;
+				}
+			}
+		}
+	}
+
+	// Keep compatibility paths quiet for stale Doom 3 id requests that don't
+	// have a Quake 4 remap in the active language dictionary.
+	if ( triedLegacyRemap ) {
+		return str;
+	}
+
 	idLib::common->Warning( "Unknown string id %s", str );
 	return str;
 }

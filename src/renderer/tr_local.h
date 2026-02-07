@@ -853,6 +853,9 @@ extern idCVar r_glDriver;				// "opengl32", etc
 extern idCVar r_mode;					// video mode number
 extern idCVar r_displayRefresh;			// optional display refresh rate option for vid mode
 extern idCVar r_fullscreen;				// 0 = windowed, 1 = full screen
+extern idCVar r_borderless;				// 1 = borderless window when r_fullscreen is 0
+extern idCVar r_windowWidth;				// windowed mode width
+extern idCVar r_windowHeight;				// windowed mode height
 extern idCVar r_multiSamples;			// number of antialiasing samples
 
 extern idCVar r_ignore;					// used for random debugging without defining new vars
@@ -1107,6 +1110,7 @@ typedef struct {
 	int			width;
 	int			height;
 	bool		fullScreen;
+	bool		borderless;
 	bool		stereo;
 	int			displayHz;
 	int			multiSamples;
