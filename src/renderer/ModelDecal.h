@@ -56,6 +56,7 @@ typedef struct decalProjectionInfo_s {
 	bool						parallel;
 	float						fadeDepth;
 	int							startTime;
+	float						maxAngle;
 	bool						force;
 } decalProjectionInfo_t;
 
@@ -98,6 +99,7 @@ private:
 	srfTriangles_t				tri;
 	idDrawVert					verts[MAX_DECAL_VERTS];
 	float						vertDepthFade[MAX_DECAL_VERTS];
+	float						vertStartTime[MAX_DECAL_VERTS];
 	glIndex_t					indexes[MAX_DECAL_INDEXES];
 	int							indexStartTime[MAX_DECAL_INDEXES];
 	idRenderModelDecal *		nextDecal;

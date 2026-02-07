@@ -1210,6 +1210,10 @@ void R_AddDrawSurf( const srfTriangles_t *tri, const viewEntity_t *space, const 
 	drawSurf->scissorRect = scissor;
 	drawSurf->sort = shader->GetSort() + tr.sortOffset;
 	drawSurf->dsFlags = 0;
+	drawSurf->dynamicTexCoords = NULL;
+	drawSurf->decalColorCache = NULL;
+	drawSurf->decalColorStride = 0;
+	drawSurf->decalColorStageCount = 0;
 
 	// bumping this offset each time causes surfaces with equal sort orders to still
 	// deterministically draw in the order they are added

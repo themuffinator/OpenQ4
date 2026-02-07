@@ -116,15 +116,7 @@ void idMaterial::CommonInit() {
 // jmarshall end
 
 	decalInfo.stayTime = 10000;
-	decalInfo.fadeTime = 4000;
-	decalInfo.start[0] = 1;
-	decalInfo.start[1] = 1;
-	decalInfo.start[2] = 1;
-	decalInfo.start[3] = 1;
-	decalInfo.end[0] = 0;
-	decalInfo.end[1] = 0;
-	decalInfo.end[2] = 0;
-	decalInfo.end[3] = 0;
+	decalInfo.maxAngle = 0.1f;
 }
 
 /*
@@ -384,14 +376,27 @@ void idMaterial::ParseDecalInfo( idLexer &src ) {
 	idToken token;
 
 	decalInfo.stayTime = src.ParseFloat() * 1000;
-	decalInfo.fadeTime = src.ParseFloat() * 1000;
-	float	start[4], end[4];
-	src.Parse1DMatrix( 4, start );
-	src.Parse1DMatrix( 4, end );
-	for ( int i = 0 ; i < 4 ; i++ ) {
-		decalInfo.start[i] = start[i];
-		decalInfo.end[i] = end[i];
+
+	if ( !src.ReadToken( &token ) ) {
+		return;
 	}
+
+	// Quake 4 syntax: "decalInfo <staySeconds>, <maxAngle>".
+	if ( token == "," ) {
+		decalInfo.maxAngle = src.ParseFloat();
+		return;
+	}
+
+	// Legacy Doom 3 syntax compatibility:
+	// "decalInfo <staySeconds> <fadeSeconds> ( <start rgba> ) ( <end rgba> )".
+	if ( token.type == TT_NUMBER || token == "." || token == "-" ) {
+		float dummy[4];
+		src.Parse1DMatrix( 4, dummy );
+		src.Parse1DMatrix( 4, dummy );
+		return;
+	}
+
+	src.UnreadToken( &token );
 }
 
 /*
@@ -2087,7 +2092,7 @@ void idMaterial::ParseMaterial( idLexer &src ) {
 			ParseDeform( src );
 			continue;
 		}
-		// decalInfo <staySeconds> <fadeSeconds> ( <start rgb> ) ( <end rgb> )
+		// decalInfo <staySeconds> [, <maxAngle>] (legacy Doom 3 syntax still accepted)
 		else if ( !token.Icmp( "decalInfo" ) ) {
 			ParseDecalInfo( src );
 			continue;

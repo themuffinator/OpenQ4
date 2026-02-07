@@ -99,6 +99,7 @@ bool idRenderModelDecal::CreateProjectionInfo( decalProjectionInfo_t &info, cons
 	info.parallel = parallel;
 	info.fadeDepth = fadeDepth;
 	info.startTime = startTime;
+	info.maxAngle = material->GetDecalInfo().maxAngle;
 	info.force = false;
 
 	// get the winding plane and the depth of the projection volume
@@ -109,7 +110,13 @@ bool idRenderModelDecal::CreateProjectionInfo( decalProjectionInfo_t &info, cons
 	// find the bounds for the projection
 	winding.GetBounds( info.projectionBounds );
 	if ( parallel ) {
-		info.projectionBounds.ExpandSelf( depth );
+		const idVec3 transToProj = windingPlane.Normal() * depth;
+		const idVec3 transToFade = windingPlane.Normal() * fadeDepth;
+		for ( int i = 0; i < winding.GetNumPoints(); i++ ) {
+			const idVec3 point = winding[i].ToVec3();
+			info.projectionBounds.AddPoint( point + transToProj );
+			info.projectionBounds.AddPoint( point - transToFade );
+		}
 	} else {
 		info.projectionBounds.AddPoint( projectionOrigin );
 	}
@@ -198,6 +205,7 @@ void idRenderModelDecal::GlobalProjectionInfoToLocal( decalProjectionInfo_t &loc
 	localInfo.parallel = info.parallel;
 	localInfo.fadeDepth = info.fadeDepth;
 	localInfo.startTime = info.startTime;
+	localInfo.maxAngle = info.maxAngle;
 	localInfo.force = info.force;
 }
 
@@ -209,7 +217,6 @@ idRenderModelDecal::AddWinding
 void idRenderModelDecal::AddWinding( const idWinding &w, const idMaterial *decalMaterial, const idPlane fadePlanes[2], float fadeDepth, int startTime ) {
 	int i;
 	float invFadeDepth, fade;
-	decalInfo_t	decalInfo;
 
 	if ( ( material == NULL || material == decalMaterial ) &&
 			tri.numVerts + w.GetNumPoints() < MAX_DECAL_VERTS &&
@@ -218,7 +225,6 @@ void idRenderModelDecal::AddWinding( const idWinding &w, const idMaterial *decal
 		material = decalMaterial;
 
 		// add to this decal
-		decalInfo = material->GetDecalInfo();
 		invFadeDepth = -1.0f / fadeDepth;
 
 		for ( i = 0; i < w.GetNumPoints(); i++ ) {
@@ -233,18 +239,14 @@ void idRenderModelDecal::AddWinding( const idWinding &w, const idMaterial *decal
 			}
 			fade = 1.0f - fade;
 			vertDepthFade[tri.numVerts + i] = fade;
+			vertStartTime[tri.numVerts + i] = (float)startTime;
 			tri.verts[tri.numVerts + i].xyz = w[i].ToVec3();
 			tri.verts[tri.numVerts + i].st[0] = w[i].s;
 			tri.verts[tri.numVerts + i].st[1] = w[i].t;
-			for ( int k = 0 ; k < 4 ; k++ ) {
-				int icolor = idMath::FtoiFast( decalInfo.start[k] * fade * 255.0f );
-				if ( icolor < 0 ) {
-					icolor = 0;
-				} else if ( icolor > 255 ) {
-					icolor = 255;
-				}
-				tri.verts[tri.numVerts + i].color[k] = icolor;
-			}
+			tri.verts[tri.numVerts + i].color[0] = 255;
+			tri.verts[tri.numVerts + i].color[1] = 255;
+			tri.verts[tri.numVerts + i].color[2] = 255;
+			tri.verts[tri.numVerts + i].color[3] = 255;
 		}
 		for ( i = 2; i < w.GetNumPoints(); i++ ) {
 			tri.indexes[tri.numIndexes + 0] = tri.numVerts;
@@ -334,7 +336,7 @@ void idRenderModelDecal::CreateDecal( const idRenderModel *model, const decalPro
 
 			// skip back facing triangles
 			if ( stri->facePlanes && stri->facePlanesCalculated &&
-					stri->facePlanes[triNum].Normal() * localInfo.boundingPlanes[NUM_DECAL_BOUNDING_PLANES - 2].Normal() < -0.1f ) {
+					stri->facePlanes[triNum].Normal() * localInfo.boundingPlanes[NUM_DECAL_BOUNDING_PLANES - 2].Normal() < localInfo.maxAngle ) {
 				continue;
 			}
 
@@ -407,7 +409,7 @@ idRenderModelDecal *idRenderModelDecal::RemoveFadedDecals( idRenderModelDecal *d
 	}
 	
 	decalInfo = decals->material->GetDecalInfo();
-	minTime = time - ( decalInfo.stayTime + decalInfo.fadeTime );
+	minTime = time - decalInfo.stayTime;
 
 	newNumIndexes = 0;
 	for ( i = 0; i < decals->tri.numIndexes; i += 3 ) {
@@ -444,6 +446,7 @@ idRenderModelDecal *idRenderModelDecal::RemoveFadedDecals( idRenderModelDecal *d
 		}
 		decals->tri.verts[newNumVerts] = decals->tri.verts[i];
 		decals->vertDepthFade[newNumVerts] = decals->vertDepthFade[i];
+		decals->vertStartTime[newNumVerts] = decals->vertStartTime[i];
 		inUse[i] = newNumVerts;
 		newNumVerts++;
 	}
@@ -462,47 +465,61 @@ idRenderModelDecal::AddDecalDrawSurf
 =====================
 */
 void idRenderModelDecal::AddDecalDrawSurf( viewEntity_t *space ) {
-	int i, j, maxTime;
-	float f;
-	decalInfo_t	decalInfo;
-	
 	if ( tri.numIndexes == 0 ) {
 		return;
 	}
 
-	// fade down all the verts with time
-	decalInfo = material->GetDecalInfo();
-	maxTime = decalInfo.stayTime + decalInfo.fadeTime;
+	const decalInfo_t decalInfo = material->GetDecalInfo();
+	const int stayTime = ( decalInfo.stayTime > 0 ) ? decalInfo.stayTime : 1;
+	const int numStages = material->GetNumStages();
+	vertCache_s *decalColorCache = NULL;
+	int decalColorStride = 0;
 
-	// set vertex colors and remove faded triangles
-	for ( i = 0 ; i < tri.numIndexes ; i += 3 ) {
-		int	deltaTime = tr.viewDef->renderView.time - indexStartTime[i];
+	if ( numStages > 0 && tri.numVerts > 0 ) {
+		const int numRegisters = ( material->GetNumRegisters() > EXP_REG_NUM_PREDEFINED ) ? material->GetNumRegisters() : EXP_REG_NUM_PREDEFINED;
+		const int colorStride = tri.numVerts * 4;
+		const int totalColorBytes = colorStride * numStages;
+		byte *stageColors = (byte *)_alloca16( totalColorBytes );
+		float *regs = (float *)_alloca16( numRegisters * sizeof( regs[0] ) );
+		float shaderParms[MAX_ENTITY_SHADER_PARMS];
 
-		if ( deltaTime > maxTime ) {
-			continue;
-		}
+		memset( shaderParms, 0, sizeof( shaderParms ) );
 
-		if ( deltaTime <= decalInfo.stayTime ) {
-			continue;
-		}
+		for ( int v = 0; v < tri.numVerts; v++ ) {
+			float life = (float)( tr.viewDef->renderView.time - vertStartTime[v] ) / (float)stayTime;
+			life = idMath::ClampFloat( 0.0f, 1.0f, life );
+			shaderParms[4] = life;
+			shaderParms[5] = vertStartTime[v];
 
-		deltaTime -= decalInfo.stayTime;
-		f = (float)deltaTime / decalInfo.fadeTime;
+			material->EvaluateRegisters( regs, shaderParms, tr.viewDef, NULL );
 
-		for ( j = 0; j < 3; j++ ) {
-			int	ind = tri.indexes[i+j];
+			for ( int stage = 0; stage < numStages; stage++ ) {
+				const shaderStage_t *pStage = material->GetStage( stage );
+				byte *vertexColor = stageColors + stage * colorStride + v * 4;
 
-			for ( int k = 0; k < 4; k++ ) {
-				float fcolor = decalInfo.start[k] + ( decalInfo.end[k] - decalInfo.start[k] ) * f;
-				int icolor = idMath::FtoiFast( fcolor * vertDepthFade[ind] * 255.0f );
-				if ( icolor < 0 ) {
-					icolor = 0;
-				} else if ( icolor > 255 ) {
-					icolor = 255;
+				for ( int k = 0; k < 4; k++ ) {
+					int icolor = idMath::FtoiFast( regs[pStage->color.registers[k]] * vertDepthFade[v] * 255.0f );
+					if ( icolor < 0 ) {
+						icolor = 0;
+					} else if ( icolor > 255 ) {
+						icolor = 255;
+					}
+					vertexColor[k] = (byte)icolor;
 				}
-				tri.verts[ind].color[k] = icolor;
 			}
 		}
+
+		// Keep the first stage color in the vertices as a fallback path.
+		for ( int v = 0; v < tri.numVerts; v++ ) {
+			const byte *vertexColor = stageColors + v * 4;
+			tri.verts[v].color[0] = vertexColor[0];
+			tri.verts[v].color[1] = vertexColor[1];
+			tri.verts[v].color[2] = vertexColor[2];
+			tri.verts[v].color[3] = vertexColor[3];
+		}
+
+		decalColorCache = vertexCache.AllocFrameTemp( stageColors, totalColorBytes );
+		decalColorStride = colorStride;
 	}
 
 	// copy the tri and indexes to temp heap memory,
@@ -516,6 +533,11 @@ void idRenderModelDecal::AddDecalDrawSurf( viewEntity_t *space ) {
 
 	// create the drawsurf
 	R_AddDrawSurf( newTri, space, &space->entityDef->parms, material, space->scissorRect );
+
+	drawSurf_t *drawSurf = tr.viewDef->drawSurfs[tr.viewDef->numDrawSurfs - 1];
+	drawSurf->decalColorCache = decalColorCache;
+	drawSurf->decalColorStride = decalColorStride;
+	drawSurf->decalColorStageCount = numStages;
 }
 
 /*

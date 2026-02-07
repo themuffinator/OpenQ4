@@ -30,6 +30,16 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "tr_local.h"
 
+static inline void RB_SetStageVertexColorPointer( const drawSurf_t *surf, int stage, idDrawVert *ac ) {
+	if ( surf->decalColorCache != NULL && stage >= 0 && stage < surf->decalColorStageCount && surf->decalColorStride > 0 ) {
+		byte *colorData = (byte *)vertexCache.Position( surf->decalColorCache );
+		glColorPointer( 4, GL_UNSIGNED_BYTE, 0, colorData + stage * surf->decalColorStride );
+		return;
+	}
+
+	glColorPointer( 4, GL_UNSIGNED_BYTE, sizeof( idDrawVert ), (void *)&ac->color );
+}
+
 /*
 =====================
 RB_BakeTextureMatrixIntoTexgen
@@ -792,7 +802,7 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 			//if ( r_skipNewAmbient.GetBool() ) {
 			//	continue;
 			//}
-			glColorPointer( 4, GL_UNSIGNED_BYTE, sizeof( idDrawVert ), (void *)&ac->color );
+			RB_SetStageVertexColorPointer( surf, stage, ac );
 			glVertexAttribPointerARB( 9, 3, GL_FLOAT, false, sizeof( idDrawVert ), ac->tangents[0].ToFloatPtr() );
 			glVertexAttribPointerARB( 10, 3, GL_FLOAT, false, sizeof( idDrawVert ), ac->tangents[1].ToFloatPtr() );
 			glNormalPointer( GL_FLOAT, sizeof( idDrawVert ), ac->normal.ToFloatPtr() );
@@ -888,7 +898,7 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 		if ( pStage->vertexColor == SVC_IGNORE ) {
 			glColor4fv( color );
 		} else {
-			glColorPointer( 4, GL_UNSIGNED_BYTE, sizeof( idDrawVert ), (void *)&ac->color );
+			RB_SetStageVertexColorPointer( surf, stage, ac );
 			glEnableClientState( GL_COLOR_ARRAY );
 
 			if ( pStage->vertexColor == SVC_INVERSE_MODULATE ) {

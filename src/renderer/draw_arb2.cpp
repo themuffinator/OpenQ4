@@ -143,8 +143,19 @@ void	RB_ARB2_DrawInteraction( const drawInteraction_t *din ) {
 	GL_SelectTextureNoClient( 5 );
 	din->specularImage->Bind();
 
+	// Quake 4 applies decal polygon offset in interaction passes as well.
+	const idMaterial *surfaceMaterial = din->surf->material;
+	if ( surfaceMaterial && surfaceMaterial->TestMaterialFlag( MF_POLYGONOFFSET ) ) {
+		glEnable( GL_POLYGON_OFFSET_FILL );
+		glPolygonOffset( r_offsetFactor.GetFloat(), r_offsetUnits.GetFloat() * surfaceMaterial->GetPolygonOffset() );
+	}
+
 	// draw it
 	RB_DrawElementsWithCounters( din->surf->geo );
+
+	if ( surfaceMaterial && surfaceMaterial->TestMaterialFlag( MF_POLYGONOFFSET ) ) {
+		glDisable( GL_POLYGON_OFFSET_FILL );
+	}
 }
 
 

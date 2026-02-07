@@ -60,10 +60,8 @@ typedef enum {
 } textureRepeat_t;
 
 typedef struct {
-	int		stayTime;		// msec for no change
-	int		fadeTime;		// msec to fade vertex colors over
-	float	start[4];		// vertex color at spawn (possibly out of 0.0 - 1.0 range, will clamp after calc)
-	float	end[4];			// vertex color at fade-out (possibly out of 0.0 - 1.0 range, will clamp after calc)
+	int		stayTime;		// msec for full decal lifetime
+	float	maxAngle;		// minimum face-normal dot against projection direction
 } decalInfo_t;
 
 typedef enum {
