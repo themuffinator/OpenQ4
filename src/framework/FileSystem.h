@@ -43,6 +43,7 @@ If you have questions concerning this license or the applicable additional terms
 	The following cvars store paths used by the file system:
 
 	"fs_basepath"		path to local install, read-only
+	"fs_homepath"		user-writable home path root
 	"fs_savepath"		path to config, save game, etc. files, read & write
 	"fs_cdpath"			path to cd, read-only
 	"fs_devpath"		path to files created during development, read & write

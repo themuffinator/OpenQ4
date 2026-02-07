@@ -165,6 +165,22 @@ executable(
   install: false,
 )
 
+dedicated_cpp_args = cpp_args + ['-DID_DEDICATED']
+dedicated_c_args = c_args + ['-DID_DEDICATED']
+
+executable(
+  'OpenQ4-ded',
+  openq4_sources,
+  include_directories: include_directories('src'),
+  dependencies: deps,
+  cpp_args: dedicated_cpp_args,
+  c_args: dedicated_c_args,
+  cpp_pch: pch_headers,
+  win_subsystem: 'windows',
+  link_args: link_args,
+  install: false,
+)
+
 summary(
   {
     'Host system': host_system,
@@ -180,6 +196,7 @@ summary(
     'OpenAL': openal_dep.found(),
     'stb_vorbis': stb_vorbis_dep.found(),
     'Precompiled headers': get_option('use_pch'),
+    'Dedicated server target': true,
   },
   section: 'Build Features',
   bool_yn: true,

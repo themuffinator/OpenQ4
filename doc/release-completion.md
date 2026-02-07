@@ -16,7 +16,7 @@ Process:
 - [x] External dependencies moved to Meson subprojects/wraps (`sdl3`, `glew`, `stb_vorbis`, `openal-soft-prebuilt`).
 - [x] Vendored GLEW updated to 2.3.1 (both `subprojects/glew` and `src/external/glew`) while preserving local static-link/include-path compatibility tweaks.
 - [x] Vendored OpenAL Soft updated to 1.25.1 headers/defs/import libs (both `subprojects/openal-soft-prebuilt` and `src/external/openal-soft`), with Win64 runtime DLL refreshed under `src/external/openal-soft/bin/win64/OpenAL32.dll`.
-- [x] Dependency refresh validated with clean Meson reconfigure (`setup --wipe`) and successful rebuild in `build_meson`.
+- [x] Dependency refresh validated with clean Meson reconfigure (`setup --wipe`) and successful rebuild in `builddir`.
 - [x] Ogg Vorbis (`.ogg`) playback support integrated (decoded via `stb_vorbis`).
 - [x] C++23-targeting baseline enabled on MSVC (`cpp_std=vc++latest`).
 - [x] MSVC 2026 toolchain direction documented and implemented as an optional enforceable baseline (`-Denforce_msvc_2026=true`).

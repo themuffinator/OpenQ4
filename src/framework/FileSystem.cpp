@@ -33,6 +33,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifdef WIN32
 	#include <io.h>	// for _read
+	#include <direct.h> // for _getcwd
 #else
 	#if !__MACH__ && __MWERKS__
 		#include <types.h>
@@ -65,8 +66,11 @@ usually the executable. It defaults to the current directory, but can be overrid
 with "+set fs_basepath c:\doom" on the command line. The base path cannot be modified
 at all after startup.
 
+The "home path" is the user-writable root path for OpenQ4 data. It can be overridden
+with "+set fs_homepath c:\users\you\saved games\openq4" on the command line.
+
 The "save path" is the path to the directory where game files will be saved. It defaults
-to the base path, but can be overridden with a "+set fs_savepath c:\doom" on the
+to the home path, but can be overridden with a "+set fs_savepath c:\doom" on the
 command line. Any files that are created during the game (demos, screenshots, etc.) will
 be created reletive to the save path.
 
@@ -252,6 +256,383 @@ public:
 
 static idInitExclusions	initExclusions;
 
+typedef struct {
+	const char *	name;
+	unsigned int	checksum;
+	bool			required;
+	bool			pureBase;
+} officialPk4Info_t;
+
+static officialPk4Info_t officialPk4s[] = {
+	// game binaries
+	{ "game000.pk4",			0xb3abe28c,	true,	false },
+	{ "game100.pk4",			0x74b379d9,	true,	false },
+	{ "game200.pk4",			0xa3c810d9,	true,	false },
+	{ "game300.pk4",			0x68fb90b1,	true,	false },
+
+	// core media baseline for Quake 4
+	{ "pak001.pk4",				0xf2cbc998,	true,	true },
+	{ "pak002.pk4",				0x7f8d80d1,	true,	true },
+	{ "pak003.pk4",				0x1b57b207,	true,	true },
+	{ "pak004.pk4",				0x385aa578,	true,	true },
+	{ "pak005.pk4",				0x60d50a1d,	true,	true },
+	{ "pak006.pk4",				0x9099ed11,	true,	true },
+	{ "pak007.pk4",				0xaf301fff,	true,	true },
+	{ "pak008.pk4",				0x4ac6f6d9,	true,	true },
+	{ "pak009.pk4",				0x36030c7d,	true,	true },
+	{ "pak010.pk4",				0x4b80fbda,	true,	true },
+	{ "pak011.pk4",				0x8acf4cfa,	true,	true },
+	{ "pak012.pk4",				0xbe4120b0,	true,	true },
+	{ "pak013.pk4",				0x6ad67f40,	true,	true },
+	{ "pak014.pk4",				0xee51cd59,	true,	true },
+	{ "pak015.pk4",				0xf5bf4e0c,	true,	true },
+	{ "pak016.pk4",				0x2196f58c,	true,	true },
+	{ "pak017.pk4",				0x91118a35,	true,	true },
+	{ "pak018.pk4",				0x98a14f03,	true,	true },
+	{ "pak019.pk4",				0xbc82ac79,	true,	true },
+	{ "pak020.pk4",				0xce74cda5,	true,	true },
+	{ "pak021.pk4",				0x2ba6e70c,	true,	true },
+	{ "pak022.pk4",				0x4e390eec,	true,	true },
+	{ "pak023.pk4",				0x7c1fd3a5,	true,	true },
+	{ "pak024.pk4",				0x5546d551,	true,	true },
+	{ "pak025.pk4",				0xcaeec1fd,	true,	true },
+
+	// official but optional
+	{ "q4cmp_pak001.pk4",		0xd0813943,	false,	false },
+	{ "zpak_english.pk4",		0x5868f530,	false,	false },
+	{ "zpak_english_01.pk4",	0xd9f04b8b,	false,	false },
+	{ "zpak_english_02.pk4",	0x9dbd91fd,	false,	false },
+	{ "zpak_english_03.pk4",	0x02eb6ad8,	false,	false },
+	{ "zpak_english_04.pk4",	0xd3fefaa1,	false,	false },
+	{ "zpak_english_05.pk4",	0x8596af60,	false,	false },
+
+	{ NULL,						0,			false,	false }
+};
+
+static const officialPk4Info_t *FindOfficialPk4Info( const char *pakName ) {
+	for ( int i = 0; officialPk4s[ i ].name != NULL; i++ ) {
+		if ( !idStr::Icmp( officialPk4s[ i ].name, pakName ) ) {
+			return &officialPk4s[ i ];
+		}
+	}
+	return NULL;
+}
+
+static bool FS_FileExists( const char *path ) {
+	FILE *f;
+	if ( !path || !path[ 0 ] ) {
+		return false;
+	}
+	f = fopen( path, "rb" );
+	if ( f ) {
+		fclose( f );
+		return true;
+	}
+	return false;
+}
+
+static void FS_AddUniquePath( idStrList &paths, const char *path ) {
+	idStr normalized;
+	idStr existing;
+
+	if ( !path || !path[ 0 ] ) {
+		return;
+	}
+	normalized = path;
+	normalized.Replace( "\\\\", "\\" );
+	normalized.BackSlashesToSlashes();
+	normalized.StripTrailing( '/' );
+	if ( !normalized.Length() ) {
+		return;
+	}
+	for ( int i = 0; i < paths.Num(); i++ ) {
+		existing = paths[ i ];
+		existing.Replace( "\\\\", "\\" );
+		existing.BackSlashesToSlashes();
+		existing.StripTrailing( '/' );
+		if ( !idStr::IcmpPath( existing.c_str(), normalized.c_str() ) ) {
+			return;
+		}
+	}
+	paths.Append( normalized );
+}
+
+static bool FS_HasGameFilesAtBasePath( const char *basePath ) {
+	idStr pakPath;
+	idStr gamePath;
+
+	if ( !basePath || !basePath[ 0 ] ) {
+		return false;
+	}
+
+	pakPath = basePath;
+	pakPath.AppendPath( BASE_GAMEDIR );
+	pakPath.AppendPath( "pak001.pk4" );
+	gamePath = basePath;
+	gamePath.AppendPath( BASE_GAMEDIR );
+	gamePath.AppendPath( "game000.pk4" );
+	return ( FS_FileExists( pakPath.c_str() ) && FS_FileExists( gamePath.c_str() ) );
+}
+
+static bool FS_GetCurrentWorkingDirectory( idStr &cwd ) {
+	char buf[ MAX_OSPATH ];
+#ifdef WIN32
+	if ( !_getcwd( buf, sizeof( buf ) - 1 ) ) {
+		return false;
+	}
+#else
+	if ( !getcwd( buf, sizeof( buf ) - 1 ) ) {
+		return false;
+	}
+#endif
+	buf[ sizeof( buf ) - 1 ] = '\0';
+	cwd = buf;
+	return true;
+}
+
+static void FS_ExtractQuotedTokens( const char *line, idStrList &tokens ) {
+	const char	*p;
+	const char	*start;
+	char		token[ 2048 ];
+	int			len;
+
+	tokens.Clear();
+	if ( !line ) {
+		return;
+	}
+	p = line;
+	while ( ( p = strchr( p, '\"' ) ) != NULL ) {
+		start = ++p;
+		while ( *p && *p != '\"' ) {
+			p++;
+		}
+		if ( *p != '\"' ) {
+			break;
+		}
+		len = (int)( p - start );
+		if ( len > 0 ) {
+			if ( len >= (int)sizeof( token ) ) {
+				len = sizeof( token ) - 1;
+			}
+			memcpy( token, start, len );
+			token[ len ] = '\0';
+			tokens.Append( token );
+		}
+		p++;
+	}
+}
+
+static void FS_AppendSteamLibrariesFromVdf( const char *steamRoot, idStrList &libraryRoots ) {
+	idStr		vdfPath;
+	FILE		*f;
+	char		line[ 4096 ];
+	idStrList	quoted;
+	idStr		key;
+	idStr		value;
+
+	if ( !steamRoot || !steamRoot[ 0 ] ) {
+		return;
+	}
+
+	vdfPath = steamRoot;
+	vdfPath.AppendPath( "steamapps" );
+	vdfPath.AppendPath( "libraryfolders.vdf" );
+	f = fopen( vdfPath.c_str(), "rb" );
+	if ( !f ) {
+		return;
+	}
+
+	while ( fgets( line, sizeof( line ), f ) != NULL ) {
+		FS_ExtractQuotedTokens( line, quoted );
+		if ( quoted.Num() < 2 ) {
+			continue;
+		}
+		key = quoted[ 0 ];
+		value = quoted[ 1 ];
+		value.Replace( "\\\\", "\\" );
+		value.BackSlashesToSlashes();
+		value.StripTrailing( '/' );
+
+		if ( !key.Icmp( "path" ) ) {
+			FS_AddUniquePath( libraryRoots, value.c_str() );
+			continue;
+		}
+
+		if ( idStr::IsNumeric( key.c_str() ) &&
+			( value.Find( "/" ) >= 0 || value.Find( "\\" ) >= 0 || value.Find( ":" ) >= 0 ) ) {
+			FS_AddUniquePath( libraryRoots, value.c_str() );
+		}
+	}
+	fclose( f );
+}
+
+static void FS_BuildSteamInstallCandidates( idStrList &candidates ) {
+	idStrList	steamRoots;
+	idStrList	libraryRoots;
+	idStr		path;
+	const char	*envPath;
+
+	candidates.Clear();
+
+#ifdef WIN32
+	FS_AddUniquePath( steamRoots, "C:/Program Files (x86)/Steam" );
+	FS_AddUniquePath( steamRoots, "C:/Program Files/Steam" );
+
+	envPath = getenv( "ProgramFiles(x86)" );
+	if ( envPath && envPath[ 0 ] ) {
+		path = envPath;
+		path.AppendPath( "Steam" );
+		FS_AddUniquePath( steamRoots, path.c_str() );
+	}
+	envPath = getenv( "ProgramFiles" );
+	if ( envPath && envPath[ 0 ] ) {
+		path = envPath;
+		path.AppendPath( "Steam" );
+		FS_AddUniquePath( steamRoots, path.c_str() );
+	}
+	envPath = getenv( "ProgramW6432" );
+	if ( envPath && envPath[ 0 ] ) {
+		path = envPath;
+		path.AppendPath( "Steam" );
+		FS_AddUniquePath( steamRoots, path.c_str() );
+	}
+	envPath = getenv( "LOCALAPPDATA" );
+	if ( envPath && envPath[ 0 ] ) {
+		path = envPath;
+		path.AppendPath( "Steam" );
+		FS_AddUniquePath( steamRoots, path.c_str() );
+	}
+#elif defined( __APPLE__ )
+	envPath = getenv( "HOME" );
+	if ( envPath && envPath[ 0 ] ) {
+		path = envPath;
+		path.AppendPath( "Library" );
+		path.AppendPath( "Application Support" );
+		path.AppendPath( "Steam" );
+		FS_AddUniquePath( steamRoots, path.c_str() );
+	}
+#else
+	envPath = getenv( "HOME" );
+	if ( envPath && envPath[ 0 ] ) {
+		path = envPath;
+		path.AppendPath( ".steam" );
+		path.AppendPath( "steam" );
+		FS_AddUniquePath( steamRoots, path.c_str() );
+
+		path = envPath;
+		path.AppendPath( ".local" );
+		path.AppendPath( "share" );
+		path.AppendPath( "Steam" );
+		FS_AddUniquePath( steamRoots, path.c_str() );
+
+		path = envPath;
+		path.AppendPath( ".var" );
+		path.AppendPath( "app" );
+		path.AppendPath( "com.valvesoftware.Steam" );
+		path.AppendPath( ".local" );
+		path.AppendPath( "share" );
+		path.AppendPath( "Steam" );
+		FS_AddUniquePath( steamRoots, path.c_str() );
+	}
+#endif
+
+	for ( int i = 0; i < steamRoots.Num(); i++ ) {
+		libraryRoots.Clear();
+		FS_AddUniquePath( libraryRoots, steamRoots[ i ] );
+		FS_AppendSteamLibrariesFromVdf( steamRoots[ i ], libraryRoots );
+		for ( int j = 0; j < libraryRoots.Num(); j++ ) {
+			path = libraryRoots[ j ];
+			path.AppendPath( "steamapps" );
+			path.AppendPath( "common" );
+			path.AppendPath( "Quake 4" );
+			FS_AddUniquePath( candidates, path.c_str() );
+		}
+	}
+}
+
+static void FS_BuildGogInstallCandidates( idStrList &candidates ) {
+	idStr		path;
+	const char	*envPath;
+
+	candidates.Clear();
+
+#ifdef WIN32
+	FS_AddUniquePath( candidates, "C:/Program Files (x86)/GOG Galaxy/Games/Quake 4" );
+	FS_AddUniquePath( candidates, "C:/Program Files/GOG Galaxy/Games/Quake 4" );
+	FS_AddUniquePath( candidates, "C:/GOG Games/Quake 4" );
+
+	envPath = getenv( "ProgramFiles(x86)" );
+	if ( envPath && envPath[ 0 ] ) {
+		path = envPath;
+		path.AppendPath( "GOG Galaxy" );
+		path.AppendPath( "Games" );
+		path.AppendPath( "Quake 4" );
+		FS_AddUniquePath( candidates, path.c_str() );
+	}
+	envPath = getenv( "ProgramFiles" );
+	if ( envPath && envPath[ 0 ] ) {
+		path = envPath;
+		path.AppendPath( "GOG Galaxy" );
+		path.AppendPath( "Games" );
+		path.AppendPath( "Quake 4" );
+		FS_AddUniquePath( candidates, path.c_str() );
+	}
+	envPath = getenv( "SystemDrive" );
+	if ( envPath && envPath[ 0 ] ) {
+		path = envPath;
+		path.AppendPath( "GOG Games" );
+		path.AppendPath( "Quake 4" );
+		FS_AddUniquePath( candidates, path.c_str() );
+	}
+#else
+	envPath = getenv( "HOME" );
+	if ( envPath && envPath[ 0 ] ) {
+		path = envPath;
+		path.AppendPath( "GOG Games" );
+		path.AppendPath( "Quake 4" );
+		FS_AddUniquePath( candidates, path.c_str() );
+
+		path = envPath;
+		path.AppendPath( "Games" );
+		path.AppendPath( "GOG Games" );
+		path.AppendPath( "Quake 4" );
+		FS_AddUniquePath( candidates, path.c_str() );
+	}
+#endif
+}
+
+static bool FS_FindFirstValidInstallPath( const idStrList &candidates, idStr &result ) {
+	for ( int i = 0; i < candidates.Num(); i++ ) {
+		if ( FS_HasGameFilesAtBasePath( candidates[ i ] ) ) {
+			result = candidates[ i ];
+			return true;
+		}
+	}
+	return false;
+}
+
+static bool FS_AutoDiscoverBasePath( idStr &basePath ) {
+	idStr		cwd;
+	idStrList	candidates;
+
+	if ( FS_GetCurrentWorkingDirectory( cwd ) && FS_HasGameFilesAtBasePath( cwd.c_str() ) ) {
+		basePath = cwd;
+		return true;
+	}
+
+	FS_BuildSteamInstallCandidates( candidates );
+	if ( FS_FindFirstValidInstallPath( candidates, basePath ) ) {
+		return true;
+	}
+
+	FS_BuildGogInstallCandidates( candidates );
+	if ( FS_FindFirstValidInstallPath( candidates, basePath ) ) {
+		return true;
+	}
+
+	return false;
+}
+
 #define MAX_ZIPPED_FILE_NAME	2048
 #define FILE_HASH_SIZE			1024
 
@@ -418,6 +799,7 @@ private:
 	static idCVar			fs_restrict;
 	static idCVar			fs_copyfiles;
 	static idCVar			fs_basepath;
+	static idCVar			fs_homepath;
 	static idCVar			fs_savepath;
 	static idCVar			fs_cdpath;
 	static idCVar			fs_devpath;
@@ -425,6 +807,7 @@ private:
 	static idCVar			fs_game_base;
 	static idCVar			fs_caseSensitiveOS;
 	static idCVar			fs_searchAddons;
+	static idCVar			fs_validateOfficialPaks;
 
 	backgroundDownload_t *	backgroundDownloads;
 	backgroundDownload_t	defaultBackgroundDownload;
@@ -462,6 +845,9 @@ private:
 	pack_t *				LoadZipFile( const char *zipfile );
 	void					AddGameDirectory( const char *path, const char *dir );
 	void					SetupGameDirectories( const char *gameName );
+	bool					IsBaseGamePack( const pack_t *pak ) const;
+	pack_t *				FindBaseGamePackByName( const char *name ) const;
+	bool					ValidateRequiredOfficialPaks( idStr &errors ) const;
 	void					Startup( void );
 	void					SetRestrictions( void );
 							// some files can be obtained from directories without compromising si_pure
@@ -485,6 +871,7 @@ idCVar	idFileSystemLocal::fs_restrict( "fs_restrict", "", CVAR_SYSTEM | CVAR_INI
 idCVar	idFileSystemLocal::fs_debug( "fs_debug", "0", CVAR_SYSTEM | CVAR_INTEGER, "", 0, 2, idCmdSystem::ArgCompletion_Integer<0,2> );
 idCVar	idFileSystemLocal::fs_copyfiles( "fs_copyfiles", "0", CVAR_SYSTEM | CVAR_INIT | CVAR_INTEGER, "", 0, 4, idCmdSystem::ArgCompletion_Integer<0,3> );
 idCVar	idFileSystemLocal::fs_basepath( "fs_basepath", "", CVAR_SYSTEM | CVAR_INIT, "" );
+idCVar	idFileSystemLocal::fs_homepath( "fs_homepath", "", CVAR_SYSTEM | CVAR_INIT, "" );
 idCVar	idFileSystemLocal::fs_savepath( "fs_savepath", "", CVAR_SYSTEM | CVAR_INIT, "" );
 idCVar	idFileSystemLocal::fs_cdpath( "fs_cdpath", "", CVAR_SYSTEM | CVAR_INIT, "" );
 idCVar	idFileSystemLocal::fs_devpath( "fs_devpath", "", CVAR_SYSTEM | CVAR_INIT, "" );
@@ -496,6 +883,7 @@ idCVar	idFileSystemLocal::fs_caseSensitiveOS( "fs_caseSensitiveOS", "0", CVAR_SY
 idCVar	idFileSystemLocal::fs_caseSensitiveOS( "fs_caseSensitiveOS", "1", CVAR_SYSTEM | CVAR_BOOL, "" );
 #endif
 idCVar	idFileSystemLocal::fs_searchAddons( "fs_searchAddons", "0", CVAR_SYSTEM | CVAR_BOOL, "search all addon pk4s ( disables addon functionality )" );
+idCVar	idFileSystemLocal::fs_validateOfficialPaks( "fs_validateOfficialPaks", "1", CVAR_SYSTEM | CVAR_INIT | CVAR_BOOL, "verify required official q4base pk4 checksums on startup" );
 
 idFileSystemLocal	fileSystemLocal;
 idFileSystem *		fileSystem = &fileSystemLocal;
@@ -2217,6 +2605,71 @@ void idFileSystemLocal::SetupGameDirectories( const char *gameName ) {
 }
 
 /*
+================
+idFileSystemLocal::IsBaseGamePack
+================
+*/
+bool idFileSystemLocal::IsBaseGamePack( const pack_t *pak ) const {
+	idStr path;
+	if ( !pak ) {
+		return false;
+	}
+	path = pak->pakFilename;
+	path.BackSlashesToSlashes();
+	path.ToLower();
+	return ( path.Find( "/" BASE_GAMEDIR "/" ) >= 0 );
+}
+
+/*
+================
+idFileSystemLocal::FindBaseGamePackByName
+================
+*/
+pack_t *idFileSystemLocal::FindBaseGamePackByName( const char *name ) const {
+	searchpath_t *search;
+	idStr			pakName;
+
+	for ( search = searchPaths; search; search = search->next ) {
+		if ( !search->pack || !IsBaseGamePack( search->pack ) ) {
+			continue;
+		}
+		search->pack->pakFilename.ExtractFileName( pakName );
+		if ( !pakName.Icmp( name ) ) {
+			return search->pack;
+		}
+	}
+	return NULL;
+}
+
+/*
+================
+idFileSystemLocal::ValidateRequiredOfficialPaks
+================
+*/
+bool idFileSystemLocal::ValidateRequiredOfficialPaks( idStr &errors ) const {
+	const officialPk4Info_t	*info;
+	pack_t					*pack;
+
+	errors.Clear();
+	for ( int i = 0; officialPk4s[ i ].name != NULL; i++ ) {
+		info = &officialPk4s[ i ];
+		if ( !info->required ) {
+			continue;
+		}
+		pack = FindBaseGamePackByName( info->name );
+		if ( !pack ) {
+			errors += va( "missing %s (expected 0x%08x)\n", info->name, info->checksum );
+			continue;
+		}
+		if ( (unsigned int)pack->checksum != info->checksum ) {
+			errors += va( "checksum mismatch for %s (expected 0x%08x, got 0x%08x from %s)\n",
+				info->name, info->checksum, (unsigned int)pack->checksum, pack->pakFilename.c_str() );
+		}
+	}
+	return ( errors.Length() == 0 );
+}
+
+/*
 ===============
 idFileSystemLocal::FollowDependencies
 ===============
@@ -2283,6 +2736,16 @@ void idFileSystemLocal::Startup( void ) {
 		 idStr::Icmp( fs_game.GetString(), BASE_GAMEDIR ) &&
 		 idStr::Icmp( fs_game.GetString(), fs_game_base.GetString() ) ) {
 		SetupGameDirectories( fs_game.GetString() );
+	}
+
+	if ( fs_validateOfficialPaks.GetBool() ) {
+		idStr validationErrors;
+		if ( !ValidateRequiredOfficialPaks( validationErrors ) ) {
+			common->FatalError(
+				"Required official Quake 4 pk4 files are missing or modified.\n\n%s\n"
+				"Install/verify the original q4base assets and remove overrides from fs_savepath/fs_devpath.",
+				validationErrors.c_str() );
+		}
 	}
 
 	// currently all addons are in the search list - deal with filtering out and dependencies now
@@ -2867,6 +3330,7 @@ void idFileSystemLocal::Init( void ) {
 	// line variable sets don't happen until after the filesystem
 	// has already been initialized
 	common->StartupVariable( "fs_basepath", false );
+	common->StartupVariable( "fs_homepath", false );
 	common->StartupVariable( "fs_savepath", false );
 	common->StartupVariable( "fs_cdpath", false );
 	common->StartupVariable( "fs_devpath", false );
@@ -2884,12 +3348,38 @@ void idFileSystemLocal::Init( void ) {
 		  fs_game_base.SetString( NULL );
 	}
 #endif	
-	
+
+	// fs_basepath auto-discovery order:
+	// 1) valid user override
+	// 2) current working directory
+	// 3) Steam install paths
+	// 4) GOG install paths
+	if ( fs_basepath.GetString()[0] ) {
+		if ( !FS_HasGameFilesAtBasePath( fs_basepath.GetString() ) ) {
+			common->Warning( "fs_basepath '%s' has no %s game files, auto-discovery will be attempted", fs_basepath.GetString(), BASE_GAMEDIR );
+			fs_basepath.SetString( "" );
+		}
+	}
 	if ( fs_basepath.GetString()[0] == '\0' ) {
-		fs_basepath.SetString( Sys_DefaultBasePath() );
+		idStr discoveredBasePath;
+		if ( FS_AutoDiscoverBasePath( discoveredBasePath ) ) {
+			fs_basepath.SetString( discoveredBasePath.c_str() );
+			common->Printf( "Auto-detected fs_basepath: %s\n", fs_basepath.GetString() );
+		} else {
+			fs_basepath.SetString( Sys_DefaultBasePath() );
+		}
+	}
+
+	// fs_homepath is the user-writable root; fs_savepath follows it when unset.
+	if ( fs_homepath.GetString()[0] == '\0' ) {
+		if ( fs_savepath.GetString()[0] != '\0' ) {
+			fs_homepath.SetString( fs_savepath.GetString() );
+		} else {
+			fs_homepath.SetString( Sys_DefaultSavePath() );
+		}
 	}
 	if ( fs_savepath.GetString()[0] == '\0' ) {
-		fs_savepath.SetString( Sys_DefaultSavePath() );
+		fs_savepath.SetString( fs_homepath.GetString() );
 	}
 	if ( fs_cdpath.GetString()[0] == '\0' ) {
 		fs_cdpath.SetString( Sys_DefaultCDPath() );
@@ -3073,9 +3563,18 @@ pureStatus_t idFileSystemLocal::GetPackStatus( pack_t *pak ) {
 	fileInPack_t	*file;
 	bool			abrt;
 	idStr			name;
+	const officialPk4Info_t *officialInfo;
 
 	if ( pak->pureStatus != PURE_UNKNOWN ) {
 		return pak->pureStatus;
+	}
+
+	// Keep the stock Quake 4 base media in the pure list no matter their contents.
+	pak->pakFilename.ExtractFileName( name );
+	officialInfo = FindOfficialPk4Info( name.c_str() );
+	if ( officialInfo && officialInfo->pureBase ) {
+		pak->pureStatus = PURE_ALWAYS;
+		return PURE_ALWAYS;
 	}
 
 	// check content for PURE_NEVER
@@ -3110,7 +3609,6 @@ pureStatus_t idFileSystemLocal::GetPackStatus( pack_t *pak ) {
 	}
 
 	// check pak name for PURE_ALWAYS
-	pak->pakFilename.ExtractFileName( name );
 	if ( !name.IcmpPrefixPath( "pak" ) ) {
 		pak->pureStatus = PURE_ALWAYS;
 		return PURE_ALWAYS;

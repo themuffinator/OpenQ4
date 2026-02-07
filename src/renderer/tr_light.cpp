@@ -32,6 +32,21 @@ If you have questions concerning this license or the applicable additional terms
 #include "tr_local.h"
 
 static const float CHECK_BOUNDS_EPSILON = 1.0f;
+idCVar bse_frameCounters(
+	"bse_frameCounters",
+	"2",
+	CVAR_RENDERER | CVAR_INTEGER,
+	"temporary BSE counters: 0=off, 1=spawn/service/render summary, 2=include drop-stage counts");
+idCVar bse_respectConnectedArea(
+	"bse_respectConnectedArea",
+	"0",
+	CVAR_RENDERER | CVAR_BOOL,
+	"if 1, cull effect defs when parms.inConnectedArea is false (legacy portal gating)");
+idCVar bse_useFrustumCull(
+	"bse_useFrustumCull",
+	"0",
+	CVAR_RENDERER | CVAR_BOOL,
+	"if 1, apply renderer frustum culling to BSE effect defs/surfaces");
 
 
 /*
@@ -1456,15 +1471,63 @@ R_AddEffectSurfaces
 */
 void R_AddEffectSurfaces(void) {
 	idRenderWorldLocal* world = tr.viewDef->renderWorld;
+	const int counterMode = bse_frameCounters.GetInteger();
+	int totalDefs = 0;
+	int spawned = 0;
+	int serviced = 0;
+	int expired = 0;
+	int alive = 0;
+	int renderedEffects = 0;
+	int renderedSurfaces = 0;
+	int effectsNoIndexedSurfaces = 0;
+	int effectsNoIndexedButHasVerts = 0;
+	int surfaceVisited = 0;
+	int surfaceNoGeom = 0;
+	int surfaceNoIndexes = 0;
+	int surfaceNoIndexesWithVerts = 0;
+	int surfaceFrustumCull = 0;
+	int surfaceNoShader = 0;
+	int surfaceNotDrawn = 0;
+	int surfaceCacheFail = 0;
+	int serviceSpawnGateTrue = 0;
+	int serviceSpawnGateFalse = 0;
+	int serviceGateLagMin = 0x7fffffff;
+	int serviceGateLagMax = (-0x7fffffff - 1);
+	int dropNotConnected = 0;
+	int dropViewSuppress = 0;
+	int dropNoModel = 0;
+	int dropNoModelSurfaces = 0;
+	int dropClearedBounds = 0;
+	int dropFrustumCull = 0;
+	int dropScissor = 0;
 
 	for (int i = 0; i < world->effectsDef.Num(); i++) {
 		rvRenderEffectLocal* def = world->effectsDef[i];
 		if (!def) {
 			continue;
 		}
+		++totalDefs;
+		if (def->newEffect) {
+			++spawned;
+		}
+		const int gateLag = def->gameTime - def->serviceTime;
+		if (gateLag < serviceGateLagMin) {
+			serviceGateLagMin = gateLag;
+		}
+		if (gateLag > serviceGateLagMax) {
+			serviceGateLagMax = gateLag;
+		}
+		if (gateLag > 0) {
+			++serviceSpawnGateTrue;
+		}
+		else {
+			++serviceSpawnGateFalse;
+		}
 
 		// Keep simulation/sound state moving even when the effect isn't rendered this frame.
+		++serviced;
 		if (bse->ServiceEffect(def, tr.frameShaderTime)) {
+			++expired;
 			if (def->dynamicModel) {
 				delete def->dynamicModel;
 				def->dynamicModel = NULL;
@@ -1472,30 +1535,37 @@ void R_AddEffectSurfaces(void) {
 			}
 			continue;
 		}
+		++alive;
 
 		if (!def->effect) {
 			continue;
 		}
 
-		// View-model and view-only effects may not live in a portal-connected area
-		// but still need to render for their target view.
-		if (!def->parms.inConnectedArea &&
-			def->parms.allowSurfaceInViewID == 0 &&
-			def->parms.weaponDepthHackInViewID == 0) {
-			continue;
+		// Some game-lib paths don't keep inConnectedArea up-to-date for renderEffect_t.
+		// Keep this gate optional so view/world effects are not silently culled.
+		if (bse_respectConnectedArea.GetBool()) {
+			if (!def->parms.inConnectedArea &&
+				def->parms.allowSurfaceInViewID == 0 &&
+				def->parms.weaponDepthHackInViewID == 0) {
+				++dropNotConnected;
+				continue;
+			}
 		}
 
 		if (!r_skipSuppress.GetBool()) {
 			if (def->parms.suppressSurfaceInViewID && def->parms.suppressSurfaceInViewID == tr.viewDef->renderView.viewID) {
+				++dropViewSuppress;
 				continue;
 			}
 			if (def->parms.allowSurfaceInViewID && def->parms.allowSurfaceInViewID != tr.viewDef->renderView.viewID) {
+				++dropViewSuppress;
 				continue;
 			}
 		}
 
 		def->dynamicModel = bse->RenderEffect(def, tr.viewDef);
 		if (!def->dynamicModel) {
+			++dropNoModel;
 			def->dynamicModelFrameCount = 0;
 			continue;
 		}
@@ -1503,11 +1573,13 @@ void R_AddEffectSurfaces(void) {
 
 		idRenderModel* model = def->dynamicModel;
 		if (model->NumSurfaces() <= 0) {
+			++dropNoModelSurfaces;
 			continue;
 		}
 
 		const idBounds localBounds = model->Bounds(NULL);
 		if (localBounds.IsCleared()) {
+			++dropClearedBounds;
 			continue;
 		}
 		def->referenceBounds = localBounds;
@@ -1519,8 +1591,11 @@ void R_AddEffectSurfaces(void) {
 		R_AxisToModelMatrix(def->parms.axis, def->parms.origin, vEffect->modelMatrix);
 		myGlMultMatrix(vEffect->modelMatrix, tr.viewDef->worldSpace.modelViewMatrix, vEffect->modelViewMatrix);
 
-		if (R_CullLocalBox(localBounds, vEffect->modelMatrix, 5, tr.viewDef->frustum)) {
-			continue;
+		if (bse_useFrustumCull.GetBool()) {
+			if (R_CullLocalBox(localBounds, vEffect->modelMatrix, 5, tr.viewDef->frustum)) {
+				++dropFrustumCull;
+				continue;
+			}
 		}
 
 		idBounds projectionBounds;
@@ -1528,6 +1603,7 @@ void R_AddEffectSurfaces(void) {
 		vEffect->scissorRect = R_ScreenRectFromViewFrustumBounds(projectionBounds);
 		vEffect->scissorRect.Intersect(tr.viewDef->scissor);
 		if (vEffect->scissorRect.IsEmpty()) {
+			++dropScissor;
 			continue;
 		}
 
@@ -1545,28 +1621,51 @@ void R_AddEffectSurfaces(void) {
 		}
 
 		const int total = model->NumSurfaces();
+		int effectSurfaceCount = 0;
+		int effectNoIndexes = 0;
+		int effectNoIndexesWithVerts = 0;
 		for (int s = 0; s < total; ++s) {
+			++surfaceVisited;
 			if (r_singleSurface.GetInteger() >= 0 && s != r_singleSurface.GetInteger()) {
 				continue;
 			}
 
 			const modelSurface_t* surf = model->Surface(s);
-			if (!surf || !surf->geometry || !surf->geometry->numIndexes) {
+			if (!surf || !surf->geometry) {
+				++surfaceNoGeom;
+				continue;
+			}
+			if (!surf->geometry->numIndexes) {
+				if (surf->geometry->numVerts > 0) {
+					++surfaceNoIndexesWithVerts;
+					++effectNoIndexesWithVerts;
+				}
+				++surfaceNoIndexes;
+				++effectNoIndexes;
 				continue;
 			}
 
 			srfTriangles_t* tri = surf->geometry;
-			if (R_CullLocalBox(tri->bounds, vEffect->modelMatrix, 5, tr.viewDef->frustum)) {
-				continue;
+			if (bse_useFrustumCull.GetBool()) {
+				if (R_CullLocalBox(tri->bounds, vEffect->modelMatrix, 5, tr.viewDef->frustum)) {
+					++surfaceFrustumCull;
+					continue;
+				}
 			}
 
 			const idMaterial* shader = surf->shader;
 			R_GlobalShaderOverride(&shader);
-			if (!shader || !shader->IsDrawn()) {
+			if (!shader) {
+				++surfaceNoShader;
+				continue;
+			}
+			if (!shader->IsDrawn()) {
+				++surfaceNotDrawn;
 				continue;
 			}
 
 			if (!R_CreateAmbientCache(tri, shader->ReceivesLighting())) {
+				++surfaceCacheFail;
 				continue;
 			}
 			vertexCache.Touch(tri->ambientCache);
@@ -1581,7 +1680,64 @@ void R_AddEffectSurfaces(void) {
 			R_AddDrawSurf(tri, vEffect, &renderParms, shader, vEffect->scissorRect);
 			tri->ambientViewCount = tr.viewCount;
 			def->visibleCount = tr.viewCount;
+			++effectSurfaceCount;
+			++renderedSurfaces;
 		}
+		if (effectSurfaceCount > 0) {
+			++renderedEffects;
+		}
+		else if (total > 0) {
+			++effectsNoIndexedSurfaces;
+			if (effectNoIndexesWithVerts > 0) {
+				++effectsNoIndexedButHasVerts;
+			}
+		}
+	}
+
+	if (counterMode > 0) {
+		common->Printf(
+			"BSE frame %d view %d mode=%d: spawned=%d serviced=%d rendered=%d defs=%d alive=%d expired=%d surfaces=%d\n",
+			tr.frameCount,
+			tr.viewDef->renderView.viewID,
+			counterMode,
+			spawned,
+			serviced,
+			renderedEffects,
+			totalDefs,
+			alive,
+			expired,
+			renderedSurfaces);
+		common->Printf(
+			"BSE drops: notConnected=%d viewSuppress=%d noModel=%d noSurfaces=%d clearedBounds=%d frustum=%d scissor=%d\n",
+			dropNotConnected,
+			dropViewSuppress,
+			dropNoModel,
+			dropNoModelSurfaces,
+			dropClearedBounds,
+			dropFrustumCull,
+			dropScissor);
+		common->Printf(
+			"BSE surf: visited=%d noGeom=%d noIndexes=%d noIdxWithVerts=%d frustum=%d noShader=%d notDrawn=%d cacheFail=%d added=%d\n",
+			surfaceVisited,
+			surfaceNoGeom,
+			surfaceNoIndexes,
+			surfaceNoIndexesWithVerts,
+			surfaceFrustumCull,
+			surfaceNoShader,
+			surfaceNotDrawn,
+			surfaceCacheFail,
+			renderedSurfaces);
+		common->Printf(
+			"BSE effect geom: noIndexed=%d noIndexedWithVerts=%d rendered=%d\n",
+			effectsNoIndexedSurfaces,
+			effectsNoIndexedButHasVerts,
+			renderedEffects);
+		common->Printf(
+			"BSE service gate: true=%d false=%d lagMin=%d lagMax=%d\n",
+			serviceSpawnGateTrue,
+			serviceSpawnGateFalse,
+			(serviceGateLagMin == 0x7fffffff) ? 0 : serviceGateLagMin,
+			(serviceGateLagMax == (-0x7fffffff - 1)) ? 0 : serviceGateLagMax);
 	}
 }
 

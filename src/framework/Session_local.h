@@ -100,6 +100,8 @@ public:
 
 	virtual bool		IsMultiplayer();
 	virtual bool		IsLoadingSaveGame() const { return loadingSaveGame; }
+	virtual bool		IsGUIActive() const { return ( guiActive != NULL ) || ( guiTest != NULL ); }
+	virtual idUserInterface *GetActiveGUI() const { return ( guiTest != NULL ) ? guiTest : guiActive; }
 
 	virtual bool		ProcessEvent( const sysEvent_t *event );
 

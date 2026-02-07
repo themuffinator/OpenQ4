@@ -492,18 +492,61 @@ idRenderModel* rvBSE::Render(idRenderModel* model, const struct renderEffect_s* 
 		// Runtime particles mutate vertex/index data every frame.
 		// Invalidate vertex/index caches so new data is uploaded.
 		renderModel->FreeVertexCache();
+		for (int i = 0; i < renderModel->NumSurfaces(); ++i) {
+			const modelSurface_t* surf = renderModel->Surface(i);
+			if (!surf || !surf->geometry) {
+				continue;
+			}
+			srfTriangles_t* tri = surf->geometry;
+			if (tri->indexCache) {
+				vertexCache.Free(tri->indexCache);
+				tri->indexCache = NULL;
+			}
+		}
 	}
 
 	mViewAxis = view->renderView.viewaxis;
 	mViewOrg = view->renderView.vieworg;
 
 	float time = view->floatTime;
+	int segmentActiveCount = 0;
+	int segmentSurfaceCount = 0;
+	int segmentSurfaceActiveCount = 0;
+	int segmentUsedNoSurfaceCount = 0;
 	for (int i = 0; i < mSegments.Num(); ++i) {
+		const bool active = mSegments[i].Active();
+		if (active) {
+			++segmentActiveCount;
+		}
+		if (mSegments[i].mSurfaceIndex >= 0) {
+			++segmentSurfaceCount;
+			if (active) {
+				++segmentSurfaceActiveCount;
+			}
+		}
+		if (mSegments[i].mUsedHead && mSegments[i].mSurfaceIndex < 0) {
+			++segmentUsedNoSurfaceCount;
+		}
+
 		mSegments[i].ClearSurface(this, renderModel);
-		if (mSegments[i].Active()) {
+		if (active) {
 			mSegments[i].Render(this, owner, renderModel, time);
 			mSegments[i].RenderTrail(this, owner, renderModel, time);
 		}
+	}
+	static int bseRenderSegmentTraceCount = 0;
+	if (bseRenderSegmentTraceCount < 256) {
+		common->Printf(
+			"BSE segment state %d: effect=%s time=%.4f segments=%d active=%d surfaced=%d surfacedActive=%d usedNoSurface=%d\n",
+			bseRenderSegmentTraceCount,
+			GetDeclName(),
+			time,
+			mSegments.Num(),
+			segmentActiveCount,
+			segmentSurfaceCount,
+			segmentSurfaceActiveCount,
+			segmentUsedNoSurfaceCount);
+		++bseRenderSegmentTraceCount;
 	}
 
 	// BSE runtime geometry is rebuilt every frame and includes strip-like particle
@@ -538,6 +581,7 @@ idRenderModel* rvBSE::Render(idRenderModel* model, const struct renderEffect_s* 
 		modelBounds.Zero();
 	}
 	renderModel->bounds = modelBounds;
+	DisplayDebugInfo(owner, view, renderModel->bounds);
 	mLastRenderBounds = modelBounds;
 	mGrownRenderBounds = mLastRenderBounds;
 	mGrownRenderBounds.ExpandSelf(20.0f);
@@ -679,7 +723,44 @@ void rvBSE::UpdateSegments(float time)
 
 
 void rvBSE::DisplayDebugInfo(const struct renderEffect_s* parms, const struct viewDef_s* view, idBounds& bounds) {
-	// TODO
+	if (!parms || !view || !view->renderWorld) {
+		return;
+	}
+	if (!bse_debug.GetInteger() && !bse_showBounds.GetBool()) {
+		return;
+	}
+
+	idRenderWorld* rw = view->renderWorld;
+
+	if (bse_debug.GetInteger()) {
+		const char* effectName = "<unknown>";
+		if (mDeclEffect && mDeclEffect->base) {
+			effectName = mDeclEffect->base->GetName();
+		}
+
+		idStr txt = va(
+			"(%g) (size %g) (bri %g)\n%s",
+			mCost,
+			mDeclEffect ? mDeclEffect->mSize : 0.0f,
+			parms->shaderParms[6],
+			effectName);
+
+		rw->DebugAxis(parms->origin, parms->axis);
+		rw->DrawText(txt.c_str(), parms->origin, 14.0f, colorCyan, view->renderView.viewaxis, 1, 0);
+	}
+
+	if (!bse_showBounds.GetBool()) {
+		return;
+	}
+
+	rw->DebugBounds(colorGreen, bounds, vec3_origin);
+
+	const idBox worldBox(mCurrentWorldBounds, parms->origin, parms->axis);
+	rw->DebugBox(colorBlue, worldBox);
+
+	if (!mCurrentWorldBounds.Contains(bounds)) {
+		rw->DebugBounds(colorRed, bounds, vec3_origin);
+	}
 }
 
 void __thiscall rvBSE::UpdateFromOwner(renderEffect_s* parms, float time, bool init)

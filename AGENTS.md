@@ -21,6 +21,8 @@ This file describes project goals, rules, and upstream credits for anyone workin
 - Keep compatibility with original Quake 4 binaries (DLLs) as the primary requirement.
 - Prefer changes that match Quake 4 SDK expectations and shipped content behavior.
 - Document significant changes in the documentation and keep `README.md` accurate.
+- Use `builddir/` as the standard Meson build output directory for local builds, VS Code tasks, and launch configurations.
+- On Windows, do not invoke raw `meson ...` from an arbitrary shell; use `tools/build/meson_setup.ps1 ...` (or run `tools/build/openq4_devcmd.cmd` first) so `cl.exe`/MSVC tools are always available.
 - Prefer platform abstractions through SDL3 and avoid introducing new platform-specific dependencies in shared engine code when an SDL3 path exists.
 - Keep Meson as the primary build entry point and keep dependency management through Meson subprojects.
 - Treat x64 as the baseline architecture for active support while staging additional modern architectures incrementally.

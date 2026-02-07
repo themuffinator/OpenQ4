@@ -122,6 +122,29 @@ ID_INLINE void BuildPerpBasis(const idVec3& forward, idVec3& right, idVec3& up) 
 		up.Set(0.0f, 0.0f, 1.0f);
 	}
 }
+
+ID_INLINE void BSETraceRenderDrop(const char* typeName, const rvParticle* particle, float time, const char* reason, float value0 = 0.0f, float value1 = 0.0f) {
+	static int bseRenderDropTraceCount = 0;
+	if (bseRenderDropTraceCount >= 256 || !particle) {
+		return;
+	}
+	const float duration = particle->GetDuration();
+	const float endTime = particle->GetEndTime();
+	const float startTime = endTime - duration;
+
+	common->Printf(
+		"BSE render drop %d: type=%s reason=%s time=%.4f start=%.4f end=%.4f dur=%.4f v0=%.4f v1=%.4f\n",
+		bseRenderDropTraceCount,
+		typeName ? typeName : "<null>",
+		reason ? reason : "<null>",
+		time,
+		startTime,
+		endTime,
+		duration,
+		value0,
+		value1);
+	++bseRenderDropTraceCount;
+}
 }
 
 // ---------------------------------------------------------------------------
@@ -970,6 +993,7 @@ bool rvSpriteParticle::Render(const rvBSE* effect, rvParticleTemplate* pt, const
 
 	float evalTime;
 	if (!GetEvaluationTime(time, evalTime, false)) {
+		BSETraceRenderDrop("sprite", this, time, "eval", evalTime, GetEndTime() - time);
 		return false;
 	}
 
@@ -981,6 +1005,7 @@ bool rvSpriteParticle::Render(const rvBSE* effect, rvParticleTemplate* pt, const
 	EvaluateTint(pt->mpTintEnvelope, pt->mpFadeEnvelope, evalTime, oneOverDuration, color);
 	color[3] *= override;
 	if (color[3] <= 0.0f) {
+		BSETraceRenderDrop("sprite", this, time, "alpha", color[3], override);
 		return false;
 	}
 
@@ -1015,6 +1040,7 @@ bool rvLineParticle::Render(const rvBSE* effect, rvParticleTemplate* pt, const i
 
 	float evalTime;
 	if (!GetEvaluationTime(time, evalTime, false)) {
+		BSETraceRenderDrop("line", this, time, "eval", evalTime, GetEndTime() - time);
 		return false;
 	}
 
@@ -1026,6 +1052,7 @@ bool rvLineParticle::Render(const rvBSE* effect, rvParticleTemplate* pt, const i
 	EvaluateTint(pt->mpTintEnvelope, pt->mpFadeEnvelope, evalTime, oneOverDuration, color);
 	color[3] *= override;
 	if (color[3] <= 0.0f) {
+		BSETraceRenderDrop("line", this, time, "alpha", color[3], override);
 		return false;
 	}
 
@@ -1125,6 +1152,7 @@ bool rvOrientedParticle::Render(const rvBSE* effect, rvParticleTemplate* pt, con
 
 	float evalTime;
 	if (!GetEvaluationTime(time, evalTime, false)) {
+		BSETraceRenderDrop("oriented", this, time, "eval", evalTime, GetEndTime() - time);
 		return false;
 	}
 
@@ -1136,6 +1164,7 @@ bool rvOrientedParticle::Render(const rvBSE* effect, rvParticleTemplate* pt, con
 	EvaluateTint(pt->mpTintEnvelope, pt->mpFadeEnvelope, evalTime, oneOverDuration, tint);
 	tint[3] *= override;
 	if (tint[3] <= 0.0f) {
+		BSETraceRenderDrop("oriented", this, time, "alpha", tint[3], override);
 		return false;
 	}
 

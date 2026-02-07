@@ -117,11 +117,16 @@ void Sys_AsyncThread( void ) {
  ==============
  */
 const char *Sys_DefaultSavePath(void) {
+	const char *home = getenv( "HOME" );
+	if ( home && home[0] ) {
 #if defined( ID_DEMO_BUILD )
-	sprintf( savepath, "%s/.doom3-demo", getenv( "HOME" ) );
+		sprintf( savepath, "%s/.local/share/openq4-demo", home );
 #else
-	sprintf( savepath, "%s/.doom3", getenv( "HOME" ) );
+		sprintf( savepath, "%s/.local/share/openq4", home );
 #endif
+	} else {
+		savepath = Posix_Cwd();
+	}
 	return savepath.c_str();
 }
 /*

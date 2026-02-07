@@ -631,6 +631,14 @@ void idGameLocal::Shutdown( void ) {
 		return;
 	}
 
+	// Fatal startup failures can call Shutdown() before Init() reached GAMESTATE_NOMAP.
+	if ( gamestate == GAMESTATE_UNINITIALIZED ) {
+		if ( animationLib != NULL ) {
+			animationLib->Shutdown();
+		}
+		return;
+	}
+
 // RAVEN BEGIN
 // jscott: FAS
 	FAS_Shutdown();
@@ -706,7 +714,9 @@ void idGameLocal::Shutdown( void ) {
 	// shut down the animation manager
 // RAVEN BEGIN
 // jsinger: animationLib changed to a pointer
-	animationLib->Shutdown();
+	if ( animationLib != NULL ) {
+		animationLib->Shutdown();
+	}
 // RAVEN END
 
 // RAVEN BEGIN

@@ -1,9 +1,3 @@
-[CmdletBinding()]
-param(
-    [Parameter(ValueFromRemainingArguments = $true)]
-    [string[]]$Args
-)
-
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
@@ -59,13 +53,12 @@ function Invoke-Meson {
 
     if ([string]::IsNullOrWhiteSpace($VsDevCmdPath)) {
         & meson @MesonArgs
-        return $LASTEXITCODE
+        return
     }
 
     $mesonCmd = "meson " + (($MesonArgs | ForEach-Object { Quote-CmdArg $_ }) -join " ")
-    $fullCmd = '"' + $VsDevCmdPath + '" -arch=x64 -host_arch=x64 >nul && ' + $mesonCmd
+    $fullCmd = 'call "' + $VsDevCmdPath + '" -arch=x64 -host_arch=x64 >nul && ' + $mesonCmd
     & $env:ComSpec /d /c $fullCmd
-    return $LASTEXITCODE
 }
 
 function Get-CompileBuildDirInfo {
@@ -108,7 +101,7 @@ function Test-MesonBuildDirectory {
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $scriptDir "..\.."))
-$defaultBuildDir = Join-Path $repoRoot "build_meson"
+$defaultBuildDir = Join-Path $repoRoot "builddir"
 
 $rcWrapper = Join-Path $scriptDir "rc.cmd"
 if (-not (Test-Path $rcWrapper)) {
@@ -122,7 +115,10 @@ if ($null -eq (Get-Command cl -ErrorAction SilentlyContinue)) {
     $vsDevCmd = Get-VsDevCmdPath
 }
 
-$effectiveArgs = @($Args)
+$effectiveArgs = @($args)
+if ($effectiveArgs.Count -eq 0) {
+    throw "No Meson arguments were provided to meson_setup.ps1."
+}
 if ($effectiveArgs.Length -gt 0 -and $effectiveArgs[0] -eq "compile") {
     $buildInfo = Get-CompileBuildDirInfo -MesonArgs $effectiveArgs -DefaultBuildDir $defaultBuildDir
 
@@ -139,7 +135,8 @@ if ($effectiveArgs.Length -gt 0 -and $effectiveArgs[0] -eq "compile") {
             "debug",
             "--wrap-mode=forcefallback"
         )
-        $setupCode = Invoke-Meson -MesonArgs $setupArgs -VsDevCmdPath $vsDevCmd
+        Invoke-Meson -MesonArgs $setupArgs -VsDevCmdPath $vsDevCmd
+        $setupCode = [int]$LASTEXITCODE
         if ($setupCode -ne 0) {
             exit $setupCode
         }
@@ -154,5 +151,6 @@ if ($effectiveArgs.Length -gt 0 -and $effectiveArgs[0] -eq "compile") {
     }
 }
 
-$exitCode = Invoke-Meson -MesonArgs $effectiveArgs -VsDevCmdPath $vsDevCmd
+Invoke-Meson -MesonArgs $effectiveArgs -VsDevCmdPath $vsDevCmd
+$exitCode = [int]$LASTEXITCODE
 exit $exitCode

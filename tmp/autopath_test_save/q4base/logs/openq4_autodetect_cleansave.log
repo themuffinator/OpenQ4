@@ -1,0 +1,22 @@
+log file 'logs/openq4_autodetect_cleansave.log' opened on Sat Feb  7 10:18:49 2026
+
+Unknown command 'vid_restart'
+------------ Game Map Shutdown --------------
+---------------------------------------------
+idRenderSystem::Shutdown()
+Shutting down OpenGL subsystem (SDL3 backend)
+...shutting down QGL
+--------------- Game Shutdown ---------------
+rvStatAllocator:  dump of usage stats
+	0 total bytes handed out in 0 requests
+	begin game:      0;  end game:        0
+	player hit:      0;  player kill:     0
+	player death:    0;
+	damage dealt:    0;  damage taken:    0
+	stat team:       0
+	flag capture:    0;
+	flag drop:       0;  flag return:     0
+------------ Game Map Shutdown --------------
+---------------------------------------------
+Shutdown event system
+...not started

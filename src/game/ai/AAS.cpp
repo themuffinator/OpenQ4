@@ -221,9 +221,8 @@ float idAASLocal::AreaRadius( int areaNum ) const {
 idAASLocal::AreaBounds
 ============
 */
-idBounds & idAASLocal::AreaBounds( int areaNum ) const {
-	idBounds bounds = file->GetArea(areaNum).bounds;
-	return bounds;
+const idBounds & idAASLocal::AreaBounds( int areaNum ) const {
+	return file->GetArea( areaNum ).bounds;
 }
 /*
 ============

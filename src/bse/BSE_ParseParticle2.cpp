@@ -1189,7 +1189,7 @@ bool rvParticleTemplate::Parse(rvDeclEffect* effect, idParser* src) {
 			mNumFrames = src->ParseInt();
 		}
 		else if (token == "fadeIn") {
-			// TODO  v3->mFlags |= (unsigned int)&vwin8192[2696]; <-- garbage.
+			mFlags |= PTFLAG_FADE_IN;
 		}
 		else if (token == "useLightningAxis") {
 			mFlags |= 0x400000u;

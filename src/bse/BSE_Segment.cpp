@@ -618,7 +618,13 @@ void rvSegment::AllocateSurface(rvBSE* effect, idRenderModel* model) {
 		return;
 	}
 
-	const int particleCount = effect->GetLooping() ? mLoopParticleCount : mParticleCount;
+	int particleCount = effect->GetLooping() ? mLoopParticleCount : mParticleCount;
+	if (particleCount <= 0) {
+		// Some effects end up with zero precomputed counts at init time but still
+		// spawn particles at runtime. Allocate a minimal surface lazily so render
+		// has writable geometry for active particles.
+		particleCount = Max(1, mActiveCount);
+	}
 	if (particleCount <= 0) {
 		return;
 	}
@@ -842,13 +848,19 @@ void rvSegment::Render(rvBSE* effect, const renderEffect_s* owner, idRenderModel
 	}
 
 	rvSegmentTemplate* st = GetSegmentTemplate();
-	if (!st || !st->GetEnabled() || !st->GetHasParticles() || mSurfaceIndex < 0 || mSurfaceIndex >= model->NumSurfaces()) {
+	if (!st || !st->GetEnabled() || !st->GetHasParticles()) {
 		return;
 	}
 
 	rvParticleTemplate* pt = st->GetParticleTemplate();
 	if (!pt) {
 		return;
+	}
+	if (mSurfaceIndex < 0 || mSurfaceIndex >= model->NumSurfaces()) {
+		AllocateSurface(effect, model);
+		if (mSurfaceIndex < 0 || mSurfaceIndex >= model->NumSurfaces()) {
+			return;
+		}
 	}
 
 	srfTriangles_t* tri = model->Surface(mSurfaceIndex)->geometry;
@@ -863,6 +875,22 @@ void rvSegment::Render(rvBSE* effect, const renderEffect_s* owner, idRenderModel
 	}
 	tri->numVerts = 0;
 	tri->numIndexes = 0;
+	if (!mUsedHead) {
+		static int bseRenderNoUsedTraceCount = 0;
+		if (bseRenderNoUsedTraceCount < 256) {
+			common->Printf(
+				"BSE seg render skip %d: effect=%s seg=%d reason=noUsed type=%d active=%d maxVerts=%d maxIdx=%d\n",
+				bseRenderNoUsedTraceCount,
+				effect->GetDeclName(),
+				mSegmentTemplateHandle,
+				pt->GetType(),
+				mActiveCount,
+				maxVerts,
+				maxIndexes);
+			++bseRenderNoUsedTraceCount;
+		}
+		return;
+	}
 
 	idMat3 view;
 	const idMat3 ownerAxisTranspose = owner->axis.Transpose();
@@ -892,6 +920,22 @@ void rvSegment::Render(rvBSE* effect, const renderEffect_s* owner, idRenderModel
 		}
 
 		if (tri->numVerts + pt->GetVertexCount() > maxVerts || tri->numIndexes + requiredIndexes > maxIndexes) {
+			static int bseRenderCapacityTraceCount = 0;
+			if (bseRenderCapacityTraceCount < 256) {
+				common->Printf(
+					"BSE seg render skip %d: effect=%s seg=%d reason=capacity type=%d triV=%d triI=%d needV=%d needI=%d maxV=%d maxI=%d\n",
+					bseRenderCapacityTraceCount,
+					effect->GetDeclName(),
+					mSegmentTemplateHandle,
+					pt->GetType(),
+					tri->numVerts,
+					tri->numIndexes,
+					pt->GetVertexCount(),
+					requiredIndexes,
+					maxVerts,
+					maxIndexes);
+				++bseRenderCapacityTraceCount;
+			}
 			return false;
 		}
 		if (p->Render(effect, pt, view, tri, time, 1.0f)) {

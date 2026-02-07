@@ -96,6 +96,10 @@ public:
 	virtual bool	IsMultiplayer() = 0;
 	// Returns true while a savegame is being loaded.
 	virtual bool	IsLoadingSaveGame() const = 0;
+	// Returns true when any fullscreen GUI (menu/message/test gui) is active.
+	virtual bool	IsGUIActive() const = 0;
+	// Returns the GUI currently receiving input, or NULL when none is active.
+	virtual idUserInterface *GetActiveGUI() const = 0;
 
 	// Processes the given event.
 	virtual	bool	ProcessEvent( const sysEvent_t *event ) = 0;

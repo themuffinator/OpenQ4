@@ -179,6 +179,20 @@ rvParticle* rvSegment::SpawnParticle(rvBSE* effect, rvSegmentTemplate* st, float
 
 	const float fraction = birthTime - effect->GetStartTime();
 	particle->FinishSpawn(effect, this, birthTime, fraction, initOffset, initAxis);
+	static int bseSpawnTraceCount = 0;
+	if (bseSpawnTraceCount < 256) {
+		common->Printf(
+			"BSE spawn trace %d: effect=%s seg=%d ptype=%d birth=%.4f dur=%.4f end=%.4f start=%.4f\n",
+			bseSpawnTraceCount,
+			effect->GetDeclName(),
+			mSegmentTemplateHandle,
+			st->mParticleTemplate.GetType(),
+			birthTime,
+			particle->GetDuration(),
+			particle->GetEndTime(),
+			effect->GetStartTime());
+		++bseSpawnTraceCount;
+	}
 
 	const int type = st->mParticleTemplate.GetType();
 	const bool linked = (type == PTYPE_LINKED || type == PTYPE_ORIENTEDLINKED);
@@ -248,6 +262,17 @@ void rvSegment::UpdateSimpleParticles(float time) {
 			prev = p;
 		}
 		else {
+			static int bseExpireTraceCount = 0;
+			if (bseExpireTraceCount < 256) {
+				common->Printf(
+					"BSE expire trace %d: seg=%d time=%.4f end=%.4f dur=%.4f\n",
+					bseExpireTraceCount,
+					mSegmentTemplateHandle,
+					time,
+					p->GetEndTime(),
+					p->GetDuration());
+				++bseExpireTraceCount;
+			}
 			if (prev) {
 				prev->SetNext(next);
 			}
@@ -305,6 +330,19 @@ void rvSegment::UpdateGenericParticles(rvBSE* effect, rvSegmentTemplate* st, flo
 		}
 
 		if (remove) {
+			static int bseGenericExpireTraceCount = 0;
+			if (bseGenericExpireTraceCount < 256) {
+				common->Printf(
+					"BSE generic remove trace %d: effect=%s seg=%d time=%.4f end=%.4f dur=%.4f flags=0x%08x\n",
+					bseGenericExpireTraceCount,
+					effect->GetDeclName(),
+					mSegmentTemplateHandle,
+					time,
+					p->GetEndTime(),
+					p->GetDuration(),
+					p->GetFlags());
+				++bseGenericExpireTraceCount;
+			}
 			if (prev) {
 				prev->SetNext(next);
 			}

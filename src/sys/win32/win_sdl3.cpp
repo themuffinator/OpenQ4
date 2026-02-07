@@ -153,6 +153,10 @@ static bool s_gamepadRightTriggerDown = false;
 static const int SDL3_MAX_JOYSTICK_BUTTONS = 48;
 static bool s_joystickButtonsDown[SDL3_MAX_JOYSTICK_BUTTONS] = { false };
 static Uint8 s_joystickHatState = SDL_HAT_CENTERED;
+static bool s_haveAbsoluteMousePosition = false;
+static int s_absoluteMouseX = 0;
+static int s_absoluteMouseY = 0;
+static bool s_menuMouseRouteActive = false;
 
 void* GLimp_ExtensionPointer(const char* name);
 
@@ -179,6 +183,7 @@ static void SDL3_ClearInputQueues(void) {
 	s_polledMouseCount = 0;
 	s_polledJoystickCount = 0;
 	Sys_LeaveCriticalSection(CRITICAL_SECTION_ONE);
+	s_haveAbsoluteMousePosition = false;
 }
 
 static void SDL3_QueueKeyboardInput(int key, bool down, int time) {
@@ -207,6 +212,122 @@ static void SDL3_QueueMouseInput(int action, int value, int time) {
 	s_mouseQueue[s_mouseHead].time = time;
 	s_mouseHead = next;
 	Sys_LeaveCriticalSection(CRITICAL_SECTION_ONE);
+}
+
+static bool SDL3_ShouldRouteMenuMouse(void) {
+	return (session != NULL) && session->IsGUIActive();
+}
+
+static int SDL3_RoundToInt(float value) {
+	return static_cast<int>(value >= 0.0f ? (value + 0.5f) : (value - 0.5f));
+}
+
+typedef struct {
+	float guiWidth;
+	float guiHeight;
+	float pixelWidth;
+	float pixelHeight;
+	float windowToPixelX;
+	float windowToPixelY;
+	float pixelToWindowX;
+	float pixelToWindowY;
+	float xScale;
+	float yScale;
+	float xOffset;
+	float yOffset;
+} sdl3GuiMouseTransform_t;
+
+static bool SDL3_BuildGuiMouseTransform(sdl3GuiMouseTransform_t &transform) {
+	if (!s_sdlWindow) {
+		return false;
+	}
+
+	int windowWidth = 0;
+	int windowHeight = 0;
+	int pixelWidth = 0;
+	int pixelHeight = 0;
+
+	if (!SDL_GetWindowSize(s_sdlWindow, &windowWidth, &windowHeight) || windowWidth <= 0 || windowHeight <= 0) {
+		return false;
+	}
+
+	if (!SDL_GetWindowSizeInPixels(s_sdlWindow, &pixelWidth, &pixelHeight) || pixelWidth <= 0 || pixelHeight <= 0) {
+		pixelWidth = windowWidth;
+		pixelHeight = windowHeight;
+	}
+
+	transform.guiWidth = static_cast<float>(SCREEN_WIDTH);
+	transform.guiHeight = static_cast<float>(SCREEN_HEIGHT);
+	transform.pixelWidth = static_cast<float>(pixelWidth);
+	transform.pixelHeight = static_cast<float>(pixelHeight);
+	transform.windowToPixelX = static_cast<float>(pixelWidth) / static_cast<float>(windowWidth);
+	transform.windowToPixelY = static_cast<float>(pixelHeight) / static_cast<float>(windowHeight);
+	transform.pixelToWindowX = static_cast<float>(windowWidth) / static_cast<float>(pixelWidth);
+	transform.pixelToWindowY = static_cast<float>(windowHeight) / static_cast<float>(pixelHeight);
+
+	const float scaleX = transform.pixelWidth / transform.guiWidth;
+	const float scaleY = transform.pixelHeight / transform.guiHeight;
+	const float uniformPhysicalScale = (scaleX < scaleY) ? scaleX : scaleY;
+	const float drawWidth = transform.guiWidth * uniformPhysicalScale;
+	const float drawHeight = transform.guiHeight * uniformPhysicalScale;
+	const float virtualPerPhysicalX = transform.guiWidth / transform.pixelWidth;
+	const float virtualPerPhysicalY = transform.guiHeight / transform.pixelHeight;
+	transform.xScale = uniformPhysicalScale * virtualPerPhysicalX;
+	transform.yScale = uniformPhysicalScale * virtualPerPhysicalY;
+	transform.xOffset = (transform.pixelWidth - drawWidth) * 0.5f * virtualPerPhysicalX;
+	transform.yOffset = (transform.pixelHeight - drawHeight) * 0.5f * virtualPerPhysicalY;
+
+	if (transform.xScale <= 0.0f || transform.yScale <= 0.0f) {
+		return false;
+	}
+
+	return true;
+}
+
+static bool SDL3_MapWindowMouseToGuiCursor(float windowMouseX, float windowMouseY, float &cursorX, float &cursorY) {
+	sdl3GuiMouseTransform_t transform;
+	if (!SDL3_BuildGuiMouseTransform(transform)) {
+		return false;
+	}
+
+	const float pixelMouseX = windowMouseX * transform.windowToPixelX;
+	const float pixelMouseY = windowMouseY * transform.windowToPixelY;
+	const float drawX = pixelMouseX * (transform.guiWidth / transform.pixelWidth);
+	const float drawY = pixelMouseY * (transform.guiHeight / transform.pixelHeight);
+
+	cursorX = (drawX - transform.xOffset) / transform.xScale;
+	cursorY = (drawY - transform.yOffset) / transform.yScale;
+	cursorX = idMath::ClampFloat(0.0f, transform.guiWidth, cursorX);
+	cursorY = idMath::ClampFloat(0.0f, transform.guiHeight, cursorY);
+	return true;
+}
+
+static void SDL3_SyncSystemMouseToActiveGUICursor(void) {
+	if (!SDL3_ShouldRouteMenuMouse() || !s_sdlWindow) {
+		return;
+	}
+
+	idUserInterface *activeGui = session->GetActiveGUI();
+	if (activeGui == NULL) {
+		return;
+	}
+
+	sdl3GuiMouseTransform_t transform;
+	if (!SDL3_BuildGuiMouseTransform(transform)) {
+		return;
+	}
+
+	const float clampedCursorX = idMath::ClampFloat(0.0f, transform.guiWidth, activeGui->CursorX());
+	const float clampedCursorY = idMath::ClampFloat(0.0f, transform.guiHeight, activeGui->CursorY());
+	const float drawX = (clampedCursorX * transform.xScale) + transform.xOffset;
+	const float drawY = (clampedCursorY * transform.yScale) + transform.yOffset;
+	const float pixelMouseX = drawX * (transform.pixelWidth / transform.guiWidth);
+	const float pixelMouseY = drawY * (transform.pixelHeight / transform.guiHeight);
+	const float windowMouseX = pixelMouseX * transform.pixelToWindowX;
+	const float windowMouseY = pixelMouseY * transform.pixelToWindowY;
+
+	SDL_WarpMouseInWindow(s_sdlWindow, windowMouseX, windowMouseY);
+	activeGui->SetCursor(clampedCursorX, clampedCursorY);
 }
 
 static int SDL3_ClampJoystickValue(int value) {
@@ -1068,25 +1189,53 @@ bool Sys_SDL_PumpEvents(void) {
 			}
 
 			case SDL_EVENT_MOUSE_MOTION:
-				if (win32.mouseGrabbed) {
-					const int dx = static_cast<int>(event.motion.xrel);
-					const int dy = static_cast<int>(event.motion.yrel);
+			{
+				int dx = 0;
+				int dy = 0;
 
-					if (dx != 0 || dy != 0) {
-						Sys_QueEvent(eventTime, SE_MOUSE, dx, dy, 0, NULL);
-						if (dx != 0) {
-							SDL3_QueueMouseInput(M_DELTAX, dx, eventTime);
-						}
-						if (dy != 0) {
-							SDL3_QueueMouseInput(M_DELTAY, dy, eventTime);
-						}
+				if (win32.mouseGrabbed) {
+					dx = static_cast<int>(event.motion.xrel);
+					dy = static_cast<int>(event.motion.yrel);
+					s_haveAbsoluteMousePosition = false;
+				} else if (SDL3_ShouldRouteMenuMouse()) {
+					idUserInterface *activeGui = session->GetActiveGUI();
+					float cursorX = 0.0f;
+					float cursorY = 0.0f;
+					if (activeGui != NULL && SDL3_MapWindowMouseToGuiCursor(event.motion.x, event.motion.y, cursorX, cursorY)) {
+						dx = SDL3_RoundToInt(cursorX - activeGui->CursorX());
+						dy = SDL3_RoundToInt(cursorY - activeGui->CursorY());
+						s_haveAbsoluteMousePosition = false;
+					}
+				} else {
+					const int absoluteX = static_cast<int>(event.motion.x);
+					const int absoluteY = static_cast<int>(event.motion.y);
+					if (!s_haveAbsoluteMousePosition) {
+						s_absoluteMouseX = absoluteX;
+						s_absoluteMouseY = absoluteY;
+						s_haveAbsoluteMousePosition = true;
+					} else {
+						dx = absoluteX - s_absoluteMouseX;
+						dy = absoluteY - s_absoluteMouseY;
+						s_absoluteMouseX = absoluteX;
+						s_absoluteMouseY = absoluteY;
+					}
+				}
+
+				if ((win32.mouseGrabbed || SDL3_ShouldRouteMenuMouse()) && (dx != 0 || dy != 0)) {
+					Sys_QueEvent(eventTime, SE_MOUSE, dx, dy, 0, NULL);
+					if (dx != 0) {
+						SDL3_QueueMouseInput(M_DELTAX, dx, eventTime);
+					}
+					if (dy != 0) {
+						SDL3_QueueMouseInput(M_DELTAY, dy, eventTime);
 					}
 				}
 				break;
+			}
 
 			case SDL_EVENT_MOUSE_BUTTON_DOWN:
 			case SDL_EVENT_MOUSE_BUTTON_UP:
-				if (win32.mouseGrabbed) {
+				if (win32.mouseGrabbed || SDL3_ShouldRouteMenuMouse()) {
 					const int key = SDL3_MapMouseButton(event.button.button);
 					if (key != 0) {
 						const bool down = event.button.down;
@@ -1337,8 +1486,14 @@ void IN_DeactivateMouse(void) {
 
 	(void)SDL_SetWindowRelativeMouseMode(s_sdlWindow, false);
 	(void)SDL_SetWindowMouseGrab(s_sdlWindow, false);
-	(void)SDL_ShowCursor();
+	if (SDL3_ShouldRouteMenuMouse()) {
+		(void)SDL_HideCursor();
+		SDL3_SyncSystemMouseToActiveGUICursor();
+	} else {
+		(void)SDL_ShowCursor();
+	}
 	win32.mouseGrabbed = false;
+	s_haveAbsoluteMousePosition = false;
 }
 
 void IN_DeactivateMouseIfWindowed(void) {
@@ -1349,8 +1504,12 @@ void IN_DeactivateMouseIfWindowed(void) {
 
 void IN_Frame(void) {
 	bool shouldGrab = true;
+	const bool routeMenuMouse = SDL3_ShouldRouteMenuMouse();
 
 	if (!win32.in_mouse.GetBool()) {
+		shouldGrab = false;
+	}
+	if (routeMenuMouse) {
 		shouldGrab = false;
 	}
 
@@ -1373,6 +1532,12 @@ void IN_Frame(void) {
 			IN_ActivateMouse();
 		}
 	}
+
+	if (routeMenuMouse && !s_menuMouseRouteActive) {
+		// Match WORR-style behavior: align OS cursor to menu cursor when menu routing starts.
+		SDL3_SyncSystemMouseToActiveGUICursor();
+	}
+	s_menuMouseRouteActive = routeMenuMouse;
 }
 
 void Sys_GrabMouseCursor(bool grabIt) {
@@ -1392,6 +1557,7 @@ void Sys_InitInput(void) {
 	win32.mouseReleased = false;
 	win32.movingWindow = false;
 	win32.mouseGrabbed = false;
+	s_menuMouseRouteActive = false;
 
 	if (s_sdlWindow && !s_sdlTextInputActive) {
 		if (SDL_StartTextInput(s_sdlWindow)) {

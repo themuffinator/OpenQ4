@@ -642,8 +642,12 @@ void idDeviceContext::DrawCursor(float *x, float *y, float size) {
 	}
 
 	renderSystem->SetColor(colorWhite);
-	AdjustCoords(x, y, &size, &size);
-	DrawStretchPic( *x, *y, size, size, 0, 0, 1, 1, cursorImages[cursor]);
+	// Keep GUI cursor state in virtual coordinates; only transform local draw coords.
+	float drawX = *x;
+	float drawY = *y;
+	float drawSize = size;
+	AdjustCoords(&drawX, &drawY, &drawSize, &drawSize);
+	DrawStretchPic(drawX, drawY, drawSize, drawSize, 0, 0, 1, 1, cursorImages[cursor]);
 }
 /*
  =======================================================================================================================

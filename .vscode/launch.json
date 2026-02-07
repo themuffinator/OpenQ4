@@ -6,7 +6,7 @@
       "type": "cppvsdbg",
       "request": "launch",
       "preLaunchTask": "Build OpenQ4 (Meson Debug)",
-      "program": "${workspaceFolder}\\build_meson\\OpenQ4.exe",
+      "program": "${workspaceFolder}\\builddir\\OpenQ4.exe",
       "args": [
         "+set",
         "logFile",
@@ -54,7 +54,7 @@
         "si_gameType",
         "DM",
         "+spawnServer",
-        "mp/q4dm3"
+        "mp/q4dm5"
       ],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal"

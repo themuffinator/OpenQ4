@@ -45,6 +45,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "../sys_local.h"
 #include "win_local.h"
+#include "win_crash.h"
 #include "rc/CreateResourceIDs.h"
 #include "../../renderer/tr_local.h"
 
@@ -540,7 +541,24 @@ Sys_DefaultSavePath
 ==============
 */
 const char* Sys_DefaultSavePath(void) {
-	return cvarSystem->GetCVarString("fs_basepath");
+	static idStr savePath;
+	const char *localAppData = getenv( "LOCALAPPDATA" );
+	const char *userProfile = getenv( "USERPROFILE" );
+
+	if ( localAppData && localAppData[0] ) {
+		savePath = localAppData;
+		savePath.AppendPath( "OpenQ4" );
+		return savePath.c_str();
+	}
+
+	if ( userProfile && userProfile[0] ) {
+		savePath = userProfile;
+		savePath.AppendPath( "Saved Games" );
+		savePath.AppendPath( "OpenQ4" );
+		return savePath.c_str();
+	}
+
+	return Sys_Cwd();
 }
 
 /*
@@ -1355,6 +1373,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// no abort/retry/fail errors
 	SetErrorMode(SEM_FAILCRITICALERRORS);
+
+	// debug builds write crash logs + minidumps for unhandled exceptions.
+	Sys_InstallDebugCrashHandler();
 
 	for (int i = 0; i < MAX_CRITICAL_SECTIONS; i++) {
 		InitializeCriticalSection(&win32.criticalSections[i]);

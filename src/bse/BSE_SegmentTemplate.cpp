@@ -399,7 +399,8 @@ bool rvSegmentTemplate::Parse(rvDeclEffect* effect, int segmentType, idParser* l
 			}
 			else if (token == "looping")
 			{
-				// jmarshall - there was no code for this?
+				// Keep legacy token behavior aligned with constant duration segments.
+				mFlags |= STFLAG_INFINITE_DURATION;
 			}
 			else if (token == "locked")
 			{

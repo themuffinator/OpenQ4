@@ -13,7 +13,7 @@
         "${workspaceFolder}\\tools\\build\\meson_setup.ps1",
         "setup",
         "--wipe",
-        "${workspaceFolder}\\build_meson",
+        "${workspaceFolder}\\builddir",
         "${workspaceFolder}",
         "--backend",
         "ninja",
@@ -35,7 +35,7 @@
         "${workspaceFolder}\\tools\\build\\meson_setup.ps1",
         "compile",
         "-C",
-        "${workspaceFolder}\\build_meson"
+        "${workspaceFolder}\\builddir"
       ],
       "group": {
         "kind": "build",
