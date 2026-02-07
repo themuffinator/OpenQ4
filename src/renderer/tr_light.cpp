@@ -34,7 +34,7 @@ If you have questions concerning this license or the applicable additional terms
 static const float CHECK_BOUNDS_EPSILON = 1.0f;
 idCVar bse_frameCounters(
 	"bse_frameCounters",
-	"2",
+	"0",
 	CVAR_RENDERER | CVAR_INTEGER,
 	"temporary BSE counters: 0=off, 1=spawn/service/render summary, 2=include drop-stage counts");
 idCVar bse_respectConnectedArea(

@@ -509,44 +509,14 @@ idRenderModel* rvBSE::Render(idRenderModel* model, const struct renderEffect_s* 
 	mViewOrg = view->renderView.vieworg;
 
 	float time = view->floatTime;
-	int segmentActiveCount = 0;
-	int segmentSurfaceCount = 0;
-	int segmentSurfaceActiveCount = 0;
-	int segmentUsedNoSurfaceCount = 0;
 	for (int i = 0; i < mSegments.Num(); ++i) {
 		const bool active = mSegments[i].Active();
-		if (active) {
-			++segmentActiveCount;
-		}
-		if (mSegments[i].mSurfaceIndex >= 0) {
-			++segmentSurfaceCount;
-			if (active) {
-				++segmentSurfaceActiveCount;
-			}
-		}
-		if (mSegments[i].mUsedHead && mSegments[i].mSurfaceIndex < 0) {
-			++segmentUsedNoSurfaceCount;
-		}
 
 		mSegments[i].ClearSurface(this, renderModel);
 		if (active) {
 			mSegments[i].Render(this, owner, renderModel, time);
 			mSegments[i].RenderTrail(this, owner, renderModel, time);
 		}
-	}
-	static int bseRenderSegmentTraceCount = 0;
-	if (bseRenderSegmentTraceCount < 256) {
-		common->Printf(
-			"BSE segment state %d: effect=%s time=%.4f segments=%d active=%d surfaced=%d surfacedActive=%d usedNoSurface=%d\n",
-			bseRenderSegmentTraceCount,
-			GetDeclName(),
-			time,
-			mSegments.Num(),
-			segmentActiveCount,
-			segmentSurfaceCount,
-			segmentSurfaceActiveCount,
-			segmentUsedNoSurfaceCount);
-		++bseRenderSegmentTraceCount;
 	}
 
 	// BSE runtime geometry is rebuilt every frame and includes strip-like particle
@@ -588,64 +558,6 @@ idRenderModel* rvBSE::Render(idRenderModel* model, const struct renderEffect_s* 
 	mForcePush = true;
 	return renderModel;
 }
-
-#if 0
-idRenderModel* rvBSE::Render(idRenderModel* model, const struct renderEffect_s* owner, const viewDef_t* view)
-{
-	rvRenderModelBSE* renderModel; // ebp
-	idBounds v23; // [esp+2Ch] [ebp-30h] BYREF
-	float time; // [esp+6Ch] [ebp+10h]
-
-	if (!bse_render.GetInteger())
-		return 0;
-
-	renderModel = (rvRenderModelBSE*)model;
-
-	if (model == NULL)
-	{
-		renderModel = renderModelManager->AllocBSEModel();
-		InitModel(renderModel);
-	}
-
-	renderModel->FreeVertexCache();
-
-	v23 = renderModel->Bounds(NULL);
-
-	memcpy(&this->mViewAxis, &view->renderView.viewaxis, sizeof(this->mViewAxis));
-
-	this->mViewOrg.x = view->renderView.vieworg.x;
-	this->mViewOrg.y = view->renderView.vieworg.y;
-	//v11 = view->renderView.vieworg.z;
-	this->mViewOrg.z = view->renderView.vieworg.z;
-	if (bse->IsTimeLocked())
-		time = bse->GetLockedTime();
-	else
-		time = view->renderView.time[1] * 0.001f; //time = view->floatTime;
-	for (int i = 0; i < this->mSegments.Num(); ++i)
-	{
-		mSegments[i].ClearSurface(this, renderModel);
-		if (mSegments[i].Active())
-		{
-			mSegments[i].Render(this, owner, renderModel, time);
-			mSegments[i].RenderTrail(this, owner, renderModel, time);
-		}
-	}
-	renderModel->FinishSurfaces(false);
-	mLastRenderBounds = renderModel->Bounds(NULL);
-
-	v23[1].x = mLastRenderBounds[0].x + 20.0;
-	v23[1].y = mLastRenderBounds[0].y + 20.0;
-	v23[1].z = mLastRenderBounds[0].z + 20.0;
-	v23[0].x = mLastRenderBounds[1].x - 20.0;
-	v23[0].y = mLastRenderBounds[1].y - 20.0;
-	v23[0].z = mLastRenderBounds[1].z - 20.0;
-	this->mGrownRenderBounds = v23;
-	this->mForcePush = 1;
-LABEL_18:
-	//this->DisplayDebugInfo(this, a9, view, (idBounds*)&v24);
-	return renderModel;
-}
-#endif
 
 void rvBSE::Destroy()
 {
@@ -825,9 +737,35 @@ void __thiscall rvBSE::UpdateFromOwner(renderEffect_s* parms, float time, bool i
 		}
 	}
 
+	mLightningAxis = mCurrentAxis;
+	if (GetHasEndOrigin()) {
+		idVec3 forward = mCurrentEndOrigin - mCurrentOrigin;
+		if (forward.Normalize() > BSE_TIME_EPSILON) {
+			idVec3 up = mCurrentAxis[2];
+			if (idMath::Fabs(forward * up) > 0.98f) {
+				up = mCurrentAxis[1];
+			}
+
+			idVec3 right = up.Cross(forward);
+			if (right.Normalize() > BSE_TIME_EPSILON) {
+				up = forward.Cross(right);
+				up.Normalize();
+				mLightningAxis[0] = forward;
+				mLightningAxis[1] = right;
+				mLightningAxis[2] = up;
+			}
+		}
+	}
+
 	mCurrentWindVector.Zero();
 	mTint.Set(parms->shaderParms[0], parms->shaderParms[1], parms->shaderParms[2], parms->shaderParms[3]);
 	mBrightness = parms->shaderParms[6];
+	if (mTint == vec4_zero && mBrightness == 0.0f) {
+		// Some legacy/game-network paths can feed zero-initialized shader parms.
+		// Match vanilla-visible defaults instead of rendering fully black.
+		mTint.Set(1.0f, 1.0f, 1.0f, 1.0f);
+		mBrightness = 1.0f;
+	}
 	mAttenuation = parms->attenuation;
 	mSuppressLightsInViewID = parms->suppressSurfaceInViewID;
 }

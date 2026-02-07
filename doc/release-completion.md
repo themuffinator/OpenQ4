@@ -42,6 +42,17 @@ Process:
 - [x] BSE spawn ordering parity improved: runtime particle insertion is no longer unconditional LIFO; linked segments preserve stable chronological/end-time list order while complex segments retain front-insert behavior.
 - [x] BSE segment draw-order refinements applied for linked-strip rendering: depth-sort is disabled for linked strip topologies and initial strip index budgeting is handled explicitly.
 - [x] BSE runtime sort utility implemented (`rvSegment::Sort`) with stable depth ordering for deterministic per-segment ordering when used.
+- [x] BSE network/entity receive rate-limiting corrected by removing duplicate cost consumption (`Filtered` already applies category rate checks; explicit second `CanPlayRateLimited` checks removed).
+- [x] BSE particle spawn-parameter sanitization restored (`rvParticleTemplate::FixupParms` no longer compiles as a no-op stub).
+- [x] BSE segment attenuation scaling parity restored: emitter interval/count attenuation now uses `bse_scale` interpolation semantics.
+- [x] BSE particle cap parity restored: `bse_maxParticles` now drives runtime segment allocation/count clamps instead of compile-time-only `MAX_PARTICLES` paths.
+- [x] BSE owner-state parity improved: `mLightningAxis` is now derived from current origin/end-origin direction with stable basis fallback.
+- [x] Temporary BSE trace spam removed from hot runtime paths (spawn/expire/remove and segment render skip/state traces), and renderer counter cvar default restored to off (`bse_frameCounters=0`).
+- [x] Full clean rebuild validation completed in `builddir/` with both `OpenQ4.exe` and `OpenQ4-ded.exe` linking successfully after BSE parity updates.
+- [x] BSE particle gravity parity restored: template `gravity` ranges now contribute spawn acceleration in `rvParticle::FinishSpawn`.
+- [x] BSE debris parity advanced: debris particles now spawn client moveable entities (`entityDef`) through `game->SpawnClientMoveable` and stop CPU-side particle rendering.
+- [x] BSE shader-parm safety defaults hardened: client effects now initialize RGBA/brightness/timeoffset in `rvClientEffect::Init`, with zeroed-parm fallback in `rvBSE::UpdateFromOwner`.
+- [x] BSE template runtime contract completed by implementing missing declared helpers (`rvParticleTemplate::Compare`, `GetTraceModel`, `GetTrailCount`, `ShutdownStatic`).
 
 ## Carry Forward
 

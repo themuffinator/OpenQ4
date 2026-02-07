@@ -43,9 +43,7 @@ bool rvSegmentTemplate::GetSmoker()
 
 bool rvSegmentTemplate::DetailCull() const
 {
-	// jmarshall - effect culling function. forcing everything to no cull
-	return false; // 0.0 != mDetail && mDetail > bse_detailLevel.internalVar->floatValue;
-// jmarshall end
+	return (mDetail > 0.0f) && (bse_scale.GetFloat() < mDetail);
 }
 
 float rvSegmentTemplate::EvaluateCost(int activeParticles) const
@@ -389,6 +387,10 @@ bool rvSegmentTemplate::Parse(rvDeclEffect* effect, int segmentType, idParser* l
 			{
 				mFlags |= STFLAG_DEPTH_SORT;
 			}
+			else if (!idStr::Icmp(token.c_str(), "inverseDrawOrder"))
+			{
+				mFlags |= STFLAG_INVERSE_DRAWORDER;
+			}
 			else if (token == "calcDuration")
 			{
 				mFlags |= STFLAG_CALCULATE_DURATION;
@@ -405,6 +407,10 @@ bool rvSegmentTemplate::Parse(rvDeclEffect* effect, int segmentType, idParser* l
 			else if (token == "locked")
 			{
 				mFlags |= STFLAG_LOCKED;
+			}
+			else if (!idStr::Icmp(token.c_str(), "temporary"))
+			{
+				mFlags |= STFLAG_TEMPORARY;
 			}
 			else if (token == "inverseAttenuateEmitter")
 			{

@@ -6,6 +6,8 @@
 #include "BSE.h"
 #include "../renderer/tr_local.h"
 
+extern idCVar bse_frameCounters;
+
 namespace {
 rvParticle* AllocateParticleArray(int particleType, int count) {
 	if (count <= 0) {
@@ -50,6 +52,26 @@ ID_INLINE void InsertByEndTime(rvParticle*& head, rvParticle* particle) {
 	else {
 		head = particle;
 	}
+}
+
+ID_INLINE int GetSegmentParticleCap() {
+	return idMath::ClampInt(0, MAX_PARTICLES, bse_maxParticles.GetInteger());
+}
+
+ID_INLINE bool BSESpawnTraceEnabled() {
+	return bse_frameCounters.GetInteger() >= 2;
+}
+
+void BSESpawnTrace(const char* fmt, ...) {
+	static int spawnTraceCount = 0;
+	if (spawnTraceCount >= 256) {
+		return;
+	}
+	va_list ap;
+	va_start(ap, fmt);
+	common->VPrintf(fmt, ap);
+	va_end(ap);
+	++spawnTraceCount;
 }
 }
 
@@ -120,8 +142,22 @@ rvParticle* rvSegment::InitParticleArray(rvBSE* effect) {
 	mUsedHead = NULL;
 
 	int particleCount = effect->GetLooping() ? mLoopParticleCount : mParticleCount;
-	particleCount = idMath::ClampInt(0, MAX_PARTICLES, particleCount);
+	const int particleCap = GetSegmentParticleCap();
+	if (particleCount > particleCap) {
+		common->Warning("^4BSE:^1 '%s' exceeded particle cap (%d > %d), clamping", effect->GetDeclName(), particleCount, particleCap);
+	}
+	particleCount = idMath::ClampInt(0, particleCap, particleCount);
 	if (particleCount <= 0) {
+		if (BSESpawnTraceEnabled()) {
+			const rvSegmentTemplate* st = GetSegmentTemplate();
+			BSESpawnTrace(
+				"BSE spawn init: decl=%s segType=%d handle=%d particleCount=%d loopCount=%d (clamped<=0)\n",
+				effect ? effect->GetDeclName() : "<null>",
+				st ? st->GetType() : -1,
+				mSegmentTemplateHandle,
+				mParticleCount,
+				mLoopParticleCount);
+		}
 		return NULL;
 	}
 
@@ -174,24 +210,32 @@ rvParticle* rvSegment::SpawnParticle(rvBSE* effect, rvSegmentTemplate* st, float
 
 	rvParticle* particle = GetFreeParticle(effect);
 	if (!particle) {
+		if (BSESpawnTraceEnabled()) {
+			BSESpawnTrace(
+				"BSE spawn miss: decl=%s segType=%d handle=%d birth=%.4f freeHead=null particleCount=%d loopCount=%d\n",
+				effect ? effect->GetDeclName() : "<null>",
+				st ? st->GetType() : -1,
+				mSegmentTemplateHandle,
+				birthTime,
+				mParticleCount,
+				mLoopParticleCount);
+		}
 		return NULL;
 	}
 
 	const float fraction = birthTime - effect->GetStartTime();
 	particle->FinishSpawn(effect, this, birthTime, fraction, initOffset, initAxis);
-	static int bseSpawnTraceCount = 0;
-	if (bseSpawnTraceCount < 256) {
-		common->Printf(
-			"BSE spawn trace %d: effect=%s seg=%d ptype=%d birth=%.4f dur=%.4f end=%.4f start=%.4f\n",
-			bseSpawnTraceCount,
-			effect->GetDeclName(),
+	BSE_AddSpawned(1);
+	if (BSESpawnTraceEnabled()) {
+		BSESpawnTrace(
+			"BSE spawn ok: decl=%s segType=%d handle=%d birth=%.4f end=%.4f dur=%.4f fraction=%.4f\n",
+			effect ? effect->GetDeclName() : "<null>",
+			st ? st->GetType() : -1,
 			mSegmentTemplateHandle,
-			st->mParticleTemplate.GetType(),
 			birthTime,
-			particle->GetDuration(),
 			particle->GetEndTime(),
-			effect->GetStartTime());
-		++bseSpawnTraceCount;
+			particle->GetDuration(),
+			fraction);
 	}
 
 	const int type = st->mParticleTemplate.GetType();
@@ -219,6 +263,18 @@ void rvSegment::SpawnParticles(rvBSE* effect, rvSegmentTemplate* st, float birth
 	for (int i = 0; i < count; ++i) {
 		rvParticle* particle = GetFreeParticle(effect);
 		if (!particle) {
+			if (BSESpawnTraceEnabled()) {
+				BSESpawnTrace(
+					"BSE spawn batch miss: decl=%s segType=%d handle=%d birth=%.4f idx=%d count=%d freeHead=null particleCount=%d loopCount=%d\n",
+					effect ? effect->GetDeclName() : "<null>",
+					st ? st->GetType() : -1,
+					mSegmentTemplateHandle,
+					birthTime,
+					i,
+					count,
+					mParticleCount,
+					mLoopParticleCount);
+			}
 			break;
 		}
 
@@ -227,6 +283,20 @@ void rvSegment::SpawnParticles(rvBSE* effect, rvSegmentTemplate* st, float birth
 			fraction = static_cast<float>(i) / static_cast<float>(count - 1);
 		}
 		particle->FinishSpawn(effect, this, birthTime, fraction, vec3_origin, mat3_identity);
+		BSE_AddSpawned(1);
+		if (BSESpawnTraceEnabled()) {
+			BSESpawnTrace(
+				"BSE spawn batch ok: decl=%s segType=%d handle=%d birth=%.4f idx=%d count=%d end=%.4f dur=%.4f fraction=%.4f\n",
+				effect ? effect->GetDeclName() : "<null>",
+				st ? st->GetType() : -1,
+				mSegmentTemplateHandle,
+				birthTime,
+				i,
+				count,
+				particle->GetEndTime(),
+				particle->GetDuration(),
+				fraction);
+		}
 
 		const int type = st->mParticleTemplate.GetType();
 		const bool linked = (type == PTYPE_LINKED || type == PTYPE_ORIENTEDLINKED);
@@ -262,17 +332,6 @@ void rvSegment::UpdateSimpleParticles(float time) {
 			prev = p;
 		}
 		else {
-			static int bseExpireTraceCount = 0;
-			if (bseExpireTraceCount < 256) {
-				common->Printf(
-					"BSE expire trace %d: seg=%d time=%.4f end=%.4f dur=%.4f\n",
-					bseExpireTraceCount,
-					mSegmentTemplateHandle,
-					time,
-					p->GetEndTime(),
-					p->GetDuration());
-				++bseExpireTraceCount;
-			}
 			if (prev) {
 				prev->SetNext(next);
 			}
@@ -330,19 +389,6 @@ void rvSegment::UpdateGenericParticles(rvBSE* effect, rvSegmentTemplate* st, flo
 		}
 
 		if (remove) {
-			static int bseGenericExpireTraceCount = 0;
-			if (bseGenericExpireTraceCount < 256) {
-				common->Printf(
-					"BSE generic remove trace %d: effect=%s seg=%d time=%.4f end=%.4f dur=%.4f flags=0x%08x\n",
-					bseGenericExpireTraceCount,
-					effect->GetDeclName(),
-					mSegmentTemplateHandle,
-					time,
-					p->GetEndTime(),
-					p->GetDuration(),
-					p->GetFlags());
-				++bseGenericExpireTraceCount;
-			}
 			if (prev) {
 				prev->SetNext(next);
 			}
@@ -383,8 +429,9 @@ void rvSegment::AddToParticleCount(rvBSE* effect, int count, int loopCount, floa
 		mParticleCount += count;
 	}
 
-	mParticleCount = idMath::ClampInt(0, MAX_PARTICLES, mParticleCount);
-	mLoopParticleCount = idMath::ClampInt(0, MAX_PARTICLES, mLoopParticleCount);
+	const int particleCap = GetSegmentParticleCap();
+	mParticleCount = idMath::ClampInt(0, particleCap, mParticleCount);
+	mLoopParticleCount = idMath::ClampInt(0, particleCap, mLoopParticleCount);
 }
 
 void rvSegment::CalcTrailCounts(rvBSE* effect, rvSegmentTemplate* st, rvParticleTemplate* pt, float duration) {

@@ -645,150 +645,66 @@ bool rvParticleTemplate::ParseMotionDomains(rvDeclEffect* effect, idParser* src)
 
 void rvParticleTemplate::FixupParms(rvParticleParms* parms)
 {
-	rvParticleParms* v1; // esi
-	char v2; // cl
-	int v3; // edx
-	unsigned int v4; // eax
-	float* v5; // ebx
-	float* v6; // ebp
-	int v7; // ecx
-	float* v8; // esi
-	float* v9; // edi
-	float* v10; // esi
-	bool maxs_3; // [esp+7h] [ebp-5h]
+	if (!parms) {
+		return;
+	}
 
-#if 0// jmarshall fix me
-	v1 = parms;
-	v2 = parms->mSpawnType;
-	v3 = parms->mSpawnType & 3;
-	v4 = 4 * ((unsigned int)(unsigned __int8)parms->mSpawnType >> 2);
-	if (!v4)
+	const int axisBits = parms->mSpawnType & 3;
+	const int shapeBits = parms->mSpawnType & ~3;
+
+	// Preserve explicit point/unit and tapered legacy variants.
+	if (shapeBits == 0 || shapeBits == 4 || parms->mSpawnType == 43 || parms->mSpawnType == 47) {
 		return;
-	if (v4 == 4)
-		return;
-	maxs_3 = v4 != 8;
-	if (v2 == 43 || v2 == 47)
-		return;
-	v5 = &parms->mMaxs.x;
-	v6 = &parms->mMins.x;
-	if ((v3 < 2 || *v6 == parms->mMins.y)
-		&& (v3 < 3 || *v6 == parms->mMins.z)
-		&& (!maxs_3 || *v6 == *v5 && (v3 < 2 || *v6 == parms->mMaxs.y) && (v3 < 3 || *v6 == parms->mMaxs.z)))
-	{
-		if (0.0 == *v6)
-		{
-			parms->mSpawnType = v3;
-		}
-		else if (1.0 == *v6)
-		{
-			parms->mSpawnType = v3 + 4;
-		}
-		else
-		{
-			parms->mSpawnType = v3 + 8;
-		}
-		goto LABEL_42;
 	}
-	if (maxs_3)
-	{
-		v7 = 0;
-		if (v3 < 4)
-		{
-		LABEL_24:
-			if (v7 >= v3)
-			{
-			LABEL_35:
-				v1->mSpawnType = v3 + 8;
-				goto LABEL_42;
-			}
-			v10 = &v5[v7];
-			while (*v10 == *(float*)((char*)v10 + (char*)v6 - (char*)v5))
-			{
-				++v7;
-				++v10;
-				if (v7 >= v3)
-				{
-					v1 = parms;
-					parms->mSpawnType = v3 + 8;
-					goto LABEL_42;
-				}
-			}
+
+	const idVec3& mins = parms->mMins;
+	const idVec3& maxs = parms->mMaxs;
+
+	const bool minsEqualY = (axisBits < 2) || (mins.y == mins.x);
+	const bool minsEqualZ = (axisBits < 3) || (mins.z == mins.x);
+	const bool maxsEqualX = (maxs.x == mins.x);
+	const bool maxsEqualY = (axisBits < 2) || (maxs.y == mins.x);
+	const bool maxsEqualZ = (axisBits < 3) || (maxs.z == mins.x);
+
+	if (shapeBits == 8 && minsEqualY && minsEqualZ && maxsEqualX && maxsEqualY && maxsEqualZ) {
+		if (mins.x == 0.0f) {
+			parms->mSpawnType = axisBits;
 		}
-		else
-		{
-			v8 = &parms->mMaxs.y;
-			v9 = &parms->mMaxs.x;
-			while (*(v8 - 1) == *(v9 - 3))
-			{
-				if (*v8 != *(v8 - 3))
-				{
-					++v7;
-					break;
-				}
-				if (v8[1] != *(v9 - 1))
-				{
-					v7 += 2;
-					break;
-				}
-				if (v8[2] != *v9)
-				{
-					v7 += 3;
-					break;
-				}
-				v7 += 4;
-				v8 += 4;
-				v9 += 4;
-				if (v7 >= v3 - 3)
-				{
-					v5 = &parms->mMaxs.x;
-					v1 = parms;
-					goto LABEL_24;
-				}
-			}
-			v5 = &parms->mMaxs.x;
+		else if (idMath::Fabs(mins.x - 1.0f) < idMath::FLOAT_EPSILON) {
+			parms->mSpawnType = axisBits + 4;
 		}
-		if (v7 < v3)
-		{
-			v1 = parms;
-			goto LABEL_42;
-		}
-		v1 = parms;
-		goto LABEL_35;
-	}
-LABEL_42:
-	if (v1->mSpawnType >= 8u)
-	{
-		if (v3 == 1)
-		{
-			parms->mMins.y = 0.0;
-			v5[1] = 0.0;
-			parms->mMins.z = 0.0;
-			v5[2] = 0.0;
-		}
-		else if (v3 == 2)
-		{
-			parms->mMins.z = 0.0;
-			v5[2] = 0.0;
+		else {
+			parms->mSpawnType = axisBits + 8;
 		}
 	}
-	else
-	{
-		parms->mMins.z = 0.0;
-		parms->mMins.y = 0.0;
-		*v6 = 0.0;
+	else if (shapeBits == 8) {
+		parms->mSpawnType = axisBits + 8;
 	}
-	if (v1->mSpawnType <= 0xBu)
-	{
-		*v5 = *v6;
-		v5[1] = parms->mMins.y;
-		v5[2] = parms->mMins.z;
+
+	if (parms->mSpawnType >= 8) {
+		if (axisBits == 1) {
+			parms->mMins.y = 0.0f;
+			parms->mMaxs.y = 0.0f;
+			parms->mMins.z = 0.0f;
+			parms->mMaxs.z = 0.0f;
+		}
+		else if (axisBits == 2) {
+			parms->mMins.z = 0.0f;
+			parms->mMaxs.z = 0.0f;
+		}
 	}
-	if (v1->mFlags & 2)
-	{
-		if (v1->mSpawnType <= 0xCu)
-			v1->mSpawnType = v3 + 12;
+	else {
+		parms->mMins = vec3_origin;
+		parms->mMaxs = vec3_origin;
 	}
-#endif
+
+	if (parms->mSpawnType <= 11) {
+		parms->mMaxs = parms->mMins;
+	}
+
+	if ((parms->mFlags & 2) && parms->mSpawnType <= 12) {
+		parms->mSpawnType = axisBits + 12;
+	}
 }
 
 bool rvParticleTemplate::CheckCommonParms(idParser* src, rvParticleParms& parms)
@@ -2048,4 +1964,162 @@ bool rvParticleTemplate::UsesEndOrigin(void) {
 	else
 		result = ((unsigned int)this->mFlags >> 22) & 1;
 	return result;
+}
+
+idTraceModel* rvParticleTemplate::GetTraceModel(void) const {
+	if (mTraceModelIndex < 0) {
+		return NULL;
+	}
+	return bse->GetTraceModel(mTraceModelIndex);
+}
+
+int rvParticleTemplate::GetTrailCount(void) const {
+	const int count = idMath::FtoiFast(rvRandom::flrand(mTrailInfo->mTrailCount.x, mTrailInfo->mTrailCount.y));
+	return Max(0, count);
+}
+
+bool rvParticleTemplate::Compare(const rvParticleTemplate& a) const {
+	if (this == &a) {
+		return true;
+	}
+
+	if (mFlags != a.mFlags ||
+		mTraceModelIndex != a.mTraceModelIndex ||
+		mType != a.mType ||
+		mMaterial != a.mMaterial ||
+		mModel != a.mModel ||
+		mEntityDefName != a.mEntityDefName ||
+		mGravity != a.mGravity ||
+		mDuration != a.mDuration ||
+		mCentre != a.mCentre ||
+		mTiling != a.mTiling ||
+		mBounce != a.mBounce ||
+		mPhysicsDistance != a.mPhysicsDistance ||
+		mWindDeviationAngle != a.mWindDeviationAngle ||
+		mVertexCount != a.mVertexCount ||
+		mIndexCount != a.mIndexCount ||
+		mTrailRepeat != a.mTrailRepeat ||
+		mNumSizeParms != a.mNumSizeParms ||
+		mNumRotateParms != a.mNumRotateParms ||
+		mNumFrames != a.mNumFrames ||
+		mNumImpactEffects != a.mNumImpactEffects ||
+		mNumTimeoutEffects != a.mNumTimeoutEffects) {
+		return false;
+	}
+
+	if (mTrailInfo != a.mTrailInfo) {
+		if (!mTrailInfo || !a.mTrailInfo) {
+			return false;
+		}
+		if (mTrailInfo->mTrailType != a.mTrailInfo->mTrailType ||
+			mTrailInfo->mTrailTypeName != a.mTrailInfo->mTrailTypeName ||
+			mTrailInfo->mTrailMaterial != a.mTrailInfo->mTrailMaterial ||
+			mTrailInfo->mTrailTime != a.mTrailInfo->mTrailTime ||
+			mTrailInfo->mTrailCount != a.mTrailInfo->mTrailCount ||
+			mTrailInfo->mTrailScale != a.mTrailInfo->mTrailScale) {
+			return false;
+		}
+	}
+
+	if (mElecInfo != a.mElecInfo) {
+		if (!mElecInfo || !a.mElecInfo) {
+			return false;
+		}
+		if (mElecInfo->mNumForks != a.mElecInfo->mNumForks ||
+			mElecInfo->mForkSizeMins != a.mElecInfo->mForkSizeMins ||
+			mElecInfo->mForkSizeMaxs != a.mElecInfo->mForkSizeMaxs ||
+			mElecInfo->mJitterSize != a.mElecInfo->mJitterSize ||
+			mElecInfo->mJitterRate != a.mElecInfo->mJitterRate ||
+			mElecInfo->mJitterTable != a.mElecInfo->mJitterTable) {
+			return false;
+		}
+	}
+
+	auto parmEqual = [](const rvParticleParms* lhs, const rvParticleParms* rhs) {
+		if (lhs == rhs) {
+			return true;
+		}
+		if (!lhs || !rhs) {
+			return false;
+		}
+		return (*lhs) == (*rhs);
+	};
+
+	auto envEqual = [](const rvEnvParms* lhs, const rvEnvParms* rhs) {
+		if (lhs == rhs) {
+			return true;
+		}
+		if (!lhs || !rhs) {
+			return false;
+		}
+		return lhs->Compare(*rhs);
+	};
+
+	if (!parmEqual(mpSpawnPosition, a.mpSpawnPosition) ||
+		!parmEqual(mpSpawnDirection, a.mpSpawnDirection) ||
+		!parmEqual(mpSpawnVelocity, a.mpSpawnVelocity) ||
+		!parmEqual(mpSpawnAcceleration, a.mpSpawnAcceleration) ||
+		!parmEqual(mpSpawnFriction, a.mpSpawnFriction) ||
+		!parmEqual(mpSpawnTint, a.mpSpawnTint) ||
+		!parmEqual(mpSpawnFade, a.mpSpawnFade) ||
+		!parmEqual(mpSpawnSize, a.mpSpawnSize) ||
+		!parmEqual(mpSpawnRotate, a.mpSpawnRotate) ||
+		!parmEqual(mpSpawnAngle, a.mpSpawnAngle) ||
+		!parmEqual(mpSpawnOffset, a.mpSpawnOffset) ||
+		!parmEqual(mpSpawnLength, a.mpSpawnLength) ||
+		!parmEqual(mpSpawnWindStrength, a.mpSpawnWindStrength) ||
+		!parmEqual(mpDeathTint, a.mpDeathTint) ||
+		!parmEqual(mpDeathFade, a.mpDeathFade) ||
+		!parmEqual(mpDeathSize, a.mpDeathSize) ||
+		!parmEqual(mpDeathRotate, a.mpDeathRotate) ||
+		!parmEqual(mpDeathAngle, a.mpDeathAngle) ||
+		!parmEqual(mpDeathOffset, a.mpDeathOffset) ||
+		!parmEqual(mpDeathLength, a.mpDeathLength) ||
+		!envEqual(mpTintEnvelope, a.mpTintEnvelope) ||
+		!envEqual(mpFadeEnvelope, a.mpFadeEnvelope) ||
+		!envEqual(mpSizeEnvelope, a.mpSizeEnvelope) ||
+		!envEqual(mpRotateEnvelope, a.mpRotateEnvelope) ||
+		!envEqual(mpAngleEnvelope, a.mpAngleEnvelope) ||
+		!envEqual(mpOffsetEnvelope, a.mpOffsetEnvelope) ||
+		!envEqual(mpLengthEnvelope, a.mpLengthEnvelope)) {
+		return false;
+	}
+
+	for (int i = 0; i < BSE_NUM_SPAWNABLE; ++i) {
+		if (mImpactEffects[i] != a.mImpactEffects[i] ||
+			mTimeoutEffects[i] != a.mTimeoutEffects[i]) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+void rvParticleTemplate::ShutdownStatic(void) {
+	if (!sInited) {
+		return;
+	}
+
+	sInited = false;
+	sTrailInfo.mTrailTypeName = "";
+	sTrailInfo.mTrailMaterial = NULL;
+	sTrailInfo.mTrailTime.Zero();
+	sTrailInfo.mTrailCount.Zero();
+	sTrailInfo.mTrailScale = 0.0f;
+
+	sElectricityInfo.mNumForks = 0;
+	sElectricityInfo.mForkSizeMins.Zero();
+	sElectricityInfo.mForkSizeMaxs.Zero();
+	sElectricityInfo.mJitterSize.Zero();
+	sElectricityInfo.mJitterRate = 0.0f;
+	sElectricityInfo.mJitterTable = NULL;
+
+	sDefaultEnvelope.Init();
+	sEmptyEnvelope.Init();
+	sSPF_ONE_1 = rvParticleParms();
+	sSPF_ONE_2 = rvParticleParms();
+	sSPF_ONE_3 = rvParticleParms();
+	sSPF_NONE_0 = rvParticleParms();
+	sSPF_NONE_1 = rvParticleParms();
+	sSPF_NONE_3 = rvParticleParms();
 }

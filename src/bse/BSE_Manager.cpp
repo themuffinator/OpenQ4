@@ -10,6 +10,8 @@
 rvBSEManagerLocal bseLocal;
 rvBSEManager* bse = &bseLocal;
 
+extern idCVar bse_frameCounters;
+
 idCVar bse_speeds("bse_speeds", "0", CVAR_INTEGER, "print bse frame statistics");
 idCVar bse_enabled("bse_enabled", "1", CVAR_BOOL, "set to false to disable all effects");
 idCVar bse_render("bse_render", "1", CVAR_BOOL, "disable effect rendering");
@@ -22,6 +24,34 @@ idCVar bse_rateLimit("bse_rateLimit", "1", CVAR_FLOAT, "rate limit for spawned e
 idCVar bse_rateCost("bse_rateCost", "1", CVAR_FLOAT, "rate cost multiplier for spawned effects");
 idCVar bse_scale("bse_scale", "1", CVAR_FLOAT, "global BSE scaling for spawn/detail");
 idCVar bse_maxParticles("bse_maxParticles", "2048", CVAR_INTEGER, "maximum per-segment particle allocation");
+
+int bse_frameSpawned = 0;
+int bse_frameServiced = 0;
+int bse_frameRendered = 0;
+
+void BSE_ResetFrameCounters(void) {
+	bse_frameSpawned = 0;
+	bse_frameServiced = 0;
+	bse_frameRendered = 0;
+}
+
+void BSE_AddSpawned(int count) {
+	if (count > 0) {
+		bse_frameSpawned += count;
+	}
+}
+
+void BSE_AddServiced(int count) {
+	if (count > 0) {
+		bse_frameServiced += count;
+	}
+}
+
+void BSE_AddRendered(int count) {
+	if (count > 0) {
+		bse_frameRendered += count;
+	}
+}
 
 float effectCosts[EC_MAX] = { 0, 2, 0.1 }; // dd 0.0, 2 dup(0.1)
 
@@ -145,6 +175,8 @@ bool rvBSEManagerLocal::PlayEffect(class rvRenderEffectLocal* def, float time) {
 }
 
 bool rvBSEManagerLocal::ServiceEffect(class rvRenderEffectLocal* def, float time) {
+	BSE_AddServiced(1);
+
 	if (!def || !def->effect) {
 		if (def) {
 			def->expired = true;
@@ -275,6 +307,7 @@ void rvBSEManagerLocal::EndLevelLoad(void) {
 }
 
 void rvBSEManagerLocal::StartFrame(void) {
+	BSE_ResetFrameCounters();
 	UpdateRateTimes();
 
 	if (bse_speeds.GetInteger())
@@ -288,6 +321,14 @@ void rvBSEManagerLocal::StartFrame(void) {
 }
 
 void rvBSEManagerLocal::EndFrame(void) {
+	if (bse_frameCounters.GetInteger() > 0) {
+		common->Printf(
+			"BSE manager frame counters: spawned=%d serviced=%d rendered=%d\n",
+			bse_frameSpawned,
+			bse_frameServiced,
+			bse_frameRendered);
+	}
+
 	if (bse_speeds.GetInteger()) {
 		common->Printf("bse_active: %i particles: %i traces: %i texels: %i\n",
 			rvBSEManagerLocal::mPerfCounters[0],

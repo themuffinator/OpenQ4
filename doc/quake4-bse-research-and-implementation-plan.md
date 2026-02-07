@@ -486,6 +486,17 @@ This order minimizes hidden coupling: parse/template correctness first, then run
 - Phase 5 draw-order refinement: segment render path now treats linked strip particles specially by disabling depth-sort for strip topology and using first-strip index budgeting rules to avoid premature render rejection.
 - Phase 5 utility parity: `rvSegment::Sort` in `BSE_SegmentRuntime` is now implemented with stable depth sorting for deterministic per-segment order when invoked.
 - Validation: after each of these patches, OpenQ4 compiles cleanly and Procedure 1 short-run log checks continue to show no BSE parser/runtime assert/fatal regressions.
+- Phase 5 correctness fix: removed the `Filtered()` + `CanPlayRateLimited()` double-consumption path on network/entity receive flows (`src/game/Entity.cpp`, `src/game/Game_network.cpp`); rate-limit cost is now consumed once per event.
+- Phase 2/4 correctness fix: restored `rvParticleTemplate::FixupParms` sanitization logic (previously fully disabled), re-enabling spawn-type normalization and end-origin spawn-type promotion behavior used by parsed particle domains.
+- Phase 3/4 parity fix: `rvBSE::UpdateFromOwner` now derives `mLightningAxis` from current origin/end-origin direction (with stable fallback basis), instead of leaving lightning-axis state stale/default.
+- Phase 4/5 parity fix: `rvSegment::AttenuateInterval` and `rvSegment::AttenuateCount` now apply `bse_scale` interpolation semantics instead of hardcoded max-range behavior.
+- Phase 4/5 parity fix: `bse_maxParticles` is now enforced consistently in segment runtime allocation/count clamps (`InitParticleArray`, `AddToParticleCount`, spawner/check and precomputed count clamps), rather than silently using compile-time `MAX_PARTICLES` only.
+- Phase 7 cleanup: temporary always-on BSE trace spam (`spawn/expire/generic-remove`, segment render skip, segment state print) has been removed from runtime paths, and `bse_frameCounters` default was set back to `0` in renderer init.
+- Validation (2026-02-07): clean rebuild executed from `builddir/` (full clean + full rebuild) and both `OpenQ4.exe` and `OpenQ4-ded.exe` link successfully; 10-second stock-asset launch/log pass shows zero BSE parser/runtime assert/fatal tokens.
+- Phase 4 physics parity: `rvParticle::FinishSpawn` now applies template-authored gravity (`gravity` decl range) in effect-space, projected into particle-local acceleration, instead of silently ignoring particle gravity.
+- Phase 4 debris parity: `rvDebrisParticle::FinishSpawn` now follows the client-moveable path (`game->SpawnClientMoveable`) when `entityDef` is provided, and immediately retires CPU-side particle rendering for those debris particles.
+- Phase 5 robustness: client-effect shader parm defaults (RGBA/brightness/time offset) are now initialized in `rvClientEffect::Init`, and `rvBSE::UpdateFromOwner` now applies a safe fallback to unit tint/brightness when render effects arrive with fully zeroed shader parms.
+- Phase 7 hardening: implemented missing `rvParticleTemplate` utility methods declared in headers (`Compare`, `GetTraceModel`, `GetTrailCount`, `ShutdownStatic`) to remove remaining declaration/implementation gaps in the template runtime contract.
 
 ### Implementation Reference Mapping (OpenQ4 <-> Quake4BSE-master)
 

@@ -5999,19 +5999,18 @@ bool idEntity::ClientReceiveEvent( int event, int time, const idBitMsg &msg ) {
 				return true;
 			}
 
-			if ( bse->CanPlayRateLimited( category ) ) {
+			// Filtered() already applies category rate-limiting.
 			// mwhitlock: Dynamic memory consolidation
-				RV_PUSH_SYS_HEAP_ID(RV_HEAP_ID_MULTIPLE_FRAME);
-				clientEffect = new rvClientEffect( effect );
-				RV_POP_HEAP();
+			RV_PUSH_SYS_HEAP_ID(RV_HEAP_ID_MULTIPLE_FRAME);
+			clientEffect = new rvClientEffect( effect );
+			RV_POP_HEAP();
 
-				clientEffect->SetOrigin ( vec3_origin );
-				clientEffect->SetAxis ( mat3_identity );
-				clientEffect->Bind( this, jointHandle );
-				clientEffect->SetGravity( gameLocal.GetCurrentGravity( this ) );
+			clientEffect->SetOrigin ( vec3_origin );
+			clientEffect->SetAxis ( mat3_identity );
+			clientEffect->Bind( this, jointHandle );
+			clientEffect->SetGravity( gameLocal.GetCurrentGravity( this ) );
 
-				clientEffect->Play( time, loop, origin );
-			}
+			clientEffect->Play( time, loop, origin );
 			return true;
 		}
 		
@@ -6047,19 +6046,18 @@ bool idEntity::ClientReceiveEvent( int event, int time, const idBitMsg &msg ) {
 				return true;
 			}
 
-			if ( bse->CanPlayRateLimited( category ) ) {
-				// mwhitlock: Dynamic memory consolidation
-				RV_PUSH_SYS_HEAP_ID(RV_HEAP_ID_MULTIPLE_FRAME);
-				clientEffect = new rvClientEffect( effect );
-				RV_POP_HEAP();
+			// Filtered() already applies category rate-limiting.
+			// mwhitlock: Dynamic memory consolidation
+			RV_PUSH_SYS_HEAP_ID(RV_HEAP_ID_MULTIPLE_FRAME);
+			clientEffect = new rvClientEffect( effect );
+			RV_POP_HEAP();
 
-				clientEffect->SetOrigin ( origin );
-				clientEffect->SetAxis ( quat.ToMat3() );
-				clientEffect->Bind ( this );
-				clientEffect->SetGravity( gameLocal.GetCurrentGravity( this ) );
+			clientEffect->SetOrigin ( origin );
+			clientEffect->SetAxis ( quat.ToMat3() );
+			clientEffect->Bind ( this );
+			clientEffect->SetGravity( gameLocal.GetCurrentGravity( this ) );
 
-				clientEffect->Play ( time, loop, origin2 );
-			}
+			clientEffect->Play ( time, loop, origin2 );
 			return true;
 		}
 // RAVEN END		

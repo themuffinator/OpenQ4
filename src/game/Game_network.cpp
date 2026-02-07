@@ -3170,14 +3170,13 @@ void idGameLocal::ProcessUnreliableMessage( const idBitMsg &msg ) {
 				break;
 			}
 
-			if ( bse->CanPlayRateLimited( category ) ) {
-				axis = quat.ToMat3();
-				effect = new rvClientEffect( decl );
-				effect->SetOrigin( origin );
-				effect->SetAxis( axis );
-				effect->SetGravity( GetCurrentGravity( origin, axis ) );
-				effect->Play( time, loop, origin2 );
-			}
+			// Filtered() already applies category rate-limiting.
+			axis = quat.ToMat3();
+			effect = new rvClientEffect( decl );
+			effect->SetOrigin( origin );
+			effect->SetAxis( axis );
+			effect->SetGravity( GetCurrentGravity( origin, axis ) );
+			effect->Play( time, loop, origin2 );
 			
 			break;
 		}

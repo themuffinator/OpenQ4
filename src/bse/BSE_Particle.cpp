@@ -12,6 +12,8 @@
 
 #include "../framework/Session.h"
 
+extern idCVar bse_frameCounters;
+
 struct SElecWork {
 	srfTriangles_t* tri;
 	idVec3* coords;
@@ -125,7 +127,7 @@ ID_INLINE void BuildPerpBasis(const idVec3& forward, idVec3& right, idVec3& up) 
 
 ID_INLINE void BSETraceRenderDrop(const char* typeName, const rvParticle* particle, float time, const char* reason, float value0 = 0.0f, float value1 = 0.0f) {
 	static int bseRenderDropTraceCount = 0;
-	if (bseRenderDropTraceCount >= 256 || !particle) {
+	if (!particle || bse_frameCounters.GetInteger() < 2 || bseRenderDropTraceCount >= 256) {
 		return;
 	}
 	const float duration = particle->GetDuration();
@@ -534,6 +536,13 @@ void rvParticle::FinishSpawn(rvBSE* effect, rvSegment* segment, float birthTime,
 	if (pt->mpSpawnLength) {
 		AttenuateLength(attenuation, *pt->mpSpawnLength);
 	}
+	const float gravityScale = pt->GetGravity();
+	if (gravityScale != 0.0f) {
+		// Particle gravity is authored in effect-space and must be reprojected
+		// into the current local frame used by the particle simulation.
+		const idVec3 gravityWorld = effect->GetGravity() * gravityScale;
+		mAcceleration += effect->GetCurrentAxisTransposed() * gravityWorld;
+	}
 
 	HandleTiling(pt);
 	mPosition = mInitPos;
@@ -548,7 +557,62 @@ void rvLinkedParticle::FinishSpawn(rvBSE* effect, rvSegment* segment, float birt
 }
 
 void rvDebrisParticle::FinishSpawn(rvBSE* effect, rvSegment* segment, float birthTime, float fraction, const idVec3& initOffset, const idMat3& initAxis) {
+	if (!bse_debris.GetBool() || !effect || !segment || !game || session->readDemo) {
+		return;
+	}
+
 	rvParticle::FinishSpawn(effect, segment, birthTime, fraction, initOffset, initAxis);
+
+	rvSegmentTemplate* st = segment->GetSegmentTemplate();
+	if (!st) {
+		return;
+	}
+	rvParticleTemplate* pt = st->GetParticleTemplate();
+	if (!pt) {
+		return;
+	}
+
+	const char* entityDefName = pt->GetEntityDefName();
+	if (!entityDefName || entityDefName[0] == '\0') {
+		// Keep compatibility with legacy data that may author debris as plain particles.
+		return;
+	}
+
+	idVec3 localPosition;
+	EvaluatePosition(effect, pt, localPosition, birthTime);
+	idVec3 localVelocity;
+	EvaluateVelocity(effect, localVelocity, birthTime);
+
+	idVec3 angularVelocity(vec3_origin);
+	if (float* initRotate = GetInitRotation()) {
+		angularVelocity.Set(initRotate[0], initRotate[1], initRotate[2]);
+	}
+
+	idVec3 worldOrigin;
+	idVec3 worldVelocity;
+	idMat3 worldAxis;
+	if (GetLocked()) {
+		worldOrigin = effect->GetCurrentOrigin() + effect->GetCurrentAxis() * localPosition;
+		worldVelocity = effect->GetCurrentAxis() * localVelocity;
+		angularVelocity = effect->GetCurrentAxis() * angularVelocity;
+		worldAxis = effect->GetCurrentAxis();
+	}
+	else {
+		worldOrigin = mInitEffectPos + mInitAxis * localPosition;
+		worldVelocity = mInitAxis * localVelocity;
+		angularVelocity = mInitAxis * angularVelocity;
+		worldAxis = mInitAxis;
+	}
+
+	const int maxLifetimeMs = idMath::FtoiFast(BSE_MAX_DURATION * 1000.0f);
+	const int lifetimeMs = idMath::ClampInt(1, maxLifetimeMs, idMath::FtoiFast(GetDuration() * 1000.0f));
+
+	game->SpawnClientMoveable(entityDefName, lifetimeMs, worldOrigin, worldAxis, worldVelocity, angularVelocity);
+
+	// Debris is represented by spawned client entities, not by CPU-side BSE quads.
+	mEndTime = mStartTime;
+	mTrailTime = 0.0f;
+	mTrailCount = 0;
 }
 
 void rvLineParticle::Refresh(rvBSE* effect, rvSegmentTemplate* st, rvParticleTemplate* pt) {

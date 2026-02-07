@@ -28,6 +28,16 @@ extern	idCVar				bse_scale;
 extern	idCVar				bse_singleEffect;
 extern	idCVar				bse_maxParticles;
 
+// Temporary BSE frame counters (spawned/serviced/rendered), reset each StartFrame.
+extern int					bse_frameSpawned;
+extern int					bse_frameServiced;
+extern int					bse_frameRendered;
+
+void						BSE_ResetFrameCounters( void );
+void						BSE_AddSpawned( int count );
+void						BSE_AddServiced( int count );
+void						BSE_AddRendered( int count );
+
 class idRenderModel;
 struct viewDef_s;
 
