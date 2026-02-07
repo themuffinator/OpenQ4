@@ -24,6 +24,20 @@ idGameLocal::InitGameRenderSystem
 ========================
 */
 void idGameLocal::InitGameRenderSystem(void) {
+	gameRender.forwardRenderPassRT = NULL;
+	gameRender.postProcessRT[0] = NULL;
+	gameRender.postProcessRT[1] = NULL;
+	gameRender.forwardRenderPassResolvedRT = NULL;
+	gameRender.noPostProcessMaterial = NULL;
+	gameRender.casPostProcessMaterial = NULL;
+	gameRender.blackPostProcessMaterial = NULL;
+	gameRender.resolvePostProcessMaterial = NULL;
+	gameRender.postProcessAvailable = false;
+
+	if ( !renderSystem->IsOpenGLRunning() ) {
+		return;
+	}
+
 	const int msaaSamples = Max( 0, cvarSystem->GetCVarInteger( "r_multiSamples" ) );
 
 	{

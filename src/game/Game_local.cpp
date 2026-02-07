@@ -448,6 +448,12 @@ void idGameLocal::Init( void ) {
 // RAVEN BEGIN
 // jsinger: these need to be initialized after the InitAllocator call above in order
 //          to avoid crashes when the allocator is used.
+	if ( animationLib != NULL ) {
+		// When reloading the engine, declManager teardown has already released idAnim refs.
+		animationLib->Shutdown();
+		delete animationLib;
+		animationLib = NULL;
+	}
 	animationLib = new idAnimManager();
 	visemeTable100 = new idHashTable<rvViseme>;
 	visemeTable66 = new idHashTable<rvViseme>;
@@ -635,6 +641,8 @@ void idGameLocal::Shutdown( void ) {
 	if ( gamestate == GAMESTATE_UNINITIALIZED ) {
 		if ( animationLib != NULL ) {
 			animationLib->Shutdown();
+			delete animationLib;
+			animationLib = NULL;
 		}
 		return;
 	}
@@ -711,13 +719,8 @@ void idGameLocal::Shutdown( void ) {
 	// free memory allocated by class objects
 	Clear();
 
-	// shut down the animation manager
-// RAVEN BEGIN
-// jsinger: animationLib changed to a pointer
-	if ( animationLib != NULL ) {
-		animationLib->Shutdown();
-	}
-// RAVEN END
+	// Defer animationLib shutdown until the next Init() so decl shutdown can safely
+	// drop idAnim references first.
 
 // RAVEN BEGIN
 // rjohnson: entity usage stats
@@ -6359,7 +6362,7 @@ void idGameLocal::SetCamera( idCamera *cam ) {
 
 	// this should fix going into a cinematic when dead.. rare but happens
 	idPlayer *client = GetLocalPlayer();
-	if ( client->health <= 0 || client->pfl.dead ) {
+	if ( cam && client && ( client->health <= 0 || client->pfl.dead ) ) {
 		return;
 	}
 

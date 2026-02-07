@@ -326,6 +326,11 @@ int idSoundVoice_OpenAL::RestartAt( int offsetSamples )
 	offsetSamples &= ~127;
 
 	idSoundSample_OpenAL* sample = leadinSample;
+	if( sample == NULL )
+	{
+		return 0;
+	}
+
 	if( offsetSamples >= leadinSample->playLength )
 	{
 		if( loopingSample != NULL && loopingSample->playLength > 0)
@@ -339,14 +344,33 @@ int idSoundVoice_OpenAL::RestartAt( int offsetSamples )
 		}
 	}
 
-	int previousNumSamples = 0;
-	for( int i = 0; i < sample->buffers.Num(); i++ )
+	if( sample == NULL || sample->playLength <= 0 )
 	{
-		if( sample->buffers[i].numSamples > sample->playBegin + offsetSamples )
+		return 0;
+	}
+
+	const idSoundSample_OpenAL::sampleBuffer_t* sampleBuffers = sample->buffers.Ptr();
+	const int numBuffers = sample->buffers.Num();
+	if( sampleBuffers == NULL || numBuffers <= 0 || numBuffers > 16384 )
+	{
+		return 0;
+	}
+
+	const size_t sampleBuffersAddress = reinterpret_cast<size_t>( sampleBuffers );
+	if( sampleBuffersAddress < 4096 || ( sampleBuffersAddress & ( sizeof( void* ) - 1 ) ) != 0 )
+	{
+		return 0;
+	}
+
+	int previousNumSamples = 0;
+	for( int i = 0; i < numBuffers; i++ )
+	{
+		const idSoundSample_OpenAL::sampleBuffer_t& sampleBuffer = sampleBuffers[i];
+		if( sampleBuffer.numSamples > sample->playBegin + offsetSamples )
 		{
 			return SubmitBuffer( sample, i, sample->playBegin + offsetSamples - previousNumSamples );
 		}
-		previousNumSamples = sample->buffers[i].numSamples;
+		previousNumSamples = sampleBuffer.numSamples;
 	}
 
 	return 0;
@@ -359,7 +383,25 @@ idSoundVoice_OpenAL::SubmitBuffer
 */
 int idSoundVoice_OpenAL::SubmitBuffer( idSoundSample_OpenAL* sample, int bufferNumber, int offset )
 {
-	if( sample == NULL || ( bufferNumber < 0 ) || ( bufferNumber >= sample->buffers.Num() ) )
+	if( sample == NULL )
+	{
+		return 0;
+	}
+
+	const idSoundSample_OpenAL::sampleBuffer_t* sampleBuffers = sample->buffers.Ptr();
+	const int numBuffers = sample->buffers.Num();
+	if( sampleBuffers == NULL || numBuffers <= 0 || numBuffers > 16384 )
+	{
+		return 0;
+	}
+
+	const size_t sampleBuffersAddress = reinterpret_cast<size_t>( sampleBuffers );
+	if( sampleBuffersAddress < 4096 || ( sampleBuffersAddress & ( sizeof( void* ) - 1 ) ) != 0 )
+	{
+		return 0;
+	}
+
+	if( ( bufferNumber < 0 ) || ( bufferNumber >= numBuffers ) )
 	{
 		return 0;
 	}
@@ -440,10 +482,7 @@ int idSoundVoice_OpenAL::SubmitBuffer( idSoundSample_OpenAL* sample, int bufferN
 
 			//alBufferData( buffers[0], sample->NumChannels() == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, sample->buffers[bufferNumber].buffer, sample->buffers[bufferNumber].bufferSize, sample->SampleRate() /*44100*/ );
 
-
-
-
-			alBufferData( openalStreamingBuffer[j], format, sample->buffers[bufferNumber].buffer, sample->buffers[bufferNumber].bufferSize, rate );
+			alBufferData( openalStreamingBuffer[j], format, sampleBuffers[bufferNumber].buffer, sampleBuffers[bufferNumber].bufferSize, rate );
 			//openalStreamingOffset += MIXBUFFER_SAMPLES;
 		}
 
@@ -458,7 +497,7 @@ int idSoundVoice_OpenAL::SubmitBuffer( idSoundSample_OpenAL* sample, int bufferN
 				triggered = false;
 			}
 
-			return sample->buffers[bufferNumber].bufferSize;
+			return sampleBuffers[bufferNumber].bufferSize;
 		}
 	}
 

@@ -1525,27 +1525,44 @@ void  rvParticleTemplate::Finish()
 		this->mIndexCount = 6;
 		break;
 	case 5:
-		v6 = this->mModel->Surface(0);
+	{
+		idBounds modelBounds;
+		bool hasValidBounds = false;
+
+		v6 = ( this->mModel != NULL ) ? this->mModel->Surface( 0 ) : NULL;
 		v7 = v6;
-		if (v6)
-		{
-			v3->mVertexCount = v6->geometry->numVerts;// *(_WORD*)(*(_DWORD*)(v6 + 8) + 48);
-			v3->mIndexCount = v6->geometry->numIndexes; // *(_WORD*)(*(_DWORD*)(v6 + 8) + 56);
+		if ( v6 != NULL && v6->geometry != NULL ) {
+			v3->mVertexCount = v6->geometry->numVerts;
+			v3->mIndexCount = v6->geometry->numIndexes;
+			v3->mMaterial = v6->shader;
+			modelBounds = v6->geometry->bounds;
+			hasValidBounds = !modelBounds.IsCleared();
+		} else if ( this->mModel != NULL ) {
+			modelBounds = this->mModel->Bounds();
+			hasValidBounds = !modelBounds.IsCleared();
 		}
-		v3->mMaterial = *(idMaterial**)(v6 + 4);
+
+		// Corrupt/missing model bounds can come from partially loaded surfaces.
+		// Fall back to a small cube so trace model creation remains safe.
+		if ( !hasValidBounds ||
+			idMath::Fabs( modelBounds[0].x ) > 1000000.0f || idMath::Fabs( modelBounds[0].y ) > 1000000.0f || idMath::Fabs( modelBounds[0].z ) > 1000000.0f ||
+			idMath::Fabs( modelBounds[1].x ) > 1000000.0f || idMath::Fabs( modelBounds[1].y ) > 1000000.0f || idMath::Fabs( modelBounds[1].z ) > 1000000.0f ) {
+			modelBounds[0].Set( -8.0f, -8.0f, -8.0f );
+			modelBounds[1].Set( 8.0f, 8.0f, 8.0f );
+		}
+
 		v3->PurgeTraceModel();
-		v8 = (idTraceModel*)operator new(0xB4Cu);
+		v8 = new idTraceModel();
 		v9 = v8;
 		retaddr = 0;
-		if (v8)
-		{
-			v10 = *(idBounds**)(v7 + 8);
+		if ( v8 ) {
 			v8->InitBox();
-			v9->SetupBox(*v10);
+			v9->SetupBox( modelBounds );
 		}
 		retaddr = -1;
 		v2 = 0.0;
-		v3->mTraceModelIndex = bse->AddTraceModel(v8);
+		v3->mTraceModelIndex = bse->AddTraceModel( v8 );
+	}
 		break;
 	case 7:
 		v12 = this->mElecInfo;
