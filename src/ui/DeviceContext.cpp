@@ -101,6 +101,7 @@ void idDeviceContext::SetFont( int num ) {
 
 void idDeviceContext::Init() {
 	xScale = 0.0;
+	aspectCorrect = true;
 	SetSize(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
 	whiteImage = declManager->FindMaterial("gfx/guis/white");
 	whiteImage->SetSort( SS_GUI );
@@ -154,6 +155,7 @@ void idDeviceContext::Clear() {
 	useFont = NULL;
 	activeFont = NULL;
 	mbcs = false;
+	aspectCorrect = true;
 }
 
 idDeviceContext::idDeviceContext() {
@@ -163,6 +165,10 @@ idDeviceContext::idDeviceContext() {
 void idDeviceContext::SetTransformInfo(const idVec3 &org, const idMat3 &m) {
 	origin = org;
 	mat = m;
+}
+
+void idDeviceContext::SetAspectCorrection( bool enabled ) {
+	aspectCorrect = enabled;
 }
 
 // 
@@ -763,8 +769,12 @@ void idDeviceContext::SetSize(float width, float height) {
 		return;
 	}
 
-	const float windowWidth = static_cast<float>( glConfig.vidWidth );
-	const float windowHeight = static_cast<float>( glConfig.vidHeight );
+	float windowWidth = static_cast<float>( glConfig.uiViewportWidth );
+	float windowHeight = static_cast<float>( glConfig.uiViewportHeight );
+	if ( windowWidth <= 0.0f || windowHeight <= 0.0f ) {
+		windowWidth = static_cast<float>( glConfig.vidWidth );
+		windowHeight = static_cast<float>( glConfig.vidHeight );
+	}
 
 	if ( windowWidth <= 0.0f || windowHeight <= 0.0f ) {
 		xScale = vidWidth * ( 1.0f / width );
@@ -772,18 +782,23 @@ void idDeviceContext::SetSize(float width, float height) {
 		return;
 	}
 
-	// Preserve GUI aspect ratio by fitting into the current window and centering.
-	const float uniformPhysicalScale = Min( windowWidth / width, windowHeight / height );
-	const float drawWidth = width * uniformPhysicalScale;
-	const float drawHeight = height * uniformPhysicalScale;
+	if ( aspectCorrect ) {
+		// Preserve GUI aspect ratio by fitting into the current draw region and centering.
+		const float uniformPhysicalScale = Min( windowWidth / width, windowHeight / height );
+		const float drawWidth = width * uniformPhysicalScale;
+		const float drawHeight = height * uniformPhysicalScale;
 
-	const float virtualPerPhysicalX = vidWidth / windowWidth;
-	const float virtualPerPhysicalY = vidHeight / windowHeight;
+		const float virtualPerPhysicalX = vidWidth / windowWidth;
+		const float virtualPerPhysicalY = vidHeight / windowHeight;
 
-	xScale = uniformPhysicalScale * virtualPerPhysicalX;
-	yScale = uniformPhysicalScale * virtualPerPhysicalY;
-	xOffset = ( windowWidth - drawWidth ) * 0.5f * virtualPerPhysicalX;
-	yOffset = ( windowHeight - drawHeight ) * 0.5f * virtualPerPhysicalY;
+		xScale = uniformPhysicalScale * virtualPerPhysicalX;
+		yScale = uniformPhysicalScale * virtualPerPhysicalY;
+		xOffset = ( windowWidth - drawWidth ) * 0.5f * virtualPerPhysicalX;
+		yOffset = ( windowHeight - drawHeight ) * 0.5f * virtualPerPhysicalY;
+	} else {
+		xScale = vidWidth * ( 1.0f / width );
+		yScale = vidHeight * ( 1.0f / height );
+	}
 }
 
 int idDeviceContext::CharWidth( const char c, float scale ) {

@@ -11,14 +11,16 @@ This file describes project goals, rules, and upstream credits for anyone workin
 - Repository: `https://github.com/themuffinator/OpenQ4`
 
 **Goals**
-- Deliver a drop-in engine replacement for Quake 4.
-- Preserve behavior required by original Quake 4 game DLLs.
-- Maintain full single-player and multiplayer parity.
-- Modernize the engine while preserving Quake 4 compatibility.
+- Deliver a complete, open-source code replacement for Quake 4 (engine + game code).
+- Preserve behavior required by the shipped Quake 4 assets (base PK4s) where practical.
+- Maintain full single-player and multiplayer parity with in-tree game code.
+- Modernize the engine and game code while keeping stock-asset compatibility as a guiding constraint.
+- Package both SP/MP under one unified game directory (`openbase/`) with `game_sp` + `game_mp`.
 - Establish a cross-platform foundation targeting modern systems (Windows, Linux, macOS; x64 first) through SDL3 and Meson.
 
 **Rules**
-- Keep compatibility with original Quake 4 binaries (DLLs) as the primary requirement.
+- Do not target compatibility with the proprietary Quake 4 game DLLs; OpenQ4 ships its own game modules and keeps full freedom to evolve the project.
+- Keep `openbase/` as the single unified game directory; do not split SP/MP into separate mod folders.
 - Prefer changes that match Quake 4 SDK expectations and shipped content behavior.
 - Document significant changes in the documentation and keep `README.md` accurate.
 - Use `builddir/` as the standard Meson build output directory for local builds, VS Code tasks, and launch configurations.
@@ -27,21 +29,21 @@ This file describes project goals, rules, and upstream credits for anyone workin
 - Keep Meson as the primary build entry point and keep dependency management through Meson subprojects.
 - Treat x64 as the baseline architecture for active support while staging additional modern architectures incrementally.
 - Keep credits accurate and add new attributions when incorporating upstream work.
-- Avoid adding engine-side content files (e.g., custom material scripts) unless absolutely required for compatibility; the drop-in goal is to run with the original game assets and only the OpenQ4 executable (plus minimal external libs).
+- Avoid adding engine-side content files (e.g., custom material scripts) unless absolutely required for compatibility; the goal is to run with the original game assets and only OpenQ4 binaries (engine + game modules, plus minimal external libs).
 - Any existing custom `q4base/` content is treated as an expedient bootstrap, not a long-term solution. The goal is to remove this reliance by fixing engine compatibility issues rather than shipping replacement assets.
-- For investigations, reference the log file at `C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\logs\openq4.log` (static name, overwritten each launch) before making further changes.
+- For investigations, reference the log file written by `logFileName` (VS Code launch uses `logs/openq4.log`), located under `fs_savepath\<gameDir>\` (e.g. `%LOCALAPPDATA%\OpenQ4\openbase\logs\openq4.log`).
 
 **Development Procedure (Correct Direction)**
 1. Develop against the installed Quake 4 assets only (base PK4s), not repo `q4base/` content.
 2. Keep `fs_devpath` empty or pointed to a non-content location unless explicitly testing a temporary overlay.
-3. If something is missing or broken, fix the engine/loader/parser rather than shipping new material/decl/shader assets.
+3. If something is missing or broken, fix the engine/game/loader/parser rather than shipping new material/decl/shader assets.
 4. If engine-side shaders are needed, prefer internal defaults or generated resources that ship with the executable.
 5. Re-run Procedure 1 after each fix to verify clean initialization without custom content.
 
 **Procedure 1 (Debug Loop)**
 1. Launch the game via the default launch task.
 2. Close the game after 3 seconds.
-3. Read `C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\logs\openq4.log`.
+3. Read `fs_savepath\<gameDir>\logs\openq4.log` (commonly `%LOCALAPPDATA%\OpenQ4\openbase\logs\openq4.log`).
 4. Identify errors and warnings to resolve.
 5. Resolve the errors and warnings.
 6. Repeat until clean.

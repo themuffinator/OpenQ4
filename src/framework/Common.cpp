@@ -100,6 +100,8 @@ volatile int	com_ticNumber;			// 60 hz tics
 int				com_editors;			// currently opened editor(s)
 bool			com_editorActive;		//  true if an editor has focus
 
+extern glconfig_t	glConfig;
+
 #ifdef _WIN32
 HWND			com_hwndMsg = NULL;
 bool			com_outputMsg = false;
@@ -2393,14 +2395,131 @@ void idCommonLocal::InitRenderSystem( void ) {
 idCommonLocal::PrintLoadingMessage
 =================
 */
+static int Common_CountVisibleSmallChars( const char *string ) {
+	if ( !( string && *string ) ) {
+		return 0;
+	}
+
+	int count = 0;
+	const unsigned char *s = reinterpret_cast<const unsigned char *>( string );
+	while ( *s ) {
+		if ( idStr::IsColor( reinterpret_cast<const char *>( s ) ) ) {
+			s += 2;
+			continue;
+		}
+		count++;
+		s++;
+	}
+	return count;
+}
+
+static void Common_DrawScaledSmallString( float x, float y, float charWidth, float charHeight,
+	const char *string, const idVec4 &setColor, bool forceColor, const idMaterial *material ) {
+	if ( !( string && *string ) || !material || charWidth <= 0.0f || charHeight <= 0.0f ) {
+		return;
+	}
+
+	idVec4 color;
+	const unsigned char *s = reinterpret_cast<const unsigned char *>( string );
+	float xx = x;
+	renderSystem->SetColor( setColor );
+
+	while ( *s ) {
+		if ( idStr::IsColor( reinterpret_cast<const char *>( s ) ) ) {
+			if ( !forceColor ) {
+				if ( *( s + 1 ) == C_COLOR_DEFAULT ) {
+					renderSystem->SetColor( setColor );
+				} else {
+					color = idStr::ColorForIndex( *( s + 1 ) );
+					color[3] = setColor[3];
+					renderSystem->SetColor( color );
+				}
+			}
+			s += 2;
+			continue;
+		}
+
+		const int ch = *s & 255;
+		if ( ch != ' ' ) {
+			const int row = ch >> 4;
+			const int col = ch & 15;
+			const float frow = row * 0.0625f;
+			const float fcol = col * 0.0625f;
+			const float size = 0.0625f;
+			renderSystem->DrawStretchPic( xx, y, charWidth, charHeight,
+				fcol, frow, fcol + size, frow + size, material );
+		}
+
+		xx += charWidth;
+		s++;
+	}
+
+	renderSystem->SetColor( idVec4( 1.0f, 1.0f, 1.0f, 1.0f ) );
+}
+
 void idCommonLocal::PrintLoadingMessage( const char *msg ) {
 	if ( !( msg && *msg ) ) {
 		return;
 	}
+
 	renderSystem->BeginFrame( renderSystem->GetScreenWidth(), renderSystem->GetScreenHeight() );
-	renderSystem->DrawStretchPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 1, 1, declManager->FindMaterial( "gfx/splashScreen" ) );
-	int len = strlen( msg );
-	renderSystem->DrawSmallStringExt( ( 640 - len * SMALLCHAR_WIDTH ) / 2, 410, msg, idVec4(0.94f, 0.62f, 0.05f, 1.0f), true, declManager->FindMaterial( "fonts/english/bigchars", false ) );
+
+	const float virtualWidth = static_cast<float>( SCREEN_WIDTH );
+	const float virtualHeight = static_cast<float>( SCREEN_HEIGHT );
+	float splashX = 0.0f;
+	float splashY = 0.0f;
+	float splashW = virtualWidth;
+	float splashH = virtualHeight;
+	float correctedX = 0.0f;
+	float correctedY = 0.0f;
+	float correctedW = virtualWidth;
+	float correctedH = virtualHeight;
+	float textScaleX = 1.0f;
+	float textScaleY = 1.0f;
+
+	float viewportWidth = static_cast<float>( glConfig.uiViewportWidth );
+	float viewportHeight = static_cast<float>( glConfig.uiViewportHeight );
+	if ( viewportWidth <= 0.0f || viewportHeight <= 0.0f ) {
+		viewportWidth = static_cast<float>( glConfig.vidWidth );
+		viewportHeight = static_cast<float>( glConfig.vidHeight );
+	}
+
+	if ( viewportWidth > 0.0f && viewportHeight > 0.0f ) {
+		const float uniformPhysicalScale = Min( viewportWidth / virtualWidth, viewportHeight / virtualHeight );
+		const float drawWidth = virtualWidth * uniformPhysicalScale;
+		const float drawHeight = virtualHeight * uniformPhysicalScale;
+		const float virtualPerPhysicalX = virtualWidth / viewportWidth;
+		const float virtualPerPhysicalY = virtualHeight / viewportHeight;
+
+		textScaleX = uniformPhysicalScale * virtualPerPhysicalX;
+		textScaleY = uniformPhysicalScale * virtualPerPhysicalY;
+		correctedX = ( viewportWidth - drawWidth ) * 0.5f * virtualPerPhysicalX;
+		correctedY = ( viewportHeight - drawHeight ) * 0.5f * virtualPerPhysicalY;
+		correctedW = virtualWidth * textScaleX;
+		correctedH = virtualHeight * textScaleY;
+	}
+
+	if ( cvarSystem->GetCVarBool( "ui_aspectCorrection" ) ) {
+		splashX = correctedX;
+		splashY = correctedY;
+		splashW = correctedW;
+		splashH = correctedH;
+	}
+
+	renderSystem->SetColor( idVec4( 0.0f, 0.0f, 0.0f, 1.0f ) );
+	renderSystem->DrawStretchPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 1, 1, declManager->FindMaterial( "_white" ) );
+	renderSystem->SetColor( idVec4( 1.0f, 1.0f, 1.0f, 1.0f ) );
+	renderSystem->DrawStretchPic( splashX, splashY, splashW, splashH, 0, 0, 1, 1, declManager->FindMaterial( "gfx/splashScreen" ) );
+
+	const int charCount = Common_CountVisibleSmallChars( msg );
+	const float charWidth = SMALLCHAR_WIDTH * textScaleX;
+	const float charHeight = SMALLCHAR_HEIGHT * textScaleY;
+	const float textWidth = charCount * charWidth;
+	const float textX = correctedX + ( correctedW - textWidth ) * 0.5f;
+	const float textY = correctedY + 410.0f * textScaleY;
+	Common_DrawScaledSmallString( textX, textY, charWidth, charHeight, msg,
+		idVec4( 0.94f, 0.62f, 0.05f, 1.0f ), true, declManager->FindMaterial( "fonts/english/bigchars", false ) );
+	renderSystem->SetColor( idVec4( 1.0f, 1.0f, 1.0f, 1.0f ) );
 	renderSystem->EndFrame( NULL, NULL );
 }
 

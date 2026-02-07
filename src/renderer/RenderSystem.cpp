@@ -567,6 +567,47 @@ void idRenderSystemLocal::BeginFrame( int windowWidth, int windowHeight ) {
 	glConfig.vidWidth = windowWidth;
 	glConfig.vidHeight = windowHeight;
 
+	// Keep the 2D viewport anchored to a valid region of the current framebuffer.
+	// Platform backends can narrow this to a monitor sub-rect (top-left origin).
+	if ( glConfig.uiViewportWidth <= 0 || glConfig.uiViewportHeight <= 0 ) {
+		glConfig.uiViewportX = 0;
+		glConfig.uiViewportY = 0;
+		glConfig.uiViewportWidth = windowWidth;
+		glConfig.uiViewportHeight = windowHeight;
+	} else {
+		int uiX = glConfig.uiViewportX;
+		int uiY = glConfig.uiViewportY;
+		int uiWidth = glConfig.uiViewportWidth;
+		int uiHeight = glConfig.uiViewportHeight;
+
+		if ( uiX < 0 ) {
+			uiWidth += uiX;
+			uiX = 0;
+		}
+		if ( uiY < 0 ) {
+			uiHeight += uiY;
+			uiY = 0;
+		}
+		if ( uiX >= windowWidth || uiY >= windowHeight || uiWidth <= 0 || uiHeight <= 0 ) {
+			uiX = 0;
+			uiY = 0;
+			uiWidth = windowWidth;
+			uiHeight = windowHeight;
+		} else {
+			if ( uiX + uiWidth > windowWidth ) {
+				uiWidth = windowWidth - uiX;
+			}
+			if ( uiY + uiHeight > windowHeight ) {
+				uiHeight = windowHeight - uiY;
+			}
+		}
+
+		glConfig.uiViewportX = uiX;
+		glConfig.uiViewportY = uiY;
+		glConfig.uiViewportWidth = uiWidth;
+		glConfig.uiViewportHeight = uiHeight;
+	}
+
 	renderCrops[0].x = 0;
 	renderCrops[0].y = 0;
 	renderCrops[0].width = windowWidth;

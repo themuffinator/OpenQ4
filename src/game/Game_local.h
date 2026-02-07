@@ -410,6 +410,8 @@ public:
 	int						mHz;					// hertz
 	int						autoScreenshotStartTime;
 	bool					autoScreenshotPending;
+	int						autoMachinegunImpactStartTime;
+	bool					autoMachinegunImpactPending;
 
 	int						vacuumAreaNum;			// -1 if level doesn't have any outside areas
 
@@ -502,6 +504,7 @@ public:
 // RAVEN END
 	virtual void			RepeaterFrame( const userOrigin_t *clientOrigins, bool lastCatchupFrame, int spoolTime = 0 ) {};
 	virtual bool			Draw( int clientNum );
+	void					CheckAutoMachinegunImpact( void );
 	void					CheckAutoScreenshot( void );
 	virtual escReply_t		HandleESC( idUserInterface **gui );
 	virtual idUserInterface	*StartMenu( void );

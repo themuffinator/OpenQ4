@@ -73,6 +73,7 @@ public:
 	idRegion			*GetTextRegion(const char *text, float textScale, idRectangle rectDraw, float xStart, float yStart);
 
 	void				SetSize(float width, float height);
+	void				SetAspectCorrection( bool enabled );
 
 	const idMaterial	*GetScrollBarImage(int index);
 
@@ -163,6 +164,7 @@ private:
 	idMat3				mat;
 	idVec3				origin;
 	bool				initialized;
+	bool				aspectCorrect;
 
 	bool				mbcs;
 };

@@ -36,6 +36,8 @@ If you have questions concerning this license or the applicable additional terms
 
 extern idCVar r_skipGuiShaders;		// 1 = don't render any gui elements on surfaces
 extern idCVar gui_debugScript;
+idCVar ui_aspectCorrection( "ui_aspectCorrection", "1", CVAR_GUI | CVAR_ARCHIVE | CVAR_BOOL,
+	"preserve classic 4:3 layout for 2D UI (menu, HUD, console, loading/init); 0 = stretch to full 2D viewport" );
 
 idUserInterfaceManagerLocal	uiManagerLocal;
 idUserInterfaceManager *	uiManager = &uiManagerLocal;
@@ -81,6 +83,10 @@ void idUserInterfaceManagerLocal::SetSize( float width, float height ) {
 		screenRect = idRectangle( 0.0f, 0.0f, width, height );
 	}
 	dc.SetSize( width, height );
+}
+
+void idUserInterfaceManagerLocal::SetAspectCorrection( bool enabled ) {
+	dc.SetAspectCorrection( enabled );
 }
 
 void idUserInterfaceManagerLocal::BeginLevelLoad() {
@@ -392,6 +398,9 @@ void idUserInterfaceLocal::Redraw( int _time ) {
 			initialized = true;
 			desktop->Init();
 		}
+
+		const bool aspectCorrect = ui_aspectCorrection.GetBool();
+		uiManagerLocal.SetAspectCorrection( aspectCorrect );
 		uiManagerLocal.SetSize( desktop->forceAspectWidth, desktop->forceAspectHeight );
 		if ( gui_debugScript.GetInteger() > 4 ) {
 			static int lastDebugRedrawTime = -10000;

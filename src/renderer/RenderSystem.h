@@ -89,6 +89,10 @@ typedef struct glconfig_s {
 	bool				atiTwoSidedStencilAvailable;
 
 	int					vidWidth, vidHeight;	// passed to R_BeginFrame
+	// 2D draw region in framebuffer pixels with a top-left origin.
+	// Defaults to the full framebuffer and can be narrowed (for example to the primary monitor).
+	int					uiViewportX, uiViewportY;
+	int					uiViewportWidth, uiViewportHeight;
 
 	int					displayFrequency;
 

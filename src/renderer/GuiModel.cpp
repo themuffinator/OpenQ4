@@ -239,7 +239,22 @@ void idGuiModel::EmitFullScreen( void ) {
 		viewDef->renderView.width = SCREEN_WIDTH;
 		viewDef->renderView.height = SCREEN_HEIGHT;
 
-		tr.RenderViewToViewport( &viewDef->renderView, &viewDef->viewport );
+		if ( tr.currentRenderCrop == 0 ) {
+			// Constrain fullscreen 2D to the configured UI viewport.
+			const int viewportX = glConfig.uiViewportX;
+			const int viewportY = glConfig.uiViewportY;
+			const int viewportWidth = glConfig.uiViewportWidth;
+			const int viewportHeight = glConfig.uiViewportHeight;
+			const int bottomY = glConfig.vidHeight - ( viewportY + viewportHeight );
+
+			viewDef->viewport.x1 = viewportX;
+			viewDef->viewport.x2 = viewportX + viewportWidth - 1;
+			viewDef->viewport.y1 = bottomY;
+			viewDef->viewport.y2 = bottomY + viewportHeight - 1;
+		} else {
+			// Preserve render-crop behavior used by screenshot/demo capture paths.
+			tr.RenderViewToViewport( &viewDef->renderView, &viewDef->viewport );
+		}
 
 		viewDef->scissor.x1 = 0;
 		viewDef->scissor.y1 = 0;

@@ -242,7 +242,7 @@ File:
 
 ## Detailed Implementation Plan
 
-This plan prioritizes compatibility with original Quake 4 assets and game DLL behavior.
+This plan prioritizes compatibility with original Quake 4 assets and shipped-content behavior. OpenQ4 does not target binary compatibility with the proprietary Quake 4 game DLLs.
 
 ### Phase 0: Baseline and instrumentation
 
@@ -256,7 +256,7 @@ Tasks:
 1. Run Procedure 1 loop against installed Quake 4 assets:
 - launch default task
 - close after ~3s
-- inspect `C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\logs\openq4.log`
+- inspect `fs_savepath\<gameDir>\logs\openq4.log` (commonly `%LOCALAPPDATA%\OpenQ4\openbase\logs\openq4.log`)
 2. Add temporary logging hooks (guarded by cvars/dev flags) for:
 - effect parse success/failure
 - `AddEffectDef`/`UpdateEffectDef`/`FreeEffectDef`
@@ -438,7 +438,7 @@ Acceptance:
 
 Goals:
 
-- move from "works in most cases" to "drop-in compatible"
+- move from "works in most cases" to "stock-asset compatible"
 
 Tasks:
 
@@ -474,7 +474,7 @@ This order minimizes hidden coupling: parse/template correctness first, then run
 - Current blocker for strict Procedure 1 path: startup can fatal early with `Couldn't load default.cfg` when savepath config is absent/non-writable; validation was completed using the configured writable savepath.
 - Phase 6 (game-lib parity): restored network/entity event effect safety paths by removing the `EVENT_PLAYEFFECT_JOINT` assert placeholder, adding null-decl + `Filtered` + rate-limit guards on receive paths, and restoring gravity assignment for unreliable/world and entity-bound event effects.
 - Phase 6 (save/restore parity): `rvClientEffect::Restore` now clears `referenceSoundHandle` so active effects rebind a valid emitter after load instead of reusing stale handles.
-- Phase 7 (hardening pass): repeated Procedure 1 launch/short-run/log checks with stock assets (`fs_devpath` empty) and confirmed zero BSE parser/runtime tokens (`BSE`, `rvBSE`, invalid segment/motion/effect parse errors, asserts/fatals) in `C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base\logs\openq4.log`.
+- Phase 7 (hardening pass): repeated Procedure 1 launch/short-run/log checks with stock assets (`fs_devpath` empty) and confirmed zero BSE parser/runtime tokens (`BSE`, `rvBSE`, invalid segment/motion/effect parse errors, asserts/fatals) in `fs_savepath\<gameDir>\logs\openq4.log`.
 - Interim visibility step: added `bse_fallbackSprite` (default `1`) to draw a temporary sprite-backed `renderEntity_t` for active client effects while full BSE particle surface generation is still being restored.
 - Phase 4/5 parity continuation: restored active segment spawn scheduling in `rvSegment::Check` for `SEG_EMITTER`, `SEG_TRAIL`, and `SEG_SPAWNER`, including attenuation-driven interval/count handling and loop-safe time progression (`mLastTime`) so particle segments no longer remain effectively inert.
 - Phase 4 parity correction: removed the erroneous large negative spawn offset in `rvBSE::Service` (`-10.0f * segmentIndex` equivalent), which had been delaying segment start checks by whole seconds; segment checks now run on current frame time.

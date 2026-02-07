@@ -291,6 +291,10 @@ typedef struct {
 	float guiHeight;
 	float pixelWidth;
 	float pixelHeight;
+	float drawAreaX;
+	float drawAreaY;
+	float drawAreaWidth;
+	float drawAreaHeight;
 	float windowToPixelX;
 	float windowToPixelY;
 	float pixelToWindowX;
@@ -329,17 +333,53 @@ static bool SDL3_BuildGuiMouseTransform(sdl3GuiMouseTransform_t &transform) {
 	transform.pixelToWindowX = static_cast<float>(windowWidth) / static_cast<float>(pixelWidth);
 	transform.pixelToWindowY = static_cast<float>(windowHeight) / static_cast<float>(pixelHeight);
 
-	const float scaleX = transform.pixelWidth / transform.guiWidth;
-	const float scaleY = transform.pixelHeight / transform.guiHeight;
-	const float uniformPhysicalScale = (scaleX < scaleY) ? scaleX : scaleY;
-	const float drawWidth = transform.guiWidth * uniformPhysicalScale;
-	const float drawHeight = transform.guiHeight * uniformPhysicalScale;
-	const float virtualPerPhysicalX = transform.guiWidth / transform.pixelWidth;
-	const float virtualPerPhysicalY = transform.guiHeight / transform.pixelHeight;
-	transform.xScale = uniformPhysicalScale * virtualPerPhysicalX;
-	transform.yScale = uniformPhysicalScale * virtualPerPhysicalY;
-	transform.xOffset = (transform.pixelWidth - drawWidth) * 0.5f * virtualPerPhysicalX;
-	transform.yOffset = (transform.pixelHeight - drawHeight) * 0.5f * virtualPerPhysicalY;
+	// Match the fullscreen-2D viewport region (primary monitor on multi-monitor spans).
+	transform.drawAreaX = static_cast<float>(glConfig.uiViewportX);
+	transform.drawAreaY = static_cast<float>(glConfig.uiViewportY);
+	transform.drawAreaWidth = static_cast<float>(glConfig.uiViewportWidth);
+	transform.drawAreaHeight = static_cast<float>(glConfig.uiViewportHeight);
+
+	if (transform.drawAreaWidth <= 0.0f || transform.drawAreaHeight <= 0.0f) {
+		transform.drawAreaX = 0.0f;
+		transform.drawAreaY = 0.0f;
+		transform.drawAreaWidth = transform.pixelWidth;
+		transform.drawAreaHeight = transform.pixelHeight;
+	} else {
+		transform.drawAreaX = idMath::ClampFloat(0.0f, transform.pixelWidth, transform.drawAreaX);
+		transform.drawAreaY = idMath::ClampFloat(0.0f, transform.pixelHeight, transform.drawAreaY);
+		if (transform.drawAreaX + transform.drawAreaWidth > transform.pixelWidth) {
+			transform.drawAreaWidth = transform.pixelWidth - transform.drawAreaX;
+		}
+		if (transform.drawAreaY + transform.drawAreaHeight > transform.pixelHeight) {
+			transform.drawAreaHeight = transform.pixelHeight - transform.drawAreaY;
+		}
+		if (transform.drawAreaWidth <= 0.0f || transform.drawAreaHeight <= 0.0f) {
+			transform.drawAreaX = 0.0f;
+			transform.drawAreaY = 0.0f;
+			transform.drawAreaWidth = transform.pixelWidth;
+			transform.drawAreaHeight = transform.pixelHeight;
+		}
+	}
+
+	const bool preserveAspect = cvarSystem->GetCVarBool("ui_aspectCorrection");
+	if (preserveAspect) {
+		const float scaleX = transform.drawAreaWidth / transform.guiWidth;
+		const float scaleY = transform.drawAreaHeight / transform.guiHeight;
+		const float uniformPhysicalScale = (scaleX < scaleY) ? scaleX : scaleY;
+		const float drawWidth = transform.guiWidth * uniformPhysicalScale;
+		const float drawHeight = transform.guiHeight * uniformPhysicalScale;
+		const float virtualPerPhysicalX = transform.guiWidth / transform.drawAreaWidth;
+		const float virtualPerPhysicalY = transform.guiHeight / transform.drawAreaHeight;
+		transform.xScale = uniformPhysicalScale * virtualPerPhysicalX;
+		transform.yScale = uniformPhysicalScale * virtualPerPhysicalY;
+		transform.xOffset = (transform.drawAreaWidth - drawWidth) * 0.5f * virtualPerPhysicalX;
+		transform.yOffset = (transform.drawAreaHeight - drawHeight) * 0.5f * virtualPerPhysicalY;
+	} else {
+		transform.xScale = 1.0f;
+		transform.yScale = 1.0f;
+		transform.xOffset = 0.0f;
+		transform.yOffset = 0.0f;
+	}
 
 	if (transform.xScale <= 0.0f || transform.yScale <= 0.0f) {
 		return false;
@@ -354,10 +394,12 @@ static bool SDL3_MapWindowMouseToGuiCursor(float windowMouseX, float windowMouse
 		return false;
 	}
 
-	const float pixelMouseX = windowMouseX * transform.windowToPixelX;
-	const float pixelMouseY = windowMouseY * transform.windowToPixelY;
-	const float drawX = pixelMouseX * (transform.guiWidth / transform.pixelWidth);
-	const float drawY = pixelMouseY * (transform.guiHeight / transform.pixelHeight);
+	float pixelMouseX = windowMouseX * transform.windowToPixelX - transform.drawAreaX;
+	float pixelMouseY = windowMouseY * transform.windowToPixelY - transform.drawAreaY;
+	pixelMouseX = idMath::ClampFloat(0.0f, transform.drawAreaWidth, pixelMouseX);
+	pixelMouseY = idMath::ClampFloat(0.0f, transform.drawAreaHeight, pixelMouseY);
+	const float drawX = pixelMouseX * (transform.guiWidth / transform.drawAreaWidth);
+	const float drawY = pixelMouseY * (transform.guiHeight / transform.drawAreaHeight);
 
 	cursorX = (drawX - transform.xOffset) / transform.xScale;
 	cursorY = (drawY - transform.yOffset) / transform.yScale;
@@ -385,8 +427,8 @@ static void SDL3_SyncSystemMouseToActiveGUICursor(void) {
 	const float clampedCursorY = idMath::ClampFloat(0.0f, transform.guiHeight, activeGui->CursorY());
 	const float drawX = (clampedCursorX * transform.xScale) + transform.xOffset;
 	const float drawY = (clampedCursorY * transform.yScale) + transform.yOffset;
-	const float pixelMouseX = drawX * (transform.pixelWidth / transform.guiWidth);
-	const float pixelMouseY = drawY * (transform.pixelHeight / transform.guiHeight);
+	const float pixelMouseX = transform.drawAreaX + drawX * (transform.drawAreaWidth / transform.guiWidth);
+	const float pixelMouseY = transform.drawAreaY + drawY * (transform.drawAreaHeight / transform.guiHeight);
 	const float windowMouseX = pixelMouseX * transform.pixelToWindowX;
 	const float windowMouseY = pixelMouseY * transform.pixelToWindowY;
 
@@ -1250,6 +1292,69 @@ static void SDL3_UpdateWindowAspectSnap(bool sawResizeEvent) {
 	}
 }
 
+static void SDL3_UpdatePrimaryDisplayViewport(int windowX, int windowY, int windowWidth, int windowHeight, int pixelWidth, int pixelHeight) {
+	glConfig.uiViewportX = 0;
+	glConfig.uiViewportY = 0;
+	glConfig.uiViewportWidth = pixelWidth;
+	glConfig.uiViewportHeight = pixelHeight;
+
+	if (windowWidth <= 0 || windowHeight <= 0 || pixelWidth <= 0 || pixelHeight <= 0) {
+		return;
+	}
+
+	const SDL_DisplayID primaryDisplay = SDL_GetPrimaryDisplay();
+	if (primaryDisplay == 0) {
+		return;
+	}
+
+	SDL_Rect primaryBounds;
+	if (!SDL_GetDisplayBounds(primaryDisplay, &primaryBounds)) {
+		return;
+	}
+
+	const int windowRight = windowX + windowWidth;
+	const int windowBottom = windowY + windowHeight;
+	const int primaryRight = primaryBounds.x + primaryBounds.w;
+	const int primaryBottom = primaryBounds.y + primaryBounds.h;
+
+	const int overlapLeft = (windowX > primaryBounds.x) ? windowX : primaryBounds.x;
+	const int overlapTop = (windowY > primaryBounds.y) ? windowY : primaryBounds.y;
+	const int overlapRight = (windowRight < primaryRight) ? windowRight : primaryRight;
+	const int overlapBottom = (windowBottom < primaryBottom) ? windowBottom : primaryBottom;
+
+	if (overlapRight <= overlapLeft || overlapBottom <= overlapTop) {
+		return;
+	}
+
+	const float pixelScaleX = static_cast<float>(pixelWidth) / static_cast<float>(windowWidth);
+	const float pixelScaleY = static_cast<float>(pixelHeight) / static_cast<float>(windowHeight);
+	const float localLeft = static_cast<float>(overlapLeft - windowX);
+	const float localTop = static_cast<float>(overlapTop - windowY);
+	const float localRight = static_cast<float>(overlapRight - windowX);
+	const float localBottom = static_cast<float>(overlapBottom - windowY);
+
+	int pixelLeft = static_cast<int>(floorf(localLeft * pixelScaleX));
+	int pixelTop = static_cast<int>(floorf(localTop * pixelScaleY));
+	int pixelRight = static_cast<int>(ceilf(localRight * pixelScaleX));
+	int pixelBottom = static_cast<int>(ceilf(localBottom * pixelScaleY));
+
+	pixelLeft = idMath::ClampInt(0, pixelWidth, pixelLeft);
+	pixelTop = idMath::ClampInt(0, pixelHeight, pixelTop);
+	pixelRight = idMath::ClampInt(pixelLeft, pixelWidth, pixelRight);
+	pixelBottom = idMath::ClampInt(pixelTop, pixelHeight, pixelBottom);
+
+	const int viewportWidth = pixelRight - pixelLeft;
+	const int viewportHeight = pixelBottom - pixelTop;
+	if (viewportWidth <= 0 || viewportHeight <= 0) {
+		return;
+	}
+
+	glConfig.uiViewportX = pixelLeft;
+	glConfig.uiViewportY = pixelTop;
+	glConfig.uiViewportWidth = viewportWidth;
+	glConfig.uiViewportHeight = viewportHeight;
+}
+
 static void SDL3_RefreshWindowPlacement(void) {
 	if (!s_sdlWindow) {
 		return;
@@ -1287,6 +1392,8 @@ static void SDL3_RefreshWindowPlacement(void) {
 		glConfig.vidWidth = pixelWidth;
 		glConfig.vidHeight = pixelHeight;
 	}
+
+	SDL3_UpdatePrimaryDisplayViewport(x, y, width, height, pixelWidth, pixelHeight);
 }
 
 static bool SDL3_ApplyScreenParms(glimpParms_t parms) {

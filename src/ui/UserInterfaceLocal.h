@@ -131,6 +131,7 @@ public:
 	virtual void				Touch( const char *name );
 	virtual void				WritePrecacheCommands( idFile *f );
 	virtual void				SetSize( float width, float height );
+	void						SetAspectCorrection( bool enabled );
 	virtual void				BeginLevelLoad();
 	virtual void				EndLevelLoad();
 	virtual void				Reload( bool all );

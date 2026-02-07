@@ -295,6 +295,8 @@ void idGameLocal::Clear( void ) {
 	time = 0;
 	autoScreenshotStartTime = 0;
 	autoScreenshotPending = false;
+	autoMachinegunImpactStartTime = 0;
+	autoMachinegunImpactPending = false;
 	vacuumAreaNum = 0;
 
 // RAVEN BEGIN
@@ -2044,6 +2046,16 @@ void idGameLocal::InitFromNewMap( const char *mapName, idRenderWorld *renderWorl
 		Printf( "AutoScreenshot: armed (delay %d ms)\n", g_autoScreenshotDelayMs.GetInteger() );
 	}
 
+	autoMachinegunImpactStartTime = autoScreenshotStartTime;
+	const bool autoMachinegunImpact = g_autoMachinegunImpact.GetBool();
+	const bool autoMachinegunImpactCvar = cvarSystem->GetCVarBool( "g_autoMachinegunImpact" );
+	autoMachinegunImpactPending = autoMachinegunImpact || autoMachinegunImpactCvar;
+	if ( autoMachinegunImpactPending ) {
+		Printf( "AutoMachinegunImpact: armed (delay %d ms, distance %.1f)\n",
+			g_autoMachinegunImpactDelayMs.GetInteger(),
+			g_autoMachinegunImpactDistance.GetFloat() );
+	}
+
 	Printf( "---------------------------------------------\n" );
 }
 
@@ -3782,6 +3794,7 @@ TIME_THIS_SCOPE("idGameLocal::RunFrame - gameDebug.BeginFrame()");
 		if ( isLastPredictFrame ) {
 			// jscott: effect system uses gravity and the player PVS
 			bse->EndFrame();
+			CheckAutoMachinegunImpact();
 		}
 
 		// do multiplayer related stuff
@@ -3996,6 +4009,100 @@ bool idGameLocal::Draw( int clientNum ) {
 // RAVEN END
 	CheckAutoScreenshot();
 	return true;
+}
+
+/*
+================
+idGameLocal::CheckAutoMachinegunImpact
+
+Take a one-shot machinegun impact effect sample after map load, for deterministic BSE visual debugging.
+================
+*/
+void idGameLocal::CheckAutoMachinegunImpact( void ) {
+	const bool autoMachinegunImpact = g_autoMachinegunImpact.GetBool();
+	const bool autoMachinegunImpactCvar = cvarSystem->GetCVarBool( "g_autoMachinegunImpact" );
+	const bool wantAutoMachinegunImpact = autoMachinegunImpact || autoMachinegunImpactCvar;
+
+	if ( wantAutoMachinegunImpact ) {
+		if ( !autoMachinegunImpactPending ) {
+			autoMachinegunImpactPending = true;
+			autoMachinegunImpactStartTime = Sys_Milliseconds();
+		}
+	} else if ( autoMachinegunImpactPending ) {
+		autoMachinegunImpactPending = false;
+	}
+
+	if ( !autoMachinegunImpactPending ) {
+		return;
+	}
+
+	const int nowMs = Sys_Milliseconds();
+	const int delayMs = g_autoMachinegunImpactDelayMs.GetInteger();
+	if ( delayMs > 0 && ( nowMs - autoMachinegunImpactStartTime ) < delayMs ) {
+		return;
+	}
+
+	idPlayer *player = GetLocalPlayer();
+	if ( !player ) {
+		return;
+	}
+
+	const idDecl *effect = NULL;
+	const char *overrideEffectName = g_autoMachinegunImpactEffect.GetString();
+	if ( overrideEffectName && *overrideEffectName ) {
+		effect = ( const idDecl * )declManager->FindEffect( overrideEffectName, false );
+	}
+
+	idStr hitscanDefName;
+	const idDeclEntityDef *weaponDef = FindEntityDef( "weapon_machinegun", false );
+	if ( weaponDef ) {
+		hitscanDefName = weaponDef->dict.GetString( "def_hitscan" );
+	}
+	const idDeclEntityDef *hitscanDef = ( !hitscanDefName.IsEmpty() ) ? FindEntityDef( hitscanDefName.c_str(), false ) : NULL;
+	const rvDeclMatType *metalType = declManager->FindMaterialType( "metal", false );
+
+	if ( !effect && hitscanDef ) {
+		effect = GetEffect( hitscanDef->dict, "fx_impact", metalType );
+		if ( !effect ) {
+			effect = GetEffect( hitscanDef->dict, "fx_impact", NULL );
+		}
+	}
+	if ( !effect && weaponDef ) {
+		effect = GetEffect( weaponDef->dict, "fx_impact", metalType );
+		if ( !effect ) {
+			effect = GetEffect( weaponDef->dict, "fx_impact", NULL );
+		}
+	}
+
+	idVec3 viewOrigin;
+	idMat3 viewAxis;
+	player->GetViewPos( viewOrigin, viewAxis );
+
+	const float distance = idMath::ClampFloat( 64.0f, 4096.0f, g_autoMachinegunImpactDistance.GetFloat() );
+	const idVec3 traceEnd = viewOrigin + viewAxis[ 0 ] * distance;
+
+	trace_t tr;
+	TracePoint( player, tr, viewOrigin, traceEnd, MASK_SHOT_RENDERMODEL | CONTENTS_WATER | CONTENTS_PROJECTILE, player );
+
+	const idVec3 impactPos = ( tr.fraction < 1.0f ) ? tr.c.point : tr.endpos;
+	const idMat3 impactAxis = ( tr.fraction < 1.0f ) ? tr.c.normal.ToMat3() : viewAxis;
+
+	if ( effect ) {
+		PlayEffect( effect, impactPos, impactAxis, false, traceEnd, false, false, EC_IMPACT );
+		common->Printf( "AutoMachinegunImpact: played '%s' frac=%.3f pos=(%.1f %.1f %.1f) elapsed=%dms\n",
+			effect->GetName(),
+			tr.fraction,
+			impactPos.x, impactPos.y, impactPos.z,
+			nowMs - autoMachinegunImpactStartTime );
+	} else {
+		common->Printf( "AutoMachinegunImpact: unable to resolve machinegun fx_impact (def_hitscan='%s', override='%s')\n",
+			hitscanDefName.c_str(),
+			overrideEffectName ? overrideEffectName : "" );
+	}
+
+	autoMachinegunImpactPending = false;
+	g_autoMachinegunImpact.SetBool( false );
+	cvarSystem->SetCVarBool( "g_autoMachinegunImpact", false );
 }
 
 /*

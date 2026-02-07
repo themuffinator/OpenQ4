@@ -528,6 +528,10 @@ idCVar g_testPostProcess(			"g_testPostProcess",		"",				CVAR_GAME, "name of mat
 idCVar g_autoScreenshot(			"g_autoScreenshot",			"0",			CVAR_GAME | CVAR_BOOL | CVAR_NOCHEAT, "when enabled, take a screenshot after map load" );
 idCVar g_autoScreenshotDelayMs(	"g_autoScreenshotDelayMs",	"10000",		CVAR_GAME | CVAR_INTEGER | CVAR_NOCHEAT, "delay in ms after map load before taking an auto screenshot" );
 idCVar g_autoScreenshotQuit(		"g_autoScreenshotQuit",		"1",			CVAR_GAME | CVAR_BOOL | CVAR_NOCHEAT, "quit after taking an auto screenshot" );
+idCVar g_autoMachinegunImpact(		"g_autoMachinegunImpact",	"0",			CVAR_GAME | CVAR_BOOL | CVAR_NOCHEAT, "when enabled, auto-spawn a one-shot machinegun impact effect after map load" );
+idCVar g_autoMachinegunImpactDelayMs( "g_autoMachinegunImpactDelayMs", "10000",	CVAR_GAME | CVAR_INTEGER | CVAR_NOCHEAT, "delay in ms after map load before auto-spawning machinegun impact effect" );
+idCVar g_autoMachinegunImpactDistance( "g_autoMachinegunImpactDistance", "512",	CVAR_GAME | CVAR_FLOAT | CVAR_NOCHEAT, "trace distance for auto machinegun impact effect test" );
+idCVar g_autoMachinegunImpactEffect( "g_autoMachinegunImpactEffect", "",			CVAR_GAME | CVAR_NOCHEAT, "optional explicit effect decl name override for auto machinegun impact test" );
 idCVar g_testModelAnimate(			"g_testModelAnimate",		"0",			CVAR_GAME | CVAR_INTEGER, "test model animation,\n"
 																							"0 = cycle anim with origin reset\n"
 																							"1 = cycle anim with fixed origin\n"

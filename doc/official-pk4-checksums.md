@@ -3,7 +3,7 @@
 This table captures the PK4 checksums loaded from the installed game directory:
 
 - Install path: `C:\Program Files (x86)\Steam\steamapps\common\Quake 4\q4base`
-- Source: `q4base/logs/openq4.log` startup lines (`Loaded pk4 ... with checksum ...`)
+- Source: `logs/openq4.log` startup lines (`Loaded pk4 ... with checksum ...`) under `fs_savepath\<gameDir>\`
 - Checksum format: engine PK4 checksum (`MD4` of zip-entry CRC list, as computed in `src/framework/FileSystem.cpp`)
 
 ## Required official baseline

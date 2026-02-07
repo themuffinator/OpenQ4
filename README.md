@@ -1,23 +1,37 @@
 # OpenQ4
 
-OpenQ4 is an open-source, drop-in engine replacement for Quake 4 currently under development and based upon [Quake4Doom](https://github.com/idSoftware/Quake4Doom)..
+OpenQ4 is an open-source Quake 4 codebase replacement currently under development and based upon [Quake4Doom](https://github.com/idSoftware/Quake4Doom).
+
+OpenQ4 is moving toward a **complete code replacement** (engine + game code) to support a fully modern, refined, and open-source solution.
 
 **Goals**
-- Provide a drop-in replacement engine for Quake 4 with compatibility for original game DLLs.
+- Deliver a complete code replacement for Quake 4 (engine + game code).
+- Run against genuine Quake 4 assets (PK4s) without redistributing them.
 - Maintain feature parity for both single-player and multiplayer.
-- Modernize rendering, audio, and platform support while preserving Quake 4 behavior.
+- Modernize rendering, audio, and platform support while preserving shipped-content behavior where practical.
 - Keep documentation current as significant changes land.
 - Reach full support for modern systems across Windows, Linux, and macOS with x64 as the active baseline architecture.
+
+**Non-Goals**
+- Compatibility with the proprietary Quake 4 game DLLs (or third-party game DLLs built against the original SDK). OpenQ4 intentionally keeps full freedom to evolve the project.
 
 **Audio**
 - WAV and Ogg Vorbis (`.ogg`) assets are supported (Ogg decoded via stb_vorbis).
 
 **Assets**
-- This repository is engine-only and does not ship game assets (audio, textures, or media).
+- This repository ships code only (engine + game code) and does not ship proprietary game assets (audio, textures, or media).
 - Users must provide their own genuine Quake 4 installation to run the game.
 - OpenQ4 validates required official `q4base` PK4 checksums at startup by default (`fs_validateOfficialPaks 1`) and refuses to continue when required stock assets are missing or modified.
 - Current baseline checksum table: `doc/official-pk4-checksums.md`.
 - Startup now auto-discovers `fs_basepath` (`override -> CWD -> Steam -> GOG`) and uses `fs_homepath` as the writable root (with `fs_savepath` defaulting to it).
+
+**Game Directory (`openbase/`)**
+- OpenQ4 uses a single unified game directory: `openbase/`.
+- Both in-tree game modules live in the same folder:
+  - `game_sp` (single-player)
+  - `game_mp` (multiplayer)
+- The engine selects SP/MP seamlessly; these are not treated as two separate “mods”.
+- Configuration is unified in one place instead of split SP/MP setups.
 
 **Build (Meson + Ninja)**
 - Install Meson and Ninja.
@@ -67,8 +81,8 @@ OpenQ4 is an open-source, drop-in engine replacement for Quake 4 currently under
 - Release completion checklist for changelog drafting: `doc/release-completion.md`.
 
 **Rules**
-- Always strive for binary compatibility with original Quake 4 game modules (DLLs).
-- Preserve behavior expected by the Quake 4 SDK and shipped game data.
+- OpenQ4 does not target binary compatibility with the proprietary Quake 4 game DLLs; it ships its own game modules.
+- Preserve behavior expected by the shipped game data (PK4s) where practical.
 - Document significant changes for future maintainers.
 - Keep credits accurate and up to date.
 - Keep pure server behavior anchored to the official Quake 4 base PK4 set.
