@@ -1,0 +1,521 @@
+windowDef Desktop
+{
+	rect	0 ,0 ,640 ,480
+	visible	1
+	menugui	1
+	backcolor	0,0,0,1
+	definevec4	"white_8"	1,1,1,0.8
+	definevec4	"corner"	0.564,0.603,0.286,0.4
+	definevec4	"orange"	0.890,0.537,0,1
+	float	"curr"	0
+
+	onESC {
+		if ("desktop::curr" == 1 && "desktop::active" == 0) {
+			resettime "anim_pop_exitOut" "0" ;
+			set "cmd" "play main_menu_selection" ;
+		}
+	}
+	windowDef msg_black
+	{
+		rect	0,0,640,480
+		visible	1
+		backcolor	0,0,0,0.94
+	}
+	windowDef msg_bg
+	{
+		rect	140,0,360,480
+		visible	1
+		background	"gfx/guis/mainmenu/popup_bg"
+		matcolor	1,1,1,1
+	}
+	windowDef msg_top
+	{
+		rect	140,129,360,23
+		visible	1
+		background	"gfx/guis/mainmenu/popup_top"
+		matcolor	0,0,0,0.7
+	}
+	windowDef msg_mid
+	{
+		rect	140,152,360,143
+		visible	1
+		background	"gfx/guis/mainmenu/popup_mid"
+		matcolor	0,0,0,0.7
+	}
+	windowDef msg_btm
+	{
+		rect	140,295,360,46
+		visible	1
+		background	"gfx/guis/mainmenu/popup_btm"
+		matcolor	0,0,0,0.7
+	}
+	windowDef corner1
+	{
+		rect	169,172,14,14
+		visible	1
+		background	"gfx/guis/mainmenu/corner"
+		matcolor	0.564,0.603,0.286,0.4
+	}
+	windowDef corner2
+	{
+		rect	169,212,14,14
+		visible	1
+		background	"gfx/guis/mainmenu/corner"
+		matcolor	0.564,0.603,0.286,0.4
+	}
+	windowDef corner3
+	{
+		rect	169,252,14,14
+		visible	1
+		background	"gfx/guis/mainmenu/corner"
+		matcolor	0.564,0.603,0.286,0.4
+	}
+	windowDef corner4
+	{
+		rect	169,292,14,14
+		visible	1
+		background	"gfx/guis/mainmenu/corner"
+		matcolor	0.564,0.603,0.286,0.4
+	}
+	windowDef b1
+	{
+		rect	159,162,324,38
+		visible	1
+		background	"gfx/guis/mainmenu/b6_light"
+		matcolor	0.545,0.588,0.294,0.4
+	}
+	windowDef b2
+	{
+		rect	159,202,324,38
+		visible	1
+		background	"gfx/guis/mainmenu/b6_light"
+		matcolor	0.545,0.588,0.294,0.4
+	}
+	windowDef b3
+	{
+		rect	159,242,324,38
+		visible	1
+		background	"gfx/guis/mainmenu/b6_light"
+		matcolor	0.545,0.588,0.294,0.4
+	}
+	windowDef b4
+	{
+		rect	159,282,324,38
+		visible	1
+		background	"gfx/guis/mainmenu/b6_light"
+		matcolor	0.545,0.588,0.294,0.4
+	}
+	windowDef t1
+	{
+		rect	160,166,321,29
+		forecolor	1,1,1,0.6
+		text	"#str_200320"
+		visible	1
+		textscale	0.33
+		font	"fonts/marine"
+		textalignx	22
+
+		onAction {
+			set cmd "restart" ;
+			
+			set "cmd" "play main_menu_selection" ;
+		}
+
+		onMouseEnter {
+			set "t1::forecolor_w" "1";
+			set "b1::matcolor_w" "0.8";
+			set "corner1::matcolor"  "$desktop::orange" ;
+			set "tip::visible" "1" ;
+			set "tip::text" "#str_200321" ;
+			
+			set "cmd" "play main_menu_mouseover" ;	
+		}
+
+		onMouseExit {
+			transition "b1::matcolor_w" "0.8" "0.4" "300" ;
+			transition "t1::forecolor_w"  "1" "0.6" "300" ; 
+			transition "corner1::matcolor"  "$desktop::orange" "$desktop::corner" "300" ;
+			set "tip::visible" "0";
+		}
+
+	}
+	windowDef t2
+	{
+		rect	160,206,321,29
+		forecolor	1,1,1,0.6
+		text	"#str_200001"
+		visible	1
+		textscale	0.33
+		font	"fonts/marine"
+		textalignx	22
+
+		onAction {
+			set	"cmd"	"disconnect mainmenu fromRestart_toLoad" ;
+			
+			set "cmd" "play main_menu_selection" ;
+		}
+
+		onMouseEnter {
+			set "t2::forecolor_w" "1";
+			set "b2::matcolor_w" "0.8";
+			set "corner2::matcolor"  "$desktop::orange" ;
+			set "tip::visible" "1" ;
+			set "tip::text" "#str_200914" ;
+			
+			set "cmd" "play main_menu_mouseover" ;	
+		}
+
+		onMouseExit {
+			transition "b2::matcolor_w" "0.8" "0.4" "300" ;
+			transition "t2::forecolor_w"  "1" "0.6" "300" ; 
+			transition "corner2::matcolor"  "$desktop::orange" "$desktop::corner" "300" ;
+			set "tip::visible" "0";
+		}
+
+	}
+	windowDef t3
+	{
+		rect	160,246,321,29
+		forecolor	1,1,1,0.6
+		text	"#str_200188"
+		visible	1
+		textscale	0.33
+		font	"fonts/marine"
+		textalignx	22
+
+		onAction {
+			set "cmd" "disconnect mainmenu" ;
+			
+			set "cmd" "play main_menu_selection" ;
+		}
+
+		onMouseEnter {
+			set "t3::forecolor_w" "1";
+			set "b3::matcolor_w" "0.8";
+			set "corner3::matcolor"  "$desktop::orange" ;
+			set "tip::visible" "1" ;
+			set "tip::text" "#str_200915" ;
+			
+			set "cmd" "play main_menu_mouseover" ;	
+		}
+
+		onMouseExit {
+			transition "b3::matcolor_w" "0.8" "0.4" "300" ;
+			transition "t3::forecolor_w"  "1" "0.6" "300" ; 
+			transition "corner3::matcolor"  "$desktop::orange" "$desktop::corner" "300" ;
+			set "tip::visible" "0";
+		}
+
+	}
+	windowDef t4
+	{
+		rect	160,286,321,29
+		forecolor	1,1,1,0.6
+		text	"#str_200169"
+		visible	1
+		textscale	0.33
+		font	"fonts/marine"
+		textalignx	22
+
+		onAction {
+			resettime "anim_pop_exitIn" "0" ;
+			
+			set "cmd" "play main_menu_selection" ;
+		}
+
+		onMouseEnter {
+			set "t4::forecolor_w" "1";
+			set "b4::matcolor_w" "0.8";
+			set "corner4::matcolor"  "$desktop::orange" ;
+			set "tip::visible" "1" ;
+			set "tip::text" "#str_200323" ;
+			
+			set "cmd" "play main_menu_mouseover" ;	
+		}
+
+		onMouseExit {
+			transition "b4::matcolor_w" "0.8" "0.4" "300" ;
+			transition "t4::forecolor_w"  "1" "0.6" "300" ; 
+			transition "corner4::matcolor"  "$desktop::orange" "$desktop::corner" "300" ;
+			set "tip::visible" "0";
+		}
+
+	}
+	windowDef tip
+	{
+		rect	0,362,640,30
+		visible	1
+		forecolor	1,1,1,1
+		text	""
+		textscale	0.2
+		textalign	1
+		font	"fonts/lowpixel"
+	}
+	windowDef q4text
+	{
+		rect	145,91,258,63
+		visible	1
+		background	"gfx/guis/mainmenu/q4text"
+		matcolor	1,1,1,1
+	}
+	windowDef pop_p_exit
+	{
+		rect	0,0,640,480
+		visible	0
+		windowDef pop_exit_black
+		{
+			rect	0,0,640,480
+			visible	1
+			backcolor	0,0,0,0
+		}
+		windowDef pop_exit_bg
+		{
+			rect	160,33,320,400
+			visible	1
+			background	"gfx/guis/mainmenu/popup_bg"
+			matcolor	0,0,0,1
+		}
+		windowDef pop_exit_top
+		{
+			rect	160,155,320,19
+			visible	1
+			background	"gfx/guis/mainmenu/popup_top"
+			matcolor	0,0,0,0
+		}
+		windowDef pop_exit_mid
+		{
+			rect	160,174,320,79
+			visible	1
+			background	"gfx/guis/mainmenu/popup_mid"
+			matcolor	0,0,0,0
+		}
+		windowDef pop_exit_btm
+		{
+			rect	160,253,320,38
+			visible	1
+			background	"gfx/guis/mainmenu/popup_btm"
+			matcolor	0,0,0,0
+		}
+		windowDef pop_exit
+		{
+			rect	0,0,640,480
+			visible	0
+			windowDef pop_exit_title
+			{
+				rect	180,151,146,17
+				visible	1
+				forecolor	1,1,1,0.8
+				text	"#str_200169"
+				textscale	.28
+				font	"fonts/marine"
+				textspacing	-1
+			}
+			windowDef pop_exit_text
+			{
+				rect	182,200,260,51
+				visible	1
+				forecolor	1,1,1,0.8
+				text	"#str_200170"
+				textscale	0.24
+				font	"fonts/lowpixel"
+			}
+			windowDef pop_exit_yes
+			{
+				rect	180,251,120,30
+				visible	1
+				background	"gfx/guis/mainmenu/b4_light"
+				matcolor	0.545,0.588,0.294,0.4
+			}
+			windowDef pop_exit_t_yes
+			{
+				rect	200,254,88,17
+				visible	1
+				forecolor	1,1,1,0.8
+				text	"#str_200157"
+				textscale	.28
+				font	"fonts/marine"
+			}
+			windowDef pop_exit_yes_corner
+			{
+				rect	190,259,11,11
+				visible	1
+				background	"gfx/guis/mainmenu/corner"
+				matcolor	0.564,0.603,0.286,0.4
+			}
+			windowDef pop_exit_no
+			{
+				rect	338,251,120,30
+				visible	1
+				background	"gfx/guis/mainmenu/b4_light"
+				matcolor	0.545,0.588,0.294,0.4
+			}
+			windowDef pop_exit_t_no
+			{
+				rect	358,254,88,17
+				visible	1
+				forecolor	1,1,1,0.8
+				text	"#str_200158"
+				textscale	.28
+				font	"fonts/marine"
+			}
+			windowDef pop_exit_no_corner
+			{
+				rect	348,259,11,11
+				visible	1
+				background	"gfx/guis/mainmenu/corner"
+				matcolor	0.564,0.603,0.286,0.4
+			}
+		}
+	}
+	windowDef pop_b_exit_yes
+	{
+		rect	184,254,125,23
+		visible	0
+
+		onMouseEnter {
+			if ("desktop::active" == 0) {
+				stoptransitions "pop_b_exit_yes" ;
+				
+				set "pop_exit_yes::matcolor_w" "0.8" ;
+				transition "pop_exit_t_yes::forecolor" "$desktop::white_8" "$desktop::orange" "0" ; 
+				transition "pop_exit_yes_corner::matcolor" "$desktop::corner" "$desktop::orange" "0" ;
+				
+				set "pop_exit_t_yes::textscale" "0.29" ; 
+				
+				set "cmd" "play main_menu_mouseover" ;	
+			}
+		}
+
+		onMouseExit {
+			if ("desktop::active" == 0) {
+				transition "pop_exit_yes::matcolor_w" "0.8" "0.4" "300" ;
+				transition "pop_exit_t_yes::forecolor"  "$desktop::orange" "$desktop::white_8" "300" ; 
+				transition "pop_exit_yes_corner::matcolor"  "$desktop::orange" "$desktop::corner" "300" ; 
+				
+				transition "pop_exit_t_yes::textscale" "0.29" "0.28" "300" ;
+			}
+		}
+
+		onAction {
+			set "cmd" "quit" ;
+			
+			set "cmd" "play main_menu_selection" ;
+		}
+
+	}
+	windowDef pop_b_exit_no
+	{
+		rect	342,254,125,23
+		visible	0
+
+		onMouseEnter {
+			if ("desktop::active" == 0) {
+				stoptransitions "pop_b_exit_no" ;
+				
+				set "pop_exit_no::matcolor_w" "0.8" ;
+				transition "pop_exit_t_no::forecolor" "$desktop::white_8" "$desktop::orange" "0" ; 
+				transition "pop_exit_no_corner::matcolor" "$desktop::corner" "$desktop::orange" "0" ;
+				
+				set "pop_exit_t_no::textscale" "0.29" ; 
+				
+				set "cmd" "play main_menu_mouseover" ;	
+			}
+		}
+
+		onMouseExit {
+			if ("desktop::active" == 0) {
+				transition "pop_exit_no::matcolor_w" "0.8" "0.4" "300" ;
+				transition "pop_exit_t_no::forecolor"  "$desktop::orange" "$desktop::white_8" "300" ; 
+				transition "pop_exit_no_corner::matcolor"  "$desktop::orange" "$desktop::corner" "300" ; 
+				
+				transition "pop_exit_t_no::textscale" "0.29" "0.28" "300" ;
+			}
+		}
+
+		onAction {
+			set "desktop::active" "1" ;
+			resettime "anim_pop_exitOut" "0" ;
+			
+			set "cmd" "play main_menu_selection" ;
+		}
+
+	}
+	windowDef anim_pop_exitIn
+	{
+		rect	0,0,1,1
+		visible	1
+		notime	1
+
+		onTime 0 {
+			set "pop_p_exit::visible" "1" ;
+			set "t1::visible" "0" ;
+			set "t2::visible" "0" ;
+			set "t3::visible" "0" ;
+			set "t4::visible" "0" ;
+			transition "pop_exit_black::backcolor_w" "0" "1" "200" ;
+			transition "pop_exit_bg::matcolor" "0,0,0,1" "1,1,1,1" "200" ;
+			transition "pop_exit_top::matcolor_w" "0" "0.7" "200" ;
+			transition "pop_exit_mid::matcolor_w" "0" "0.7" "200" ;
+			transition "pop_exit_btm::matcolor_w" "0" "0.7" "200" ;
+			
+			// buttons
+			transition "pop_exit_yes::matcolor_w" "0" "0.4" "150" ;
+			transition "pop_exit_t_yes::forecolor_w"  "0" "0.8" "150" ; 
+			transition "pop_exit_yes_corner::matcolor_w"  "0" "0.4" "150" ; 
+			
+			transition "pop_exit_no::matcolor_w" "0" "0.4" "150" ;
+			transition "pop_exit_t_no::forecolor_w"  "0" "0.8" "150" ; 
+			transition "pop_exit_no_corner::matcolor_w"  "0" "0.4" "150" ; 
+		}
+
+		onTime +200 {
+			set "desktop::curr" "1" ;
+			set "desktop::active" "0" ;
+			set "pop_exit::visible" "1" ;
+			set "pop_b_exit_yes::visible" "1" ;
+			set "pop_b_exit_no::visible" "1" ;
+		}
+
+	}
+	windowDef anim_pop_exitOut
+	{
+		rect	0,0,1,1
+		visible	1
+		notime	1
+
+		onTime 0 {
+			set "pop_exit::visible" "0" ;
+			set "pop_b_exit_yes::visible" "0" ;
+			set "pop_b_exit_no::visible" "0" ;	
+			set "desktop::active" "1" ;
+		}
+
+		onTime +50 {
+			transition "pop_exit_black::backcolor_w" "1" "0" "250" ;
+			transition "pop_exit_bg::matcolor" "1,1,1,1" "0,0,0,1" "250" ;
+			transition "pop_exit_top::matcolor_w" "0.7" "0" "200" ;
+			transition "pop_exit_mid::matcolor_w" "0.7" "0" "200" ;
+			transition "pop_exit_btm::matcolor_w" "0.7" "0" "200" ;
+			
+			// buttons
+			transition "pop_exit_yes::matcolor_w" "0.8" "0" "150" ;
+			transition "pop_exit_t_yes::forecolor_w"  "1" "0" "150" ; 
+			transition "pop_exit_yes_corner::matcolor_w"  "1" "0" "150" ; 
+			
+			transition "pop_exit_no::matcolor_w" "0.8" "0" "150" ;
+			transition "pop_exit_t_no::forecolor_w"  "1" "0" "150" ; 
+			transition "pop_exit_no_corner::matcolor_w"  "1" "0" "150" ; 
+		}
+
+		onTime +250 {
+			set "desktop::curr" "0" ;
+			set "pop_p_exit::visible" "0" ;
+			set "t1::visible" "1" ;
+			set "t2::visible" "1" ;
+			set "t3::visible" "1" ;
+			set "t4::visible" "1" ;
+			set "desktop::active" "0" ;
+		}
+
+	}
+}

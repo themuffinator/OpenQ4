@@ -1,0 +1,65 @@
+windowDef Desktop {
+	rect 0,0,640,480
+	nocursor	1
+	menugui	1
+	backcolor 0,0,0,1
+
+	onActivate {
+		resetTime "Anim" "0" ;
+	}
+
+	windowDef UacText1Parent {
+		rect		0, 211, 640, 150
+		visible 1
+
+		windowDef UacText1 {
+			rect		170, 0, 300, 30
+			visible		1
+			text		"LOADING"
+			font		"fonts/lowpixel"
+			textscale	0.4
+			textalign 	1
+			forecolor	0.2, 0.6, 0.7, 1
+		}
+		windowDef UacText2 {
+			rect		170, 30, 300, 30
+			visible		1
+			text		"UAC TEXT"
+			font		"fonts/lowpixel"
+			textscale	0.4
+			textalign 	1
+			forecolor	0.2, 0.6, 0.7, 0
+		}		
+	}
+
+	windowDef Anim {
+		rect 0,0,0,0
+		notime 1
+
+		onTime 0 {
+/*
+			set	"cmd"	"play guisounds_IntroVO" ;
+*/
+			transition "UacText1::forecolor" "0.2 0.6 0.7 1" "0.2 0.6 0.7 0" "1000" ;
+			transition "UacText2::forecolor" "0.2 0.6 0.7 0" "0.2 0.6 0.7 1" "1000" ;
+		}
+		onTime 500 {
+			set "Click::rect" "0 0 640 480" ;
+		}
+		onTime 40990 {
+			transition "UacText2::forecolor" "0.2 0.6 0.7 1" "0.2 0.6 0.7 0" "1000" ;
+		}		
+		onTime 41990 {
+			set	"cmd"	"startgame" ;
+		}	
+	}
+	
+	windowDef Click {
+		rect 0,0,0,0
+
+		onAction {
+			set	"cmd"	"startgame" ;		
+		}
+	}
+
+}

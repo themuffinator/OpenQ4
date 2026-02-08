@@ -50,6 +50,10 @@ idSimpleWindow::idSimpleWindow(idWindow *win) {
 	textAlign = win->textAlign;
 	textAlignx = win->textAlignx;
 	textAligny = win->textAligny;
+	forceAspectWidth = win->forceAspectWidth;
+	forceAspectHeight = win->forceAspectHeight;
+	screenAlignX = win->screenAlignX;
+	screenAlignY = win->screenAlignY;
 	background = win->background;
 	flags = win->flags;
 	textShadow = win->textShadow;
@@ -192,6 +196,28 @@ void idSimpleWindow::CalcClientRect(float xofs, float yofs) {
 	
 	drawRect.x += xofs;
 	drawRect.y += yofs;
+
+	if ( dc != NULL ) {
+		float xExpand = 0.0f;
+		float yExpand = 0.0f;
+		dc->GetVirtualScreenExpansion( forceAspectWidth, forceAspectHeight, xExpand, yExpand );
+
+		if ( xExpand > 0.0f ) {
+			if ( screenAlignX == idWindow::SCREEN_ALIGN_X_LEFT ) {
+				drawRect.x -= xExpand;
+			} else if ( screenAlignX == idWindow::SCREEN_ALIGN_X_RIGHT ) {
+				drawRect.x += xExpand;
+			}
+		}
+
+		if ( yExpand > 0.0f ) {
+			if ( screenAlignY == idWindow::SCREEN_ALIGN_Y_TOP ) {
+				drawRect.y -= yExpand;
+			} else if ( screenAlignY == idWindow::SCREEN_ALIGN_Y_BOTTOM ) {
+				drawRect.y += yExpand;
+			}
+		}
+	}
 
 	clientRect = drawRect;
 	if (rect.h() > 0.0 && rect.w() > 0.0) {

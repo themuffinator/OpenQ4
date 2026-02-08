@@ -1,0 +1,306 @@
+windowDef Desktop
+{
+	rect	0, 0, 640, 480
+	selected	0
+	menugui	1
+	visible	1
+	definevec4	"corner"	0.564,0.603,0.286,0.4
+	definevec4	"corner_0"	0.564,0.603,0.286,0
+	definevec4	"white"	1,1,1,1
+	definevec4	"white_8"	1,1,1,0.8
+	definevec4	"white_0"	1,1,1,0
+	definevec4	"orange"	0.890,0.537,0,1
+
+	onNamedEvent CDKey {
+		setFocus "cd_key_entry" ;
+	}
+
+	onNamedEvent Prompt {
+		setFocus "prompt_entry" ;
+	}
+
+	windowDef msg_black
+	{
+		rect	0,0,640,480
+		visible	1
+		backcolor	0,0,0,0.94
+	}
+	windowDef msg_bg
+	{
+		rect	140,0,360,480
+		visible	1
+		background	"gfx/guis/mainmenu/popup_bg"
+		matcolor	1,1,1,1
+	}
+	windowDef msg_top
+	{
+		rect	140,129,360,23
+		visible	1
+		background	"gfx/guis/mainmenu/popup_top"
+		matcolor	0,0,0,0.7
+	}
+	windowDef msg_mid
+	{
+		rect	140,152,360,157
+		visible	1
+		background	"gfx/guis/mainmenu/popup_mid"
+		matcolor	0,0,0,0.7
+	}
+	windowDef msg_btm
+	{
+		rect	140,309,360,46
+		visible	1
+		background	"gfx/guis/mainmenu/popup_btm"
+		matcolor	0,0,0,0.7
+	}
+	windowDef msg_text
+	{
+		rect	160,162,320,100
+		text	"gui::message"
+		forecolor	1,1,1,1
+		textscale	0.25
+		font	"fonts/lowpixel"
+		visible	1
+	}
+	windowDef msgbox
+	{
+		rect	0,0,640,480
+		visible	"gui::visible_msgbox"
+		windowDef title
+		{
+			rect	160,125,237,17
+			visible	1
+			forecolor	1,1,1,0.8
+			text	"gui::title"
+			textscale	.28
+			font	"fonts/marine"
+			textspacing	-1
+		}
+		windowDef mid
+		{
+			rect	256,312,120,30
+			visible	"gui::visible_mid"
+			background	"gfx/guis/mainmenu/b4_light"
+			matcolor	0.545,0.588,0.294,0.4
+		}
+		windowDef t_mid
+		{
+			rect	276,315,105,17
+			visible	"gui::visible_mid"
+			forecolor	1,1,1,0.8
+			text	"gui::mid"
+			textscale	.28
+			font	"fonts/marine"
+		}
+		windowDef mid_corner
+		{
+			rect	266,320,11,11
+			visible	"gui::visible_mid"
+			background	"gfx/guis/mainmenu/corner"
+			matcolor	0.564,0.603,0.286,0.4
+		}
+		windowDef left
+		{
+			rect	180,312,120,30
+			visible	"gui::visible_left"
+			background	"gfx/guis/mainmenu/b4_light"
+			matcolor	0.545,0.588,0.294,0.4
+		}
+		windowDef t_left
+		{
+			rect	200,315,138,17
+			visible	"gui::visible_left"
+			forecolor	1,1,1,0.8
+			text	"gui::left"
+			textscale	.28
+			font	"fonts/marine"
+		}
+		windowDef left_corner
+		{
+			rect	190,320,11,11
+			visible	"gui::visible_left"
+			background	"gfx/guis/mainmenu/corner"
+			matcolor	0.564,0.603,0.286,0.4
+		}
+		windowDef right
+		{
+			rect	338,312,120,30
+			visible	"gui::visible_right"
+			background	"gfx/guis/mainmenu/b4_light"
+			matcolor	0.545,0.588,0.294,0.4
+		}
+		windowDef t_right
+		{
+			rect	358,315,115,17
+			visible	"gui::visible_right"
+			forecolor	1,1,1,0.8
+			text	"gui::right"
+			textscale	.28
+			font	"fonts/marine"
+		}
+		windowDef right_corner
+		{
+			rect	348,320,11,11
+			visible	"gui::visible_right"
+			background	"gfx/guis/mainmenu/corner"
+			matcolor	0.564,0.603,0.286,0.4
+		}
+		windowDef cd_key
+		{
+			rect	0,0,640,480
+			textscale	0.25
+			visible	"gui::visible_cdkey"
+			windowDef cd_key_bg
+			{
+				rect	160,266,320,36
+				visible	1
+				background	"gfx/guis/mainmenu/b6_light"
+				matcolor	0.545,0.588,0.294,0.4
+			}
+			editDef cd_key_entry
+			{
+				rect	193,274,262,22
+				textscale	.25
+				maxchars	20
+				text	"gui::str_cdkey"
+				font	"fonts/lowpixel"
+				visible	1
+				bordersize	1
+				bordercolor	0,0,0,0.2
+				backcolor	0,0,0,0.2
+
+				onEnter {
+					set "cmd" "left";
+				}
+
+			}
+		}
+		windowDef entry
+		{
+			rect	0,0,640,480
+			textscale	0.25
+			visible	"gui::visible_entry"
+			windowDef prompt_bg
+			{
+				rect	160,266,320,36
+				visible	1
+				background	"gfx/guis/mainmenu/b6_light"
+				matcolor	0.545,0.588,0.294,0.4
+			}
+			editDef prompt_entry
+			{
+				rect	193,274,244,22
+				textscale	.25
+				maxchars	16
+				text	"gui::str_entry"
+				font	"fonts/lowpixel"
+				visible	1
+			}
+		}
+	}
+	windowDef waitbox
+	{
+		rect	0,0,640,480
+		visible	"gui::visible_waitbox"
+		windowDef wait_title
+		{
+			rect	160,126,237,17
+			visible	1
+			forecolor	1,1,1,0.8
+			text	"#str_104318"
+			textscale	.28
+			font	"fonts/marine"
+			textspacing	-1
+		}
+	}
+	windowDef b_mid
+	{
+		rect	259,315,127,24
+		visible	"gui::visible_mid"
+
+		onMouseEnter {
+			stoptransitions "b_mid" ;
+			
+			set "mid::matcolor_w" "0.8" ;
+			transition "t_mid::forecolor" "$desktop::white_8" "$desktop::orange" "0" ; 
+			transition "mid_corner::matcolor" "$desktop::corner" "$desktop::orange" "0" ; 
+			
+			set "t_mid::textscale" "0.29" ; 
+			
+			set "cmd" "play main_menu_mouseover" ;
+		}
+
+		onMouseExit {
+			transition "mid::matcolor_w" "0.8" "0.4" "300" ;
+			transition "t_mid::forecolor"  "$desktop::orange" "$desktop::white_8" "300" ; 
+			transition "mid_corner::matcolor"  "$desktop::orange" "$desktop::corner" "300" ;
+			
+			transition "t_mid::textscale" "0.29" "0.28" "300" ; 
+		}
+
+		onActionRelease {
+			set "cmd" "mid play main_menu_selection" ; 
+		}
+
+	}
+	windowDef b_left
+	{
+		rect	183,315,151,24
+		visible	"gui::visible_left"
+
+		onMouseEnter {
+			stoptransitions "b_left" ;
+			
+			set "left::matcolor_w" "0.8" ;
+			transition "t_left::forecolor" "$desktop::white_8" "$desktop::orange" "0" ; 
+			transition "left_corner::matcolor" "$desktop::corner" "$desktop::orange" "0" ; 
+			
+			set "t_left::textscale" "0.29" ; 
+			
+			set "cmd" "play main_menu_mouseover" ;
+		}
+
+		onMouseExit {
+			transition "left::matcolor_w" "0.8" "0.4" "300" ;
+			transition "t_left::forecolor"  "$desktop::orange" "$desktop::white_8" "300" ; 
+			transition "left_corner::matcolor"  "$desktop::orange" "$desktop::corner" "300" ;
+			
+			transition "t_left::textscale" "0.29" "0.28" "300" ; 
+		}
+
+		onActionRelease {
+			set "cmd" "left play main_menu_selection" ; 
+		}
+
+	}
+	windowDef b_right
+	{
+		rect	341,315,151,24
+		visible	"gui::visible_right"
+
+		onMouseEnter {
+			stoptransitions "b_right" ;
+			
+			set "right::matcolor_w" "0.8" ;
+			transition "t_right::forecolor" "$desktop::white_8" "$desktop::orange" "0" ; 
+			transition "right_corner::matcolor" "$desktop::corner" "$desktop::orange" "0" ; 
+			
+			set "t_right::textscale" "0.29" ; 
+			
+			set "cmd" "play main_menu_mouseover" ;
+		}
+
+		onMouseExit {
+			transition "right::matcolor_w" "0.8" "0.4" "300" ;
+			transition "t_right::forecolor"  "$desktop::orange" "$desktop::white_8" "300" ; 
+			transition "right_corner::matcolor"  "$desktop::orange" "$desktop::corner" "300" ;
+			
+			transition "t_right::textscale" "0.29" "0.28" "300" ; 
+		}
+
+		onActionRelease {
+			set "cmd" "right play main_menu_selection" ; 
+		}
+
+	}
+}

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Emit Meson source paths for the OpenQ4 executable target."""
+"""Emit Meson source paths for OpenQ4 targets."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ import pathlib
 import sys
 
 
-Q4GAME_SOURCES = [
+GAME_SOURCES = [
     "game/Actor.cpp",
     "game/AF.cpp",
     "game/AFEntity.cpp",
@@ -53,7 +53,7 @@ Q4GAME_SOURCES = [
     "game/WorldSpawn.cpp",
 ]
 
-SOURCE_GLOBS = [
+ENGINE_SOURCE_GLOBS = [
     "aas/*.cpp",
     "bse/*.cpp",
     "cm/*.cpp",
@@ -76,6 +76,9 @@ SOURCE_GLOBS = [
     "sys/*.cpp",
     "sys/win32/*.cpp",
     "ui/*.cpp",
+]
+
+GAME_SOURCE_GLOBS = [
     "game/ai/*.cpp",
     "game/anim/*.cpp",
     "game/bots/*.cpp",
@@ -132,6 +135,12 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         default="sdl3",
         help="Win32 platform backend source selection.",
     )
+    parser.add_argument(
+        "--include-game",
+        choices=("true", "false"),
+        default="true",
+        help="Include src/game sources in output.",
+    )
     return parser.parse_args(argv)
 
 
@@ -157,14 +166,17 @@ def main(argv: list[str]) -> int:
     source_set: set[str] = set()
     ordered_sources: list[str] = []
 
-    for rel in Q4GAME_SOURCES:
-        path = src_root / rel
-        if not path.is_file():
-            print(f"Missing expected source file: {path}", file=sys.stderr)
-            return 1
-        add_source(source_set, ordered_sources, pathlib.Path("src") / rel)
+    include_game = args.include_game == "true"
 
-    for pattern in SOURCE_GLOBS:
+    if include_game:
+        for rel in GAME_SOURCES:
+            path = src_root / rel
+            if not path.is_file():
+                print(f"Missing expected source file: {path}", file=sys.stderr)
+                return 1
+            add_source(source_set, ordered_sources, pathlib.Path("src") / rel)
+
+    for pattern in ENGINE_SOURCE_GLOBS:
         matches = sorted(src_root.glob(pattern))
         for match in matches:
             if match.is_file():
@@ -173,6 +185,17 @@ def main(argv: list[str]) -> int:
                     ordered_sources,
                     pathlib.Path("src") / match.relative_to(src_root),
                 )
+
+    if include_game:
+        for pattern in GAME_SOURCE_GLOBS:
+            matches = sorted(src_root.glob(pattern))
+            for match in matches:
+                if match.is_file():
+                    add_source(
+                        source_set,
+                        ordered_sources,
+                        pathlib.Path("src") / match.relative_to(src_root),
+                    )
 
     if args.platform_backend == "sdl3":
         for path in LEGACY_WIN32_SOURCES:

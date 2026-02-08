@@ -85,6 +85,7 @@ idCVar com_autoScreenshot( "com_autoScreenshot", "0", CVAR_SYSTEM | CVAR_BOOL | 
 idCVar com_makingBuild( "com_makingBuild", "0", CVAR_BOOL | CVAR_SYSTEM, "1 when making a build" );
 idCVar com_updateLoadSize( "com_updateLoadSize", "0", CVAR_BOOL | CVAR_SYSTEM | CVAR_NOCHEAT, "update the load size after loading a map" );
 idCVar com_videoRam( "com_videoRam", "64", CVAR_INTEGER | CVAR_SYSTEM | CVAR_NOCHEAT | CVAR_ARCHIVE, "holds the last amount of detected video ram" );
+idCVar com_activeGameModule( "com_activeGameModule", "", CVAR_SYSTEM, "active game module (game_sp/game_mp)" );
 
 idCVar com_product_lang_ext( "com_product_lang_ext", "1", CVAR_INTEGER | CVAR_SYSTEM | CVAR_ARCHIVE, "Extension to use when creating language files." );
 
@@ -2726,6 +2727,15 @@ void idCommonLocal::Async( void ) {
 	}
 }
 
+static bool OpenQ4_IsMultiplayerGameType( const char *gameType ) {
+	return gameType && gameType[0] && idStr::Icmp( gameType, "singleplayer" ) != 0;
+}
+
+static const char *OpenQ4_SelectGameModuleBaseName( void ) {
+	const char *gameType = cvarSystem->GetCVarString( "si_gameType" );
+	return OpenQ4_IsMultiplayerGameType( gameType ) ? "game_mp" : "game_sp";
+}
+
 /*
 =================
 idCommonLocal::LoadGameDLL
@@ -2739,16 +2749,17 @@ void idCommonLocal::LoadGameDLL( void ) {
 	gameExport_t	gameExport;
 	GetGameAPI_t	GetGameAPI;
 
-	fileSystem->FindDLL( "game", dllPath, true );
+	const char *gameModuleBaseName = OpenQ4_SelectGameModuleBaseName();
+	fileSystem->FindDLL( gameModuleBaseName, dllPath, true );
 
 	if ( !dllPath[ 0 ] ) {
-		common->FatalError( "couldn't find game dynamic library" );
+		common->FatalError( "couldn't find game dynamic library '%s'", gameModuleBaseName );
 		return;
 	}
 	common->DPrintf( "Loading game DLL: '%s'\n", dllPath );
 	gameDLL = sys->DLL_Load( dllPath );
 	if ( !gameDLL ) {
-		common->FatalError( "couldn't load game dynamic library" );
+		common->FatalError( "couldn't load game dynamic library '%s'", gameModuleBaseName );
 		return;
 	}
 
@@ -2787,6 +2798,7 @@ void idCommonLocal::LoadGameDLL( void ) {
 
 	game								= gameExport.game;
 	gameEdit							= gameExport.gameEdit;
+	com_activeGameModule.SetString( gameModuleBaseName );
 
 #endif
 
@@ -2816,6 +2828,7 @@ void idCommonLocal::UnloadGameDLL( void ) {
 	}
 	game = NULL;
 	gameEdit = NULL;
+	com_activeGameModule.SetString( "" );
 
 #endif
 }
@@ -3219,16 +3232,17 @@ void idCommonLocal::ShutdownGame( bool reloading ) {
 	// shut down the renderSystem
 	renderSystem->Shutdown();
 
-	// unload the game dll
+	// shutdown the decl manager while the game DLL is still loaded, because
+	// game-owned decl types (e.g. entity/fx decls) can have module-local vtables.
+	declManager->Shutdown();
+
+	// unload the game dll after game-owned decl instances are released
 	UnloadGameDLL();
 
-	// shut down the BSE manager after the game releases effect defs
+	// shut down the BSE manager after game/decl data has been released
 	if ( bse ) {
 		bse->Shutdown();
 	}
-
-	// shutdown the decl manager
-	declManager->Shutdown();
 
 	// dump warnings to "warnings.txt"
 #ifdef DEBUG

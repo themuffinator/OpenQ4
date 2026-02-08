@@ -1,0 +1,60 @@
+windowDef Desktop
+{
+	rect	0, 0, 640, 480
+	backcolor	0, 0, 0, 0
+	visible	1
+	menugui	1
+	nocursor	1
+
+	onActivate {
+		setFocus "chat" ;
+	}
+
+	onESC {
+		set "cmd" "close" ;
+	}
+	
+	windowDef MainWindow
+	{
+		rect	-2,336,448,93
+		visible	1
+		nocursor	1
+		backcolor	0,0,0,0
+		forecolor	0,0,0,0
+		windowDef t_chat
+		{
+			rect	8,41,50,23
+			visible	1
+			forecolor	1,1,1,0.6
+			text	"#str_200319"
+			textscale	0.301
+			font	"fonts/marine"
+			textstyle	1
+			textspacing	-2
+		}
+		windowDef chatbg
+		{
+			rect	39,34,337,42
+			nocursor	1
+			visible	1
+			background	"gfx/guis/mainmenu/b1_dark"
+			matcolor	1,1,1,0.8
+		}
+		editDef chat
+		{
+			rect	68,45,247,18
+			text	"gui::chattext"
+			nocursor	1
+			textscale	0.25
+			forecolor	1,1,0.552,1
+			visible	1
+			textaligny	-2
+			font	"fonts/lowpixel"
+
+			onEnter {
+				set "cmd" "chatmessage" ;
+			}
+
+		}
+	}
+}

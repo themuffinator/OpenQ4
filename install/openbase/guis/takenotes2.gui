@@ -1,0 +1,557 @@
+windowDef Desktop
+{
+	rect	0, 0, 640, 480
+	backcolor	0, 0, 0, 0.3
+	selected	0
+	menugui	1
+
+	onActivate {
+		setFocus 	"Note";
+	}
+
+	onESC {
+		set "cmd"	"close" ;
+		
+		set "filterAssignedToList::visible" "0" ;
+		set "filterCategoryList::visible" "0" ;
+		set "filterCompletedList::visible" "0" ;
+		set "CategoryList::visible" "0" ;
+		set "AssignedToList::visible" "0" ;
+		
+		set "outOfBoundsBtn::visible" "0" ;
+	}
+
+	windowDef NoteBox
+	{
+		rect	17,20,603,425
+		textscale	0.25
+		bordersize	1
+		bordercolor	0.698,1,1,1
+		backcolor	0,0,0,0.313
+		visible	1
+		listDef notes
+		{
+			rect	7,56,259,226
+			visible	1
+			bordersize	1
+			bordercolor	1,0,0.494,1
+			backcolor	0,0,0,0.239
+			forecolor	1,1,1,1
+			listname	"notes"
+			textscale	0.25
+			scrollbar	1
+
+			onAction {
+				set	"cmd"	"notes" ;
+			}
+
+		}
+		windowDef unnamed2
+		{
+			rect	269,8,83,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"Submitter:"
+			textscale	0.25
+		}
+		windowDef unnamed3
+		{
+			rect	269,29,46,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"Date:"
+			textscale	0.25
+		}
+		windowDef unnamed4
+		{
+			rect	269,49,62,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"Version:"
+			textscale	0.25
+		}
+		windowDef remove
+		{
+			rect	7,287,68,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"Remove"
+			textscale	0.25
+			bordersize	1
+			bordercolor	1,0,0.498,1
+			textalign	1
+			backcolor	0,0,0,0.239
+
+			OnAction {
+				set "cmd"	"remove" ;
+			}
+
+		}
+		windowDef add
+		{
+			rect	526,372,68,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"Add"
+			textscale	0.25
+			bordersize	1
+			bordercolor	1,0,0.498,1
+			textalign	1
+			backcolor	0,0,0,0.239
+
+			OnAction {
+				set "cmd"	"add" ;
+			}
+
+		}
+		windowDef next
+		{
+			rect	198,287,68,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"Next"
+			textscale	0.25
+			bordersize	1
+			bordercolor	1,0,0.498,1
+			textalign	1
+			backcolor	0,0,0,0.239
+
+			OnAction {
+				set "cmd"	"next" ;
+			}
+
+		}
+		windowDef previous
+		{
+			rect	127,287,68,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"Previous"
+			textscale	0.25
+			bordersize	1
+			bordercolor	1,0,0.498,1
+			backcolor	0,0,0,0.239
+
+			onAction {
+				set "cmd"	"previous" ;
+			}
+
+		}
+		windowDef submitter
+		{
+			rect	347,8,247,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"gui::submitter"
+			textscale	0.25
+		}
+		editDef Note
+		{
+			rect	7,311,587,55
+			textscale	0.25
+			text	"gui::note"
+			textalign	0
+			forecolor	1,1,1,0.8
+			backcolor	0,0,0,0.239
+			visible	1
+			showcursor	1
+			bordersize	1
+			bordercolor	1,0,0.501,1
+			wrap	1
+			maxchars	1000
+
+			onAction {
+				set "cmd"	"note" ;
+			}
+
+		}
+		windowDef unnamed5
+		{
+			rect	7,372,71,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"Category:"
+			textscale	0.25
+		}
+		windowDef unnamed6
+		{
+			rect	269,85,70,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"Category:"
+			textscale	0.25
+		}
+		windowDef description
+		{
+			rect	270,150,325,157
+			visible	1
+			backcolor	0,0,0,0.239
+			bordersize	1
+			bordercolor	1,0,0.501,1
+			forecolor	1,1,1,1
+			text	"gui::description"
+			textscale	0.25
+		}
+		windowDef unnamed7
+		{
+			rect	269,105,69,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"Location:"
+			textscale	0.25
+		}
+		windowDef categoryText
+		{
+			rect	337,85,256,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"gui::categoryText"
+			textscale	0.25
+		}
+		windowDef date
+		{
+			rect	314,29,281,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"gui::date"
+			textscale	0.25
+		}
+		windowDef version
+		{
+			rect	329,49,266,36
+			visible	1
+			forecolor	1,1,1,1
+			text	"gui::version"
+			textscale	0.25
+		}
+		windowDef location
+		{
+			rect	335,105,259,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"gui::location"
+			textscale	0.25
+		}
+		windowDef unnamed8
+		{
+			rect	7,8,46,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"Filter:"
+			textscale	0.25
+		}
+		windowDef update
+		{
+			rect	400,372,68,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"Update"
+			textscale	0.25
+			bordersize	1
+			bordercolor	1,0,0.498,1
+			textalign	1
+			backcolor	0,0,0,0.239
+
+			OnAction {
+				set "cmd"	"update" ;
+			}
+
+		}
+		windowDef unnamed9
+		{
+			rect	25,397,55,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"Assign:"
+			textscale	0.25
+		}
+		windowDef assignedToText
+		{
+			rect	355,125,240,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"gui::assignedToText"
+			textscale	0.25
+		}
+		windowDef unnamed10
+		{
+			rect	269,125,91,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"Assigned To:"
+			textscale	0.25
+		}
+		windowDef export
+		{
+			rect	526,397,68,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"Export"
+			textscale	0.25
+			bordersize	1
+			bordercolor	1,0,0.498,1
+			textalign	1
+			backcolor	0,0,0,0.239
+
+			onAction {
+				set "cmd"	"export" ;
+			}
+
+		}
+		windowDef filterCategory
+		{
+			rect	53,8,169,20
+			visible	1
+			backcolor	0,0,0,0.239
+			bordersize	1
+			bordercolor	1,0,0.494,1
+			textscale	0.25
+			text	"gui::filterCategoryText"
+
+			onAction {
+				
+				set "filterCategoryList::visible" "1" ;
+				set "filterAssignedToList::visible" "0" ;
+				set "filterCompletedList::visible" "0" ;
+				set "CategoryList::visible" "0" ;
+				set "AssignedToList::visible" "0" ;
+				
+				set "outOfBoundsBtn::visible" "1" ;
+			}
+
+		}
+		windowDef filterCompleted
+		{
+			rect	7,32,126,20
+			visible	1
+			backcolor	0,0,0,0.239
+			bordersize	1
+			bordercolor	1,0,0.494,1
+			textscale	0.25
+			text	"gui::filterCompletedText"
+
+			onAction {
+				
+				set "filterAssignedToList::visible" "0" ;
+				set "filterCategoryList::visible" "0" ;
+				set "filterCompletedList::visible" "1" ;
+				set "CategoryList::visible" "0" ;
+				set "AssignedToList::visible" "0" ;
+				
+				set "outOfBoundsBtn::visible" "1" ;
+			}
+
+		}
+		windowDef filterAssignedTo
+		{
+			rect	135,32,131,20
+			visible	1
+			backcolor	0,0,0,0.239
+			bordersize	1
+			bordercolor	1,0,0.494,1
+			textscale	0.25
+			text	"gui::filterAssignedToText"
+
+			onAction {
+				
+				set "filterAssignedToList::visible" "1" ;
+				set "filterCategoryList::visible" "0" ;
+				set "filterCompletedList::visible" "0" ;
+				set "CategoryList::visible" "0" ;
+				set "AssignedToList::visible" "0" ;
+				
+				set "outOfBoundsBtn::visible" "1" ;
+			}
+
+		}
+		windowDef category
+		{
+			rect	80,372,169,20
+			visible	1
+			backcolor	0,0,0,0.239
+			bordersize	1
+			bordercolor	1,0,0.498,1
+			textscale	0.25
+			text	"gui::Category"
+
+			onAction {
+				
+				set "CategoryList::visible" "1" ;
+				set "AssignedToList::visible" "0" ;
+				set "filterAssignedToList::visible" "0" ;
+				set "filterCategoryList::visible" "0" ;
+				set "filterCompletedList::visible" "0" ;
+				
+				set "outOfBoundsBtn::visible" "1" ;
+			}
+
+		}
+		windowDef assignedTo
+		{
+			rect	80,397,131,20
+			visible	1
+			backcolor	0,0,0,0.239
+			bordersize	1
+			bordercolor	1,0,0.498,1
+			textscale	0.25
+			text	"gui::AssignedTo"
+
+			onAction {
+				
+				set "CategoryList::visible" "0" ;
+				set "AssignedToList::visible" "1" ;
+				set "filterAssignedToList::visible" "0" ;
+				set "filterCategoryList::visible" "0" ;
+				set "filterCompletedList::visible" "0" ;
+				
+				set "outOfBoundsBtn::visible" "1" ;
+			}
+
+		}
+		windowDef Completed2
+		{
+			rect	268,372,77,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"Completed"
+			textscale	0.25
+
+			onAction {
+				set "cmd"	"completed" ;
+			}
+
+		}
+		windowDef Completed1
+		{
+			rect	254,372,16,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"gui::completed"
+			textscale	0.25
+			backcolor	0,0,0,0.235
+			bordercolor	1,0,0.494,1
+			bordersize	1
+
+			onAction {
+				set "cmd"	"completed" ;
+			}
+
+		}
+		windowDef outOfBoundsBtn
+		{
+			rect	-12,-19,640,480
+			visible	0
+			backcolor	1,1,1,0
+
+			onAction {
+				set "filterCategoryList::visible" "0" ;
+				set "filterAssignedToList::visible" "0" ;
+				set "filterCompletedList::visible" "0" ;
+				set "CategoryList::visible" "0" ;
+				set "AssignedToList::visible" "0" ;
+				set "outOfBoundsBtn::visible" "0" ;
+			}
+
+		}
+		listDef filterCategoryList
+		{
+			rect	53,27,184,211
+			visible	0
+			bordersize	1
+			bordercolor	1,0,0.486,1
+			backcolor	0.227,0.227,0.227,0.8
+			forecolor	1,1,1,1
+			listname	pop_filterCategory
+			textscale	0.25
+			scrollbar	1
+
+			onAction {
+				set "cmd"	"update_filterCategory" ;
+				set "filterCategoryList::visible" "0" ;
+				
+				set "outOfBoundsBtn::visible" "0" ;
+			}
+
+		}
+		listDef filterCompletedList
+		{
+			rect	7,51,141,60
+			visible	0
+			bordersize	1
+			bordercolor	1,0,0.486,1
+			backcolor	0.227,0.227,0.227,0.8
+			forecolor	1,1,1,1
+			listname	pop_filterCompleted
+			textscale	0.25
+			scrollbar	1
+
+			onAction {
+				set "cmd"	"update_filterCompleted" ;
+				set "filterCompletedList::visible" "0" ;
+				
+				set "outOfBoundsBtn::visible" "0" ;
+			}
+
+		}
+		listDef filterAssignedToList
+		{
+			rect	135,51,146,316
+			visible	0
+			bordersize	1
+			bordercolor	1,0,0.486,1
+			backcolor	0.227,0.227,0.227,0.8
+			forecolor	1,1,1,1
+			listname	pop_filterAssignedTo
+			textscale	0.25
+			scrollbar	1
+
+			onAction {
+				set "cmd"	"update_filterAssigned" ;
+				set "filterAssignedToList::visible" "0" ;
+				
+				set "outOfBoundsBtn::visible" "0" ;
+			}
+
+		}
+		listDef CategoryList
+		{
+			rect	80,162,184,211
+			visible	0
+			bordersize	1
+			bordercolor	1,0,0.486,1
+			backcolor	0.227,0.227,0.227,0.8
+			forecolor	1,1,1,1
+			listname	pop_Category
+			textscale	0.25
+			scrollbar	1
+
+			onAction {
+				set "cmd"	"update_category" ;
+				set "CategoryList::visible" "0" ;
+				
+				set "outOfBoundsBtn::visible" "0" ;
+			}
+
+		}
+		listDef AssignedToList
+		{
+			rect	80,75,146,323
+			visible	0
+			bordersize	1
+			bordercolor	1,0,0.486,1
+			backcolor	0.227,0.227,0.227,0.8
+			forecolor	1,1,1,1
+			listname	pop_assignedTo
+			textscale	0.25
+			scrollbar	1
+
+			onAction {
+				set "cmd"	"update_assignedTo" ;
+				set "AssignedToList::visible" "0" ;
+				
+				set "outOfBoundsBtn::visible" "0" ;
+			}
+
+		}
+	}
+}

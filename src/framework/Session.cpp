@@ -34,6 +34,8 @@ If you have questions concerning this license or the applicable additional terms
 #define RENDERDEMO_VERSION 1 
 #define USERCMD_MSEC common->GetUserCmdMSec()
 
+extern glconfig_t	glConfig;
+
 idCVar	idSessionLocal::com_showAngles( "com_showAngles", "0", CVAR_SYSTEM | CVAR_BOOL, "" );
 idCVar	idSessionLocal::com_minTics( "com_minTics", "1", CVAR_SYSTEM, "" );
 idCVar	idSessionLocal::com_showTics( "com_showTics", "0", CVAR_SYSTEM | CVAR_BOOL, "" );
@@ -55,6 +57,143 @@ const int PREVIEW_X = 211;
 const int PREVIEW_Y = 31;
 const int PREVIEW_WIDTH = 398;
 const int PREVIEW_HEIGHT = 298;
+
+static int Session_CountVisibleSmallChars( const char *string ) {
+	if ( !( string && *string ) ) {
+		return 0;
+	}
+
+	int count = 0;
+	const unsigned char *s = reinterpret_cast<const unsigned char *>( string );
+	while ( *s ) {
+		if ( idStr::IsColor( reinterpret_cast<const char *>( s ) ) ) {
+			s += 2;
+			continue;
+		}
+		count++;
+		s++;
+	}
+	return count;
+}
+
+static void Session_DrawScaledSmallString( float x, float y, float charWidth, float charHeight,
+	const char *string, const idVec4 &setColor, bool forceColor, const idMaterial *material ) {
+	if ( !( string && *string ) || !material || charWidth <= 0.0f || charHeight <= 0.0f ) {
+		return;
+	}
+
+	idVec4 color;
+	const unsigned char *s = reinterpret_cast<const unsigned char *>( string );
+	float xx = x;
+	renderSystem->SetColor( setColor );
+
+	while ( *s ) {
+		if ( idStr::IsColor( reinterpret_cast<const char *>( s ) ) ) {
+			if ( !forceColor ) {
+				if ( *( s + 1 ) == C_COLOR_DEFAULT ) {
+					renderSystem->SetColor( setColor );
+				} else {
+					color = idStr::ColorForIndex( *( s + 1 ) );
+					color[3] = setColor[3];
+					renderSystem->SetColor( color );
+				}
+			}
+			s += 2;
+			continue;
+		}
+
+		const int ch = *s & 255;
+		if ( ch != ' ' ) {
+			const int row = ch >> 4;
+			const int col = ch & 15;
+			const float frow = row * 0.0625f;
+			const float fcol = col * 0.0625f;
+			const float size = 0.0625f;
+			renderSystem->DrawStretchPic( xx, y, charWidth, charHeight,
+				fcol, frow, fcol + size, frow + size, material );
+		}
+
+		xx += charWidth;
+		s++;
+	}
+
+	renderSystem->SetColor( colorWhite );
+}
+
+static void Session_DrawFallbackLoadingScreen() {
+	static const idVec4 loadingTextColor( 0.94f, 0.62f, 0.05f, 1.0f );
+	const char *loadingText = common->GetLanguageDict()->GetString( "#str_200938" );
+	if ( !( loadingText && loadingText[0] ) ) {
+		loadingText = "LOADING";
+	}
+
+	const float virtualWidth = static_cast<float>( SCREEN_WIDTH );
+	const float virtualHeight = static_cast<float>( SCREEN_HEIGHT );
+	float splashX = 0.0f;
+	float splashY = 0.0f;
+	float splashW = virtualWidth;
+	float splashH = virtualHeight;
+	float correctedX = 0.0f;
+	float correctedY = 0.0f;
+	float correctedW = virtualWidth;
+	float correctedH = virtualHeight;
+	float textScaleX = 1.0f;
+	float textScaleY = 1.0f;
+
+	float viewportWidth = static_cast<float>( glConfig.uiViewportWidth );
+	float viewportHeight = static_cast<float>( glConfig.uiViewportHeight );
+	if ( viewportWidth <= 0.0f || viewportHeight <= 0.0f ) {
+		viewportWidth = static_cast<float>( glConfig.vidWidth );
+		viewportHeight = static_cast<float>( glConfig.vidHeight );
+	}
+
+	if ( viewportWidth > 0.0f && viewportHeight > 0.0f ) {
+		const float scaleX = viewportWidth / virtualWidth;
+		const float scaleY = viewportHeight / virtualHeight;
+		const float uniformPhysicalScale = ( scaleX < scaleY ) ? scaleX : scaleY;
+		const float drawWidth = virtualWidth * uniformPhysicalScale;
+		const float drawHeight = virtualHeight * uniformPhysicalScale;
+		const float virtualPerPhysicalX = virtualWidth / viewportWidth;
+		const float virtualPerPhysicalY = virtualHeight / viewportHeight;
+
+		textScaleX = uniformPhysicalScale * virtualPerPhysicalX;
+		textScaleY = uniformPhysicalScale * virtualPerPhysicalY;
+		correctedX = ( viewportWidth - drawWidth ) * 0.5f * virtualPerPhysicalX;
+		correctedY = ( viewportHeight - drawHeight ) * 0.5f * virtualPerPhysicalY;
+		correctedW = virtualWidth * textScaleX;
+		correctedH = virtualHeight * textScaleY;
+	}
+
+	if ( cvarSystem->GetCVarBool( "ui_aspectCorrection" ) ) {
+		splashX = correctedX;
+		splashY = correctedY;
+		splashW = correctedW;
+		splashH = correctedH;
+	}
+
+	renderSystem->SetColor( colorBlack );
+	renderSystem->DrawStretchPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 1, 1, declManager->FindMaterial( "_white" ) );
+
+	const idMaterial *splashMaterial = declManager->FindMaterial( "gfx/splashScreen", false );
+	if ( splashMaterial ) {
+		renderSystem->SetColor( colorWhite );
+		renderSystem->DrawStretchPic( splashX, splashY, splashW, splashH, 0, 0, 1, 1, splashMaterial );
+	}
+
+	const idMaterial *fontMaterial = declManager->FindMaterial( "fonts/english/bigchars", false );
+	if ( fontMaterial ) {
+		const int charCount = Session_CountVisibleSmallChars( loadingText );
+		const float charWidth = SMALLCHAR_WIDTH * textScaleX;
+		const float charHeight = SMALLCHAR_HEIGHT * textScaleY;
+		const float textWidth = charCount * charWidth;
+		const float textX = correctedX + ( correctedW - textWidth ) * 0.5f;
+		const float textY = correctedY + 410.0f * textScaleY;
+		Session_DrawScaledSmallString( textX, textY, charWidth, charHeight, loadingText,
+			loadingTextColor, true, fontMaterial );
+	}
+
+	renderSystem->SetColor( colorWhite );
+}
 
 void RandomizeStack( void ) {
 	// attempt to force uninitialized stack memory bugs
@@ -182,6 +321,21 @@ static void Session_TestMap_f( const idCmdArgs &args ) {
 
 	sprintf( string, "devmap %s", map.c_str() );
 	cmdSystem->BufferCommandText( CMD_EXEC_NOW, string );
+}
+
+/*
+==================
+Session_OpenQ4StartSingleplayer_f
+==================
+*/
+static void Session_OpenQ4StartSingleplayer_f( const idCmdArgs &args ) {
+	if ( args.Argc() < 2 ) {
+		common->Printf( "USAGE: openq4_startSingleplayer <map> [devmap]\n" );
+		return;
+	}
+
+	const bool devmap = args.Argc() > 2 && atoi( args.Argv( 2 ) ) != 0;
+	sessLocal.StartNewGame( args.Argv( 1 ), devmap );
 }
 
 /*
@@ -1183,6 +1337,17 @@ void idSessionLocal::StartNewGame( const char *mapName, bool devmap ) {
 		return;
 	}
 
+	const char *activeModule = cvarSystem->GetCVarString( "com_activeGameModule" );
+	if ( idStr::Icmp( activeModule, "game_sp" ) != 0 ) {
+		cvarSystem->SetCVarString( "si_gameType", "singleplayer" );
+		idCmdArgs reloadArgs;
+		reloadArgs.AppendArg( "openq4_startSingleplayer" );
+		reloadArgs.AppendArg( mapName );
+		reloadArgs.AppendArg( devmap ? "1" : "0" );
+		cmdSystem->SetupReloadEngine( reloadArgs );
+		return;
+	}
+
 	// clear the userInfo so the player starts out with the defaults
 	mapSpawnData.userInfo[0].Clear();
 	mapSpawnData.persistentPlayerInfo[0].Clear();
@@ -1448,19 +1613,52 @@ void idSessionLocal::LoadLoadingGui( const char *mapName ) {
 	stripped.StripFileExtension();
 	stripped.StripPath();
 
+	const char *loadingLevelName = mapName;
+	const char *loadingObjectives = "";
+	const char *loadingBackground = "gfx/guis/loadscreens/generic";
+	const char *loadGuiOverride = "";
+
+	const idDecl *mapDecl = declManager->FindType( DECL_MAPDEF, mapName, false );
+	const idDeclEntityDef *mapDef = static_cast<const idDeclEntityDef *>( mapDecl );
+	if ( mapDef ) {
+		loadingLevelName = common->GetLanguageDict()->GetString( mapDef->dict.GetString( "name", mapName ) );
+		loadingObjectives = common->GetLanguageDict()->GetString( mapDef->dict.GetString( "objectives", "" ) );
+
+		const char *loadImage = mapDef->dict.GetString( "loadimage", "" );
+		if ( loadImage[0] ) {
+			loadingBackground = loadImage;
+		}
+
+		loadGuiOverride = mapDef->dict.GetString( "loadgui", "" );
+	}
+
 	char guiMap[ MAX_STRING_CHARS ];
 	strncpy( guiMap, va( "guis/map/%s.gui", stripped.c_str() ), MAX_STRING_CHARS );
 	// give the gamecode a chance to override
 	//game->GetMapLoadingGUI( guiMap );
 
-	if ( uiManager->CheckGui( guiMap ) ) {
+	if ( loadGuiOverride[0] && uiManager->CheckGui( loadGuiOverride ) ) {
+		guiLoading = uiManager->FindGui( loadGuiOverride, true, false, true );
+	} else if ( uiManager->CheckGui( guiMap ) ) {
 		guiLoading = uiManager->FindGui( guiMap, true, false, true );
+	} else if ( idAsyncNetwork::IsActive() && uiManager->CheckGui( "guis/loading/mplevel.gui" ) ) {
+		guiLoading = uiManager->FindGui( "guis/loading/mplevel.gui", true, false, true );
+	} else if ( loadingObjectives[0] && uiManager->CheckGui( "guis/loading/splevel.gui" ) ) {
+		guiLoading = uiManager->FindGui( "guis/loading/splevel.gui", true, false, true );
 	} else {
-// jmarshall - quake 4 loading gui
 		guiLoading = uiManager->FindGui("guis/loading/generic.gui", true, false, true);
-// jmarshall end
 	}
-	guiLoading->SetStateFloat( "map_loading", 0.0f );
+
+	if ( guiLoading ) {
+		guiLoading->SetStateFloat( "map_loading", 0.0f );
+		guiLoading->SetStateString( "loading_bkgnd", loadingBackground );
+		guiLoading->SetStateString( "loading_levelname", loadingLevelName );
+		guiLoading->SetStateString( "loading_objectives", loadingObjectives );
+		guiLoading->StateChanged( com_frameTime );
+
+		const idMaterial *mat = declManager->FindMaterial( loadingBackground );
+		mat->SetSort( SS_GUI );
+	}
 }
 
 /*
@@ -2068,6 +2266,16 @@ bool idSessionLocal::LoadGame( const char *saveName ) {
 		return false;
 	}
 
+	const char *activeModule = cvarSystem->GetCVarString( "com_activeGameModule" );
+	if ( idStr::Icmp( activeModule, "game_sp" ) != 0 ) {
+		cvarSystem->SetCVarString( "si_gameType", "singleplayer" );
+		idCmdArgs reloadArgs;
+		reloadArgs.AppendArg( "loadGame" );
+		reloadArgs.AppendArg( saveName );
+		cmdSystem->SetupReloadEngine( reloadArgs );
+		return true;
+	}
+
 	//Hide the dialog box if it is up.
 	StopBox();
 
@@ -2456,7 +2664,7 @@ void idSessionLocal::Draw() {
 	} else {
 #if ID_CONSOLE_LOCK
 		if ( com_allowConsole.GetBool() ) {
-			console->Draw( true );
+			Session_DrawFallbackLoadingScreen();
 		} else {
 			emptyDrawCount++;
 			if ( emptyDrawCount > 5 ) {
@@ -2470,8 +2678,8 @@ void idSessionLocal::Draw() {
 			renderSystem->DrawStretchPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 1, 1, declManager->FindMaterial( "_white" ) );
 		}
 #else
-		// draw the console full screen - this should only ever happen in developer builds
-		console->Draw( true );
+		// when this fallback branch is hit, show loading instead of a full-screen console
+		Session_DrawFallbackLoadingScreen();
 #endif
 		fullConsole = true;
 	}
@@ -2881,6 +3089,7 @@ void idSessionLocal::Init() {
 	cmdSystem->AddCommand( "writePrecache", Sess_WritePrecache_f, CMD_FL_SYSTEM|CMD_FL_CHEAT, "writes precache commands" );
 
 #ifndef	ID_DEDICATED
+	cmdSystem->AddCommand( "openq4_startSingleplayer", Session_OpenQ4StartSingleplayer_f, CMD_FL_SYSTEM, "internal helper to start singleplayer after game-module switches" );
 	cmdSystem->AddCommand( "map", Session_Map_f, CMD_FL_SYSTEM, "loads a map", idCmdSystem::ArgCompletion_MapName );
 	cmdSystem->AddCommand( "devmap", Session_DevMap_f, CMD_FL_SYSTEM, "loads a map in developer mode", idCmdSystem::ArgCompletion_MapName );
 	cmdSystem->AddCommand( "testmap", Session_TestMap_f, CMD_FL_SYSTEM, "tests a map", idCmdSystem::ArgCompletion_MapName );

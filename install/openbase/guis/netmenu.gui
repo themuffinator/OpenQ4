@@ -1,0 +1,119 @@
+windowDef Desktop
+{
+	rect	0, 0, 640, 480
+	menugui	1
+	visible	1
+	definevec4	"corner"	0.564,0.603,0.286,0.4
+	definevec4	"corner_0"	0.564,0.603,0.286,0
+	definevec4	"white"	1,1,1,1
+	definevec4	"white_8"	1,1,1,0.8
+	definevec4	"white_0"	1,1,1,0
+	definevec4	"orange"	0.890,0.537,0,1
+	windowDef msg_black
+	{
+		rect	0,0,640,480
+		visible	1
+		backcolor	0,0,0,0.94
+	}
+	windowDef msg_bg
+	{
+		rect	140,50,360,380
+		visible	1
+		background	"gfx/guis/mainmenu/popup_bg"
+		matcolor	.8,.8,.8,1
+	}
+	windowDef msg_top
+	{
+		rect	140,181,360,23
+		visible	1
+		background	"gfx/guis/mainmenu/popup_top"
+		matcolor	0,0,0,0.7
+	}
+	windowDef msg_mid
+	{
+		rect	140,204,360,43
+		visible	1
+		background	"gfx/guis/mainmenu/popup_mid"
+		matcolor	0,0,0,0.7
+	}
+	windowDef msg_btm
+	{
+		rect	140,247,360,46
+		visible	1
+		background	"gfx/guis/mainmenu/popup_btm"
+		matcolor	0,0,0,0.7
+	}
+	windowDef msg_text
+	{
+		rect	160,212,320,34
+		text	"gui::status"
+		forecolor	1,1,1,1
+		textscale	0.25
+		font	"fonts/lowpixel"
+		visible	1
+	}
+	windowDef title
+	{
+		rect	160,179,237,17
+		visible	1
+		forecolor	1,1,1,0.8
+		text	"gui::title"
+		textscale	.28
+		font	"fonts/marine"
+		textspacing	-1
+	}
+	windowDef mid
+	{
+		rect	256,252,120,30
+		visible	1
+		background	"gfx/guis/mainmenu/b4_light"
+		matcolor	0.545,0.588,0.294,0.4
+	}
+	windowDef t_mid
+	{
+		rect	276,255,105,17
+		visible	1
+		forecolor	1,1,1,0.8
+		text	"#str_200178"
+		textscale	.28
+		font	"fonts/marine"
+	}
+	windowDef mid_corner
+	{
+		rect	266,260,11,11
+		visible	1
+		background	"gfx/guis/mainmenu/corner"
+		matcolor	0.564,0.603,0.286,0.4
+	}
+	windowDef b_mid
+	{
+		rect	259,255,127,24
+		visible	1
+
+		onMouseEnter {
+			stoptransitions "b_mid" ;
+			
+			set "mid::matcolor_w" "0.8" ;
+			transition "t_mid::forecolor" "$desktop::white_8" "$desktop::orange" "0" ; 
+			transition "mid_corner::matcolor" "$desktop::corner" "$desktop::orange" "0" ; 
+			
+			set "t_mid::textscale" "0.29" ; 
+			
+			set "cmd" "play main_menu_mouseover" ;
+		}
+
+		onMouseExit {
+			transition "mid::matcolor_w" "0.8" "0.4" "300" ;
+			transition "t_mid::forecolor"  "$desktop::orange" "$desktop::white_8" "300" ; 
+			transition "mid_corner::matcolor"  "$desktop::orange" "$desktop::corner" "300" ;
+			
+			transition "t_mid::textscale" "0.29" "0.28" "300" ; 
+		}
+
+		onAction {
+			//	set "cmd" "play main_menu_selection" ;
+			set "cmd" "abort";
+		}
+
+	}
+}

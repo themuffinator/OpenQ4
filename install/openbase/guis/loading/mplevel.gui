@@ -1,0 +1,375 @@
+windowDef Desktop
+{
+	rect	0,0,640,480
+	definefloat	"iconOffset"	(640-(24*"gui::load_icons"+24))/2
+	windowDef loadimg
+	{
+		rect	0,0,640,480
+		visible	1
+		background	"gui::loading_bkgnd"
+		matcolor	1,1,1,1
+	}
+	windowDef top_edge
+	{
+		rect	0,0,640,120
+		visible	1
+		background	"gfx/guis/mainmenu/load_top_edge"
+		matcolor	0,0,0,0.8
+	}
+	windowDef btm_edge
+	{
+		rect	0,227,640,253
+		visible	1
+		background	"gfx/guis/mainmenu/load_btm_edge"
+		matcolor	0,0,0,0.8
+	}
+	windowDef top_edgeadd
+	{
+		rect	0,0,640,120
+		visible	1
+		background	"gfx/guis/mainmenu/load_top_edgeadd"
+		matcolor	0.0941,0.113,0.0392,1
+	}
+	windowDef btm_edgeadd
+	{
+		rect	0,227,640,253
+		visible	1
+		background	"gfx/guis/mainmenu/load_btm_edgeadd"
+		matcolor	0.0941,0.113,0.0392,1
+	}
+	windowDef grid1
+	{
+		rect	0,0,480,480
+		visible	1
+		background	"gfx/guis/mainmenu/bg_grid"
+		matcolor	1,1,1,0.04
+	}
+	windowDef grid2
+	{
+		rect	480,0,480,480
+		visible	1
+		background	"gfx/guis/mainmenu/bg_grid"
+		matcolor	1,1,1,0.04
+	}
+	windowDef bar
+	{
+		rect	235,313,405,26
+		visible	1
+		background	"gfx/guis/mainmenu/load_bar"
+		matcolor	0.878,0.423,0,0.3
+	}
+	windowDef p_load_bar
+	{
+		rect	235,313,( "gui::map_loading" * 405 ),26
+		visible	1
+		windowDef load_bar
+		{
+			rect	0,0,405,26
+			visible	1
+			background	"gfx/guis/mainmenu/load_bar"
+			matcolor	0.878,0.423,0,0.5
+		}
+	}
+	windowDef load_text
+	{
+		rect	4,310,624,36
+		visible	1
+		notime	1
+		forecolor	1,1,1,1
+		text	"#str_200938"
+		textscale	0.4
+		font	"fonts/marine"
+		textalign	2
+		textstyle	1
+
+		onTime 0 {
+			transition "forecolor" "1,1,1,1" "0.5,0.5,0.5,1" "500" ;
+		}
+
+		onTime +500 {
+			transition "forecolor" "0.5,0.5,0.5,1" "1,1,1,1" "200" ;
+		}
+
+		onTime +200 {
+			resettime "0" ;
+		}
+
+	}
+	windowDef tl_corner
+	{
+		rect	0,28,52,52
+		visible	1
+		background	"gfx/guis/mainmenu/load_corner"
+		matcolor	0.227,0.227,0.227,1
+	}
+	windowDef bl_corner
+	{
+		rect	0,256,52,52
+		visible	1
+		background	"gfx/guis/mainmenu/load_corner"
+		matcolor	0.227,0.227,0.227,1
+		matscaley	-1
+	}
+	windowDef tr_corner
+	{
+		rect	588,28,52,52
+		visible	1
+		background	"gfx/guis/mainmenu/load_corner"
+		matcolor	0.227,0.227,0.227,1
+		matscalex	-1
+	}
+	windowDef br_corner
+	{
+		rect	588,256,52,52
+		visible	1
+		background	"gfx/guis/mainmenu/load_corner"
+		matcolor	0.227,0.227,0.227,1
+		matscaley	-1
+		matscalex	-1
+	}
+	windowDef t_levelname_grad
+	{
+		rect	291,14,349,22
+		visible	1
+		background	"gfx/guis/common/gradient3"
+		matcolor	0,0,0,1
+		matscalex	-1
+	}
+	windowDef load_dots
+	{
+		rect	3,2,105,25
+		visible	1
+		background	"gfx/guis/mainmenu/load_dots"
+		matcolor	0.109,0.145,0.0745,1
+	}
+	windowDef t_levelname
+	{
+		rect	290,11,336,20
+		visible	1
+		forecolor	1,1,1,0.8
+		text	"gui::loading_levelname"
+		textscale	0.36
+		font	"fonts/marine"
+		textspacing	-2
+		textalign	2
+	}
+	windowDef t_message_grad
+	{
+		rect	291,36,349,18
+		visible	1
+		background	"gfx/guis/common/gradient3"
+		matcolor	0,0,0,.5
+		matscalex	-1
+	}
+	windowDef t_message
+	{	
+		rect	290,35,336,16
+		visible	1
+		notime	1
+		forecolor	1,1,1,0.52
+		text "gui::loading_message"		
+		textscale	0.225
+		font	"fonts/lowpixel"
+		textalign	2
+	}
+	windowDef server_name
+	{
+		rect	209,341,418,22
+		visible	1
+		notime	1
+		forecolor	1,1,1,0.8
+		text	"gui::server_name"
+		textscale	0.25
+		font	"fonts/lowpixel"
+		textalign	2
+	}
+	windowDef server_ip
+	{
+		rect	209,356,418,22
+		visible	1
+		notime	1
+		forecolor	1,1,1,0.8
+		text	"gui::server_ip"
+		textscale	0.25
+		font	"fonts/lowpixel"
+		textalign	2
+	}
+	windowDef server_gametype
+	{
+		rect	209,374,418,22
+		visible	1
+		notime	1
+		forecolor	1,1,1,0.52
+		text	"gui::server_gametype"
+		textscale	0.25
+		font	"fonts/lowpixel"
+		textalign	2
+	}
+	windowDef server_limit
+	{
+		rect	209,389,418,22
+		visible	1
+		notime	1
+		forecolor	1,1,1,0.52
+		text	"gui::server_limit"
+		textscale	0.25
+		font	"fonts/lowpixel"
+		textalign	2
+	}
+	windowDef server_loadinfo
+	{
+		rect	0,409,640,22
+		visible	1
+		notime	1
+		forecolor	1,1,1,0.52
+		text	"gui::server_loadinfo"
+		textscale	0.25
+		font	"fonts/lowpixel"
+		textalign	1
+	}
+	windowDef load_icons
+	{
+		rect	0,419,640,54
+		visible	1
+		windowDef load_icon_1
+		{
+			rect	"desktop::iconOffset",11,24,24
+			visible	"gui::load_icon_1"
+			background	"gui::load_icon_img_1"
+			matcolor	1,1,1,1
+		}
+		windowDef load_icon_2
+		{
+			rect	"desktop::iconOffset"+24,11,24,24
+			visible	"gui::load_icon_2"
+			background	"gui::load_icon_img_2"
+			matcolor	1,1,1,1
+		}
+		windowDef load_icon_3
+		{
+			rect	"desktop::iconOffset"+24*2,11,24,24
+			visible	"gui::load_icon_3"
+			background	"gui::load_icon_img_3"
+			matcolor	1,1,1,1
+		}
+		windowDef load_icon_4
+		{
+			rect	"desktop::iconOffset"+24*3,11,24,24
+			visible	"gui::load_icon_4"
+			background	"gui::load_icon_img_4"
+			matcolor	1,1,1,1
+		}
+		windowDef load_icon_5
+		{
+			rect	"desktop::iconOffset"+24*4,11,24,24
+			visible	"gui::load_icon_5"
+			background	"gui::load_icon_img_5"
+			matcolor	1,1,1,1
+		}
+		windowDef load_icon_6
+		{
+			rect	"desktop::iconOffset"+24*5,11,24,24
+			visible	"gui::load_icon_6"
+			background	"gui::load_icon_img_6"
+			matcolor	1,1,1,1
+		}
+		windowDef load_icon_7
+		{
+			rect	"desktop::iconOffset"+24*6,11,24,24
+			visible	"gui::load_icon_7"
+			background	"gui::load_icon_img_7"
+			matcolor	1,1,1,1
+		}
+		windowDef load_icon_8
+		{
+			rect	"desktop::iconOffset"+24*7,11,24,24
+			visible	"gui::load_icon_8"
+			background	"gui::load_icon_img_8"
+			matcolor	1,1,1,1
+		}
+		windowDef load_icon_9
+		{
+			rect	"desktop::iconOffset"+24*8,11,24,24
+			visible	"gui::load_icon_9"
+			background	"gui::load_icon_img_9"
+			matcolor	1,1,1,1
+		}
+		windowDef load_icon_10
+		{
+			rect	"desktop::iconOffset"+24*9,11,24,24
+			visible	"gui::load_icon_10"
+			background	"gui::load_icon_img_10"
+			matcolor	1,1,1,1
+		}
+		windowDef load_icon_11
+		{
+			rect	"desktop::iconOffset"+24*10,11,24,24
+			visible	"gui::load_icon_11"
+			background	"gui::load_icon_img_11"
+			matcolor	1,1,1,1
+		}
+		windowDef load_icon_12
+		{
+			rect	"desktop::iconOffset"+24*11,11,24,24
+			visible	"gui::load_icon_12"
+			background	"gui::load_icon_img_12"
+			matcolor	1,1,1,1
+		}
+		windowDef load_icon_13
+		{
+			rect	"desktop::iconOffset"+24*12,11,24,24
+			visible	"gui::load_icon_13"
+			background	"gui::load_icon_img_13"
+			matcolor	1,1,1,1
+		}
+		windowDef load_icon_14
+		{
+			rect	"desktop::iconOffset"+24*13,11,24,24
+			visible	"gui::load_icon_14"
+			background	"gui::load_icon_img_14"
+			matcolor	1,1,1,1
+		}
+		windowDef load_icon_15
+		{
+			rect	"desktop::iconOffset"+24*14,11,24,24
+			visible	"gui::load_icon_15"
+			background	"gui::load_icon_img_15"
+			matcolor	1,1,1,1
+		}
+		windowDef load_icon_16
+		{
+			rect	"desktop::iconOffset"+24*15,11,24,24
+			visible	"gui::load_icon_16"
+			background	"gui::load_icon_img_16"
+			matcolor	1,1,1,1
+		}
+		windowDef load_icon_17
+		{
+			rect	"desktop::iconOffset"+24*16,11,24,24
+			visible	"gui::load_icon_17"
+			background	"gui::load_icon_img_17"
+			matcolor	1,1,1,1
+		}
+		windowDef load_icon_18
+		{
+			rect	"desktop::iconOffset"+24*17,11,24,24
+			visible	"gui::load_icon_18"
+			background	"gui::load_icon_img_18"
+			matcolor	1,1,1,1
+		}
+		windowDef load_icon_19
+		{
+			rect	"desktop::iconOffset"+24*18,11,24,24
+			visible	"gui::load_icon_19"
+			background	"gui::load_icon_img_19"
+			matcolor	1,1,1,1
+		}
+		windowDef load_icon_20
+		{
+			rect	"desktop::iconOffset"+24*19,11,24,24
+			visible	"gui::load_icon_20"
+			background	"gui::load_icon_img_20"
+			matcolor	1,1,1,1
+		}
+	}
+}

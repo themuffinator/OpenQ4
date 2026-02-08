@@ -1,0 +1,6364 @@
+windowDef Desktop
+{
+	rect	0,0,640,480
+	backcolor	0,0,0,1
+	visible	1
+	menugui	1
+	nocursor	1
+	definevec4	"cr_orange"	1,0.501,0,0.8
+	definevec4	"cr_orange_0"	1,0.501,0,0
+	definevec4	"cr_green"	0.835,1,0.654,0.8
+	definevec4	"cr_green_0"	0.835,1,0.654,0
+	definevec4	"white"	1,1,1,1
+	definevec4	"white_0"	1,1,1,0
+	definevec4	"white_5"	1,1,1,0.5
+	definevec4	"white_6"	1,1,1,0.6
+
+	onESC {
+		set "cmd" "exec disconnect" ;
+	}
+
+	onActivate {
+		resettime "anim_credits" "0" ;
+	}
+
+	windowDef d_credits
+	{
+		rect	640,0,640,480
+		visible	1
+	}
+	windowDef q4logo
+	{
+		rect	100,20,440,440
+		visible	1
+		background	"gfx/guis/mainmenu/q4logo_alpha"
+		matcolor	0.0352,0.0392,0.0274,0
+	}
+	windowDef raven
+	{
+		rect	120,40,400,400
+		visible	1
+		background	"gfx/guis/mainmenu/raven_1"
+		matcolor	0,0,0,1
+	}
+	windowDef d_topbar
+	{
+		rect	-76,-62,1045,129
+		visible	0
+		background	"gfx/guis/mainmenu/topbar"
+		matcolor	1,1,1,1
+	}
+	windowDef d_btmbar
+	{
+		rect	-25,386,1045,129
+		visible	0
+		background	"gfx/guis/mainmenu/btmbar"
+		matcolor	1,1,1,1
+	}
+	windowDef p_screen1
+	{
+		rect	0,0,640,480
+		visible	0
+		notime	1
+
+		onTime 0 {
+			set "rect" "0,0,640,480" ;
+			set "visible" "1" ;
+			
+			set "screen1_bar1::matcolor" "$desktop::cr_orange" ;
+			set "screen1_bar2::matcolor" "$desktop::cr_orange" ;
+			set "screen1_bar3::matcolor" "$desktop::cr_orange" ;
+			set "screen1_bar4::matcolor" "$desktop::cr_orange" ;
+			set "screen1_bar1::rect" "-223,83,223,24" ;
+			set "screen1_bar2::rect" "-277,163,277,23" ;
+			set "screen1_bar3::rect" "-214,243,214,23" ;
+			set "screen1_bar4::rect" "-275,323,275,23" ;
+			
+			transition "screen1_ts_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen1_ts_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen1_ts_3::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen1_ts_4::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			
+			transition "screen1_ns_1::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen1_ns_2::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen1_ns_3::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen1_ns_4::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen1_ns_4a::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+		}
+
+		onTime +2000 {
+			transition "screen1_bar1::rect" "$screen1_bar1::rect" "$d_screen1_bar1::rect" "300" "100" "150" ;
+			transition "screen1_bar1::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen1_ts_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen1_t_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen1_ts_1::textscale" "0.37" "0.35" "1000" ;
+			transition "screen1_t_1::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {
+			transition "screen1_ns_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen1_n_1::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen1_ns_1::textscale" "0.48" "0.46" "500" ;
+			transition "screen1_n_1::textscale" "0.42" "0.4" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen1_bar2::rect" "$screen1_bar2::rect" "$d_screen1_bar2::rect" "300" "100" "150" ;
+			transition "screen1_bar2::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen1_ts_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen1_t_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen1_ts_2::textscale" "0.37" "0.35" "1000" ;
+			transition "screen1_t_2::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {
+			transition "screen1_ns_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen1_n_2::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen1_ns_2::textscale" "0.48" "0.46" "500" ;
+			transition "screen1_n_2::textscale" "0.42" "0.4" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen1_bar3::rect" "$screen1_bar3::rect" "$d_screen1_bar3::rect" "300" "100" "150" ;
+			transition "screen1_bar3::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen1_ts_3::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen1_t_3::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen1_ts_3::textscale" "0.37" "0.35" "1000" ;
+			transition "screen1_t_3::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {
+			transition "screen1_ns_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen1_n_3::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen1_ns_3::textscale" "0.48" "0.46" "500" ;
+			transition "screen1_n_3::textscale" "0.42" "0.4" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen1_bar4::rect" "$screen1_bar4::rect" "$d_screen1_bar4::rect" "300" "100" "150" ;
+			transition "screen1_bar4::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen1_ts_4::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen1_t_4::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen1_ts_4::textscale" "0.37" "0.35" "1000" ;
+			transition "screen1_t_4::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {
+			transition "screen1_ns_4::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen1_n_4::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen1_ns_4::textscale" "0.48" "0.46" "500" ;
+			transition "screen1_n_4::textscale" "0.42" "0.4" "500" ;
+			
+			transition "screen1_ns_4a::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen1_n_4a::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen1_ns_4a::textscale" "0.48" "0.46" "500" ;
+			transition "screen1_n_4a::textscale" "0.42" "0.4" "500" ;
+		}
+
+		onTime +500 {
+			transition "screen1_n_1::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen1_n_2::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen1_n_3::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen1_n_4::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen1_n_4a::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +3500 {
+			transition "p_screen1::rect" "$p_screen1::rect" "$d_credits::rect" "500" "200" "200" ;
+			
+			transition "screen1_t_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen1_t_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen1_t_3::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen1_t_4::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			
+			transition "screen1_n_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen1_n_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen1_n_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen1_n_4::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen1_n_4a::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+		}
+
+		onTime +500 {
+			resettime "p_screen2" "0" ;
+			set "visible" "0" ;	
+		}
+
+		windowDef screen1_t_1
+		{
+			rect	103,82,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Project Lead"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen1_n_1
+		{
+			rect	165,100,426,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Eric Biessman"
+			textscale	.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen1_t_2
+		{
+			rect	103,162,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Art/Animation Lead"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen1_n_2
+		{
+			rect	165,180,426,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Kevin Long"
+			textscale	.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen1_t_3
+		{
+			rect	103,242,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Design Lead"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen1_n_3
+		{
+			rect	165,260,426,29
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Jim Hughes"
+			textscale	.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen1_t_4
+		{
+			rect	103,322,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Programming Leads"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen1_n_4
+		{
+			rect	165,340,426,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Rick Johnson"
+			textscale	.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen1_n_4a
+		{
+			rect	165,364,426,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Jeff Newquist"
+			textscale	.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen1_ts_1
+		{
+			rect	103,85,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Project Lead"
+			textscale	0.35
+			font	"fonts/strogg"
+		}
+		windowDef screen1_ns_1
+		{
+			rect	165,105,426,25
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Eric Biessman"
+			textscale	.46
+			font	"fonts/strogg"
+		}
+		windowDef screen1_ts_2
+		{
+			rect	103,165,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Art/Animation Lead"
+			textscale	0.35
+			font	"fonts/strogg"
+		}
+		windowDef screen1_ns_2
+		{
+			rect	165,185,426,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Kevin Long"
+			textscale	.46
+			font	"fonts/strogg"
+		}
+		windowDef screen1_ts_3
+		{
+			rect	103,245,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Design Lead"
+			textscale	0.35
+			font	"fonts/strogg"
+		}
+		windowDef screen1_ns_3
+		{
+			rect	165,265,426,29
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Jim Hughes"
+			textscale	.46
+			font	"fonts/strogg"
+		}
+		windowDef screen1_ts_4
+		{
+			rect	103,325,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Programming Leads"
+			textscale	0.35
+			font	"fonts/strogg"
+		}
+		windowDef screen1_ns_4
+		{
+			rect	165,345,426,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Rick Johnson"
+			textscale	.46
+			font	"fonts/strogg"
+		}
+		windowDef screen1_ns_4a
+		{
+			rect	165,369,426,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Jeff Newquist"
+			textscale	.46
+			font	"fonts/strogg"
+		}
+		windowDef screen1_bar1
+		{
+			rect	-222,81,223,24
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef screen1_bar2
+		{
+			rect	-276,161,277,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef screen1_bar3
+		{
+			rect	-213,241,214,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef screen1_bar4
+		{
+			rect	-274,321,275,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen1_bar1
+		{
+			rect	0,81,222,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen1_bar2
+		{
+			rect	0,161,277,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen1_bar3
+		{
+			rect	0,241,213,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen1_bar4
+		{
+			rect	0,321,274,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+	}
+	windowDef p_screen2
+	{
+		rect	0,0,640,480
+		visible	0
+		notime	1
+
+		onTime 0 {
+			set "rect" "0,0,640,480" ;
+			set "visible" "1" ;
+			
+			set "screen2_bar1::matcolor" "$desktop::cr_orange" ;
+			set "screen2_bar2::matcolor" "$desktop::cr_orange" ;
+			set "screen2_bar3::matcolor" "$desktop::cr_orange" ;
+			set "screen2_bar4::matcolor" "$desktop::cr_orange" ;
+			set "screen2_bar1::rect" "-213,83,213,23" ;
+			set "screen2_bar2::rect" "-216,188,216,23" ;
+			set "screen2_bar3::rect" "-393,268,393,23" ;
+			set "screen2_bar4::rect" "-236,348,236,23" ;
+			
+			transition "screen2_ts_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen2_ts_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen2_ts_3::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen2_ts_4::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			
+			transition "screen2_ns_1::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen2_ns_1a::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen2_ns_2::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen2_ns_3::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen2_ns_4::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+		}
+
+		onTime +2000 {
+			transition "screen2_bar1::rect" "$screen2_bar1::rect" "$d_screen2_bar1::rect" "300" "100" "150" ;
+			transition "screen2_bar1::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen2_ts_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen2_t_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen2_ts_1::textscale" "0.37" "0.35" "1000" ;
+			transition "screen2_t_1::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {
+			transition "screen2_ns_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen2_n_1::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen2_ns_1::textscale" "0.48" "0.46" "500" ;
+			transition "screen2_n_1::textscale" "0.42" "0.4" "500" ;
+			
+			transition "screen2_ns_1a::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen2_n_1a::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen2_ns_1a::textscale" "0.48" "0.46" "500" ;
+			transition "screen2_n_1a::textscale" "0.42" "0.4" "500" ;	
+		}
+
+		onTime +200 {
+			transition "screen2_bar2::rect" "$screen2_bar2::rect" "$d_screen2_bar2::rect" "300" "100" "150" ;
+			transition "screen2_bar2::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen2_ts_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen2_t_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen2_ts_2::textscale" "0.37" "0.35" "1000" ;
+			transition "screen2_t_2::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {
+			transition "screen2_ns_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen2_n_2::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen2_ns_2::textscale" "0.48" "0.46" "500" ;
+			transition "screen2_n_2::textscale" "0.42" "0.4" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen2_bar3::rect" "$screen2_bar3::rect" "$d_screen2_bar3::rect" "300" "100" "150" ;
+			transition "screen2_bar3::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen2_ts_3::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen2_t_3::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen2_ts_3::textscale" "0.37" "0.35" "1000" ;
+			transition "screen2_t_3::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {
+			transition "screen2_ns_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen2_n_3::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen2_ns_3::textscale" "0.48" "0.46" "500" ;
+			transition "screen2_n_3::textscale" "0.42" "0.4" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen2_bar4::rect" "$screen2_bar4::rect" "$d_screen2_bar4::rect" "300" "100" "150" ;
+			transition "screen2_bar4::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen2_ts_4::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen2_t_4::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen2_ts_4::textscale" "0.37" "0.35" "1000" ;
+			transition "screen2_t_4::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {
+			transition "screen2_ns_4::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen2_n_4::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen2_ns_4::textscale" "0.48" "0.46" "500" ;
+			transition "screen2_n_4::textscale" "0.42" "0.4" "500" ;
+		}
+
+		onTime +500 {
+			transition "screen2_n_1::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen2_n_1a::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen2_n_2::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen2_n_3::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen2_n_4::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +3500 {
+			transition "p_screen2::rect" "$p_screen2::rect" "$d_credits::rect" "500" "200" "200" ;
+			
+			transition "screen2_t_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen2_t_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen2_t_3::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen2_t_4::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			
+			transition "screen2_n_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen2_n_1a::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen2_n_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen2_n_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen2_n_4::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+		}
+
+		onTime +500 {
+			resettime "p_screen3" "0" ;
+			set "visible" "0" ;	
+		}
+
+		windowDef screen2_t_1
+		{
+			rect	103,81,433,19
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Audio Leads"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen2_n_1
+		{
+			rect	165,99,425,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Zachary Quarles"
+			textscale	.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen2_n_1a
+		{
+			rect	165,123,425,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Kevin Schilder"
+			textscale	.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen2_t_2
+		{
+			rect	103,188,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Studio Head"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen2_n_2
+		{
+			rect	165,205,425,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Brian Raffel"
+			textscale	.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen2_t_3
+		{
+			rect	103,268,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Director of Product Development"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen2_n_3
+		{
+			rect	165,285,425,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Michael Crowns"
+			textscale	.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen2_t_4
+		{
+			rect	103,348,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Line Producer"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen2_n_4
+		{
+			rect	165,365,425,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Rosalie Kofsky"
+			textscale	.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen2_ts_1
+		{
+			rect	103,84,433,19
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Audio Leads"
+			textscale	0.35
+			font	"fonts/strogg"
+		}
+		windowDef screen2_ns_1
+		{
+			rect	165,104,425,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Zachary Quarles"
+			textscale	.46
+			font	"fonts/strogg"
+		}
+		windowDef screen2_ns_1a
+		{
+			rect	165,128,425,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Kevin Schilder"
+			textscale	.46
+			font	"fonts/strogg"
+		}
+		windowDef screen2_ts_2
+		{
+			rect	103,191,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Studio Head"
+			textscale	0.35
+			font	"fonts/strogg"
+		}
+		windowDef screen2_ns_2
+		{
+			rect	165,210,425,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Brian Raffel"
+			textscale	.46
+			font	"fonts/strogg"
+		}
+		windowDef screen2_ts_3
+		{
+			rect	103,271,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Director of Product Development"
+			textscale	0.35
+			font	"fonts/strogg"
+		}
+		windowDef screen2_ns_3
+		{
+			rect	165,290,425,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Michael Crowns"
+			textscale	.46
+			font	"fonts/strogg"
+		}
+		windowDef screen2_ts_4
+		{
+			rect	103,351,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Line Producer"
+			textscale	0.35
+			font	"fonts/strogg"
+		}
+		windowDef screen2_ns_4
+		{
+			rect	165,370,425,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Rosalie Kofsky"
+			textscale	.46
+			font	"fonts/strogg"
+		}
+		windowDef screen2_bar1
+		{
+			rect	-212,79,213,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef screen2_bar2
+		{
+			rect	-215,188,216,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef screen2_bar3
+		{
+			rect	-392,268,393,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef screen2_bar4
+		{
+			rect	-235,348,236,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen2_bar1
+		{
+			rect	0,79,213,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen2_bar2
+		{
+			rect	0,188,216,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen2_bar3
+		{
+			rect	0,268,393,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen2_bar4
+		{
+			rect	0,348,236,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+	}
+	windowDef p_screen3
+	{
+		rect	0,0,640,480
+		visible	0
+		notime	1
+
+		onTime 0 {
+			set "rect" "0,0,640,480" ;
+			set "visible" "1" ;
+			
+			set "screen3_bar1::matcolor" "$desktop::cr_orange" ;
+			set "screen3_bar2::matcolor" "$desktop::cr_orange" ;
+			set "screen3_bar1::rect" "-257,92,256,32" ;
+			set "screen3_bar2::rect" "640,273,311,32" ;
+			
+			transition "screen3_ts_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen3_ts_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			
+			transition "screen3_ns_1::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen3_ns_2::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen3_ns_3::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen3_ns_4::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen3_ns_5::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen3_ns_6::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen3_ns_7::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen3_ns_8::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen3_ns_9::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen3_ns_10::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen3_ns_11::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen3_ns_12::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen3_ns_13::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen3_ns_14::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen3_ns_15::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen3_ns_16::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen3_ns_17::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+		}
+
+		onTime +2000 {
+			transition "screen3_bar1::rect" "$screen3_bar1::rect" "$d_screen3_bar1::rect" "300" "100" "150" ;
+			transition "screen3_bar2::rect" "$screen3_bar2::rect" "$d_screen3_bar2::rect" "300" "100" "150" ;
+			transition "screen3_bar1::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			transition "screen3_bar2::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen3_ts_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1500" ;
+			transition "screen3_t_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1500" ;
+			
+			transition "screen3_ts_1::textscale" "0.48" "0.46" "1500" ;
+			transition "screen3_t_1::textscale" "0.42" "0.4" "1500" ;
+			
+			transition "screen3_ts_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1500" ;
+			transition "screen3_t_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1500" ;
+			
+			transition "screen3_ts_2::textscale" "0.48" "0.46" "1500" ;
+			transition "screen3_t_2::textscale" "0.42" "0.4" "1500" ;
+		}
+
+		onTime +50 {
+			transition "screen3_ns_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen3_n_1::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			
+			transition "screen3_ns_1::textscale" "0.36" "0.34" "500" ;
+			transition "screen3_n_1::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen3_ns_14::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen3_n_14::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			
+			transition "screen3_ns_14::textscale" "0.36" "0.34" "500" ;
+			transition "screen3_n_14::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen3_n_1::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen3_n_14::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen3_ns_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen3_n_2::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			
+			transition "screen3_ns_2::textscale" "0.36" "0.34" "500" ;
+			transition "screen3_n_2::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen3_ns_15::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen3_n_15::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			
+			transition "screen3_ns_15::textscale" "0.36" "0.34" "500" ;
+			transition "screen3_n_15::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen3_n_2::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen3_n_15::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen3_ns_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen3_n_3::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			
+			transition "screen3_ns_3::textscale" "0.36" "0.34" "500" ;
+			transition "screen3_n_3::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen3_ns_16::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen3_n_16::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			
+			transition "screen3_ns_16::textscale" "0.36" "0.34" "500" ;
+			transition "screen3_n_16::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen3_n_3::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen3_n_16::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen3_ns_4::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen3_n_4::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			
+			transition "screen3_ns_4::textscale" "0.36" "0.34" "500" ;
+			transition "screen3_n_4::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen3_ns_17::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen3_n_17::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			
+			transition "screen3_ns_17::textscale" "0.36" "0.34" "500" ;
+			transition "screen3_n_17::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen3_n_4::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen3_n_17::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen3_ns_5::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen3_n_5::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			
+			transition "screen3_ns_5::textscale" "0.36" "0.34" "500" ;
+			transition "screen3_n_5::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen3_n_5::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen3_ns_6::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen3_n_6::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			
+			transition "screen3_ns_6::textscale" "0.36" "0.34" "500" ;
+			transition "screen3_n_6::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen3_n_6::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen3_ns_7::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen3_n_7::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			
+			transition "screen3_ns_7::textscale" "0.36" "0.34" "500" ;
+			transition "screen3_n_7::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen3_n_7::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen3_ns_8::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen3_n_8::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			
+			transition "screen3_ns_8::textscale" "0.36" "0.34" "500" ;
+			transition "screen3_n_8::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen3_n_8::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen3_ns_9::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen3_n_9::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			
+			transition "screen3_ns_9::textscale" "0.36" "0.34" "500" ;
+			transition "screen3_n_9::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen3_n_9::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen3_ns_10::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen3_n_10::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			
+			transition "screen3_ns_10::textscale" "0.36" "0.34" "500" ;
+			transition "screen3_n_10::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen3_n_10::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen3_ns_11::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen3_n_11::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			
+			transition "screen3_ns_11::textscale" "0.36" "0.34" "500" ;
+			transition "screen3_n_11::textscale" "0.33" "0.31" "500" ;}
+
+		onTime +200 {
+			transition "screen3_n_11::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen3_ns_12::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen3_n_12::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			
+			transition "screen3_ns_12::textscale" "0.36" "0.34" "500" ;
+			transition "screen3_n_12::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen3_n_12::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen3_ns_13::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen3_n_13::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			
+			transition "screen3_ns_13::textscale" "0.41" "0.34" "500" ;
+			transition "screen3_n_13::textscale" "0.38" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen3_n_13::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +3500 {
+			transition "p_screen3::rect" "$p_screen3::rect" "$d_credits::rect" "500" "200" "200" ;
+			
+			transition "screen3_t_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen3_t_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;	
+			transition "screen3_n_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen3_n_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen3_n_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen3_n_4::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen3_n_5::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen3_n_6::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen3_n_7::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen3_n_8::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen3_n_9::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen3_n_10::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen3_n_11::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen3_n_12::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen3_n_13::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen3_n_14::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen3_n_15::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen3_n_16::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen3_n_17::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+		}
+
+		onTime +500 {
+			resettime "p_screen4" "0" ;
+			set "visible" "0" ;	
+		}
+
+		windowDef screen3_t_1
+		{
+			rect	103,94,433,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Art
+			textscale	0.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen3_n_1
+		{
+			rect	123,123,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Fred Hooper - Assistant Art Lead"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen3_n_2
+		{
+			rect	123,143,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Djordje Cakovan"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen3_n_3
+		{
+			rect	123,163,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Derrick Hammond"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen3_n_4
+		{
+			rect	123,183,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Kim Lathrop"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen3_n_5
+		{
+			rect	123,203,380,19
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Caryn Law"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen3_n_6
+		{
+			rect	123,223,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Simon Mills"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen3_n_7
+		{
+			rect	123,243,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Nichol Norman"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen3_n_8
+		{
+			rect	123,263,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Isaac Owens"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen3_n_9
+		{
+			rect	123,283,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Kurt Richards"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen3_n_10
+		{
+			rect	123,303,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Paul Richards"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen3_n_11
+		{
+			rect	123,323,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Arnie Swekel"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen3_n_12
+		{
+			rect	123,343,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Andrew Trabbold"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen3_n_13
+		{
+			rect	123,363,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Matt Vainio"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen3_t_2
+		{
+			rect	344,274,283,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Additional Art"
+			textscale	0.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen3_n_14
+		{
+			rect	364,303,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Les Dorscheid"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen3_n_15
+		{
+			rect	364,323,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Mark Nelson"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen3_n_16
+		{
+			rect	364,343,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Todd Rueping"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen3_n_17
+		{
+			rect	364,363,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Jeff Unay"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen3_ts_1
+		{
+			rect	103,99,433,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Art
+			textscale	0.46
+			font	"fonts/strogg"
+		}
+		windowDef screen3_ns_1
+		{
+			rect	123,126,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Fred Hooper - Assistant Art Lead"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen3_ns_2
+		{
+			rect	123,146,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Djordje Cakovan"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen3_ns_3
+		{
+			rect	123,166,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Derrick Hammond"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen3_ns_4
+		{
+			rect	123,186,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Kim Lathrop"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen3_ns_5
+		{
+			rect	123,206,380,19
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Caryn Law"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen3_ns_6
+		{
+			rect	123,226,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Simon Mills"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen3_ns_7
+		{
+			rect	123,246,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Nichol Norman"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen3_ns_8
+		{
+			rect	123,266,380,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Isaac Owens"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen3_ns_9
+		{
+			rect	123,286,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Kurt Richards"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen3_ns_10
+		{
+			rect	123,306,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Paul Richards"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen3_ns_11
+		{
+			rect	123,326,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Arnie Swekel"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen3_ns_12
+		{
+			rect	123,346,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Andrew Trabbold"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen3_ns_13
+		{
+			rect	123,366,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Matt Vainio"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen3_ts_2
+		{
+			rect	344,279,283,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Additional Art"
+			textscale	0.46
+			font	"fonts/strogg"
+		}
+		windowDef screen3_ns_14
+		{
+			rect	364,306,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Les Dorscheid"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen3_ns_15
+		{
+			rect	364,326,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Mark Nelson"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen3_ns_16
+		{
+			rect	364,346,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Todd Rueping"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen3_ns_17
+		{
+			rect	364,366,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Jeff Unay"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen3_bar1
+		{
+			rect	-257,92,256,32
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef screen3_bar2
+		{
+			rect	640,273,311,32
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+		windowDef d_screen3_bar1
+		{
+			rect	-101,92,256,32
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen3_bar2
+		{
+			rect	329,273,311,32
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+	}
+	windowDef p_screen4
+	{
+		rect	0,0,640,480
+		visible	0
+		notime	1
+
+		onTime 0 {
+			set "rect" "0,0,640,480" ;
+			set "visible" "1" ;
+			
+			set "screen4_bar1::matcolor" "$desktop::cr_orange" ;
+			set "screen4_bar2::matcolor" "$desktop::cr_orange" ;
+			set "screen4_bar1::rect" "-218,114,218,32" ;
+			set "screen4_bar2::rect" "-328,251,328,32" ;
+			
+			transition "screen4_ts_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen4_ts_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			
+			transition "screen4_ns_1::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen4_ns_2::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen4_ns_3::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen4_ns_4::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen4_ns_5::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen4_ns_6::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen4_ns_7::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen4_ns_8::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen4_ns_9::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+		}
+
+		onTime +2000 {
+			transition "screen4_bar1::rect" "$screen4_bar1::rect" "$d_screen4_bar1::rect" "300" "100" "150" ;
+			transition "screen4_bar2::rect" "$screen4_bar2::rect" "$d_screen4_bar2::rect" "300" "100" "150" ;
+			transition "screen4_bar1::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			transition "screen4_bar2::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen4_ts_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1500" ;
+			transition "screen4_t_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1500" ;
+			
+			transition "screen4_ts_1::textscale" "0.48" "0.46" "1500" ;
+			transition "screen4_t_1::textscale" "0.42" "0.4" "1500" ;
+			
+			transition "screen4_ts_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1500" ;
+			transition "screen4_t_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1500" ;
+			
+			transition "screen4_ts_2::textscale" "0.48" "0.46" "1500" ;
+			transition "screen4_t_2::textscale" "0.42" "0.4" "1500" ;
+		}
+
+		onTime +50 {
+			transition "screen4_ns_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen4_n_1::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			transition "screen4_ns_1::textscale" "0.36" "0.34" "500" ;
+			transition "screen4_n_1::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen4_ns_5::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen4_n_5::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			transition "screen4_ns_5::textscale" "0.36" "0.34" "500" ;
+			transition "screen4_n_5::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen4_n_1::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen4_n_5::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen4_ns_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen4_n_2::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			transition "screen4_ns_2::textscale" "0.36" "0.34" "500" ;
+			transition "screen4_n_2::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen4_ns_6::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen4_n_6::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			transition "screen4_ns_6::textscale" "0.36" "0.34" "500" ;
+			transition "screen4_n_6::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen4_n_2::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen4_n_6::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen4_ns_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen4_n_3::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			transition "screen4_ns_3::textscale" "0.36" "0.34" "500" ;
+			transition "screen4_n_3::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen4_ns_7::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen4_n_7::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			transition "screen4_ns_7::textscale" "0.36" "0.34" "500" ;
+			transition "screen4_n_7::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen4_n_3::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen4_n_7::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen4_ns_4::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen4_n_4::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			transition "screen4_ns_4::textscale" "0.36" "0.34" "500" ;
+			transition "screen4_n_4::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen4_ns_8::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen4_n_8::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			transition "screen4_ns_8::textscale" "0.36" "0.34" "500" ;
+			transition "screen4_n_8::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen4_n_4::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen4_n_8::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen4_ns_9::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen4_n_9::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			transition "screen4_ns_9::textscale" "0.36" "0.34" "500" ;
+			transition "screen4_n_9::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen4_n_9::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +3500 {
+			transition "p_screen4::rect" "$p_screen4::rect" "$d_credits::rect" "500" "200" "200" ;
+			
+			transition "screen4_t_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen4_t_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;	
+			transition "screen4_n_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen4_n_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen4_n_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen4_n_4::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen4_n_5::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen4_n_6::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen4_n_7::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen4_n_8::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen4_n_9::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+		}
+
+		onTime +500 {
+			resettime "p_screen5" "0" ;
+			set "visible" "0" ;	
+		}
+
+		windowDef screen4_t_1
+		{
+			rect	103,115,432,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Animation
+			textscale	0.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen4_n_1
+		{
+			rect	122,144,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Michael Pleva - Assistant Animation Lead"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen4_n_2
+		{
+			rect	122,164,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Michael Egnew"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen4_n_3
+		{
+			rect	122,184,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"David Gulisano"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen4_n_4
+		{
+			rect	122,204,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Nick Maggiore"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen4_t_2
+		{
+			rect	103,252,432,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Additional Animation"
+			textscale	0.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen4_n_5
+		{
+			rect	122,281,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Robert Gee"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen4_n_6
+		{
+			rect	122,301,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Dan Hay - Cinematic Consultant"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen4_n_7
+		{
+			rect	122,321,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Kimberly Sanchez"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen4_n_8
+		{
+			rect	122,341,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Jarrod Showers"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen4_n_9
+		{
+			rect	122,361,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Ryan Watson"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen4_ts_1
+		{
+			rect	103,119,432,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Animation
+			textscale	0.46
+			font	"fonts/strogg"
+		}
+		windowDef screen4_ns_1
+		{
+			rect	122,147,379,20
+			visible	1
+			forecolor	0.827,1,0.647,0
+			text	"Michael Pleva - Assistant Animation Lead"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen4_ns_2
+		{
+			rect	122,167,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Michael Egnew"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen4_ns_3
+		{
+			rect	122,187,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"David Gulisano"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen4_ns_4
+		{
+			rect	122,207,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Nick Maggiore"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen4_ts_2
+		{
+			rect	103,256,432,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Additional Animation"
+			textscale	0.46
+			font	"fonts/strogg"
+		}
+		windowDef screen4_ns_5
+		{
+			rect	122,284,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Robert Gee"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen4_ns_6
+		{
+			rect	122,304,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Dan Hay - Cinematic Consultant"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen4_ns_7
+		{
+			rect	122,324,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Kimberly Sanchez"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen4_ns_8
+		{
+			rect	122,344,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Jarrod Showers"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen4_ns_9
+		{
+			rect	122,364,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Ryan Watson"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen4_bar1
+		{
+			rect	-218,114,218,32
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef screen4_bar2
+		{
+			rect	-341,251,341,32
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen4_bar1
+		{
+			rect	0,114,218,32
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen4_bar2
+		{
+			rect	0,251,341,32
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+	}
+	windowDef p_screen5
+	{
+		rect	0,0,640,480
+		visible	0
+		notime	1
+
+		onTime 0 {
+			set "rect" "0,0,640,480" ;
+			set "visible" "1" ;
+			
+			set "screen5_bar1::matcolor" "$desktop::cr_orange" ;
+			set "screen5_bar1::rect" "-246,81,245,32" ;
+			
+			transition "screen5_ts_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			
+			transition "screen5_ns_1::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen5_ns_2::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen5_ns_3::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen5_ns_4::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen5_ns_5::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen5_ns_6::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen5_ns_7::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen5_ns_8::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen5_ns_9::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen5_ns_10::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen5_ns_11::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen5_ns_12::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+		}
+
+		onTime +2000 {
+			transition "screen5_bar1::rect" "$screen5_bar1::rect" "$d_screen5_bar1::rect" "300" "100" "150" ;
+			transition "screen5_bar1::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen5_ts_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1500" ;
+			transition "screen5_t_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1500" ;
+			
+			transition "screen5_ts_1::textscale" "0.48" "0.46" "1500" ;
+			transition "screen5_t_1::textscale" "0.42" "0.4" "1500" ;
+		}
+
+		onTime +50 {
+			transition "screen5_ns_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen5_n_1::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			transition "screen5_ns_1::textscale" "0.36" "0.34" "500" ;
+			transition "screen5_n_1::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen5_n_1::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen5_ns_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen5_n_2::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			transition "screen5_ns_2::textscale" "0.36" "0.34" "500" ;
+			transition "screen5_n_2::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen5_n_2::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen5_ns_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen5_n_3::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			transition "screen5_ns_3::textscale" "0.36" "0.34" "500" ;
+			transition "screen5_n_3::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen5_n_3::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen5_ns_4::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen5_n_4::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			transition "screen5_ns_4::textscale" "0.36" "0.34" "500" ;
+			transition "screen5_n_4::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen5_n_4::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen5_ns_5::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen5_n_5::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			transition "screen5_ns_5::textscale" "0.36" "0.34" "500" ;
+			transition "screen5_n_5::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen5_n_5::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen5_ns_6::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen5_n_6::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			transition "screen5_ns_6::textscale" "0.36" "0.34" "500" ;
+			transition "screen5_n_6::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen5_n_6::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen5_ns_7::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen5_n_7::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			transition "screen5_ns_7::textscale" "0.36" "0.34" "500" ;
+			transition "screen5_n_7::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen5_n_7::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen5_ns_8::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen5_n_8::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			transition "screen5_ns_8::textscale" "0.36" "0.34" "500" ;
+			transition "screen5_n_8::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen5_n_8::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen5_ns_9::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen5_n_9::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			transition "screen5_ns_9::textscale" "0.36" "0.34" "500" ;
+			transition "screen5_n_9::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen5_n_9::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen5_ns_10::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen5_n_10::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			transition "screen5_ns_10::textscale" "0.36" "0.34" "500" ;
+			transition "screen5_n_10::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen5_n_10::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen5_ns_11::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen5_n_11::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			transition "screen5_ns_11::textscale" "0.36" "0.34" "500" ;
+			transition "screen5_n_11::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen5_n_11::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen5_ns_12::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen5_n_12::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;
+			transition "screen5_ns_12::textscale" "0.36" "0.34" "500" ;
+			transition "screen5_n_12::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen5_n_12::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +3500 {
+			transition "p_screen5::rect" "$p_screen5::rect" "$d_credits::rect" "500" "200" "200" ;
+			
+			transition "screen5_t_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen5_n_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen5_n_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen5_n_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen5_n_4::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen5_n_5::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen5_n_6::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen5_n_7::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen5_n_8::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen5_n_9::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen5_n_10::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen5_n_11::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen5_n_12::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+		}
+
+		onTime +500 {
+			resettime "p_screen6" "0" ;
+			set "visible" "0" ;	
+		}
+
+		windowDef screen5_t_1
+		{
+			rect	103,104,432,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Level Design"
+			textscale	0.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen5_n_1
+		{
+			rect	122,133,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Ken Banks"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen5_n_2
+		{
+			rect	122,153,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Robert Bettenberg"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen5_n_3
+		{
+			rect	122,173,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Chad Bordwell"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen5_n_4
+		{
+			rect	122,193,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Matt Breit"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen5_n_5
+		{
+			rect	122,213,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Roger Cordes"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen5_n_6
+		{
+			rect	122,233,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Ford Dye"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen5_n_7
+		{
+			rect	122,253,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Mike Majernik"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen5_n_8
+		{
+			rect	122,273,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Scott McNutt"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen5_n_9
+		{
+			rect	122,293,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Corey Peters"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen5_n_10
+		{
+			rect	122,313,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Michael Renner"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen5_n_11
+		{
+			rect	122,333,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Andrew Weldon"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen5_n_12
+		{
+			rect	122,353,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Patrick Williams"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen5_ts_1
+		{
+			rect	103,108,432,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Level Design"
+			textscale	0.46
+			font	"fonts/strogg"
+		}
+		windowDef screen5_ns_1
+		{
+			rect	122,136,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Ken Banks"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen5_ns_2
+		{
+			rect	122,156,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Robert Bettenberg"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen5_ns_3
+		{
+			rect	122,176,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Chad Bordwell"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen5_ns_4
+		{
+			rect	122,196,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Matt Breit"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen5_ns_5
+		{
+			rect	122,216,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Roger Cordes"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen5_ns_6
+		{
+			rect	122,236,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Ford Dye"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen5_ns_7
+		{
+			rect	122,256,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Mike Majernik"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen5_ns_8
+		{
+			rect	122,276,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Scott McNutt"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen5_ns_9
+		{
+			rect	122,296,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Corey Peters"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen5_ns_10
+		{
+			rect	122,316,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Michael Renner"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen5_ns_11
+		{
+			rect	122,336,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Andrew Weldon"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen5_ns_12
+		{
+			rect	122,356,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Patrick Williams"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen5_bar1
+		{
+			rect	-245,104,245,32
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen5_bar1
+		{
+			rect	0,104,245,32
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+	}
+	windowDef p_screen6
+	{
+		rect	0,0,640,480
+		visible	0
+		notime	1
+
+		onTime 0 {
+			set "rect" "0,0,640,480" ;
+			set "visible" "1" ;
+			
+			set "screen6_bar1::matcolor" "$desktop::cr_orange" ;
+			set "screen6_bar2::matcolor" "$desktop::cr_orange" ;
+			set "screen6_bar1::rect" "-256,54,256,32" ;
+			set "screen6_bar2::rect" "640,232,311,32" ;
+			
+			transition "screen6_ts_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen6_ts_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			
+			transition "screen6_ns_1::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_2::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_3::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_4::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_5::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_6::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_7::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_8::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_9::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_10::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_11::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_12::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_13::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_14::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_15::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_16::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_17::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_18::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_19::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_20::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_21::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_22::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_23::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_24::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen6_ns_25::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+		}
+
+		onTime +2000 {
+			transition "screen6_bar1::rect" "$screen6_bar1::rect" "$d_screen6_bar1::rect" "300" "100" "150" ;
+			transition "screen6_bar2::rect" "$screen6_bar2::rect" "$d_screen6_bar2::rect" "300" "100" "150" ;
+			transition "screen6_bar1::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			transition "screen6_bar2::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen6_ts_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1500" ;
+			transition "screen6_t_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1500" ;	
+			transition "screen6_ts_1::textscale" "0.48" "0.46" "1500" ;
+			transition "screen6_t_1::textscale" "0.42" "0.4" "1500" ;
+			
+			transition "screen6_ts_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1500" ;
+			transition "screen6_t_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1500" ;	
+			transition "screen6_ts_2::textscale" "0.48" "0.46" "1500" ;
+			transition "screen6_t_2::textscale" "0.42" "0.4" "1500" ;
+		}
+
+		onTime +50 {
+			transition "screen6_ns_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_1::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_1::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_1::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen6_ns_18::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_18::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_18::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_18::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen6_n_1::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen6_n_18::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen6_ns_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_2::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_2::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_2::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen6_ns_19::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_19::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_19::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_19::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen6_n_2::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen6_n_19::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen6_ns_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_3::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_3::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_3::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen6_ns_20::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_20::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_20::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_20::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen6_n_3::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen6_n_20::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen6_ns_4::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_4::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_4::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_4::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen6_ns_21::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_21::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_21::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_21::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen6_n_4::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen6_n_21::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen6_ns_5::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_5::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_5::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_5::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen6_ns_22::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_22::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_22::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_22::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen6_n_5::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen6_n_22::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen6_ns_6::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_6::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_6::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_6::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen6_ns_23::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_23::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_23::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_23::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen6_n_6::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen6_n_23::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen6_ns_7::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_7::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_7::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_7::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen6_ns_24::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_24::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_24::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_24::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen6_n_7::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen6_n_24::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen6_ns_8::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_8::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_8::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_8::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen6_ns_25::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_25::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_25::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_25::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen6_n_8::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen6_n_25::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen6_ns_9::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_9::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_9::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_9::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen6_n_9::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen6_ns_10::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_10::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_10::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_10::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen6_n_10::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen6_ns_11::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_11::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_11::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_11::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen6_n_11::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen6_ns_12::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_12::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_12::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_12::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen6_n_12::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen6_ns_13::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_13::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_13::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_13::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen6_n_13::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen6_ns_14::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_14::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_14::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_14::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen6_n_14::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen6_ns_15::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_15::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_15::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_15::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen6_n_15::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen6_ns_16::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_16::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_16::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_16::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen6_n_16::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen6_ns_17::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "200" ;
+			transition "screen6_n_17::forecolor" "$desktop::cr_green_0" "$desktop::white" "200" ;	
+			transition "screen6_ns_17::textscale" "0.36" "0.34" "500" ;
+			transition "screen6_n_17::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen6_n_17::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +3500 {
+			transition "p_screen6::rect" "$p_screen6::rect" "$d_credits::rect" "500" "200" "200" ;
+			
+			transition "screen6_t_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen6_t_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;	
+			transition "screen6_n_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_4::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_5::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_6::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_7::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_8::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_9::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_10::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_11::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_12::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_13::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_14::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_15::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_16::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_17::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_18::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_19::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_20::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_21::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_22::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_23::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_24::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen6_n_25::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+		}
+
+		onTime +500 {
+			resettime "p_screen7" "0" ;
+			set "visible" "0" ;	
+		}
+
+		windowDef screen6_t_1
+		{
+			rect	103,54,433,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Programming
+			textscale	0.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_1
+		{
+			rect	123,83,380,19
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Aaron Bahr"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_2
+		{
+			rect	123,103,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Gretchen Carlson"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_3
+		{
+			rect	123,123,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Bryan Dube"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_4
+		{
+			rect	123,143,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Jeff Dischler"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_5
+		{
+			rect	123,163,380,19
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"David Dynerman"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_6
+		{
+			rect	123,183,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Michael Ekberg"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_7
+		{
+			rect	123,203,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Michael Chang Gummelt"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_8
+		{
+			rect	123,223,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Dwight Luetscher"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_9
+		{
+			rect	123,243,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"James Monroe"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_10
+		{
+			rect	123,263,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Nathan Rausch"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_11
+		{
+			rect	123,283,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Aurelio Reis"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_12
+		{
+			rect	123,303,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Allison Salmon"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_13
+		{
+			rect	123,323,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"John J. Scott"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_14
+		{
+			rect	123,343,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Jim Shepard"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_15
+		{
+			rect	123,362,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"James Singer"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_16
+		{
+			rect	123,382,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Anthony Whitaker"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_17
+		{
+			rect	123,402,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Marcus Whitlock"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_t_2
+		{
+			rect	344,233,283,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Additional Programming"
+			textscale	0.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_18
+		{
+			rect	364,262,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Ste Cork "
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_19
+		{
+			rect	364,282,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Keith Fuller"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_20
+		{
+			rect	364,302,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Gil Gribb"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_21
+		{
+			rect	364,322,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Steve Houchard"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_22
+		{
+			rect	364,342,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Ryan Hummer"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_23
+		{
+			rect	364,362,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Chuck Nicholson"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_24
+		{
+			rect	364,382,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Christopher Reed"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_n_25
+		{
+			rect	364,402,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Kerry Sergent"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen6_ts_1
+		{
+			rect	103,58,433,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Programming
+			textscale	0.46
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_1
+		{
+			rect	123,86,380,19
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Aaron Bahr"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_2
+		{
+			rect	123,106,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Gretchen Carlson"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_3
+		{
+			rect	123,126,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Bryan Dube"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_4
+		{
+			rect	123,146,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Jeff Dischler"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_5
+		{
+			rect	123,166,380,19
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"David Dynerman"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_6
+		{
+			rect	123,186,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Michael Ekberg"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_7
+		{
+			rect	123,206,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Michael Chang Gummelt"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_8
+		{
+			rect	123,226,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Dwight Luetscher"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_9
+		{
+			rect	123,246,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"James Monroe"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_10
+		{
+			rect	123,266,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Nathan Rausch"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_11
+		{
+			rect	123,286,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Aurelio Reis"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_12
+		{
+			rect	123,306,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Allison Salmon"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_13
+		{
+			rect	123,326,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"John J. Scott"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_14
+		{
+			rect	123,346,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Jim Shepard"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_15
+		{
+			rect	123,365,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"James Singer"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_16
+		{
+			rect	123,385,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Anthony Whitaker"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_17
+		{
+			rect	123,405,380,20
+			visible	1
+			forecolor	0.835,1,0.654,0
+			text	"Marcus Whitlock"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ts_2
+		{
+			rect	344,237,283,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Additional Programming"
+			textscale	0.46
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_18
+		{
+			rect	364,265,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Ste Cork"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_19
+		{
+			rect	364,285,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Keith Fuller"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_20
+		{
+			rect	364,305,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Gil Gribb"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_21
+		{
+			rect	364,325,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Steve Houchard"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_22
+		{
+			rect	364,345,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Ryan Hummer"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_23
+		{
+			rect	364,365,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Chuck Nicholson"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_24
+		{
+			rect	364,385,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Christopher Reed"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_ns_25
+		{
+			rect	364,405,263,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Kerry Sergent"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen6_bar1
+		{
+			rect	-255,54,256,32
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef screen6_bar2
+		{
+			rect	640,232,311,32
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+		windowDef d_screen6_bar1
+		{
+			rect	0,54,256,32
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen6_bar2
+		{
+			rect	329,232,311,32
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+	}
+	windowDef p_screen7
+	{
+		rect	0,0,640,480
+		visible	0
+		notime	1
+
+		onTime 0 {
+			set "rect" "0,0,640,480" ;
+			set "visible" "1" ;
+			
+			set "screen7_bar1::matcolor" "$desktop::cr_orange" ;
+			set "screen7_bar2::matcolor" "$desktop::cr_orange" ;
+			set "screen7_bar3::matcolor" "$desktop::cr_orange" ;
+			set "screen7_bar4::matcolor" "$desktop::cr_orange" ;
+			set "screen7_bar5::matcolor" "$desktop::cr_orange" ;
+			set "screen7_bar6::matcolor" "$desktop::cr_orange" ;
+			set "screen7_bar1::rect" "-263,81,263,23" ;
+			set "screen7_bar2::rect" "-224,146,224,23" ;
+			set "screen7_bar3::rect" "-298,211,298,23" ;
+			set "screen7_bar4::rect" "-161,297,161,23" ;
+			set "screen7_bar5::rect" "-301,362,301,23" ;
+			set "screen7_bar6::rect" "-301,362,301,23" ;
+			
+			transition "screen7_ts_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen7_ts_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen7_ts_3::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen7_ts_4::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen7_ts_5::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen7_ts_6::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			
+			transition "screen7_ns_1::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen7_ns_2::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen7_ns_3::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen7_ns_3a::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen7_ns_4::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen7_ns_5::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen7_ns_6::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+		}
+
+		onTime +2000 {
+			transition "screen7_bar1::rect" "$screen7_bar1::rect" "$d_screen7_bar1::rect" "300" "100" "150" ;
+			transition "screen7_bar1::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen7_ts_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen7_t_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen7_ts_1::textscale" "0.3" "0.28" "1000" ;
+			transition "screen7_t_1::textscale" "0.26" "0.24" "1000" ;
+		}
+
+		onTime +50 {
+			transition "screen7_ns_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen7_n_1::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen7_ns_1::textscale" "0.36" "0.34" "500" ;
+			transition "screen7_n_1::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen7_bar2::rect" "$screen7_bar2::rect" "$d_screen7_bar2::rect" "300" "100" "150" ;
+			transition "screen7_bar2::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen7_ts_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen7_t_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen7_ts_2::textscale" "0.3" "0.28" "1000" ;
+			transition "screen7_t_2::textscale" "0.26" "0.24" "1000" ;
+		}
+
+		onTime +50 {
+			transition "screen7_ns_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen7_n_2::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen7_ns_2::textscale" "0.36" "0.34" "500" ;
+			transition "screen7_n_2::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen7_bar3::rect" "$screen7_bar3::rect" "$d_screen7_bar3::rect" "300" "100" "150" ;
+			transition "screen7_bar3::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen7_ts_3::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen7_t_3::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen7_ts_3::textscale" "0.3" "0.28" "1000" ;
+			transition "screen7_t_3::textscale" "0.26" "0.24" "1000" ;
+		}
+
+		onTime +50 {
+			transition "screen7_ns_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen7_n_3::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen7_ns_3::textscale" "0.36" "0.34" "500" ;
+			transition "screen7_n_3::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen7_ns_3a::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen7_n_3a::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen7_ns_3a::textscale" "0.36" "0.34" "500" ;
+			transition "screen7_n_3a::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen7_bar4::rect" "$screen7_bar4::rect" "$d_screen7_bar4::rect" "300" "100" "150" ;
+			transition "screen7_bar4::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen7_ts_4::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen7_t_4::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen7_ts_4::textscale" "0.3" "0.28" "1000" ;
+			transition "screen7_t_4::textscale" "0.26" "0.24" "1000" ;
+		}
+
+		onTime +50 {
+			transition "screen7_ns_4::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen7_n_4::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen7_ns_4::textscale" "0.36" "0.34" "500" ;
+			transition "screen7_n_4::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen7_bar5::rect" "$screen7_bar5::rect" "$d_screen7_bar5::rect" "300" "100" "150" ;
+			transition "screen7_bar5::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen7_ts_5::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen7_t_5::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen7_ts_5::textscale" "0.3" "0.28" "1000" ;
+			transition "screen7_t_5::textscale" "0.26" "0.24" "1000" ;
+		}
+
+		onTime +50 {
+			transition "screen7_ns_5::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen7_n_5::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen7_ns_5::textscale" "0.36" "0.34" "500" ;
+			transition "screen7_n_5::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen7_bar6::rect" "$screen7_bar6::rect" "$d_screen7_bar6::rect" "300" "100" "150" ;
+			transition "screen7_bar6::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen7_ts_6::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen7_t_6::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen7_ts_6::textscale" "0.3" "0.28" "1000" ;
+			transition "screen7_t_6::textscale" "0.26" "0.24" "1000" ;
+		}
+
+		onTime +50 {
+			transition "screen7_ns_6::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen7_n_6::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen7_ns_6::textscale" "0.36" "0.34" "500" ;
+			transition "screen7_n_6::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +500 {
+			transition "screen7_n_1::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen7_n_2::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen7_n_3::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen7_n_3a::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen7_n_4::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen7_n_5::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen7_n_6::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +3500 {
+			transition "p_screen7::rect" "$p_screen7::rect" "$d_credits::rect" "500" "200" "200" ;
+			
+			transition "screen7_t_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen7_t_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen7_t_3::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen7_t_4::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen7_t_5::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen7_t_6::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			
+			transition "screen7_n_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen7_n_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen7_n_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen7_n_3a::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen7_n_4::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen7_n_5::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen7_n_6::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+		}
+
+		onTime +500 {
+			resettime "p_screen8" "0" ;
+			set "visible" "0" ;	
+		}
+
+		windowDef screen7_t_1
+		{
+			rect	103,81,432,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Motion Capture Lead"
+			textscale	0.24
+			font	"fonts/lowpixel"
+		}
+		windowDef screen7_n_1
+		{
+			rect	122,97,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Bobby Duncanson"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen7_t_2
+		{
+			rect	103,133,432,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Motion Capture"
+			textscale	0.24
+			font	"fonts/lowpixel"
+		}
+		windowDef screen7_n_2
+		{
+			rect	122,149,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Jerry Ashworth"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen7_t_3
+		{
+			rect	103,185,432,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Additional Motion Capture"
+			textscale	0.24
+			font	"fonts/lowpixel"
+		}
+		windowDef screen7_n_3
+		{
+			rect	122,201,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Jeff Degenhardt"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen7_n_3a
+		{
+			rect	122,221,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Nick Stevenson"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen7_t_4
+		{
+			rect	103,258,432,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Writer
+			textscale	0.24
+			font	"fonts/lowpixel"
+		}
+		windowDef screen7_n_4
+		{
+			rect	122,273,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Bob Love"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen7_t_5
+		{
+			rect	103,310,432,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Internal Quality Assurance"
+			textscale	0.24
+			font	"fonts/lowpixel"
+		}
+		windowDef screen7_n_5
+		{
+			rect	122,325,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Ryan Jackson"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen7_t_6
+		{
+			rect	103,362,432,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Additional Internal Quality Assurance"
+			textscale	0.24
+			font	"fonts/lowpixel"
+		}
+		windowDef screen7_n_6
+		{
+			rect	122,377,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Jason Robinson"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen7_ts_1
+		{
+			rect	103,83,432,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Motion Capture Lead"
+			textscale	0.28
+			font	"fonts/strogg"
+		}
+		windowDef screen7_ns_1
+		{
+			rect	122,100,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Bobby Duncanson"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen7_ts_2
+		{
+			rect	103,135,432,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Motion Capture"
+			textscale	0.28
+			font	"fonts/strogg"
+		}
+		windowDef screen7_ns_2
+		{
+			rect	122,152,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Jerry Ashworth"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen7_ts_3
+		{
+			rect	103,187,432,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Additional Motion Capture"
+			textscale	0.28
+			font	"fonts/strogg"
+		}
+		windowDef screen7_ns_3
+		{
+			rect	122,204,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Jeff Degenhardt"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen7_ns_3a
+		{
+			rect	122,224,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Nick Stevenson"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen7_ts_4
+		{
+			rect	103,260,432,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Writer
+			textscale	0.28
+			font	"fonts/strogg"
+		}
+		windowDef screen7_ns_4
+		{
+			rect	122,276,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Bob Love"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen7_ts_5
+		{
+			rect	103,312,432,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Internal Quality Assurance"
+			textscale	0.28
+			font	"fonts/strogg"
+		}
+		windowDef screen7_ns_5
+		{
+			rect	122,328,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Ryan Jackson"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen7_ts_6
+		{
+			rect	103,364,432,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Additional Internal Quality Assurance"
+			textscale	0.28
+			font	"fonts/strogg"
+		}
+		windowDef screen7_ns_6
+		{
+			rect	122,380,379,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Jason Robinson"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen7_bar1
+		{
+			rect	-262,79,263,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef screen7_bar2
+		{
+			rect	-223,131,224,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef screen7_bar3
+		{
+			rect	-297,183,298,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef screen7_bar4
+		{
+			rect	-160,256,161,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef screen7_bar5
+		{
+			rect	-300,308,301,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef screen7_bar6
+		{
+			rect	-364,359,364,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen7_bar1
+		{
+			rect	0,79,258,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen7_bar2
+		{
+			rect	0,131,219,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen7_bar3
+		{
+			rect	0,183,293,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen7_bar4
+		{
+			rect	0,256,156,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen7_bar5
+		{
+			rect	0,308,296,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen7_bar6
+		{
+			rect	0,359,364,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+	}
+	windowDef p_screen8
+	{
+		rect	0,0,640,480
+		visible	0
+		notime	1
+
+		onTime 0 {
+			set "rect" "0,0,640,480" ;
+			set "visible" "1" ;
+			
+			set "screen8_bar1::matcolor" "$desktop::cr_orange" ;
+			set "screen8_bar2::matcolor" "$desktop::cr_orange" ;
+			set "screen8_bar3::matcolor" "$desktop::cr_orange" ;
+			set "screen8_bar4::matcolor" "$desktop::cr_orange" ;
+			set "screen8_bar5::matcolor" "$desktop::cr_orange" ;
+			set "screen8_bar6::matcolor" "$desktop::cr_orange" ;
+			set "screen8_bar7::matcolor" "$desktop::cr_orange" ;
+			set "screen8_bar8::matcolor" "$desktop::cr_orange" ;
+			set "screen8_bar9::matcolor" "$desktop::cr_orange" ;
+			set "screen8_bar1::rect" "640,175,302,23" ;
+			set "screen8_bar2::rect" "640,203,302,23" ;
+			set "screen8_bar3::rect" "640,231,302,23" ;
+			set "screen8_bar4::rect" "640,259,302,23" ;
+			set "screen8_bar5::rect" "640,287,302,23" ;
+			set "screen8_bar6::rect" "640,315,302,23" ;
+			set "screen8_bar7::rect" "640,343,302,23" ;
+			set "screen8_bar8::rect" "640,371,302,23" ;
+			set "screen8_bar9::rect" "640,399,302,23" ;
+			
+			transition "id::matcolor" "0,0,0,0" "$desktop::cr_green" "2000" ;
+			transition "screen8_ts::forecolor" "$desktop::white_0" "$desktop::white_6" "2000" ;
+			
+			transition "screen8_ts_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen8_ts_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen8_ts_3::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen8_ts_4::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen8_ts_5::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen8_ts_6::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen8_ts_7::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen8_ts_8::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen8_ts_9::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			
+			transition "screen8_ns_1::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen8_ns_2::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen8_ns_3::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen8_ns_4::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen8_ns_5::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen8_ns_6::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen8_ns_7::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen8_ns_8::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen8_ns_9::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+		}
+
+		onTime +2000 {
+			transition "screen8_ts::forecolor" "$desktop::white_6" "$desktop::white_0" "2000" ;
+			transition "screen8_t::forecolor" "$desktop::white_0" "$desktop::white_6" "2000" ;
+			
+			transition "screen8_bar1::rect" "$screen8_bar1::rect" "$d_screen8_bar1::rect" "300" "100" "150" ;
+			transition "screen8_bar1::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen8_ts_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen8_t_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen8_ts_1::textscale" "0.37" "0.35" "1000" ;
+			transition "screen8_t_1::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {
+			transition "screen8_ns_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen8_n_1::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen8_ns_1::textscale" "0.42" "0.4" "500" ;
+			transition "screen8_n_1::textscale" "0.37" "0.35" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen8_bar2::rect" "$screen8_bar2::rect" "$d_screen8_bar2::rect" "300" "100" "150" ;
+			transition "screen8_bar2::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen8_ts_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen8_t_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen8_ts_2::textscale" "0.37" "0.35" "1000" ;
+			transition "screen8_t_2::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {	
+			transition "screen8_ns_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen8_n_2::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen8_ns_2::textscale" "0.42" "0.4" "500" ;
+			transition "screen8_n_2::textscale" "0.37" "0.35" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen8_bar3::rect" "$screen8_bar3::rect" "$d_screen8_bar3::rect" "300" "100" "150" ;
+			transition "screen8_bar3::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen8_ts_3::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen8_t_3::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen8_ts_3::textscale" "0.37" "0.35" "1000" ;
+			transition "screen8_t_3::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {	
+			transition "screen8_ns_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen8_n_3::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen8_ns_3::textscale" "0.42" "0.4" "500" ;
+			transition "screen8_n_3::textscale" "0.37" "0.35" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen8_bar4::rect" "$screen8_bar4::rect" "$d_screen8_bar4::rect" "300" "100" "150" ;
+			transition "screen8_bar4::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen8_ts_4::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen8_t_4::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen8_ts_4::textscale" "0.37" "0.35" "1000" ;
+			transition "screen8_t_4::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {
+			transition "screen8_ns_4::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen8_n_4::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen8_ns_4::textscale""0.42" "0.4" "500" ;
+			transition "screen8_n_4::textscale" "0.37" "0.35" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen8_bar5::rect" "$screen8_bar5::rect" "$d_screen8_bar5::rect" "300" "100" "150" ;
+			transition "screen8_bar5::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen8_ts_5::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen8_t_5::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen8_ts_5::textscale" "0.37" "0.35" "1000" ;
+			transition "screen8_t_5::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {	
+			transition "screen8_ns_5::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen8_n_5::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen8_ns_5::textscale" "0.42" "0.4" "500" ;
+			transition "screen8_n_5::textscale" "0.37" "0.35" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen8_bar6::rect" "$screen8_bar6::rect" "$d_screen8_bar6::rect" "300" "100" "150" ;
+			transition "screen8_bar6::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen8_ts_6::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen8_t_6::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen8_ts_6::textscale" "0.37" "0.35" "1000" ;
+			transition "screen8_t_6::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {
+			transition "screen8_ns_6::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen8_n_6::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen8_ns_6::textscale" "0.42" "0.4" "500" ;
+			transition "screen8_n_6::textscale" "0.37" "0.35" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen8_bar7::rect" "$screen8_bar7::rect" "$d_screen8_bar7::rect" "300" "100" "150" ;
+			transition "screen8_bar7::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen8_ts_7::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen8_t_7::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen8_ts_7::textscale" "0.37" "0.35" "1000" ;
+			transition "screen8_t_7::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {	
+			transition "screen8_ns_7::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen8_n_7::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen8_ns_7::textscale" "0.42" "0.4" "500" ;
+			transition "screen8_n_7::textscale" "0.37" "0.35" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen8_bar8::rect" "$screen8_bar8::rect" "$d_screen8_bar8::rect" "300" "100" "150" ;
+			transition "screen8_bar8::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen8_ts_8::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen8_t_8::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen8_ts_8::textscale" "0.37" "0.35" "1000" ;
+			transition "screen8_t_8::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {	
+			transition "screen8_ns_8::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen8_n_8::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen8_ns_8::textscale" "0.42" "0.4" "500" ;
+			transition "screen8_n_8::textscale" "0.37" "0.35" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen8_bar9::rect" "$screen8_bar9::rect" "$d_screen8_bar9::rect" "300" "100" "150" ;
+			transition "screen8_bar9::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen8_ts_9::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen8_t_9::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen8_ts_9::textscale" "0.37" "0.35" "1000" ;
+			transition "screen8_t_9::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {	
+			transition "screen8_ns_9::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen8_n_9::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen8_ns_9::textscale" "0.42" "0.4" "500" ;
+			transition "screen8_n_9::textscale" "0.37" "0.35" "500" ;
+		}
+
+		onTime +500 {
+			transition "screen8_n_1::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen8_n_2::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;	
+			transition "screen8_n_3::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;	
+			transition "screen8_n_4::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;	
+			transition "screen8_n_5::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;	
+			transition "screen8_n_6::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;	
+			transition "screen8_n_7::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen8_n_8::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen8_n_9::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +3500 {
+			transition "p_screen8::rect" "$p_screen8::rect" "$d_credits::rect" "500" "200" "200" ;
+			
+			transition "screen8_t_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen8_t_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen8_t_3::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen8_t_4::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen8_t_5::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen8_t_6::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen8_t_7::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen8_t_8::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen8_t_9::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			
+			transition "screen8_n_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen8_n_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen8_n_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen8_n_4::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen8_n_5::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen8_n_6::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen8_n_7::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen8_n_8::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen8_n_9::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			
+			transition "screen8_t::forecolor" "$desktop::white_6" "$desktop::white_0" "300" ;
+			transition "id::matcolor" "$desktop::cr_green" "0,0,0,0" "300" ;
+		}
+
+		onTime +500 {
+			resettime "p_screen11" "0" ;
+			set "visible" "0" ;	
+		}
+
+		windowDef id
+		{
+			rect	84,53,120,120
+			visible	1
+			background	"gfx/guis/mainmenu/id_1"
+			matcolor	0,0,0,1
+		}
+		windowDef screen8_t
+		{
+			rect	222,75,390,93
+			visible	1
+			forecolor	1,1,1,0
+			text	"QUAKE 4 is an id Software game and is powered by id Software's DOOM 3® technology. Production, development, and technical assistance have been provided by id Software, with specific contributions by:"
+			textscale	0.25
+			font	"fonts/lowpixel"
+		}
+		windowDef screen8_t_1
+		{
+			rect	350,175,275,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Executive Producer"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen8_n_1
+		{
+			rect	103,174,216,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Tim Willits"
+			textscale	.35
+			font	"fonts/lowpixel"
+		}
+		windowDef screen8_t_2
+		{
+			rect	350,203,274,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Sound Design"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen8_n_2
+		{
+			rect	103,202,215,29
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Christian Antkow"
+			textscale	.35
+			font	"fonts/lowpixel"
+		}
+		windowDef screen8_t_3
+		{
+			rect	350,231,274,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Programming
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen8_n_3
+		{
+			rect	103,230,215,29
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Timothee Besset"
+			textscale	.35
+			font	"fonts/lowpixel"
+		}
+		windowDef screen8_t_4
+		{
+			rect	350,259,274,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Design
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen8_n_4
+		{
+			rect	103,258,215,29
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Mal Blackwell"
+			textscale	.35
+			font	"fonts/lowpixel"
+		}
+		windowDef screen8_t_5
+		{
+			rect	350,287,274,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Programming
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen8_n_5
+		{
+			rect	103,286,215,29
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Robert Duffy "
+			textscale	.35
+			font	"fonts/lowpixel"
+		}
+		windowDef screen8_t_6
+		{
+			rect	350,315,274,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"QUAKE II Xbox Programming"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen8_n_6
+		{
+			rect	103,314,215,29
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Brian Harris"
+			textscale	.35
+			font	"fonts/lowpixel"
+		}
+		windowDef screen8_t_7
+		{
+			rect	350,343,274,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Design
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen8_n_7
+		{
+			rect	103,342,215,29
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Jerry Keehan"
+			textscale	.35
+			font	"fonts/lowpixel"
+		}
+		windowDef screen8_t_8
+		{
+			rect	350,371,274,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Art
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen8_n_8
+		{
+			rect	103,370,215,29
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Kenneth Scott"
+			textscale	.35
+			font	"fonts/lowpixel"
+		}
+		windowDef screen8_t_9
+		{
+			rect	350,399,274,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Programming
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen8_n_9
+		{
+			rect	103,398,215,29
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Jan Paul van Waveren"
+			textscale	.35
+			font	"fonts/lowpixel"
+		}
+		windowDef screen8_ts
+		{
+			rect	222,78,390,93
+			visible	1
+			forecolor	1,1,1,0
+			text	"QUAKE 4 is an id Software game and is powered by id Software's DOOM 3® technology. Production, development, and technical assistance have been provided by id Software, with specific contributions by:"
+			textscale	0.28
+			font	"fonts/strogg"
+		}
+		windowDef screen8_ts_1
+		{
+			rect	350,179,277,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Executive Producer"
+			textscale	0.35
+			font	"fonts/strogg"
+		}
+		windowDef screen8_ns_1
+		{
+			rect	103,178,216,19
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Tim Willits"
+			textscale	.4
+			font	"fonts/strogg"
+		}
+		windowDef screen8_ts_2
+		{
+			rect	350,207,276,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Sound Design"
+			textscale	0.35
+			font	"fonts/strogg"
+		}
+		windowDef screen8_ns_2
+		{
+			rect	103,206,216,19
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Christian Antkow"
+			textscale	.4
+			font	"fonts/strogg"
+		}
+		windowDef screen8_ts_3
+		{
+			rect	350,235,276,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Programming
+			textscale	0.35
+			font	"fonts/strogg"
+		}
+		windowDef screen8_ns_3
+		{
+			rect	103,234,216,19
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Timothee Besset"
+			textscale	.4
+			font	"fonts/strogg"
+		}
+		windowDef screen8_ts_4
+		{
+			rect	350,263,276,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Design
+			textscale	0.35
+			font	"fonts/strogg"
+		}
+		windowDef screen8_ns_4
+		{
+			rect	103,262,216,19
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Mal Blackwell"
+			textscale	.4
+			font	"fonts/strogg"
+		}
+		windowDef screen8_ts_5
+		{
+			rect	350,291,276,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Programming
+			textscale	0.35
+			font	"fonts/strogg"
+		}
+		windowDef screen8_ns_5
+		{
+			rect	103,290,216,19
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Robert Duffy "
+			textscale	.4
+			font	"fonts/strogg"
+		}
+		windowDef screen8_ts_6
+		{
+			rect	350,319,276,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"QUAKE II Xbox Programming"
+			textscale	0.35
+			font	"fonts/strogg"
+		}
+		windowDef screen8_ns_6
+		{
+			rect	103,318,216,19
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Brian Harris"
+			textscale	.4
+			font	"fonts/strogg"
+		}
+		windowDef screen8_ts_7
+		{
+			rect	350,347,276,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Design
+			textscale	0.35
+			font	"fonts/strogg"
+		}
+		windowDef screen8_ns_7
+		{
+			rect	103,346,216,19
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Jerry Keehan"
+			textscale	.45
+			font	"fonts/strogg"
+		}
+		windowDef screen8_ts_8
+		{
+			rect	350,375,276,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Art
+			textscale	0.35
+			font	"fonts/strogg"
+		}
+		windowDef screen8_ns_8
+		{
+			rect	103,374,216,19
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Kenneth Scott"
+			textscale	.45
+			font	"fonts/strogg"
+		}
+		windowDef screen8_ts_9
+		{
+			rect	350,403,276,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Programming
+			textscale	0.35
+			font	"fonts/strogg"
+		}
+		windowDef screen8_ns_9
+		{
+			rect	103,402,216,19
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Jan Paul van Waveren"
+			textscale	.45
+			font	"fonts/strogg"
+		}
+		windowDef screen8_bar1
+		{
+			rect	640,175,302,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+		windowDef screen8_bar2
+		{
+			rect	640,203,302,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+		windowDef screen8_bar3
+		{
+			rect	640,231,302,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+		windowDef screen8_bar4
+		{
+			rect	640,259,302,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+		windowDef screen8_bar5
+		{
+			rect	640,287,302,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+		windowDef screen8_bar6
+		{
+			rect	640,315,302,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+		windowDef screen8_bar7
+		{
+			rect	640,343,302,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+		windowDef screen8_bar8
+		{
+			rect	640,371,302,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+		windowDef screen8_bar9
+		{
+			rect	640,399,302,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+		windowDef d_screen8_bar1
+		{
+			rect	337,175,302,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+		windowDef d_screen8_bar2
+		{
+			rect	337,203,302,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+		windowDef d_screen8_bar3
+		{
+			rect	337,231,302,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+		windowDef d_screen8_bar4
+		{
+			rect	337,259,302,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+		windowDef d_screen8_bar5
+		{
+			rect	337,287,302,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+		windowDef d_screen8_bar6
+		{
+			rect	337,315,302,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+		windowDef d_screen8_bar7
+		{
+			rect	337,343,302,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+		windowDef d_screen8_bar8
+		{
+			rect	337,371,302,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+		windowDef d_screen8_bar9
+		{
+			rect	337,399,302,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+			matscalex	-1
+		}
+	}
+	windowDef p_screen9
+	{
+		rect	0,0,640,480
+		visible	0
+		notime	1
+
+		onTime 0 {
+			set "rect" "0,0,640,480" ;
+			set "visible" "1" ;
+			
+			set "screen9_bar1::matcolor" "$desktop::cr_orange" ;
+			set "screen9_bar1::rect" "-218,81,218,32" ;
+			
+			transition "screen9_ts_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			
+			transition "screen9_ns_1::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen9_ns_2::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen9_ns_3::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen9_ns_4::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen9_ns_5::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen9_ns_6::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen9_ns_7::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;	
+			transition "screen9_ns_8::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen9_ns_9::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen9_ns_10::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen9_ns_11::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen9_ns_12::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen9_ns_13::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen9_ns_14::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			
+			transition "screen9_ns_1a::forecolor" "$desktop::white_0" "$desktop::white_5" "2000" ;
+			transition "screen9_ns_2a::forecolor" "$desktop::white_0" "$desktop::white_5" "2000" ;
+			transition "screen9_ns_3a::forecolor" "$desktop::white_0" "$desktop::white_5" "2000" ;
+			transition "screen9_ns_4a::forecolor" "$desktop::white_0" "$desktop::white_5" "2000" ;
+			transition "screen9_ns_5a::forecolor" "$desktop::white_0" "$desktop::white_5" "2000" ;
+			transition "screen9_ns_6a::forecolor" "$desktop::white_0" "$desktop::white_5" "2000" ;
+			transition "screen9_ns_7a::forecolor" "$desktop::white_0" "$desktop::white_5" "2000" ;
+			transition "screen9_ns_8a::forecolor" "$desktop::white_0" "$desktop::white_5" "2000" ;
+			transition "screen9_ns_9a::forecolor" "$desktop::white_0" "$desktop::white_5" "2000" ;
+			transition "screen9_ns_10a::forecolor" "$desktop::white_0" "$desktop::white_5" "2000" ;
+			transition "screen9_ns_11a::forecolor" "$desktop::white_0" "$desktop::white_5" "2000" ;
+			transition "screen9_ns_12a::forecolor" "$desktop::white_0" "$desktop::white_5" "2000" ;
+			transition "screen9_ns_13a::forecolor" "$desktop::white_0" "$desktop::white_5" "2000" ;
+			transition "screen9_ns_14a::forecolor" "$desktop::white_0" "$desktop::white_5" "2000" ;
+		}
+
+		onTime +2000 {
+			transition "screen9_bar1::rect" "$screen9_bar1::rect" "$d_screen9_bar1::rect" "300" "100" "150" ;
+			transition "screen9_bar1::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen9_ts_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen9_t_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen9_ts_1::textscale" "0.43" "0.41" "1000" ;
+			transition "screen9_t_1::textscale" "0.42" "0.4" "1000" ;
+		}
+
+		onTime +200 {
+			transition "screen9_ns_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen9_n_1::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen9_ns_1::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_1::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen9_ns_1a::forecolor" "$desktop::white_5" "$desktop::white_0" "500" ;
+			transition "screen9_n_1a::forecolor" "$desktop::white_0" "$desktop::white" "500" ;
+			transition "screen9_ns_1a::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_1a::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen9_n_1::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen9_n_1a::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen9_ns_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen9_n_2::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen9_ns_2::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_2::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen9_ns_2a::forecolor" "$desktop::white_5" "$desktop::white_0" "500" ;
+			transition "screen9_n_2a::forecolor" "$desktop::white_0" "$desktop::white" "500" ;
+			transition "screen9_ns_2a::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_2a::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen9_n_2::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen9_n_2a::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen9_ns_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen9_n_3::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen9_ns_3::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_3::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen9_ns_3a::forecolor" "$desktop::white_5" "$desktop::white_0" "500" ;
+			transition "screen9_n_3a::forecolor" "$desktop::white_0" "$desktop::white" "500" ;
+			transition "screen9_ns_3a::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_3a::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen9_n_3::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen9_n_3a::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen9_ns_4::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen9_n_4::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen9_ns_4::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_4::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen9_ns_4a::forecolor" "$desktop::white_5" "$desktop::white_0" "500" ;
+			transition "screen9_n_4a::forecolor" "$desktop::white_0" "$desktop::white" "500" ;
+			transition "screen9_ns_4a::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_4a::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen9_n_4::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen9_n_4a::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen9_ns_5::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen9_n_5::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen9_ns_5::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_5::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen9_ns_5a::forecolor" "$desktop::white_5" "$desktop::white_0" "500" ;
+			transition "screen9_n_5a::forecolor" "$desktop::white_0" "$desktop::white" "500" ;
+			transition "screen9_ns_5a::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_5a::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen9_n_5::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen9_n_5a::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen9_ns_6::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen9_n_6::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen9_ns_6::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_6::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen9_ns_6a::forecolor" "$desktop::white_5" "$desktop::white_0" "500" ;
+			transition "screen9_n_6a::forecolor" "$desktop::white_0" "$desktop::white" "500" ;
+			transition "screen9_ns_6a::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_6a::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen9_n_6::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen9_n_6a::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen9_ns_7::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen9_n_7::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen9_ns_7::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_7::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen9_ns_7a::forecolor" "$desktop::white_5" "$desktop::white_0" "500" ;
+			transition "screen9_n_7a::forecolor" "$desktop::white_0" "$desktop::white" "500" ;
+			transition "screen9_ns_7a::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_7a::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen9_n_7::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen9_n_7a::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen9_ns_8::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen9_n_8::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen9_ns_8::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_8::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen9_ns_8a::forecolor" "$desktop::white_5" "$desktop::white_0" "500" ;
+			transition "screen9_n_8a::forecolor" "$desktop::white_0" "$desktop::white" "500" ;
+			transition "screen9_ns_8a::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_8a::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen9_n_8::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen9_n_8a::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen9_ns_9::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen9_n_9::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen9_ns_9::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_9::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen9_ns_9a::forecolor" "$desktop::white_5" "$desktop::white_0" "500" ;
+			transition "screen9_n_9a::forecolor" "$desktop::white_0" "$desktop::white" "500" ;
+			transition "screen9_ns_9a::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_9a::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen9_n_9::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen9_n_9a::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen9_ns_10::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen9_n_10::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen9_ns_10::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_10::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen9_ns_10a::forecolor" "$desktop::white_5" "$desktop::white_0" "500" ;
+			transition "screen9_n_10a::forecolor" "$desktop::white_0" "$desktop::white" "500" ;
+			transition "screen9_ns_10a::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_10a::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen9_n_10::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen9_n_10a::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen9_ns_11::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen9_n_11::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen9_ns_11::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_11::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen9_ns_11a::forecolor" "$desktop::white_5" "$desktop::white_0" "500" ;
+			transition "screen9_n_11a::forecolor" "$desktop::white_0" "$desktop::white" "500" ;
+			transition "screen9_ns_11a::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_11a::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen9_n_11::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen9_n_11a::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen9_ns_12::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen9_n_12::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen9_ns_12::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_12::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen9_ns_12a::forecolor" "$desktop::white_5" "$desktop::white_0" "500" ;
+			transition "screen9_n_12a::forecolor" "$desktop::white_0" "$desktop::white" "500" ;
+			transition "screen9_ns_12a::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_12a::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen9_n_12::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen9_n_12a::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen9_ns_13::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen9_n_13::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen9_ns_13::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_13::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen9_ns_13a::forecolor" "$desktop::white_5" "$desktop::white_0" "500" ;
+			transition "screen9_n_13a::forecolor" "$desktop::white_0" "$desktop::white" "500" ;
+			transition "screen9_ns_13a::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_13a::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen9_n_13::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen9_n_13a::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen9_ns_14::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen9_n_14::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen9_ns_14::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_14::textscale" "0.33" "0.31" "500" ;
+			
+			transition "screen9_ns_14a::forecolor" "$desktop::white_5" "$desktop::white_0" "500" ;
+			transition "screen9_n_14a::forecolor" "$desktop::white_0" "$desktop::white" "500" ;
+			transition "screen9_ns_14a::textscale" "0.36" "0.34" "500" ;
+			transition "screen9_n_14a::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen9_n_14::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen9_n_14a::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+		}
+
+		onTime +3500 {
+			transition "p_screen9::rect" "$p_screen8::rect" "$d_credits::rect" "500" "200" "200" ;
+			
+			transition "screen9_t_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			
+			transition "screen9_n_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen9_n_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen9_n_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen9_n_4::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen9_n_5::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen9_n_6::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen9_n_7::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen9_n_8::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen9_n_9::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen9_n_10::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen9_n_11::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen9_n_12::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen9_n_13::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen9_n_14::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			
+			transition "screen9_n_1a::forecolor" "$desktop::white_5" "$desktop::white_0" "300" ;
+			transition "screen9_n_2a::forecolor" "$desktop::white_5" "$desktop::white_0" "300" ;
+			transition "screen9_n_3a::forecolor" "$desktop::white_5" "$desktop::white_0" "300" ;
+			transition "screen9_n_4a::forecolor" "$desktop::white_5" "$desktop::white_0" "300" ;
+			transition "screen9_n_5a::forecolor" "$desktop::white_5" "$desktop::white_0" "300" ;
+			transition "screen9_n_6a::forecolor" "$desktop::white_5" "$desktop::white_0" "300" ;
+			transition "screen9_n_7a::forecolor" "$desktop::white_5" "$desktop::white_0" "300" ;
+			transition "screen9_n_8a::forecolor" "$desktop::white_5" "$desktop::white_0" "300" ;
+			transition "screen9_n_9a::forecolor" "$desktop::white_5" "$desktop::white_0" "300" ;
+			transition "screen9_n_10a::forecolor" "$desktop::white_5" "$desktop::white_0" "300" ;
+			transition "screen9_n_11a::forecolor" "$desktop::white_5" "$desktop::white_0" "300" ;
+			transition "screen9_n_12a::forecolor" "$desktop::white_5" "$desktop::white_0" "300" ;
+			transition "screen9_n_13a::forecolor" "$desktop::white_5" "$desktop::white_0" "300" ;
+			transition "screen9_n_14a::forecolor" "$desktop::white_5" "$desktop::white_0" "300" ;
+			
+		}
+
+		onTime +500 {
+			set "cmd" "exec fadeSound 40 10" ;			
+			resettime "p_screen13" "0" ;
+			set "visible" "0" ;	
+		}
+
+		windowDef screen9_t_1
+		{
+			rect	103,81,432,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Voiceover
+			textscale	0.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_1
+		{
+			rect	122,110,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Peter Stormare"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_2
+		{
+			rect	122,130,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Charles Napier"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_3
+		{
+			rect	122,150,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Michael Gannon"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_4
+		{
+			rect	122,170,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Dave Earnest"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_5
+		{
+			rect	122,190,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Khary Payton"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_6
+		{
+			rect	122,210,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Danny Cooksey"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_7
+		{
+			rect	122,230,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Andre Sogliuzzo"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_8
+		{
+			rect	122,250,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Dimitri Diatchenko"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_9
+		{
+			rect	122,270,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Greg Eagles"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_10
+		{
+			rect	122,290,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Kat Cressida"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_11
+		{
+			rect	122,310,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Phil La Marr"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_12
+		{
+			rect	122,330,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Steven Jay Blum"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_13
+		{
+			rect	122,350,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Wally Wingert"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_14
+		{
+			rect	122,370,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Andre Ware"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_1a
+		{
+			rect	322,110,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Strauss
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_2a
+		{
+			rect	322,130,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Harper
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_3a
+		{
+			rect	322,150,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Voss
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_4a
+		{
+			rect	322,170,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Rhodes
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_5a
+		{
+			rect	322,190,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	"Bidwell, Announcer"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_6a
+		{
+			rect	322,210,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Anderson
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_7a
+		{
+			rect	322,230,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Cortez
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_8a
+		{
+			rect	322,250,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Sledge
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_9a
+		{
+			rect	322,270,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Morris
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_10a
+		{
+			rect	322,290,200,19
+			visible	1
+			forecolor	1,1,1,0
+			text	"Computer, Pilot VO"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_11a
+		{
+			rect	322,310,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Marines
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_12a
+		{
+			rect	322,330,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Marines
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_13a
+		{
+			rect	322,350,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Marines
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_n_14a
+		{
+			rect	322,370,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Marines
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen9_ts_1
+		{
+			rect	103,87,432,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Voiceover
+			textscale	0.41
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_1
+		{
+			rect	122,113,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Peter Stormare"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_2
+		{
+			rect	122,133,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Charles Napier"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_3
+		{
+			rect	122,153,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Michael Gannon"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_4
+		{
+			rect	122,173,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Dave Earnest"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_5
+		{
+			rect	122,193,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Khary Payton"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_6
+		{
+			rect	122,213,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Danny Cooksey"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_7
+		{
+			rect	122,233,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Andre Sogliuzzo"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_8
+		{
+			rect	122,253,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Dimitri Diatchenko"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_9
+		{
+			rect	122,273,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Greg Eagles"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_10
+		{
+			rect	122,293,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Kat Cressida"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_11
+		{
+			rect	122,313,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Phil La Marr"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_12
+		{
+			rect	122,333,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Steven Jay Blum"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_13
+		{
+			rect	122,353,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Wally Wingert"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_14
+		{
+			rect	122,373,200,20
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Andre Ware"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_1a
+		{
+			rect	322,113,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Strauss
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_2a
+		{
+			rect	322,133,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Harper
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_3a
+		{
+			rect	322,153,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Voss
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_4a
+		{
+			rect	322,173,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Rhodes
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_5a
+		{
+			rect	322,193,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	"Bidwell, Announcer"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_6a
+		{
+			rect	322,213,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Anderson
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_7a
+		{
+			rect	322,233,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Cortez
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_8a
+		{
+			rect	322,253,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Sledge
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_9a
+		{
+			rect	322,273,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Morris
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_10a
+		{
+			rect	322,293,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	"Computer, Pilot VO"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_11a
+		{
+			rect	322,313,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Marines
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_12a
+		{
+			rect	322,333,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Marines
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_13a
+		{
+			rect	322,353,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Marines
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_ns_14a
+		{
+			rect	322,373,200,20
+			visible	1
+			forecolor	1,1,1,0
+			text	Marines
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen9_bar1
+		{
+			rect	-218,81,218,32
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen9_bar1
+		{
+			rect	0,81,218,32
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+	}
+	windowDef p_screen10
+	{
+		rect	0,0,640,480
+		visible	0
+		notime	1
+
+		onTime 0 {
+			set "rect" "0,0,640,480" ;
+			set "visible" "1" ;
+			
+			set "screen10_bar1::matcolor" "$desktop::cr_orange" ;
+			set "screen10_bar2::matcolor" "$desktop::cr_orange" ;
+			set "screen10_bar1::rect" "-370,150,370,23" ;
+			set "screen10_bar2::rect" "-478,254,478,23" ;
+			
+			transition "screen10_ts_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen10_ts_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			
+			transition "screen10_ns_1::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen10_ns_1a::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen10_ns_2::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen10_ns_2a::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+		}
+
+		onTime +2000 {
+			transition "screen10_bar1::rect" "$screen10_bar1::rect" "$d_screen10_bar1::rect" "300" "100" "150" ;
+			transition "screen10_bar1::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen10_ts_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen10_t_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen10_ts_1::textscale" "0.4" "0.38" "1000" ;
+			transition "screen10_t_1::textscale" "0.37" "0.35" "1000" ;
+		}
+
+		onTime +200 {
+			transition "screen10_ns_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen10_n_1::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "500" ;
+			transition "screen10_ns_1::textscale" "0.47" "0.45" "500" ;
+			transition "screen10_n_1::textscale" "0.42" "0.4" "500" ;
+			
+			transition "screen10_ns_1a::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen10_n_1a::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "500" ;
+			transition "screen10_ns_1a::textscale" "0.4" "0.38" "500" ;
+			transition "screen10_n_1a::textscale" "0.37" "0.35" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen10_n_1::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen10_n_1a::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen10_bar2::rect" "$screen10_bar2::rect" "$d_screen10_bar2::rect" "300" "100" "150" ;
+			transition "screen10_bar2::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen10_ts_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen10_t_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen10_ts_2::textscale" "0.4" "0.38" "1000" ;
+			transition "screen10_t_2::textscale" "0.37" "0.35" "1000" ;
+		}
+
+		onTime +200 {
+			transition "screen10_ns_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen10_n_2::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "500" ;
+			transition "screen10_ns_2::textscale" "0.47" "0.45" "500" ;
+			transition "screen10_n_2::textscale" "0.42" "0.4" "500" ;
+			
+			transition "screen10_ns_2a::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen10_n_2a::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "500" ;
+			transition "screen10_ns_2a::textscale" "0.4" "0.38" "500" ;
+			transition "screen10_n_2a::textscale" "0.37" "0.35" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen10_n_2::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen10_n_2a::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +3500 {
+			transition "p_screen10::rect" "$p_screen8::rect" "$d_credits::rect" "500" "200" "200" ;
+			
+			transition "screen10_t_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen10_t_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			
+			transition "screen10_n_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen10_n_1a::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen10_n_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen10_n_2a::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+		}
+
+		onTime +500 {
+			set "visible" "0" ;	
+			resettime "p_screen9" "0" ;
+		}
+
+		windowDef screen10_t_1
+		{
+			rect	103,148,432,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Casting and Voice Direction"
+			textscale	0.35
+			font	"fonts/lowpixel"
+		}
+		windowDef screen10_n_1
+		{
+			rect	122,172,379,30
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Margaret Tang"
+			textscale	0.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen10_n_1a
+		{
+			rect	122,197,379,30
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Womb Music"
+			textscale	0.35
+			font	"fonts/lowpixel"
+		}
+		windowDef screen10_t_2
+		{
+			rect	103,253,432,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Voice Over Recording, Editing and Post"
+			textscale	0.35
+			font	"fonts/lowpixel"
+		}
+		windowDef screen10_n_2
+		{
+			rect	122,277,379,30
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Rik Schaffer"
+			textscale	0.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen10_n_2a
+		{
+			rect	122,302,379,30
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Womb Music"
+			textscale	0.35
+			font	"fonts/lowpixel"
+		}
+		windowDef screen10_ts_1
+		{
+			rect	103,152,432,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Casting and Voice Direction"
+			textscale	0.38
+			font	"fonts/strogg"
+		}
+		windowDef screen10_ns_1
+		{
+			rect	122,176,379,30
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Margaret Tang"
+			textscale	0.45
+			font	"fonts/strogg"
+		}
+		windowDef screen10_ns_1a
+		{
+			rect	122,201,379,30
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Womb Music"
+			textscale	0.38
+			font	"fonts/strogg"
+		}
+		windowDef screen10_ts_2
+		{
+			rect	103,257,432,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Voice Over Recording, Editing and Post"
+			textscale	0.38
+			font	"fonts/strogg"
+		}
+		windowDef screen10_ns_2
+		{
+			rect	122,281,379,30
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Rik Schaffer"
+			textscale	0.45
+			font	"fonts/strogg"
+		}
+		windowDef screen10_ns_2a
+		{
+			rect	122,306,379,30
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Womb Music"
+			textscale	0.38
+			font	"fonts/strogg"
+		}
+		windowDef screen10_bar1
+		{
+			rect	-370,150,370,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.498,0,1
+		}
+		windowDef screen10_bar2
+		{
+			rect	-478,254,478,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen10_bar1
+		{
+			rect	0,150,370,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen10_bar2
+		{
+			rect	0,254,478,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+	}
+	windowDef p_screen11
+	{
+		rect	0,0,640,480
+		visible	0
+		notime	1
+
+		onTime 0 {
+			set "rect" "0,0,640,480" ;
+			set "visible" "1" ;
+			
+			set "screen11_bar1::matcolor" "$desktop::cr_orange" ;
+			set "screen11_bar2::matcolor" "$desktop::cr_orange" ;
+			set "screen11_bar3::matcolor" "$desktop::cr_orange" ;
+			set "screen11_bar4::matcolor" "$desktop::cr_orange" ;
+			set "screen11_bar5::matcolor" "$desktop::cr_orange" ;
+			set "screen11_bar6::matcolor" "$desktop::cr_orange" ;
+			set "screen11_bar1::rect" "-276,76,276,23" ;
+			set "screen11_bar2::rect" "-192,131,192,23" ;
+			set "screen11_bar3::rect" "-276,186,276,23" ;
+			set "screen11_bar4::rect" "-279,241,279,23" ;
+			set "screen11_bar5::rect" "-307,296,307,23" ;
+			set "screen11_bar6::rect" "-305,351,307,23" ;
+			
+			transition "atvi::matcolor" "0,0,0,0" "$desktop::cr_green" "2000" ;
+			
+			transition "screen11_ts_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen11_ts_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen11_ts_3::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen11_ts_4::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen11_ts_5::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen11_ts_6::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			
+			transition "screen11_ns_1::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen11_ns_2::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen11_ns_3::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen11_ns_4::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen11_ns_5::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen11_ns_6::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+		}
+
+		onTime +2000 {
+			transition "screen11_bar1::rect" "$screen11_bar1::rect" "$d_screen11_bar1::rect" "300" "100" "150" ;
+			transition "screen11_bar1::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen11_ts_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen11_t_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen11_ts_1::textscale" "0.36" "0.34" "1000" ;
+			transition "screen11_t_1::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {
+			transition "screen11_ns_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen11_n_1::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen11_ns_1::textscale" "0.45" "0.43" "500" ;
+			transition "screen11_n_1::textscale" "0.42" "0.4" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen11_bar2::rect" "$screen11_bar2::rect" "$d_screen11_bar2::rect" "300" "100" "150" ;
+			transition "screen11_bar2::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen11_ts_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen11_t_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen11_ts_2::textscale" "0.36" "0.34" "1000" ;
+			transition "screen11_t_2::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {	
+			transition "screen11_ns_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen11_n_2::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen11_ns_2::textscale" "0.45" "0.43" "500" ;
+			transition "screen11_n_2::textscale" "0.42" "0.4" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen11_bar3::rect" "$screen11_bar3::rect" "$d_screen11_bar3::rect" "300" "100" "150" ;
+			transition "screen11_bar3::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen11_ts_3::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen11_t_3::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen11_ts_3::textscale" "0.36" "0.34" "1000" ;
+			transition "screen11_t_3::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {	
+			transition "screen11_ns_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen11_n_3::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen11_ns_3::textscale" "0.45" "0.43" "500" ;
+			transition "screen11_n_3::textscale" "0.42" "0.4" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen11_bar4::rect" "$screen11_bar4::rect" "$d_screen11_bar4::rect" "300" "100" "150" ;
+			transition "screen11_bar4::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen11_ts_4::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen11_t_4::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen11_ts_4::textscale" "0.36" "0.34" "1000" ;
+			transition "screen11_t_4::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {
+			transition "screen11_ns_4::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen11_n_4::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen11_ns_4::textscale" "0.45" "0.43" "500" ;
+			transition "screen11_n_4::textscale" "0.42" "0.4" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen11_bar5::rect" "$screen11_bar5::rect" "$d_screen11_bar5::rect" "300" "100" "150" ;
+			transition "screen11_bar5::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen11_ts_5::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen11_t_5::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen11_ts_5::textscale" "0.36" "0.34" "1000" ;
+			transition "screen11_t_5::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {	
+			transition "screen11_ns_5::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen11_n_5::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen11_ns_5::textscale" "0.45" "0.43" "500" ;
+			transition "screen11_n_5::textscale" "0.42" "0.4" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen11_bar6::rect" "$screen11_bar6::rect" "$d_screen11_bar6::rect" "300" "100" "150" ;
+			transition "screen11_bar6::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen11_ts_6::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen11_t_6::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen11_ts_6::textscale" "0.36" "0.34" "1000" ;
+			transition "screen11_t_6::textscale" "0.33" "0.31" "1000" ;
+		}
+
+		onTime +50 {	
+			transition "screen11_ns_6::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen11_n_6::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen11_ns_6::textscale" "0.45" "0.43" "500" ;
+			transition "screen11_n_6::textscale" "0.42" "0.4" "500" ;
+		}
+
+		onTime +500 {
+			transition "screen11_n_1::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;	
+			transition "screen11_n_2::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;	
+			transition "screen11_n_3::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;	
+			transition "screen11_n_4::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;	
+			transition "screen11_n_5::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			transition "screen11_n_6::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +3500 {
+			transition "p_screen11::rect" "$p_screen11::rect" "$d_credits::rect" "500" "200" "200" ;
+			
+			transition "screen11_t_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen11_t_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen11_t_3::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen11_t_4::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen11_t_5::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen11_t_6::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			
+			transition "screen11_n_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen11_n_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen11_n_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen11_n_4::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen11_n_5::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen11_n_6::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			
+			transition "atvi::matcolor" "$desktop::cr_green" "0,0,0,0" "300" ;
+		}
+
+		onTime +500 {
+			resettime "p_screen12" "0" ;
+			set "visible" "0" ;	
+		}
+
+		windowDef atvi
+		{
+			rect	341,202,300,76
+			visible	1
+			background	"gfx/guis/mainmenu/atvi_1"
+			matcolor	0,0,0,1
+		}
+		windowDef screen11_t_1
+		{
+			rect	103,77,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Executive Producer"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen11_n_1
+		{
+			rect	165,95,426,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Graham Fuchs"
+			textscale	.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen11_t_2
+		{
+			rect	103,132,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Producer
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen11_n_2
+		{
+			rect	165,150,426,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Doug Pearson"
+			textscale	.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen11_t_3
+		{
+			rect	103,187,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Associate Producer"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen11_n_3
+		{
+			rect	165,205,426,29
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Glenn Ige"
+			textscale	.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen11_t_4
+		{
+			rect	103,242,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Associate Producer"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen11_n_4
+		{
+			rect	165,260,426,29
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Kekoa Lee-Creel"
+			textscale	.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen11_t_5
+		{
+			rect	103,297,433,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Production Coordinator"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen11_n_5
+		{
+			rect	165,315,426,29
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Eain Bankins"
+			textscale	.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen11_t_6
+		{
+			rect	103,352,433,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Production Coordinator"
+			textscale	0.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen11_n_6
+		{
+			rect	165,370,426,29
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Danny Taylor"
+			textscale	.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen11_ts_1
+		{
+			rect	103,80,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Executive Producer"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen11_ns_1
+		{
+			rect	165,99,426,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Graham Fuchs"
+			textscale	.45
+			font	"fonts/strogg"
+		}
+		windowDef screen11_ts_2
+		{
+			rect	103,135,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	Producer
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen11_ns_2
+		{
+			rect	165,154,426,30
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Doug Pearson"
+			textscale	.45
+			font	"fonts/strogg"
+		}
+		windowDef screen11_ts_3
+		{
+			rect	103,190,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Associate Producer"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen11_ns_3
+		{
+			rect	165,209,426,29
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Glenn Ige"
+			textscale	.45
+			font	"fonts/strogg"
+		}
+		windowDef screen11_ts_4
+		{
+			rect	103,245,434,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Associate Producer"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen11_ns_4
+		{
+			rect	165,264,426,29
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Kekoa Lee-Creel"
+			textscale	.45
+			font	"fonts/strogg"
+		}
+		windowDef screen11_ts_5
+		{
+			rect	103,300,433,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Production Coordinator"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen11_ns_5
+		{
+			rect	165,319,426,29
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Eain Bankins"
+			textscale	.45
+			font	"fonts/strogg"
+		}
+		windowDef screen11_ts_6
+		{
+			rect	103,355,433,20
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Production Coordinator"
+			textscale	0.34
+			font	"fonts/strogg"
+		}
+		windowDef screen11_ns_6
+		{
+			rect	165,374,426,29
+			visible	1
+			forecolor	0.839,1,0.658,0
+			text	"Danny Taylor"
+			textscale	.45
+			font	"fonts/strogg"
+		}
+		windowDef screen11_bar1
+		{
+			rect	-275,76,276,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef screen11_bar2
+		{
+			rect	-191,131,192,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef screen11_bar3
+		{
+			rect	-275,186,276,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef screen11_bar4
+		{
+			rect	-278,241,279,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef screen11_bar5
+		{
+			rect	-306,296,307,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef screen11_bar6
+		{
+			rect	-304,351,307,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen11_bar1
+		{
+			rect	0,76,276,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen11_bar2
+		{
+			rect	0,131,192,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen11_bar3
+		{
+			rect	0,186,276,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen11_bar4
+		{
+			rect	0,241,279,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen11_bar5
+		{
+			rect	0,296,307,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen11_bar6
+		{
+			rect	0,351,307,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+	}
+	windowDef p_screen12
+	{
+		rect	0,0,640,480
+		visible	0
+		notime	1
+
+		onTime 0 {
+			set "rect" "0,0,640,480" ;
+			set "visible" "1" ;
+			
+			set "screen12_bar1::matcolor" "$desktop::cr_orange" ;
+			set "screen12_bar2::matcolor" "$desktop::cr_orange" ;
+			set "screen12_bar1::rect" "-370,150,370,23" ;
+			set "screen12_bar2::rect" "-478,254,478,23" ;
+			
+			transition "screen12_ts_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen12_ts_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			
+			transition "screen12_ns_1::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen12_ns_2::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+		}
+
+		onTime +2000 {
+			transition "screen12_bar1::rect" "$screen12_bar1::rect" "$d_screen12_bar1::rect" "300" "100" "150" ;
+			transition "screen12_bar1::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen12_ts_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen12_t_1::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen12_ts_1::textscale" "0.4" "0.38" "1000" ;
+			transition "screen12_t_1::textscale" "0.37" "0.35" "1000" ;
+		}
+
+		onTime +200 {
+			transition "screen12_ns_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen12_n_1::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "500" ;
+			transition "screen12_ns_1::textscale" "0.47" "0.45" "500" ;
+			transition "screen12_n_1::textscale" "0.42" "0.4" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen12_n_1::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+			
+			transition "screen12_bar2::rect" "$screen12_bar2::rect" "$d_screen12_bar2::rect" "300" "100" "150" ;
+			transition "screen12_bar2::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen12_ts_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen12_t_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen12_ts_2::textscale" "0.4" "0.38" "1000" ;
+			transition "screen12_t_2::textscale" "0.37" "0.35" "1000" ;
+		}
+
+		onTime +200 {
+			transition "screen12_ns_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen12_n_2::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "500" ;
+			transition "screen12_ns_2::textscale" "0.47" "0.45" "500" ;
+			transition "screen12_n_2::textscale" "0.42" "0.4" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen12_n_2::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +3500 {
+			transition "p_screen12::rect" "$p_screen8::rect" "$d_credits::rect" "500" "200" "200" ;
+			
+			transition "screen12_t_1::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			transition "screen12_t_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			
+			transition "screen12_n_1::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen12_n_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+		}
+
+		onTime +500 {
+			set "visible" "0" ;	
+			resettime "p_screen10" "0" ;
+		}
+
+		windowDef screen12_t_1
+		{
+			rect	103,148,432,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Theme for Quake4 Produced by"
+			textscale	0.35
+			font	"fonts/lowpixel"
+		}
+		windowDef screen12_n_1
+		{
+			rect	122,172,379,30
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Chris Vrenna"
+			textscale	0.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen12_t_2
+		{
+			rect	103,253,432,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Theme for Quake4 Composed by"
+			textscale	0.35
+			font	"fonts/lowpixel"
+		}
+		windowDef screen12_n_2
+		{
+			rect	122,277,379,30
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Clint Walsh"
+			textscale	0.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen12_ts_1
+		{
+			rect	103,152,432,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Theme for Quake4 Produced by"
+			textscale	0.38
+			font	"fonts/strogg"
+		}
+		windowDef screen12_ns_1
+		{
+			rect	122,176,379,30
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Chris Vrenna"
+			textscale	0.45
+			font	"fonts/strogg"
+		}
+		windowDef screen12_ts_2
+		{
+			rect	103,257,432,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Theme for Quake4 Composed by"
+			textscale	0.38
+			font	"fonts/strogg"
+		}
+		windowDef screen12_ns_2
+		{
+			rect	122,281,379,30
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Clint Walsh"
+			textscale	0.45
+			font	"fonts/strogg"
+		}
+		windowDef screen12_bar1
+		{
+			rect	-369,150,370,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.498,0,1
+		}
+		windowDef screen12_bar2
+		{
+			rect	-477,254,478,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen12_bar1
+		{
+			rect	0,150,404,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+		windowDef d_screen12_bar2
+		{
+			rect	0,254,416,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+	}
+	windowDef p_screen13
+	{
+		rect	0,0,640,480
+		visible	0
+		notime	1
+
+		onTime 0 {
+			set "rect" "0,0,640,480" ;
+			set "visible" "1" ;
+			
+			transition "miles::matcolor" "0,0,0,0" "$desktop::cr_green" "2000" ;
+			transition "screen13_ns_1::forecolor" "$desktop::white_0" "$desktop::white_6" "2000" ;
+			transition "screen13_ts_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "2000" ;
+			transition "screen13_ns_2::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			transition "screen13_ns_3::forecolor" "$desktop::cr_green_0" "$desktop::cr_green" "2000" ;
+			
+			set "screen13_bar1::matcolor" "$desktop::cr_orange" ;
+			set "screen13_bar1::rect" "-250,102,250,23" ;	
+		}
+
+		onTime +2000 {
+			transition "screen13_bar1::rect" "$screen13_bar1::rect" "$d_screen13_bar1::rect" "300" "100" "150" ;
+			transition "screen13_bar1::matcolor" "$desktop::cr_orange" "0,0,0,0" "1000" ;
+			
+			transition "screen13_ts_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "1000" ;
+			transition "screen13_t_2::forecolor" "$desktop::cr_orange_0" "$desktop::cr_orange" "1000" ;
+			transition "screen13_ts_2::textscale" "0.42" "0.4" "1000" ;
+			transition "screen13_t_2::textscale" "0.37" "0.35" "1000" ;
+		}
+
+		onTime +50 {
+			transition "screen13_ns_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen13_n_2::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen13_ns_2::textscale" "0.53" "0.51" "500" ;
+			transition "screen13_n_2::textscale" "0.42" "0.4" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen13_n_2::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +200 {
+			transition "screen13_ns_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "500" ;
+			transition "screen13_n_3::forecolor" "$desktop::cr_green_0" "$desktop::white" "500" ;
+			transition "screen13_ns_3::textscale" "0.53" "0.51" "500" ;
+			transition "screen13_n_3::textscale" "0.42" "0.4" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen13_n_3::forecolor" "$desktop::white" "$desktop::cr_green" "500" ;
+		}
+
+		onTime +400 {
+			transition "screen13_ns_1::forecolor" "$desktop::white_6" "$desktop::white_0" "500" ;
+			transition "screen13_n_1::forecolor" "$desktop::white_0" "$desktop::white" "500" ;
+			transition "screen13_ns_1::textscale" "0.4" "0.38" "500" ;
+			transition "screen13_n_1::textscale" "0.33" "0.31" "500" ;
+		}
+
+		onTime +50 {
+			transition "screen13_n_1::forecolor" "$desktop::white" "$desktop::white_6" "500" ;
+		}
+
+		onTime +3500 {
+			transition "p_screen13::rect" "$p_screen13::rect" "$d_credits::rect" "500" "200" "200" ;
+			
+			transition "screen13_n_1::forecolor" "$desktop::white_6" "$desktop::white_0" "300" ;
+			transition "screen13_n_2::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen13_n_3::forecolor" "$desktop::cr_green" "$desktop::cr_green_0" "300" ;
+			transition "screen13_t_2::forecolor" "$desktop::cr_orange" "$desktop::cr_orange_0" "300" ;
+			
+			transition "miles::matcolor" "$desktop::cr_green" "0,0,0,0" "300" ;
+		}
+
+		onTime +500 {
+			set "visible" "0" ;	
+		}
+
+		onTime +500 {
+			transition "fade::backcolor_w" "0" "1" "1000" ;
+		}
+
+		onTime +1500 {
+			set "cmd" "exec disconnect" ;
+		}
+
+		windowDef miles
+		{
+			rect	102,256,256,32
+			visible	1
+			background	"gfx/guis/mainmenu/miles_1"
+			matcolor	0,0,0,1
+		}
+		windowDef screen13_n_1
+		{
+			rect	103,301,542,72
+			visible	1
+			forecolor	1,1,1,0
+			text	"Quake 4 uses Miles Sound System.\nCopyright © 1991-2003 by RAD Game Tools, Inc."
+			textscale	.31
+			font	"fonts/lowpixel"
+		}
+		windowDef screen13_ns_1
+		{
+			rect	103,307,542,72
+			visible	1
+			forecolor	1,1,1,0
+			text	"Quake 4 uses Miles Sound System.\nCopyright 1991-2003 by RAD Game Tools, Inc."
+			textscale	0.38
+			font	"fonts/strogg"
+		}
+		windowDef screen13_t_2
+		{
+			rect	103,101,432,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Special Thanks"
+			textscale	0.35
+			font	"fonts/lowpixel"
+		}
+		windowDef screen13_n_2
+		{
+			rect	122,125,379,30
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Splash Damage"
+			textscale	0.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen13_ts_2
+		{
+			rect	103,105,432,30
+			visible	1
+			forecolor	1,0.501,0,0
+			text	"Special Thanks"
+			textscale	0.4
+			font	"fonts/strogg"
+		}
+		windowDef screen13_ns_2
+		{
+			rect	121,129,379,30
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Splash Damage"
+			textscale	0.51
+			font	"fonts/strogg"
+		}
+		windowDef screen13_n_3
+		{
+			rect	122,150,379,30
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Carlo Vogelsang - Creative"
+			textscale	0.4
+			font	"fonts/lowpixel"
+		}
+		windowDef screen13_ns_3
+		{
+			rect	121,154,379,30
+			visible	1
+			forecolor	0.831,1,0.650,0
+			text	"Carlo Vogelsang - Creative"
+			textscale	0.51
+			font	"fonts/strogg"
+		}
+		windowDef screen13_bar1
+		{
+			rect	-250,102,250,23
+			visible	1
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.498,0,1
+		}
+		windowDef d_screen13_bar1
+		{
+			rect	0,102,250,23
+			visible	0
+			background	"gfx/guis/mainmenu/creditsbar"
+			matcolor	1,0.501,0,1
+		}
+	}
+	windowDef topstuff
+	{
+		rect	0,0,640,480
+		visible	1
+		windowDef sline1
+		{
+			rect	0,0,640,480
+			visible	1
+			background	"gfx/guis/common/monitor_line3"
+			matcolor	0.325,0.325,0.325,1
+		}
+		windowDef sline2
+		{
+			rect	0,0,640,480
+			visible	1
+			background	"gfx/guis/common/monitor_line4"
+			matcolor	0.749,0.905,0.745,0.06
+		}
+		windowDef scratches
+		{
+			rect	0,0,640,480
+			visible	1
+			background	"gfx/guis/common/screen_scratches2"
+			matcolor	0.937,0.988,0.772,0.06
+		}
+		windowDef topreflect1
+		{
+			rect	0,0,640,480
+			visible	1
+			background	"gfx/guis/common/monitor_glow3"
+			matcolor	0.976,1,0.917,0.419*guitable_random1[time*0.0001]
+		}
+		windowDef topreflect2
+		{
+			rect	0,-55,640,554
+			visible	0
+			background	"gfx/guis/common/monitor_reflect2"
+			matcolor	0.117,0.129,0.113,1
+		}
+		windowDef monitor_darkedge
+		{
+			rect	0,0,640,480
+			visible	1
+			background	"gfx/guis/common/monitor_darkedge2"
+			matcolor	0,0,0,1
+		}
+	}
+	windowDef fade
+	{
+		rect	0,0,640,480
+		visible	1
+		backcolor	0,0,0,1
+	}
+	windowDef anim_credits
+	{
+		rect	0,0,1,1
+		visible	1
+		notime	1
+
+		onTime 0 {
+			transition "fade::backcolor_w" "1" "0" "1000" ;
+		}
+
+		onTime +1000 {
+			transition "raven::matcolor" "0,0,0,1" "0.839,1,0.658,1" "1000" ;
+		}
+
+		onTime +3000 {
+			transition "raven::matcolor" "0.839,1,0.658,1" "0,0,0,1" "1000" ;
+			transition "q4logo::matcolor_w" "0" "1" "1000" ;
+		}
+
+		onTime +1000 {
+			resettime "p_screen1" "0" ;
+		}
+
+	}
+}

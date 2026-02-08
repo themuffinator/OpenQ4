@@ -119,10 +119,12 @@ $effectiveArgs = @($args)
 if ($effectiveArgs.Count -eq 0) {
     throw "No Meson arguments were provided to meson_setup.ps1."
 }
-if ($effectiveArgs.Length -gt 0 -and $effectiveArgs[0] -eq "compile") {
+if ($effectiveArgs.Length -gt 0 -and ($effectiveArgs[0] -eq "compile" -or $effectiveArgs[0] -eq "install")) {
+    $isCompile = $effectiveArgs[0] -eq "compile"
+    $isInstall = $effectiveArgs[0] -eq "install"
     $buildInfo = Get-CompileBuildDirInfo -MesonArgs $effectiveArgs -DefaultBuildDir $defaultBuildDir
 
-    if (-not (Test-MesonBuildDirectory $buildInfo.BuildDir)) {
+    if ($isCompile -and -not (Test-MesonBuildDirectory $buildInfo.BuildDir)) {
         Write-Host "Meson build directory '$($buildInfo.BuildDir)' is missing or invalid. Running meson setup..."
         $setupArgs = @(
             "setup",
@@ -147,7 +149,11 @@ if ($effectiveArgs.Length -gt 0 -and $effectiveArgs[0] -eq "compile") {
         if ($effectiveArgs.Length -gt 1) {
             $remainingArgs = $effectiveArgs[1..($effectiveArgs.Length - 1)]
         }
-        $effectiveArgs = @("compile", "-C", $buildInfo.BuildDir) + $remainingArgs
+        $effectiveArgs = @($effectiveArgs[0], "-C", $buildInfo.BuildDir) + $remainingArgs
+    }
+
+    if ($isInstall -and -not ($effectiveArgs -contains "--skip-subprojects")) {
+        $effectiveArgs += "--skip-subprojects"
     }
 }
 

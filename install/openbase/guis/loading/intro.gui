@@ -1,0 +1,120 @@
+windowDef Desktop
+{
+	rect	0,0,640,480
+
+	onNamedEvent FinishedLoading {
+		set 	"load_text::text" 	"#str_200937" ;
+		set 	"button::visible" 	"1" ;
+		resettime "load_text" "0" ;
+		set "cmd" "play load_screen_ready" ;
+		
+		set "bar_full::visible" "1" ;
+		set "p_load_bar::visible" "0" ;
+	}
+
+	windowDef loadimg
+	{
+		rect	0,0,640,480
+		visible	1
+		background	"gfx/guis/loadscreens/e3_load"
+		matcolor	1,1,1,1
+	}
+	windowDef top_edge
+	{
+		rect	0,0,640,119
+		visible	1
+		background	"gfx/guis/mainmenu/load_top_edge"
+		matcolor	0,0,0,0.8
+	}
+	windowDef btm_edge
+	{
+		rect	0,345,640,253
+		visible	1
+		background	"gfx/guis/mainmenu/load_btm_edge"
+		matcolor	0,0,0,0.8
+	}
+	windowDef top_edgeadd
+	{
+		rect	0,0,640,119
+		visible	1
+		background	"gfx/guis/mainmenu/load_top_edgeadd"
+		matcolor	0.0941,0.113,0.0392,1
+	}
+	windowDef btm_edgeadd
+	{
+		rect	0,345,640,253
+		visible	1
+		background	"gfx/guis/mainmenu/load_btm_edgeadd"
+		matcolor	0.0941,0.113,0.0392,1
+	}
+	windowDef bar
+	{
+		rect	235,431,405,26
+		visible	1
+		background	"gfx/guis/mainmenu/load_bar"
+		matcolor	0.878,0.423,0,0.3
+	}
+	windowDef p_load_bar
+	{
+		rect	235,431,( "gui::map_loading" * 405 ),26
+		visible	1
+		windowDef load_bar
+		{
+			rect	0,0,405,26
+			visible	1
+			background	"gfx/guis/mainmenu/load_bar"
+			matcolor	0.878,0.423,0,0.5
+		}
+	}
+	windowDef bar_full
+	{
+		rect	235,431,405,26
+		visible	0
+		background	"gfx/guis/mainmenu/load_bar"
+		matcolor	0.878,0.423,0,0.5
+	}
+	windowDef load_text
+	{
+		rect	4,428,624,36
+		visible	1
+		notime	1
+		forecolor	1,1,1,1
+		text	"#str_200938"
+		textscale	0.4
+		font	"fonts/marine"
+		textalign	2
+		textstyle	1
+
+		onTime 0 {
+			transition "forecolor" "1,1,1,1" "0.5,0.5,0.5,1" "500" ;
+		}
+
+		onTime +500 {
+			transition "forecolor" "0.5,0.5,0.5,1" "1,1,1,1" "200" ;
+		}
+
+		onTime +200 {
+			resettime "0" ;
+		}
+
+	}
+	windowDef load_dots
+	{
+		rect	3,2,105,25
+		visible	1
+		background	"gfx/guis/mainmenu/load_dots"
+		matcolor	0.109,0.145,0.0745,1
+	}
+	windowDef button
+	{
+		rect	0,0,640,480
+		visible	0
+
+		onAction {
+			set "cmd" "unmute" ;
+			set "cmd" "close" ;
+			set "cmd" "play load_screen_click" ;
+		}
+
+	}
+}

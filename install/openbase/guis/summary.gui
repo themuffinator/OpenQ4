@@ -1,0 +1,3533 @@
+windowDef Desktop
+{
+	rect	0 ,0 ,640 ,480
+	visible	1
+	menugui	1
+	backcolor	0.5,0.5,0.5,0
+	definevec4	"white_8"	1,1,1,0.8
+	definevec4	"orange"	0.890,0.537,0,1
+	float	"curr"	1
+	float	"itemheight" 15
+	float	"itemheight_stats" 15
+
+	float	"score_strogg_offset"	0
+	float	"score_marine_offset"	0
+	float	"score_spec_offset"	0
+	float	"score_team_strogg_offset"	"desktop::itemheight" * "gui::num_marine_players" + 115
+	float	"score_team_marine_offset"	"desktop::itemheight" * "gui::num_strogg_players" + 115
+	float	"score_team_spec_offset"	"desktop::itemheight" * ( "gui::num_marine_players" + "gui::num_strogg_players" )+150
+	float	"score_dm_spec_offset"		"desktop::itemheight" * "gui::num_players" + 115
+	
+	float	"stat_strogg_offset"	0
+	float	"stat_marine_offset"	0
+	float	"stat_spec_offset"	0
+	float	"stat_team_strogg_offset"	"desktop::itemheight_stats" * "gui::num_marine_players" + 20
+	float	"stat_team_marine_offset"	"desktop::itemheight_stats" * "gui::num_strogg_players" + 20
+	float	"stat_team_spec_offset"	"desktop::itemheight_stats" * ( "gui::num_marine_players" + "gui::num_strogg_players" )+40
+	float	"stat_dm_spec_offset"	"desktop::itemheight_stats" * "gui::num_players" + 20
+	
+	definefloat	"tooltip_x_offset"	"gui::mousex" - 256
+	float	"tooltip_x"	0
+	float	"tooltip_y"	0
+
+	onActivate {
+		namedevent "p_btns::hide" ;
+		namedevent "p_btns::hideStats" ;
+		set "p_summary::visible" "1" ;
+		set "desktop::curr" "1" ;
+		namedevent "p_btns::showBtns" ;
+		set "b_summ::visible" "0" ;
+		set "tab_summary::forecolor" "$desktop::orange" ;
+		set "tab_summary::textscale" "0.29" ;
+		set "tab_stats::forecolor" "$desktop::white_8" ;
+		set "tab_stats::textscale" "0.28" ;
+		set "tab_score::forecolor" "$desktop::white_8" ;
+		set "tab_score::textscale" "0.28" ;
+	
+		set "summ_tab::background" "gfx/guis/mainmenu/ctrls_tab1"  ;
+	}
+
+	onNamedEvent gametype_explanation {
+		// 0 = singleplayer
+		// 1 = deathmatch
+		// 2 = tournament
+		// 3 = team deathmatch
+		// 4 = capture the flag
+		// 5 = one flag CTF
+		// 6 = arena CTF
+		// 7 = 1f arena CTF ( unused )
+		// 8 = DeadZone
+	}
+
+	onESC {
+		set "cmd" "close" ;
+	}
+
+	onNamedEvent chatFocus {
+		setfocus "b_summ" ;
+		resettime "anim_focus" "0" ;
+		set "chat_enter::text" "" ;
+	}
+
+	onNamedEvent marine_wins {
+		set "summ_marine_teamname::text" "#str_201012" ;
+		set "summ_strogg_teamname::text" "#str_201015" ;
+		set "summ_marine::rect" "93,53,448,118" ;
+		set "summ_strogg::rect" "93,168,448,118" ;
+	}
+
+	onNamedEvent strogg_wins {
+		set "summ_marine_teamname::text" "#str_201014" ;
+		set "summ_strogg_teamname::text" "#str_201013" ;
+		set "summ_marine::rect" "93,168,448,118" ;
+		set "summ_strogg::rect" "93,53,448,118" ;
+	}
+
+	onEvent {	
+		set "desktop::tooltip_y" "$gui::mousey";
+		
+		if( "gui::mousex" < 384 ) {
+			set "desktop::tooltip_x" "$gui::mousex";			
+		} else {
+			set "desktop::tooltip_x" "$desktop::tooltip_x_offset";
+		}	
+		
+		if ( "gui::num_players" >= 9 ) {
+			set "summary_list::itemheight" "22" ;
+		} else if ( "gui::num_players" == 7 || "gui::num_players" == 8 ) {
+			set "summary_list::itemheight" "26" ;
+		} else if ( "gui::num_players" == 5 || "gui::num_players" == 6 ) {
+			set "summary_list::itemheight" "32" ;
+		} else if ( "gui::num_players" <= 4 ) {
+			set "summary_list::itemheight" "40" ;
+		} 
+		
+		if ( "gui::gametype" == 4 || "gui::gametype" == 5 || "gui::gametype" == 6 || "gui::gametype" == 8 ) {
+			set "p_strogg::visible" "1";
+			set "p_marine::visible" "1";
+			set "p_strogg_tdm::visible" "0";
+			set "p_marine_tdm::visible" "0";
+			set "p_spec::visible" "1";
+			set "p_dm::visible" "0";
+			set "p_trn::visible" "0";
+			
+			set "p_playerlist_strogg::visible" "1";
+			set "p_playerlist_marine::visible" "1";
+			set "p_playerlist_spectator::visible" "1";
+			set "p_playerlist_dm::visible" "0";			
+			
+			set "desktop::score_spec_offset" "$desktop::score_team_spec_offset";
+			set "desktop::stat_spec_offset" "$desktop::stat_team_spec_offset";
+			
+			if( "gui::playerteam" == 0 ) {
+				set "desktop::stat_marine_offset" 0;
+				set "desktop::stat_strogg_offset" "$desktop::stat_team_strogg_offset";
+				
+				set "desktop::score_marine_offset" 79;
+				set "desktop::score_strogg_offset" "$desktop::score_team_strogg_offset";
+			} else {
+				set "desktop::stat_strogg_offset" 0;
+				set "desktop::stat_marine_offset" "$desktop::stat_team_marine_offset";
+				
+				set "desktop::score_strogg_offset" 79;
+				set "desktop::score_marine_offset" "$desktop::score_team_marine_offset";
+			}	
+			
+			// team stats
+			
+			if ( ("gui::num_players" + "gui::num_spec_players") >= 15 ) {
+				set "playerlist_m::itemheight" "18" ;
+				set "playerlist_s::itemheight" "18" ;
+				set "playerlist_sp::itemheight" "18" ;
+				set "desktop::itemheight_stats" "18" ;
+			} else if ( ("gui::num_players" + "gui::num_spec_players") == 13 || ("gui::num_players" + "gui::num_spec_players") == 14 ) {
+				set "playerlist_m::itemheight" "22" ;
+				set "playerlist_s::itemheight" "22" ;
+				set "playerlist_sp::itemheight" "22" ;
+				set "desktop::itemheight_stats" "22" ;
+			} else if ( ("gui::num_players" + "gui::num_spec_players") == 11 || ("gui::num_players" + "gui::num_spec_players") == 12 ) {
+				set "playerlist_m::itemheight" "24" ;
+				set "playerlist_s::itemheight" "24" ;
+				set "playerlist_sp::itemheight" "24" ;
+				set "desktop::itemheight_stats" "24" ;
+			} else if ( ("gui::num_players" + "gui::num_spec_players") == 9 || ("gui::num_players" + "gui::num_spec_players") == 10 ) {
+				set "playerlist_m::itemheight" "30" ;
+				set "playerlist_s::itemheight" "30" ;
+				set "playerlist_sp::itemheight" "30" ;
+				set "desktop::itemheight_stats" "30" ;
+			} else if ( ("gui::num_players" + "gui::num_spec_players") <= 8 ) {
+				set "playerlist_m::itemheight" "38" ;
+				set "playerlist_s::itemheight" "38" ;
+				set "playerlist_sp::itemheight" "38" ;
+				set "desktop::itemheight_stats" "38" ;
+			}
+			
+			// team spec hides
+			
+			if ( "gui::num_spec_players" > 0 ) {
+				set "p_playerlist_spectator::visible" "1";
+				set "p_spec::visible" "1";
+			} else {
+				set "p_playerlist_spectator::visible" "0";
+				set "p_spec::visible" "0";
+			}
+			
+			// team scoreboard
+			
+			if ( ( "gui::num_marine_players" + "gui::num_strogg_players" + "gui::num_spec_players" ) >= 15 ) {
+				set "sp_playerlist::itemheight" "16" ;
+				set "s_playerlist::itemheight" "16" ;
+				set "m_playerlist::itemheight" "16" ;
+				set "desktop::itemheight" "16" ;
+			} else if ( ( "gui::num_marine_players" + "gui::num_strogg_players" + "gui::num_spec_players" ) == 13 || ( "gui::num_marine_players" + "gui::num_strogg_players" + "gui::num_spec_players" ) == 14 ) {
+				set "sp_playerlist::itemheight" "18" ;
+				set "s_playerlist::itemheight" "18" ;
+				set "m_playerlist::itemheight" "18" ;
+				set "desktop::itemheight" "18" ;
+			} else if ( ( "gui::num_marine_players" + "gui::num_strogg_players" + "gui::num_spec_players" ) == 11 || ( "gui::num_marine_players" + "gui::num_strogg_players" + "gui::num_spec_players" ) == 12 ) {
+				set "sp_playerlist::itemheight" "21" ;
+				set "s_playerlist::itemheight" "21" ;
+				set "m_playerlist::itemheight" "21" ;
+				set "desktop::itemheight" "21" ;
+			} else if ( ( "gui::num_marine_players" + "gui::num_strogg_players" + "gui::num_spec_players" ) == 9 || ( "gui::num_marine_players" + "gui::num_strogg_players" + "gui::num_spec_players" ) == 10 ) {
+				set "sp_playerlist::itemheight" "25" ;
+				set "s_playerlist::itemheight" "25" ;
+				set "m_playerlist::itemheight" "25" ;
+				set "desktop::itemheight" "25" ;
+			} else if ( ( "gui::num_marine_players" + "gui::num_strogg_players" + "gui::num_spec_players" ) <= 8 ) {
+				set "sp_playerlist::itemheight" "30" ;
+				set "s_playerlist::itemheight" "30" ;
+				set "m_playerlist::itemheight" "30" ;
+				set "desktop::itemheight" "30" ;
+			} 
+			
+		} else if ( "gui::gametype" == 3) {		
+			set "p_strogg::visible" "0";
+			set "p_marine::visible" "0";
+			set "p_strogg_tdm::visible" "1";
+			set "p_marine_tdm::visible" "1";
+			set "p_spec::visible" "1";
+			set "p_dm::visible" "0";
+			set "p_trn::visible" "0";
+			
+			set "p_playerlist_strogg::visible" "1";
+			set "p_playerlist_marine::visible" "1";
+			set "p_playerlist_spectator::visible" "1";
+			set "p_playerlist_dm::visible" "0";			
+			
+			set "desktop::score_spec_offset" "$desktop::score_team_spec_offset";
+			set "desktop::stat_spec_offset" "$desktop::stat_team_spec_offset";
+			
+			if( "gui::playerteam" == 0 ) {
+				set "desktop::stat_marine_offset" 0;
+				set "desktop::stat_strogg_offset" "$desktop::stat_team_strogg_offset";
+				
+				set "desktop::score_marine_offset" 79;
+				set "desktop::score_strogg_offset" "$desktop::score_team_strogg_offset";
+			} else {
+				set "desktop::stat_strogg_offset" 0;
+				set "desktop::stat_marine_offset" "$desktop::stat_team_marine_offset";
+				
+				set "desktop::score_strogg_offset" 79;
+				set "desktop::score_marine_offset" "$desktop::score_team_marine_offset";
+			}	
+			
+			// Team DM stats
+			
+			if ( ("gui::num_players" + "gui::num_spec_players") >= 15 ) {
+				set "playerlist_m::itemheight" "18" ;
+				set "playerlist_s::itemheight" "18" ;
+				set "playerlist_sp::itemheight" "18" ;
+				set "desktop::itemheight_stats" "18" ;
+			} else if ( ("gui::num_players" + "gui::num_spec_players") == 13 || ("gui::num_players" + "gui::num_spec_players") == 14 ) {
+				set "playerlist_m::itemheight" "22" ;
+				set "playerlist_s::itemheight" "22" ;
+				set "playerlist_sp::itemheight" "22" ;
+				set "desktop::itemheight_stats" "22" ;
+			} else if ( ("gui::num_players" + "gui::num_spec_players") == 11 || ("gui::num_players" + "gui::num_spec_players") == 12 ) {
+				set "playerlist_m::itemheight" "24" ;
+				set "playerlist_s::itemheight" "24" ;
+				set "playerlist_sp::itemheight" "24" ;
+				set "desktop::itemheight_stats" "24" ;
+			} else if ( ("gui::num_players" + "gui::num_spec_players") == 9 || ("gui::num_players" + "gui::num_spec_players") == 10 ) {
+				set "playerlist_m::itemheight" "30" ;
+				set "playerlist_s::itemheight" "30" ;
+				set "playerlist_sp::itemheight" "30" ;
+				set "desktop::itemheight_stats" "30" ;
+			} else if ( ("gui::num_players" + "gui::num_spec_players") <= 8 ) {
+				set "playerlist_m::itemheight" "38" ;
+				set "playerlist_s::itemheight" "38" ;
+				set "playerlist_sp::itemheight" "38" ;
+				set "desktop::itemheight_stats" "38" ;
+			}
+			
+			// Team DM spec hides
+			
+			if ( "gui::num_spec_players" > 0 ) {
+				set "p_playerlist_spectator::visible" "1";
+				set "p_spec::visible" "1";
+			} else {
+				set "p_playerlist_spectator::visible" "0";
+				set "p_spec::visible" "0";
+			}
+			
+			// Team DM scoreboard
+			
+			if ( ( "gui::num_marine_players" + "gui::num_strogg_players" + "gui::num_spec_players" ) >= 15 ) {
+				set "sp_playerlist::itemheight" "16" ;
+				set "s_tdm_playerlist::itemheight" "16" ;
+				set "m_tdm_playerlist::itemheight" "16" ;
+				set "desktop::itemheight" "16" ;
+			} else if ( ( "gui::num_marine_players" + "gui::num_strogg_players" + "gui::num_spec_players" ) == 13 || ( "gui::num_marine_players" + "gui::num_strogg_players" + "gui::num_spec_players" ) == 14 ) {
+				set "sp_playerlist::itemheight" "18" ;
+				set "s_tdm_playerlist::itemheight" "18" ;
+				set "m_tdm_playerlist::itemheight" "18" ;
+				set "desktop::itemheight" "18" ;
+			} else if ( ( "gui::num_marine_players" + "gui::num_strogg_players" + "gui::num_spec_players" ) == 11 || ( "gui::num_marine_players" + "gui::num_strogg_players" + "gui::num_spec_players" ) == 12 ) {
+				set "sp_playerlist::itemheight" "21" ;
+				set "s_tdm_playerlist::itemheight" "21" ;
+				set "m_tdm_playerlist::itemheight" "21" ;
+				set "desktop::itemheight" "21" ;
+			} else if ( ( "gui::num_marine_players" + "gui::num_strogg_players" + "gui::num_spec_players" ) == 9 || ( "gui::num_marine_players" + "gui::num_strogg_players" + "gui::num_spec_players" ) == 10 ) {
+				set "sp_playerlist::itemheight" "25" ;
+				set "s_tdm_playerlist::itemheight" "25" ;
+				set "m_tdm_playerlist::itemheight" "25" ;
+				set "desktop::itemheight" "25" ;
+			} else if ( ( "gui::num_marine_players" + "gui::num_strogg_players" + "gui::num_spec_players" ) <= 8 ) {
+				set "sp_playerlist::itemheight" "30" ;
+				set "s_tdm_playerlist::itemheight" "30" ;
+				set "m_tdm_playerlist::itemheight" "30" ;
+				set "desktop::itemheight" "30" ;
+			} 
+			
+			
+		} else if ( "gui::gametype" == 1) {
+			set "p_strogg::visible" "0";
+			set "p_marine::visible" "0";
+			set "p_strogg_tdm::visible" "0";
+			set "p_marine_tdm::visible" "0";
+			set "p_spec::visible" "1";
+			set "p_dm::visible" "1";
+			set "p_trn::visible" "0";
+			
+			set "p_playerlist_strogg::visible" "0";
+			set "p_playerlist_marine::visible" "0";
+			set "p_playerlist_spectator::visible" "1";
+			set "p_playerlist_dm::visible" "1";			
+			
+			set "desktop::score_spec_offset" "$desktop::score_dm_spec_offset";
+			set "desktop::stat_spec_offset" "$desktop::stat_dm_spec_offset";
+			
+			// dm stats			
+			
+			if ( ("gui::num_players" + "gui::num_spec_players") >= 15 ) {
+				set "playerlist_dm::itemheight" "20" ;
+				set "playerlist_sp::itemheight" "20" ;
+				set "desktop::itemheight_stats" "20" ;
+			} else if ( ("gui::num_players" + "gui::num_spec_players") == 13 || ("gui::num_players" + "gui::num_spec_players") == 14 ) {
+				set "playerlist_dm::itemheight" "22" ;
+				set "playerlist_sp::itemheight" "22" ;
+				set "desktop::itemheight_stats" "22" ;
+			} else if ( ("gui::num_players" + "gui::num_spec_players") == 11 || ("gui::num_players" + "gui::num_spec_players") == 12 ) {
+				set "playerlist_dm::itemheight" "24" ;
+				set "playerlist_sp::itemheight" "24" ;
+				set "desktop::itemheight_stats" "24" ;
+			} else if ( ("gui::num_players" + "gui::num_spec_players") == 9 || ("gui::num_players" + "gui::num_spec_players") == 10 ) {
+				set "playerlist_dm::itemheight" "26" ;
+				set "playerlist_sp::itemheight" "26" ;
+				set "desktop::itemheight_stats" "26" ;
+			} else if ( ("gui::num_players" + "gui::num_spec_players") <= 8 ) {
+				set "playerlist_dm::itemheight" "38" ;
+				set "playerlist_sp::itemheight" "38" ;
+				set "desktop::itemheight_stats" "38" ;
+			}
+			
+			// dm spec hides	
+			
+			if ( "gui::num_spec_players" > 0 ) {
+				set "p_playerlist_spectator::visible" "1";
+				set "p_spec::visible" "1";
+			} else {
+				set "p_playerlist_spectator::visible" "0";
+				set "p_spec::visible" "0";
+			}
+			
+			// dm scoreboard
+			
+			if ( ( "gui::num_players" + "gui::num_spec_players" ) >= 15 ) {
+				set "sp_playerlist::itemheight" "18" ;
+				set "dm_playerlist::itemheight" "18" ;
+				set "desktop::itemheight" "18" ;
+			} else if ( ( "gui::num_players" + "gui::num_spec_players" ) == 13 || ( "gui::num_players" + "gui::num_spec_players" ) == 14 ) {
+				set "sp_playerlist::itemheight" "20" ;
+				set "dm_playerlist::itemheight" "20" ;
+				set "desktop::itemheight" "20" ;
+			} else if ( ( "gui::num_players" + "gui::num_spec_players" ) == 11 || ( "gui::num_players" + "gui::num_spec_players" ) == 12 ) {
+				set "sp_playerlist::itemheight" "24" ;
+				set "dm_playerlist::itemheight" "24" ;
+				set "desktop::itemheight" "24" ;
+			} else if ( ( "gui::num_players" + "gui::num_spec_players" ) == 9 || ( "gui::num_players" + "gui::num_spec_players" ) == 10 ) {
+				set "sp_playerlist::itemheight" "29" ;
+				set "dm_playerlist::itemheight" "29" ;
+				set "desktop::itemheight" "29" ;
+			} else if ( ( "gui::num_players" + "gui::num_spec_players" ) <= 8 ) {
+				set "sp_playerlist::itemheight" "36" ;
+				set "dm_playerlist::itemheight" "36" ;
+				set "desktop::itemheight" "36" ;
+			} 
+			
+		} else {
+			set "p_strogg::visible" "0";
+			set "p_marine::visible" "0";
+			set "p_strogg_tdm::visible" "0";
+			set "p_marine_tdm::visible" "0";
+			set "p_spec::visible" "1";
+			set "p_dm::visible" "0";
+			set "p_trn::visible" "1";
+			
+			set "p_playerlist_strogg::visible" "0";
+			set "p_playerlist_marine::visible" "0";
+			set "p_playerlist_spectator::visible" "1";
+			set "p_playerlist_dm::visible" "1";		
+			
+			set "desktop::score_spec_offset" "$desktop::score_dm_spec_offset";
+			set "desktop::stat_spec_offset" "$desktop::stat_dm_spec_offset";
+			
+			// tourney stats			
+			
+			if ( ("gui::num_players" + "gui::num_spec_players") >= 15 ) {
+				set "playerlist_dm::itemheight" "20" ;
+				set "playerlist_sp::itemheight" "20" ;
+				set "desktop::itemheight_stats" "20" ;
+			} else if ( ("gui::num_players" + "gui::num_spec_players") == 13 || ("gui::num_players" + "gui::num_spec_players") == 14 ) {
+				set "playerlist_dm::itemheight" "22" ;
+				set "playerlist_sp::itemheight" "22" ;
+				set "desktop::itemheight_stats" "22" ;
+			} else if ( ("gui::num_players" + "gui::num_spec_players") == 11 || ("gui::num_players" + "gui::num_spec_players") == 12 ) {
+				set "playerlist_dm::itemheight" "24" ;
+				set "playerlist_sp::itemheight" "24" ;
+				set "desktop::itemheight_stats" "24" ;
+			} else if ( ("gui::num_players" + "gui::num_spec_players") == 9 || ("gui::num_players" + "gui::num_spec_players") == 10 ) {
+				set "playerlist_dm::itemheight" "26" ;
+				set "playerlist_sp::itemheight" "26" ;
+				set "desktop::itemheight_stats" "26" ;
+			} else if ( ("gui::num_players" + "gui::num_spec_players") <= 8 ) {
+				set "playerlist_dm::itemheight" "38" ;
+				set "playerlist_sp::itemheight" "38" ;
+				set "desktop::itemheight_stats" "38" ;
+			}
+			
+			// tourney spec hides	
+			
+			if ( "gui::num_spec_players" > 0 ) {
+				set "p_playerlist_spectator::visible" "1";
+				set "p_spec::visible" "1";
+			} else {
+				set "p_playerlist_spectator::visible" "0";
+				set "p_spec::visible" "0";
+			}
+			
+			// tourney scoreboard
+			
+			if ( ( "gui::num_players" + "gui::num_spec_players" ) >= 15 ) {
+				set "sp_playerlist::itemheight" "18" ;
+				set "trn_playerlist::itemheight" "18" ;
+				set "desktop::itemheight" "18" ;
+			} else if ( ( "gui::num_players" + "gui::num_spec_players" ) == 13 || ( "gui::num_players" + "gui::num_spec_players" ) == 14 ) {
+				set "sp_playerlist::itemheight" "20" ;
+				set "trn_playerlist::itemheight" "20" ;
+				set "desktop::itemheight" "20" ;
+			} else if ( ( "gui::num_players" + "gui::num_spec_players" ) == 11 || ( "gui::num_players" + "gui::num_spec_players" ) == 12 ) {
+				set "sp_playerlist::itemheight" "24" ;
+				set "trn_playerlist::itemheight" "24" ;
+				set "desktop::itemheight" "24" ;
+			} else if ( ( "gui::num_players" + "gui::num_spec_players" ) == 9 || ( "gui::num_players" + "gui::num_spec_players" ) == 10 ) {
+				set "sp_playerlist::itemheight" "29" ;
+				set "trn_playerlist::itemheight" "29" ;
+				set "desktop::itemheight" "29" ;
+			} else if ( ( "gui::num_players" + "gui::num_spec_players" ) <= 8 ) {
+				set "sp_playerlist::itemheight" "36" ;
+				set "trn_playerlist::itemheight" "36" ;
+				set "desktop::itemheight" "36" ;
+			} 
+		}
+	}
+
+	windowDef grad
+	{
+		rect	-8,-22,660,515
+		visible	1
+		background	"gfx/guis/mainmenu/scoregrad2"
+		matcolor	0,0,0,0.9
+	}
+	windowDef p_tabs
+	{
+		rect	0,0,640,480
+		visible	1
+		windowDef summ_tab
+		{
+			rect	78,22,483,57
+			visible	1
+			background	"gfx/guis/mainmenu/ctrls_tab1"
+			matcolor	1,1,1,0.4
+		}
+		windowDef tab_summary
+		{
+			rect	85,26,132,22
+			visible	1
+			forecolor	0.890,0.537,0,1
+			text	"#str_200282"
+			textscale	0.29
+			font	"fonts/marine"
+			textspacing	-1
+			textstyle	1
+			textalign	1
+		}
+		windowDef tab_stats
+		{
+			rect	244,26,132,22
+			visible	1
+			forecolor	1,1,1,0.8
+			text	"#str_200283"
+			textscale	0.28
+			font	"fonts/marine"
+			textspacing	-1
+			textstyle	1
+			textalign	1
+		}
+		windowDef tab_score
+		{
+			rect	395,26,132,22
+			visible	1
+			forecolor	1,1,1,0.8
+			text	"#str_200284"
+			textscale	0.28
+			font	"fonts/marine"
+			textspacing	-1
+			textstyle	1
+			textalign	1
+		}
+	}
+	windowDef p_summary
+	{
+		rect	0,0,640,480
+		visible	1
+		windowDef summ_list_nonteam
+		{
+			rect	0,0,640,480
+			visible	( "gui::gametype" <= 2 )
+			windowDef summary_horizline
+			{
+				rect	94,64,446,6
+				visible	1
+				background	"gfx/guis/mainmenu/horiz_line2"
+				matcolor	1,1,1,.2
+			}
+			windowDef summary_name
+			{
+				rect	93,54,195,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200242"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef summary_clan
+			{
+				rect	281,54,115,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200256"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef summary_accuracy
+			{
+				rect	431,54,109,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200324"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+				textalign	2
+			}
+			windowDef summary_score
+			{
+				rect	396,54,56,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200198"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			listDef summary_list
+			{
+				rect	94,64,446,228
+				forecolor	1,1,1,1
+				listname	summary_names
+				font	"fonts/lowpixel"
+				textscale	.22
+				tabstops	"0,186,302,361,446"
+				tabaligns	"0,0,0,0,0,0,0,0,0,0,0"
+				itemheight	15
+				visible	1
+				textstyle	1
+				backgroundHover	"gfx/guis/mainmenu/bg_line2"
+				backgroundFocus	"gfx/guis/mainmenu/bg_hover2"
+				backgroundLine	"gfx/guis/mainmenu/bg_line2"
+				backgroundGreyed	"gfx/guis/mainmenu/bg_grey2"
+			}
+		}
+		windowDef summ_strogg
+		{
+			rect	93,53,448,118
+			visible	( "gui::gametype" >= 3 )
+			windowDef summ_strogg_header
+			{
+				rect	0,0,448,24
+				visible	1
+				background	"gfx/guis/mainmenu/scoreheader"
+				matcolor	1,0.482,0.0156,1
+			}
+			windowDef summ_strogg_teamname
+			{
+				rect	9,1,377,21
+				visible	1
+				forecolor	1,1,1,1
+				text	""
+				textscale	.31
+				font	"fonts/lowpixel"
+			}
+			windowDef summ_strogg_teamscore
+			{
+				rect	395,1,51,21
+				visible	1
+				forecolor	1,1,1,1
+				text	"gui::strogg_score"
+				textscale	0.31
+				font	"fonts/lowpixel"
+				textalign	2
+			}
+			windowDef summ_strogg_horizline
+			{
+				rect	1,32,446,6
+				visible	1
+				background	"gfx/guis/mainmenu/horiz_line2"
+				matcolor	1,1,1,.2
+			}
+			windowDef summ_strogg_name
+			{
+				rect	0,22,195,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200242"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef summ_strogg_clan
+			{
+				rect	188,22,115,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200256"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef summ_strogg_accuracy
+			{
+				rect	338,22,109,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200324"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+				textalign	2
+			}
+			windowDef summ_strogg_score
+			{
+				rect	303,22,56,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200198"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			listDef summ_strogg_list
+			{
+				rect	1,32,446,84
+				forecolor	1,1,1,1
+				listname	summary_strogg_names
+				font	"fonts/lowpixel"
+				textscale	.22
+				tabstops	"0,186,302,361,446"
+				tabaligns	"0,0,0,0,0,0,0,0,0,0,0"
+				itemheight	16
+				visible	1
+				textstyle	1
+				backgroundHover	"gfx/guis/mainmenu/bg_line2"
+				backgroundFocus	"gfx/guis/mainmenu/bg_hover2"
+				backgroundLine	"gfx/guis/mainmenu/bg_line2"
+				backgroundGreyed	"gfx/guis/mainmenu/bg_grey2"
+			}
+		}
+		windowDef summ_marine
+		{
+			rect	93,53,448,118
+			visible	( "gui::gametype" >= 3 )
+			windowDef summ_marine_header
+			{
+				rect	0,0,448,24
+				visible	1
+				background	"gfx/guis/mainmenu/scoreheader"
+				matcolor	0.415,0.643,0.168,1
+			}
+			windowDef summ_marine_teamname
+			{
+				rect	9,1,377,21
+				visible	1
+				forecolor	1,1,1,1
+				text	""
+				textscale	.31
+				font	"fonts/lowpixel"
+			}
+			windowDef summ_marine_teamscore
+			{
+				rect	395,1,51,21
+				visible	1
+				forecolor	1,1,1,1
+				text	"gui::marine_score"
+				textscale	0.31
+				font	"fonts/lowpixel"
+				textalign	2
+			}
+			windowDef summ_marine_horizline
+			{
+				rect	1,32,446,6
+				visible	1
+				background	"gfx/guis/mainmenu/horiz_line2"
+				matcolor	1,1,1,.2
+			}
+			windowDef summ_marine_name
+			{
+				rect	0,22,195,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200242"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef summ_marine_clan
+			{
+				rect	188,22,115,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200256"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef summ_marine_accuracy
+			{
+				rect	338,22,109,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200324"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+				textalign	2
+			}
+			windowDef summ_marine_score
+			{
+				rect	303,22,56,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200198"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			listDef summ_marine_list
+			{
+				rect	1,32,446,84
+				forecolor	1,1,1,1
+				listname	summary_marine_names
+				font	"fonts/lowpixel"
+				textscale	.22
+				tabstops	"0,186,302,361,446"
+				tabaligns	"0,0,0,0,0,0,0,0,0,0,0"
+				itemheight	16
+				visible	1
+				textstyle	1
+				backgroundHover	"gfx/guis/mainmenu/bg_line2"
+				backgroundFocus	"gfx/guis/mainmenu/bg_hover2"
+				backgroundLine	"gfx/guis/mainmenu/bg_line2"
+				backgroundGreyed	"gfx/guis/mainmenu/bg_grey2"
+			}
+		}
+		windowDef t_chat_history
+		{
+			rect	92,291,385,19
+			visible	1
+			forecolor	1,1,1,0.4
+			text	"#str_200196"
+			textscale	.24
+			font	"fonts/lowpixel"
+			textspacing	-1
+		}
+		windowDef chatbox_top
+		{
+			rect	93,307,446,14
+			visible	1
+			matcolor	1,1,1,0.4
+			background	"gfx/guis/mainmenu/chatbox_edge"
+		}
+		windowDef chatbox_mid
+		{
+			rect	93,321,446,74
+			visible	1
+			matcolor	1,1,1,0.4
+			background	"gfx/guis/mainmenu/chatbox_mid"
+		}
+		windowDef chatbox_btm
+		{
+			rect	93,395,446,14
+			visible	1
+			matcolor	1,1,1,0.4
+			background	"gfx/guis/mainmenu/chatbox_edge"
+			matscaley	-1
+		}
+		editDef chat_history
+		{
+			rect	97,312,440,94
+			visible	1
+			wrap	1
+			readonly	1
+			forcescroll	1
+			chatWindow	1
+			text	"gui::chat"
+			textscale	.22
+			font	"fonts/lowpixel"
+			matcolor	1,1,1,0.5
+		}
+		windowDef t_chat_say
+		{
+			rect	96,411,20,28
+			visible	1
+			forecolor	1,1,1,0.4
+			text	">"
+			textscale	.42
+			font	"fonts/lowpixel"
+			textspacing	-1
+		}
+		windowDef chatenter_btm
+		{
+			rect	93,427,446,14
+			visible	1
+			matcolor	1,1,1,0.4
+			background	"gfx/guis/mainmenu/chatbox_edge"
+			matscaley	-1
+		}
+		windowDef chatenter_top
+		{
+			rect	93,413,446,14
+			visible	1
+			matcolor	1,1,1,0.4
+			background	"gfx/guis/mainmenu/chatbox_edge"
+		}
+		editDef chat_enter
+		{
+			rect	111,418,422,19
+			visible	1
+			text	"gui::chattext"
+			textscale	.25
+			font	"fonts/lowpixel"
+
+			onEnterRelease {
+				set "cmd" "chatmessage" ;
+			}
+
+		}
+	}
+	windowDef p_scoreboard
+	{
+		rect	0,-20,640,480
+		visible	0
+		windowDef teams
+		{
+			rect	83,90,477,326
+			visible	1
+		}
+		windowDef p_strogg
+		{
+			rect	83,"desktop::score_strogg_offset",477,351
+			visible	0
+			windowDef s_header
+			{
+				rect	0,2,508,24
+				visible	1
+				background	"gfx/guis/mainmenu/scoreheader"
+				matcolor	1,0.482,0.0156,1
+			}
+			windowDef s_sep1
+			{
+				rect	12,32,446,6
+				visible	1
+				background	"gfx/guis/mainmenu/horiz_line2"
+				matcolor	1,1,1,.1
+			}
+			listDef s_playerlist
+			{
+				rect	10,31,455,("desktop::itemheight" * "gui::num_strogg_players" + 6)
+				forecolor	1,1,1,1
+				listname	team_1_scores
+				font	"fonts/lowpixel"
+				textscale	.22
+				tabstops	"0,16,32,32,34,227,305,350,387,436,448"
+				tabaligns	"0,0,0,0,0,0,0,0,2,0"
+				tabTextScales	".28,.28,.28,.28"
+				itemheight	15
+				visible	1
+				textstyle	1
+				backgroundHover	"gfx/guis/mainmenu/bg_line2"
+				backgroundFocus	"gfx/guis/mainmenu/bg_hover2"
+				backgroundLine	"gfx/guis/mainmenu/bg_line2"
+				backgroundGreyed	"gfx/guis/mainmenu/bg_grey2"
+			}
+			windowDef s_logo
+			{
+				rect	19,6,16,16
+				visible	1
+				background	"gfx/guis/mainmenu/strogglogo"
+				matcolor	1,1,1,1
+			}
+			windowDef s_teamname
+			{
+				rect	40,2,356,24
+				visible	1
+				forecolor	1,1,1,1
+				text	"#str_200199"
+				textscale	.31
+				font	"fonts/lowpixel"
+			}
+			windowDef s_teamscore
+			{
+				rect	405,2,51,24
+				visible	1
+				forecolor	1,1,1,1
+				text	"gui::strogg_score"
+				textscale	0.31
+				font	"fonts/lowpixel"
+				textalign	2
+			}
+			windowDef s_name
+			{
+				rect	44,23,240,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200242"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef s_clan
+			{
+				rect	237,23,81,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200256"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef s_kills
+			{
+				rect	360,23,40,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200201"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef s_score
+			{
+				rect	315,23,46,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200198"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef s_time
+			{
+				rect	398,23,38,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200244"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef s_ping
+			{
+				rect	422,23,33,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200037"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+				textalign	2
+			}
+		}
+		windowDef p_strogg_tdm
+		{
+			rect	83,"desktop::score_strogg_offset",477,351
+			visible	0
+			windowDef s_tdm_header
+			{
+				rect	0,2,508,24
+				visible	1
+				background	"gfx/guis/mainmenu/scoreheader"
+				matcolor	1,0.482,0.0156,1
+			}
+			windowDef s_tdm_sep1
+			{
+				rect	12,32,446,6
+				visible	1
+				background	"gfx/guis/mainmenu/horiz_line2"
+				matcolor	1,1,1,.1
+			}
+			listDef s_tdm_playerlist
+			{
+				rect	10,31,455,("desktop::itemheight" * "gui::num_strogg_players" + 6)
+				forecolor	1,1,1,1
+				listname	team_1_scores
+				font	"fonts/lowpixel"
+				textscale	.22
+				tabstops	"0,16,38,38,227,342,387,418,448"
+				tabaligns	"0,0,0,0,0,0,0,2,0"
+				tabTextScales	".28,.28,.28"
+				itemheight	15
+				visible	1
+				textstyle	1
+				backgroundHover	"gfx/guis/mainmenu/bg_line2"
+				backgroundFocus	"gfx/guis/mainmenu/bg_hover2"
+				backgroundLine	"gfx/guis/mainmenu/bg_line2"
+				backgroundGreyed	"gfx/guis/mainmenu/bg_grey2"
+			}
+			windowDef s_tdm_logo
+			{
+				rect	19,6,16,16
+				visible	1
+				background	"gfx/guis/mainmenu/strogglogo"
+				matcolor	1,1,1,1
+			}
+			windowDef s_tdm_teamname
+			{
+				rect	40,2,356,24
+				visible	1
+				forecolor	1,1,1,1
+				text	"#str_200199"
+				textscale	.31
+				font	"fonts/lowpixel"
+			}
+			windowDef s_tdm_teamscore
+			{
+				rect	405,2,51,24
+				visible	1
+				forecolor	1,1,1,1
+				text	"gui::strogg_score"
+				textscale	0.31
+				font	"fonts/lowpixel"
+				textalign	2
+			}
+			windowDef s_tdm_name
+			{
+				rect	47,23,240,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200242"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef s_tdm_clan
+			{
+				rect	237,23,81,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200256"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef s_tdm_score
+			{
+				rect	353,23,46,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200198"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef s_tdm_time
+			{
+				rect	398,23,38,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200244"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef s_tdm_ping
+			{
+				rect	422,23,33,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200037"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+				textalign	2
+			}
+		}
+		windowDef p_marine
+		{
+			rect	83,"desktop::score_marine_offset",477,351
+			visible	0
+			windowDef m_header
+			{
+				rect	0,2,508,24
+				visible	1
+				background	"gfx/guis/mainmenu/scoreheader"
+				matcolor	0.415,0.643,0.168,1
+			}
+			windowDef m_sep1
+			{
+				rect	12,32,446,6
+				visible	1
+				background	"gfx/guis/mainmenu/horiz_line2"
+				matcolor	1,1,1,.1
+			}
+			listDef m_playerlist
+			{
+				rect	10,31,455,("desktop::itemheight" * "gui::num_marine_players" + 6)
+				forecolor	1,1,1,1
+				listname	team_0_scores
+				font	"fonts/lowpixel"
+				textscale	.22
+				tabstops	"0,16,32,32,34,227,305,350,387,436,448"
+				tabaligns	"0,0,0,0,0,0,0,0,2,0"
+				tabTextScales	".28,.28,.28,.28"
+				itemheight	15
+				visible	1
+				textstyle	1
+				backgroundHover	"gfx/guis/mainmenu/bg_line2"
+				backgroundFocus	"gfx/guis/mainmenu/bg_hover2"
+				backgroundLine	"gfx/guis/mainmenu/bg_line2"
+				backgroundGreyed	"gfx/guis/mainmenu/bg_grey2"
+			}
+			windowDef m_logo
+			{
+				rect	19,6,16,16
+				visible	1
+				background	"gfx/guis/mainmenu/marinelogo"
+				matcolor	1,1,1,1
+			}
+			windowDef m_teamname
+			{
+				rect	40,2,356,24
+				visible	1
+				forecolor	1,1,1,1
+				text	"#str_200917"
+				textscale	.31
+				font	"fonts/lowpixel"
+			}
+			windowDef m_teamscore
+			{
+				rect	405,2,51,24
+				visible	1
+				forecolor	1,1,1,1
+				text	"gui::marine_score"
+				textscale	0.31
+				font	"fonts/lowpixel"
+				textalign	2
+			}
+			windowDef m_name
+			{
+				rect	44,23,240,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200242"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef m_clan
+			{
+				rect	237,23,81,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200256"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef m_kills
+			{
+				rect	360,23,40,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200201"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef m_score
+			{
+				rect	315,23,46,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200198"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef m_time
+			{
+				rect	398,23,38,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200244"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef m_ping
+			{
+				rect	422,23,33,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200037"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+				textalign	2
+			}
+		}
+		windowDef p_marine_tdm
+		{
+			rect	83,"desktop::score_marine_offset",477,351
+			visible	0
+			windowDef m_tdm_header
+			{
+				rect	0,2,508,24
+				visible	1
+				background	"gfx/guis/mainmenu/scoreheader"
+				matcolor	0.415,0.643,0.168,1
+			}
+			windowDef m_tdm_sep1
+			{
+				rect	12,32,446,6
+				visible	1
+				background	"gfx/guis/mainmenu/horiz_line2"
+				matcolor	1,1,1,.1
+			}
+			listDef m_tdm_playerlist
+			{
+				rect	10,31,455,("desktop::itemheight" * "gui::num_marine_players" + 6)
+				forecolor	1,1,1,1
+				listname	team_0_scores
+				font	"fonts/lowpixel"
+				textscale	.22
+				tabstops	"0,16,38,38,227,342,387,418,448"
+				tabaligns	"0,0,0,0,0,0,0,2,0"
+				tabTextScales	".28,.28,.28"
+				itemheight	15
+				visible	1
+				textstyle	1
+				backgroundHover	"gfx/guis/mainmenu/bg_line2"
+				backgroundFocus	"gfx/guis/mainmenu/bg_hover2"
+				backgroundLine	"gfx/guis/mainmenu/bg_line2"
+				backgroundGreyed	"gfx/guis/mainmenu/bg_grey2"
+			}
+			windowDef m_tdm_logo
+			{
+				rect	19,6,16,16
+				visible	1
+				background	"gfx/guis/mainmenu/marinelogo"
+				matcolor	1,1,1,1
+			}
+			windowDef m_tdm_teamname
+			{
+				rect	40,2,356,24
+				visible	1
+				forecolor	1,1,1,1
+				text	"#str_200917"
+				textscale	.31
+				font	"fonts/lowpixel"
+			}
+			windowDef m_tdm_teamscore
+			{
+				rect	405,2,51,24
+				visible	1
+				forecolor	1,1,1,1
+				text	"gui::marine_score"
+				textscale	0.31
+				font	"fonts/lowpixel"
+				textalign	2
+			}
+			windowDef m_tdm_name
+			{
+				rect	47,23,240,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200242"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef m_tdm_clan
+			{
+				rect	237,23,81,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200256"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef m_tdm_score
+			{
+				rect	353,23,46,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200198"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef m_tdm_time
+			{
+				rect	398,23,38,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200244"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef m_tdm_ping
+			{
+				rect	422,23,33,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200037"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+				textalign	2
+			}
+		}
+		windowDef p_spec
+		{
+			rect	83,"desktop::score_spec_offset",477,351
+			visible	0
+			windowDef sp_header
+			{
+				rect	0,2,508,24
+				visible	1
+				background	"gfx/guis/mainmenu/scoreheader"
+				matcolor	.6,.6,.6,1
+			}
+			windowDef sp_sep1
+			{
+				rect	12,32,446,6
+				visible	1
+				background	"gfx/guis/mainmenu/horiz_line2"
+				matcolor	1,1,1,.1
+			}
+			listDef sp_playerlist
+			{
+				rect	10,31,455,("desktop::itemheight" * "gui::num_spec_players" + 6)
+				forecolor	1,1,1,1
+				listname	spectator_scores
+				font	"fonts/lowpixel"
+				textscale	.22
+				tabstops	"0,16,38,227,342,387,418,448"
+				tabaligns	"0,0,0,0,0,0,2,0"
+				tabTextScales	".28,.28"
+				itemheight	15
+				visible	1
+				textstyle	1
+				backgroundHover	"gfx/guis/mainmenu/bg_line2"
+				backgroundFocus	"gfx/guis/mainmenu/bg_hover2"
+				backgroundLine	"gfx/guis/mainmenu/bg_line2"
+				backgroundGreyed	"gfx/guis/mainmenu/bg_grey2"
+			}
+			windowDef sp_logo
+			{
+				rect	19,6,16,16
+				visible	1
+				background	"gfx/guis/mainmenu/quakelogo"
+				matcolor	1,1,1,1
+			}
+			windowDef sp_teamname
+			{
+				rect	40,2,356,24
+				visible	1
+				forecolor	1,1,1,1
+				text	"#str_200281"
+				textscale	.31
+				font	"fonts/lowpixel"
+			}
+			windowDef sp_name
+			{
+				rect	44,25,240,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200242"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef sp_clan
+			{
+				rect	237,23,81,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200256"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef sp_time
+			{
+				rect	398,23,38,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200244"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef sp_ping
+			{
+				rect	422,23,33,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200037"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+				textalign	2
+			}
+		}
+		windowDef p_dm
+		{
+			rect	83,79,477,351
+			visible	0
+			windowDef dm_header
+			{
+				rect	0,2,508,24
+				visible	1
+				background	"gfx/guis/mainmenu/scoreheader"
+				matcolor	0.545,0.588,0.294,1
+			}
+			windowDef dm_sep1
+			{
+				rect	12,32,446,6
+				visible	1
+				background	"gfx/guis/mainmenu/horiz_line2"
+				matcolor	1,1,1,.1
+			}
+			listDef dm_playerlist
+			{
+				rect	10,31,455,("desktop::itemheight" * "gui::num_players" + 6)
+				forecolor	1,1,1,1
+				listname	scores
+				font	"fonts/lowpixel"
+				textscale	.22
+				tabstops	"0,16,38,38,227,342,387,418,448"
+				tabaligns	"0,0,0,0,0,0,0,2,0"
+				tabTextScales	".28,.28,.28"
+				itemheight	15
+				visible	("gui::gametype" != 2)
+				textstyle	1
+				backgroundHover	"gfx/guis/mainmenu/bg_line2"
+				backgroundFocus	"gfx/guis/mainmenu/bg_hover2"
+				backgroundLine	"gfx/guis/mainmenu/bg_line2"
+				backgroundGreyed	"gfx/guis/mainmenu/bg_grey2"
+			}
+			windowDef dm_logo
+			{
+				rect	19,6,16,16
+				visible	1
+				background	"gfx/guis/mainmenu/quakelogo"
+				matcolor	1,1,1,1
+			}
+			windowDef dm_teamname
+			{
+				rect	40,2,356,24
+				visible	1
+				forecolor	1,1,1,1
+				text	"#str_200038"
+				textscale	.31
+				font	"fonts/lowpixel"
+			}
+			windowDef dm_name
+			{
+				rect	47,23,240,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200242"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef dm_clan
+			{
+				rect	237,23,81,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200256"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef dm_score
+			{
+				rect	353,23,30,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200198"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef dm_time
+			{
+				rect	398,23,38,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200244"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef dm_ping
+			{
+				rect	422,23,33,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200037"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+				textalign	2
+			}
+		}
+		windowDef p_trn
+		{
+			rect	83,79,477,351
+			visible	0
+			windowDef trn_header
+			{
+				rect	0,2,508,24
+				visible	1
+				background	"gfx/guis/mainmenu/scoreheader"
+				matcolor	0.545,0.588,0.294,1
+			}
+			windowDef trn_sep1
+			{
+				rect	12,32,446,6
+				visible	1
+				background	"gfx/guis/mainmenu/horiz_line2"
+				matcolor	1,1,1,.1
+			}
+			listDef trn_playerlist
+			{
+				rect	10,31,455,("desktop::itemheight" * "gui::num_players" + 6)
+				forecolor	1,1,1,1
+				listname	scores
+				font	"fonts/lowpixel"
+				textscale	.22
+				tabstops	"0,16,38,38,227,375,410,448,448"
+				tabaligns	"0,0,0,0,0,0,2,2,0"
+				tabTextScales	".28,.28,.28"
+				itemheight	15
+				visible	1
+				textstyle	1
+				backgroundHover	"gfx/guis/mainmenu/bg_line2"
+				backgroundFocus	"gfx/guis/mainmenu/bg_hover2"
+				backgroundLine	"gfx/guis/mainmenu/bg_line2"
+				backgroundGreyed	"gfx/guis/mainmenu/bg_grey2"
+			}
+			windowDef trn_logo
+			{
+				rect	19,6,16,16
+				visible	1
+				background	"gfx/guis/mainmenu/quakelogo"
+				matcolor	1,1,1,1
+			}
+			windowDef trn_teamname
+			{
+				rect	40,2,356,24
+				visible	1
+				forecolor	1,1,1,1
+				text	"#str_200038"
+				textscale	.31
+				font	"fonts/lowpixel"
+			}
+			windowDef trn_name
+			{
+				rect	47,23,240,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200242"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef trn_clan
+			{
+				rect	237,23,81,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200256"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef trn_score
+			{
+				rect	386,23,30,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200198"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+			windowDef trn_ping
+			{
+				rect	436,23,38,12
+				visible	1
+				forecolor	1,1,1,0.4
+				text	"#str_200037"
+				textscale	0.16
+				font	"fonts/lowpixel"
+				textspacing	-1
+				textstyle	1
+			}
+		}		
+		windowDef servername
+		{
+			rect	98,67,314,14
+			visible	1
+			forecolor	1,1,0.552,1
+			text	"gui::servername"
+			textscale	0.2
+			font	"fonts/lowpixel"
+			textspacing	-1
+			textstyle	1
+		}
+		windowDef serverip
+		{
+			rect	225,67,314,14
+			visible	1
+			forecolor	1,1,0.552,1
+			text	"gui::serverip"
+			textscale	0.2
+			font	"fonts/lowpixel"
+			textspacing	-1
+			textalign	2
+			textstyle	1
+		}
+		windowDef btm_horizline
+		{
+			rect	95,442,446,6
+			visible	1
+			background	"gfx/guis/mainmenu/horiz_line2"
+			matcolor	1,1,1,.1
+		}
+		windowDef gametype
+		{
+			rect	94,446,227,14
+			visible	1
+			forecolor	1,1,0.552,1
+			text	"gui::servergametype"
+			textscale	0.22
+			font	"fonts/lowpixel"
+			textspacing	-1
+			textstyle	1
+		}
+		windowDef capturelimit
+		{
+			rect	353,446,186,14
+			visible	1
+			forecolor	1,1,0.552,1
+			text	"gui::serverlimit"
+			textscale	0.22
+			font	"fonts/lowpixel"
+			textspacing	-1
+			textalign	2
+			textstyle	1
+		}
+		windowDef timelimit
+		{
+			rect	353,458,186,14
+			visible	1
+			forecolor	1,1,0.549,1
+			text	"gui::servertimelimit"
+			textscale	0.22
+			font	"fonts/lowpixel"
+			textspacing	-1
+			textalign	2
+			textstyle	1
+		}
+		windowDef mapname
+		{
+			rect	94,458,227,14
+			visible	1
+			forecolor	1,1,0.552,1
+			text	"gui::servermap"
+			textscale	0.2
+			font	"fonts/lowpixel"
+			textspacing	-1
+			textstyle	1
+		}
+	}
+	windowDef p_stats
+	{
+		rect	0,0,640,480
+		visible	0
+		windowDef players_vertline
+		{
+			rect	273,57,6,391
+			visible	1
+			background	"gfx/guis/mainmenu/vert_line"
+			matcolor	1,1,1,.2
+		}
+		windowDef p_playerlist
+		{
+			rect	76,62,196,377
+			visible	1
+			windowDef p_playerlist_marine
+			{
+				rect	0,"desktop::stat_marine_offset",196,377
+				visible	1
+				windowDef players_t_m_name
+				{
+					rect	16,5,148,13
+					text	"#str_200197"
+					textscale	0.2
+					font	"fonts/lowpixel"
+					visible	1
+					forecolor	0.415,0.643,0.168,1
+					textstyle	1
+				}
+				windowDef players_t_m_score1
+				{
+					rect	117,5,71,13
+					text	"#str_200198"
+					textscale	0.2
+					font	"fonts/lowpixel"
+					visible	1
+					forecolor	0.415,0.643,0.168,1
+					textstyle	1
+					textalign	2
+				}
+				windowDef playerlist_m_horizline
+				{
+					rect	18,17,170,6
+					visible	1
+					background	"gfx/guis/mainmenu/horiz_line2"
+					matcolor	1,1,1,.2
+				}
+				listDef playerlist_m
+				{
+					rect	19,17,179,("desktop::itemheight_stats" * "gui::num_marine_players" + 6)
+					forecolor	1,1,1,1
+					listname	team_1_names
+					font	"fonts/lowpixel"
+					textscale	.22
+					tabstops	"0,14,29,133,179"
+					tabaligns	"0,0,0,2"
+					tabTextScales	".25,.25"
+					itemheight	15
+					visible	1
+					textstyle	1
+					backgroundHover	"gfx/guis/mainmenu/bg_line2"
+					backgroundFocus	"gfx/guis/mainmenu/bg_hover2"
+					backgroundLine	"gfx/guis/mainmenu/bg_line2"
+					backgroundGreyed	"gfx/guis/mainmenu/bg_grey2"
+
+					onAction {
+						set "cmd" "inGameStats marine" ;
+					}
+
+				}
+			}
+			windowDef p_playerlist_strogg
+			{
+				rect	0,"desktop::stat_strogg_offset",196,377
+				visible	1
+				windowDef players_t_s_name
+				{
+					rect	16,5,148,13
+					text	"#str_200199"
+					textscale	0.2
+					font	"fonts/lowpixel"
+					visible	1
+					forecolor	1,0.482,0.0156,1
+					textstyle	1
+				}
+				windowDef players_t_s_score1
+				{
+					rect	117,5,71,13
+					text	"#str_200198"
+					textscale	0.2
+					font	"fonts/lowpixel"
+					visible	1
+					forecolor	1,0.482,0.0156,1
+					textstyle	1
+					textalign	2
+				}
+				windowDef playerlist_s_horizline
+				{
+					rect	18,17,170,6
+					visible	1
+					background	"gfx/guis/mainmenu/horiz_line2"
+					matcolor	1,1,1,.2
+				}
+				listDef playerlist_s
+				{
+					rect	19,17,179,("desktop::itemheight_stats" * "gui::num_strogg_players" + 6)
+					forecolor	1,1,1,1
+					listname	team_2_names
+					font	"fonts/lowpixel"
+					textscale	.22
+					tabstops	"0,14,29,133,179"
+					tabaligns	"0,0,0,2"
+					tabTextScales	".25,.25"
+					itemheight	15
+					visible	1
+					textstyle	1
+					backgroundHover	"gfx/guis/mainmenu/bg_line2"
+					backgroundFocus	"gfx/guis/mainmenu/bg_hover2"
+					backgroundLine	"gfx/guis/mainmenu/bg_line2"
+					backgroundGreyed	"gfx/guis/mainmenu/bg_grey2"
+
+					onAction {
+						set "cmd" "inGameStats strogg" ;
+					}
+
+				}
+			}
+			windowDef p_playerlist_spectator
+			{
+				rect	0,"desktop::stat_spec_offset",196,377
+				visible	1
+				windowDef players_t_sp_name
+				{
+					rect	16,5,148,13
+					text	"#str_200200"
+					textscale	0.2
+					font	"fonts/lowpixel"
+					visible	1
+					forecolor	0.5,0.5,0.5,1
+					textstyle	1
+				}
+				windowDef players_t_sp_score1
+				{
+					rect	117,5,71,13
+					text	"#str_200198"
+					textscale	0.2
+					font	"fonts/lowpixel"
+					visible	1
+					forecolor	0.5,0.5,0.5,1
+					textstyle	1
+					textalign	2
+				}
+				windowDef playerlist_sp_horizline
+				{
+					rect	18,17,170,6
+					visible	1
+					background	"gfx/guis/mainmenu/horiz_line2"
+					matcolor	1,1,1,.2
+				}
+				listDef playerlist_sp
+				{
+					rect	19,15,179,("desktop::itemheight_stats" * "gui::num_spec_players" + 6)
+					forecolor	1,1,1,1
+					listname	spec_names
+					font	"fonts/lowpixel"
+					textscale	.22
+					tabstops	"0,14,29,133,179"
+					tabaligns	"0,0,0,2"
+					tabTextScales	".25,.25"
+					itemheight	15
+					visible	1
+					textstyle	1
+					backgroundHover	"gfx/guis/mainmenu/bg_line2"
+					backgroundFocus	"gfx/guis/mainmenu/bg_hover2"
+					backgroundLine	"gfx/guis/mainmenu/bg_line2"
+					backgroundGreyed	"gfx/guis/mainmenu/bg_grey2"
+
+					onAction {
+						set "cmd" "inGameStats spectator" ;
+					}
+
+				}
+			}
+			windowDef p_playerlist_dm
+			{
+				rect	0,0,196,377
+				visible	1
+				windowDef players_t_dm_name
+				{
+					rect	16,5,148,13
+					text	"#str_200038"
+					textscale	0.2
+					font	"fonts/lowpixel"
+					visible	1
+					forecolor	1,1,1,0.8
+					textstyle	1
+				}
+				windowDef players_t_dm_score1
+				{
+					rect	117,5,71,13
+					text	"#str_200198"
+					textscale	0.2
+					font	"fonts/lowpixel"
+					visible	1
+					forecolor	1,1,1,0.8
+					textstyle	1
+					textalign	2
+				}
+				windowDef playerlist_dm_horizline
+				{
+					rect	18,17,170,6
+					visible	1
+					background	"gfx/guis/mainmenu/horiz_line2"
+					matcolor	1,1,1,.2
+				}
+				listDef playerlist_dm
+				{
+					rect	19,15,179,("desktop::itemheight_stats" * "gui::num_players" + 6)
+					forecolor	1,1,1,1
+					listname	dm_names
+					font	"fonts/lowpixel"
+					textscale	.22
+					tabstops	"0,14,29,133,179"
+					tabaligns	"0,0,0,2"
+					tabTextScales	".25,.25"
+					itemheight	15
+					visible	1
+					textstyle	1
+					backgroundHover	"gfx/guis/mainmenu/bg_line2"
+					backgroundFocus	"gfx/guis/mainmenu/bg_hover2"
+					backgroundLine	"gfx/guis/mainmenu/bg_line2"
+					backgroundGreyed	"gfx/guis/mainmenu/bg_grey2"
+
+					onAction {
+						set "cmd" "inGameStats dm" ;
+					}
+
+				}
+			}
+		}
+		windowDef p_players_stats
+		{
+			rect	269,0,362,480
+			visible	1
+			windowDef players_t_kills
+			{
+				rect	13,67,53,13
+				text	"#str_200201"
+				textscale	0.2
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,1,0.8
+				textstyle	1
+			}
+			windowDef players_t_deaths
+			{
+				rect	116,67,53,13
+				text	"#str_200202"
+				textscale	0.2
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,1,0.8
+				textstyle	1
+			}
+			windowDef players_t_score2
+			{
+				rect	223,67,48,13
+				text	"#str_200198"
+				textscale	0.2
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,1,0.8
+				textstyle	1
+				textalign	2
+			}
+			windowDef players_kills
+			{
+				rect	13,79,62,32
+				text	"gui::stat_frags"
+				textscale	0.5
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,0.552,1
+				textstyle	1
+			}
+			windowDef players_deaths
+			{
+				rect	116,79,62,32
+				text	"gui::stat_deaths"
+				textscale	0.5
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,0.552,1
+				textstyle	1
+			}
+			windowDef players_score
+			{
+				rect	209,79,62,32
+				text	"gui::stat_score"
+				textscale	0.5
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,0.549,1
+				textstyle	1
+				textalign	2
+			}
+			windowDef players_t_acc
+			{
+				rect	13,153,98,13
+				text	"#str_200203"
+				textscale	0.2
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,1,0.8
+				textstyle	1
+			}
+			windowDef players_t_awards
+			{
+				rect	13,283,98,13
+				text	"#str_200204"
+				textscale	0.2
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,1,0.8
+				textstyle	1
+			}
+			windowDef players_stats_horizline1
+			{
+				rect	14,79,258,5
+				visible	1
+				background	"gfx/guis/mainmenu/horiz_line2"
+				matcolor	1,1,1,.2
+			}
+			windowDef players_stats_horizline2
+			{
+				rect	14,166,258,5
+				visible	1
+				background	"gfx/guis/mainmenu/horiz_line2"
+				matcolor	1,1,1,.2
+			}
+			windowDef players_stats_horizline3
+			{
+				rect	14,296,257,5
+				visible	1
+				background	"gfx/guis/mainmenu/horiz_line2"
+				matcolor	1,1,1,.2
+			}
+			windowDef acc_mgun
+			{
+				rect	18,174,24,24
+				visible	1
+				background	"gfx/guis/hud/icons/item_machinegun_colored"
+				matcolor	1,1,1,1
+			}
+			windowDef acc_shotgun
+			{
+				rect	75,174,24,24
+				visible	1
+				background	"gfx/guis/hud/icons/item_shotgun_colored"
+				matcolor	1,1,1,1
+			}
+			windowDef acc_hblaster
+			{
+				rect	131,174,24,24
+				visible	1
+				background	"gfx/guis/hud/icons/item_hyperblaster_colored"
+				matcolor	1,1,1,1
+			}
+			windowDef acc_grenade
+			{
+				rect	186,174,24,24
+				visible	1
+				background	"gfx/guis/hud/icons/item_grenade_colored"
+				matcolor	1,1,1,1
+			}
+			windowDef acc_nailgun
+			{
+				rect	237,174,24,24
+				visible	1
+				background	"gfx/guis/hud/icons/item_nailgun_colored"
+				matcolor	1,1,1,1
+			}
+			windowDef acc_stat
+			{
+				rect	18,223,24,24
+				visible	1
+				background	"gfx/guis/hud/icons/item_rocket_colored"
+				matcolor	1,1,1,1
+			}
+			windowDef acc_railgun
+			{
+				rect	74,223,24,24
+				visible	1
+				background	"gfx/guis/hud/icons/item_railgun_colored"
+				matcolor	1,1,1,1
+			}
+			windowDef acc_lgun
+			{
+				rect	132,223,24,24
+				visible	1
+				background	"gfx/guis/hud/icons/item_lightning_colored"
+				matcolor	1,1,1,1
+			}
+			windowDef acc_dmg
+			{
+				rect	186,223,24,24
+				visible	1
+				background	"gfx/guis/hud/icons/item_darkmatter_colored"
+				matcolor	1,1,1,1
+			}
+			windowDef acc_napalmgun
+			{
+				rect	237,223,24,24
+				visible	1
+				background	"gfx/guis/hud/icons/item_fire_colored"
+				matcolor	1,1,1,1
+			}			
+			windowDef shotgun_pct
+			{
+				rect	4,196,53,16
+				text	"gui::stat_1_pct"
+				textscale	0.25
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,0.549,1
+				textstyle	1
+				textspacing	-1
+				textalign	1
+			}
+			windowDef mgun_pct
+			{
+				rect	60,196,53,16
+				text	"gui::stat_2_pct"
+				textscale	0.25
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,0.549,1
+				textstyle	1
+				textspacing	-1
+				textalign	1
+			}
+			windowDef hblaster_pct
+			{
+				rect	119,196,53,16
+				text	"gui::stat_3_pct"
+				textscale	0.25
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,0.549,1
+				textstyle	1
+				textspacing	-1
+				textalign	1
+			}
+			windowDef grenade_pct
+			{
+				rect	171,196,53,16
+				text	"gui::stat_4_pct"
+				textscale	0.25
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,0.549,1
+				textstyle	1
+				textspacing	-1
+				textalign	1
+			}
+			windowDef nailgun_pct
+			{
+				rect	223,196,53,16
+				text	"gui::stat_5_pct"
+				textscale	0.25
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,0.549,1
+				textstyle	1
+				textspacing	-1
+				textalign	1
+			}
+			windowDef rocket_pct
+			{
+				rect	4,247,53,16
+				text	"gui::stat_6_pct"
+				textscale	0.25
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,0.549,1
+				textstyle	1
+				textspacing	-1
+				textalign	1
+			}
+			windowDef railgun_pct
+			{
+				rect	60,247,53,16
+				text	"gui::stat_7_pct"
+				textscale	0.25
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,0.549,1
+				textstyle	1
+				textspacing	-1
+				textalign	1
+			}
+			windowDef lgun_pct
+			{
+				rect	119,247,53,16
+				text	"gui::stat_8_pct"
+				textscale	0.25
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,0.549,1
+				textstyle	1
+				textspacing	-1
+				textalign	1
+			}
+			windowDef dmg_pct
+			{
+				rect	171,247,53,16
+				text	"gui::stat_9_pct"
+				textscale	0.25
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,0.545,1
+				textstyle	1
+				textspacing	-1
+				textalign	1
+			}
+			windowDef napalmgun_pct
+			{
+				rect	223,247,53,16
+				text	"gui::stat_10_pct"
+				textscale	0.25
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,0.545,1
+				textstyle	1
+				textspacing	-1
+				textalign	1
+			}			
+			windowDef aw_excellent
+			{
+				rect	15,303,24,24
+				visible	1
+				background	"gfx/mp/awards/excellent"
+				matcolor	1,1,1,1
+			}
+			windowDef aw_impressive
+			{
+				rect	48,303,24,24
+				visible	1
+				background	"gfx/mp/awards/impressive"
+				matcolor	1,1,1,1
+			}
+			windowDef aw_humiliation
+			{
+				rect	81,303,24,24
+				visible	1
+				background	"gfx/mp/awards/humiliation"
+				matcolor	1,1,1,1
+			}
+			windowDef aw_comboKill
+			{
+				rect	114,303,24,24
+				visible	1
+				background	"gfx/mp/awards/combo_kill"
+				matcolor	1,1,1,1
+			}
+			windowDef aw_rampage
+			{
+				rect	147,303,24,24
+				visible	1
+				background	"gfx/mp/awards/rampage"
+				matcolor	1,1,1,1
+			}
+			windowDef aw_capture
+			{
+				rect	180,303,24,24
+				visible	"gui::ctf_awards"
+				background	"gfx/mp/awards/capture"
+				matcolor	1,1,1,1
+			}
+			windowDef aw_assist
+			{
+				rect	213,303,24,24
+				visible	"gui::ctf_awards"
+				background	"gfx/mp/awards/assist"
+				matcolor	1,1,1,1
+			}
+			windowDef aw_defense
+			{
+				rect	246,303,24,24
+				visible	"gui::ctf_awards"
+				background	"gfx/mp/awards/defense"
+				matcolor	1,1,1,1
+			}
+			windowDef excellent_num
+			{
+				rect	10,325,30,17
+				text	"gui::excellent"
+				textscale	0.25
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,0.541,1
+				textstyle	1
+				textspacing	-1
+				textalign	1
+			}
+			windowDef impressive_num
+			{
+				rect	43,325,30,17
+				text	"gui::impressive"
+				textscale	0.24
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,0.541,1
+				textstyle	1
+				textspacing	-1
+				textalign	1
+			}
+			windowDef humiliation_num
+			{
+				rect	76,325,30,17
+				text	"gui::humiliation"
+				textscale	0.24
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,0.541,1
+				textstyle	1
+				textspacing	-1
+				textalign	1
+			}
+			windowDef comboKill_num
+			{
+				rect	109,325,30,17
+				text	"gui::combo_kill"
+				textscale	0.24
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,0.541,1
+				textstyle	1
+				textspacing	-1
+				textalign	1
+			}
+			windowDef rampage_num
+			{
+				rect	142,325,30,17
+				text	"gui::rampage"
+				textscale	0.24
+				font	"fonts/lowpixel"
+				visible	1
+				forecolor	1,1,0.541,1
+				textstyle	1
+				textspacing	-1
+				textalign	1
+			}
+			windowDef capture_num
+			{
+				rect	175,325,30,17
+				text	"gui::capture"
+				textscale	0.24
+				font	"fonts/lowpixel"
+				visible	"gui::ctf_awards"
+				forecolor	1,1,0.541,1
+				textstyle	1
+				textspacing	-1
+				textalign	1
+			}
+			windowDef assist_num
+			{
+				rect	208,325,30,17
+				text	"gui::assist"
+				textscale	0.24
+				font	"fonts/lowpixel"
+				visible	"gui::ctf_awards"
+				forecolor	1,1,0.541,1
+				textstyle	1
+				textspacing	-1
+				textalign	1
+			}
+			windowDef defense_num
+			{
+				rect	241,325,30,17
+				text	"gui::defense"
+				textscale	0.24
+				font	"fonts/lowpixel"
+				visible	"gui::ctf_awards"
+				forecolor	1,1,0.541,1
+				textstyle	1
+				textspacing	-1
+				textalign	1
+			}
+			windowDef eg_award1_t
+			{
+				rect	14,361,266,22
+				visible	"gui::eg_award0"
+				forecolor	1,1,1,1
+				text	"gui::eg_award0_text"
+				textscale	0.301
+				font	"fonts/lowpixel"
+			}
+			windowDef eg_award2_t
+			{
+				rect	14,389,266,22
+				visible	"gui::eg_award1"
+				forecolor	1,1,1,1
+				text	"gui::eg_award1_text"
+				textscale	0.301
+				font	"fonts/lowpixel"
+			}
+			windowDef eg_award3_t
+			{
+				rect	14,417,266,22
+				visible	"gui::eg_award2"
+				forecolor	1,1,1,1
+				text	"gui::eg_award2_text"
+				textscale	0.301
+				font	"fonts/lowpixel"
+			}
+		}
+	}
+	windowDef exit_msg
+	{
+		rect	0,458,640,20
+		visible	1
+		forecolor	1,1,1,1
+		text	"#str_200916"
+		textscale	0.25
+		font	"fonts/lowpixel"
+		textalign	1
+		textstyle	1
+	}
+	windowDef p_stat_ttip
+	{
+		rect	"desktop::tooltip_x" + 4,"desktop::tooltip_y" + 4,128,41
+		visible	1
+		windowDef stat_ttip_top
+		{
+			rect	0,0,128,16
+			visible	1
+			background	"gfx/guis/mainmenu/tooltip_edge2"
+			matcolor	1,1,1,0
+		}
+		windowDef stat_ttip_mid
+		{
+			rect	0,16,128,9
+			visible	1
+			background	"gfx/guis/mainmenu/tooltip_mid2"
+			matcolor	1,1,1,0
+		}
+		windowDef stat_ttip_btm
+		{
+			rect	0,25,128,16
+			visible	1
+			background	"gfx/guis/mainmenu/tooltip_edge2"
+			matcolor	1,1,1,0
+			matscaley	-1
+			matscalex	-1
+		}
+		windowDef stat_ttip_icon
+		{
+			rect	10,4,32,32
+			visible	1
+			background	""
+			matcolor	1,1,1,0
+		}
+		windowDef stat_ttip_acc
+		{
+			rect	44,2,77,19
+			text	""
+			textscale	0.31
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,0.552,0
+			textstyle	1
+		}
+		windowDef stat_ttip_shots
+		{
+			rect	44,19,77,17
+			text	""
+			textscale	0.25
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,1,0
+			textstyle	1
+			textspacing	-1
+		}
+	}
+	windowDef p_award_ttip
+	{
+		rect	"desktop::tooltip_x" + 4,"desktop::tooltip_y" + 4,256,90
+		visible	1
+		windowDef award_ttip_top
+		{
+			rect	0,0,256,16
+			visible	1
+			background	"gfx/guis/mainmenu/tooltip_edge"
+			matcolor	1,1,1,0
+		}
+		windowDef award_ttip_mid
+		{
+			rect	0,16,256,58
+			visible	1
+			background	"gfx/guis/mainmenu/tooltip_mid"
+			matcolor	1,1,1,0
+		}
+		windowDef award_ttip_btm
+		{
+			rect	0,74,256,16
+			visible	1
+			background	"gfx/guis/mainmenu/tooltip_edge"
+			matcolor	1,1,1,0
+			matscaley	-1
+			matscalex	-1
+		}
+		windowDef award_ttip_icon
+		{
+			rect	12,8,32,32
+			visible	1
+			background	""
+			matcolor	1,1,1,0
+		}
+		windowDef award_ttip_title
+		{
+			rect	51,5,195,19
+			text	""
+			textscale	0.31
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,0.552,0
+			textstyle	1
+		}
+		windowDef award_ttip_descript
+		{
+			rect	51,28,195,53
+			text	""
+			textscale	0.25
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,1,0
+			textstyle	1
+			textspacing	-1
+		}
+	}
+	windowDef p_anims
+	{
+		rect	0,0,640,480
+		visible	1
+
+		onNamedEvent hidePlayerHover {
+			set "m_players_1::matcolor_w" "0" ;
+			set "m_players_2::matcolor_w" "0" ;
+			set "m_players_3::matcolor_w" "0" ;
+			set "m_players_4::matcolor_w" "0" ;
+			set "m_players_5::matcolor_w" "0" ;
+			set "m_players_6::matcolor_w" "0" ;
+			set "m_players_7::matcolor_w" "0" ;
+			set "m_players_8::matcolor_w" "0" ;
+			set "m_players_9::matcolor_w" "0" ;
+			set "m_players_10::matcolor_w" "0" ;
+			set "m_players_11::matcolor_w" "0" ;
+			set "m_players_12::matcolor_w" "0" ;
+			set "m_players_13::matcolor_w" "0" ;
+			set "m_players_14::matcolor_w" "0" ;
+			set "m_players_15::matcolor_w" "0" ;
+			set "m_players_16::matcolor_w" "0" ;
+			
+			set "s_players_1::matcolor_w" "0" ;
+			set "s_players_2::matcolor_w" "0" ;
+			set "s_players_3::matcolor_w" "0" ;
+			set "s_players_4::matcolor_w" "0" ;
+			set "s_players_5::matcolor_w" "0" ;
+			set "s_players_6::matcolor_w" "0" ;
+			set "s_players_7::matcolor_w" "0" ;
+			set "s_players_8::matcolor_w" "0" ;
+			set "s_players_9::matcolor_w" "0" ;
+			set "s_players_10::matcolor_w" "0" ;
+			set "s_players_11::matcolor_w" "0" ;
+			set "s_players_12::matcolor_w" "0" ;
+			set "s_players_13::matcolor_w" "0" ;
+			set "s_players_14::matcolor_w" "0" ;
+			set "s_players_15::matcolor_w" "0" ;
+			set "s_players_16::matcolor_w" "0" ;
+			
+			set "sp_players_1::matcolor_w" "0" ;
+			set "sp_players_2::matcolor_w" "0" ;
+			set "sp_players_3::matcolor_w" "0" ;
+			set "sp_players_4::matcolor_w" "0" ;
+			set "sp_players_5::matcolor_w" "0" ;
+			set "sp_players_6::matcolor_w" "0" ;
+			set "sp_players_7::matcolor_w" "0" ;
+			set "sp_players_8::matcolor_w" "0" ;
+			set "sp_players_9::matcolor_w" "0" ;
+			set "sp_players_10::matcolor_w" "0" ;
+			set "sp_players_11::matcolor_w" "0" ;
+			set "sp_players_12::matcolor_w" "0" ;
+			set "sp_players_13::matcolor_w" "0" ;
+			set "sp_players_14::matcolor_w" "0" ;
+			set "sp_players_15::matcolor_w" "0" ;
+			set "sp_players_16::matcolor_w" "0" ;
+			
+			set "dm_players_1::matcolor_w" "0" ;
+			set "dm_players_2::matcolor_w" "0" ;
+			set "dm_players_3::matcolor_w" "0" ;
+			set "dm_players_4::matcolor_w" "0" ;
+			set "dm_players_5::matcolor_w" "0" ;
+			set "dm_players_6::matcolor_w" "0" ;
+			set "dm_players_7::matcolor_w" "0" ;
+			set "dm_players_8::matcolor_w" "0" ;
+			set "dm_players_9::matcolor_w" "0" ;
+			set "dm_players_10::matcolor_w" "0" ;
+			set "dm_players_11::matcolor_w" "0" ;
+			set "dm_players_12::matcolor_w" "0" ;
+			set "dm_players_13::matcolor_w" "0" ;
+			set "dm_players_14::matcolor_w" "0" ;
+			set "dm_players_15::matcolor_w" "0" ;
+			set "dm_players_16::matcolor_w" "0" ;
+		}
+
+		windowDef anim_focus
+		{
+			rect	0,0,1,1
+			visible	1
+			notime	1
+
+			onTime 0 {
+				
+			}
+
+			onTime 1000 {
+				setfocus "chat_enter" ;
+			}
+
+		}
+	}
+	windowDef p_btns
+	{
+		rect	0,0,640,480
+		visible	1
+
+		onNamedEvent hide {
+			set "p_summary::visible" "0" ;
+			set "p_scoreboard::visible" "0" ;
+			set "p_stats::visible" "0" ;
+		}
+
+		onNamedEvent showBtns {
+			set "b_summ::visible" "1" ;
+			set "b_stats::visible" "1" ;
+			set "b_score::visible" "1" ;
+			
+			set "tab_summary:forecolor" "$desktop::white_8" ;
+			set "tab_stats::forecolor" "$desktop::white_8" ;
+			set "tab_score::forecolor" "$desktop::white_8" ;
+		}
+
+		onNamedEvent showStats {
+			//	Unused stat display for weapons - Hits/Shots display.
+			//
+			//	set "stat_b_mgun::visible" "1" ;
+			//	set "stat_b_shotgun::visible" "1" ;
+			//	set "stat_b_hyperblaster::visible" "1" ;
+			//	set "stat_b_grenade::visible" "1" ;
+			//	set "stat_b_nailgun::visible" "1" ;
+			//	set "stat_b_rocket::visible" "1" ;
+			//	set "stat_b_railgun::visible" "1" ;
+			//	set "stat_b_lgun::visible" "1" ;
+			//	set "stat_b_dmg::visible" "1" ;
+			
+			set "award_b_excellent::visible" "1" ;
+			set "award_b_impressive::visible" "1" ;
+			set "award_b_humiliation::visible" "1" ;
+			set "award_b_combokill::visible" "1" ;
+			set "award_b_rampage::visible" "1" ;
+			
+			if ( "gui::gametype" == 4 || "gui::gametype" == 5 || "gui::gametype" == 6 || "gui::gametype" == 8 ) {
+				set "award_b_capture::visible" "1" ;
+				set "award_b_assist::visible" "1" ;
+				set "award_b_defense::visible" "1" ;
+			}
+		}
+
+		onNamedEvent hideStats {
+			//	set "stat_b_mgun::visible" "0" ;
+			//	set "stat_b_shotgun::visible" "0" ;
+			//	set "stat_b_hyperblaster::visible" "0" ;
+			//	set "stat_b_grenade::visible" "0" ;
+			//	set "stat_b_nailgun::visible" "0" ;
+			//	set "stat_b_rocket::visible" "0" ;
+			//	set "stat_b_railgun::visible" "0" ;
+			//	set "stat_b_lgun::visible" "0" ;
+			//	set "stat_b_dmg::visible" "0" ;
+			
+			set "award_b_excellent::visible" "0" ;
+			set "award_b_impressive::visible" "0" ;
+			set "award_b_humiliation::visible" "0" ;
+			set "award_b_combokill::visible" "0" ;
+			set "award_b_rampage::visible" "0" ;
+			set "award_b_capture::visible" "0" ;
+			set "award_b_assist::visible" "0" ;
+			set "award_b_defense::visible" "0" ;
+		}
+
+		windowDef b_summ
+		{
+			rect	95,23,121,22
+			visible	0
+
+			onMouseEnter {
+				stoptransitions "b_summ" ;
+				
+				transition "tab_summary::forecolor" "$desktop::white_8" "$desktop::orange" "0" ; 
+				set "tab_summary::textscale" "0.29" ; 
+				
+				set "cmd" "play main_menu_mouseover" ;	
+			}
+
+			onMouseExit {
+				if ("desktop::curr" != 1) {
+					transition "tab_summary::forecolor"  "$desktop::orange" "$desktop::white_8" "300" ; 
+					transition "tab_summary::textscale" "0.29" "0.28" "300" ;
+				}
+			}
+
+			onAction {
+				namedevent "p_btns::hide" ;
+				namedevent "p_btns::hideStats" ;
+				set "p_summary::visible" "1" ;
+				set "desktop::curr" "1" ;
+				namedevent "p_btns::showBtns" ;
+				set "b_summ::visible" "0" ;
+				set "tab_summary::forecolor" "$desktop::orange" ;
+				set "tab_summary::textscale" "0.29" ;
+				set "tab_stats::forecolor" "$desktop::white_8" ;
+				set "tab_stats::textscale" "0.28" ;
+				set "tab_score::forecolor" "$desktop::white_8" ;
+				set "tab_score::textscale" "0.28" ;
+				
+				set "summ_tab::background" "gfx/guis/mainmenu/ctrls_tab1"  ;
+				
+				set "cmd" "play main_menu_selection" ;
+				setfocus "chat_enter" ;
+			}
+
+		}
+		windowDef b_stats
+		{
+			rect	250,23,133,22
+			visible	1
+
+			onMouseEnter {
+				stoptransitions "b_stats" ;
+				
+				transition "tab_stats::forecolor" "$desktop::white_8" "$desktop::orange" "0" ; 
+				set "tab_stats::textscale" "0.29" ; 
+				
+				set "cmd" "play main_menu_mouseover" ;	
+			}
+
+			onMouseExit {
+				if ("desktop::curr" != 2) {
+					transition "tab_stats::forecolor"  "$desktop::orange" "$desktop::white_8" "300" ; 
+					transition "tab_stats::textscale" "0.29" "0.28" "300" ;
+				}
+			}
+
+			onAction {
+				namedevent "p_btns::hide" ;
+				set "p_stats::visible" "1" ;
+				set "desktop::curr" "2" ;
+				namedevent "p_btns::showBtns" ;
+				namedevent "p_btns::showStats" ;
+				set "b_stats::visible" "0" ;
+				set "tab_summary::forecolor" "$desktop::white_8" ;
+				set "tab_summary::textscale" "0.28" ;
+				set "tab_stats::forecolor" "$desktop::orange" ;
+				set "tab_stats::textscale" "0.29" ;
+				set "tab_score::forecolor" "$desktop::white_8" ;
+				set "tab_score::textscale" "0.28" ;
+				
+				set "summ_tab::background" "gfx/guis/mainmenu/summ_tab2"  ;
+				
+				set "cmd" "play main_menu_selection" ;
+			}
+
+		}
+		windowDef b_score
+		{
+			rect	396,23,138,22
+			visible	1
+
+			onMouseEnter {
+				stoptransitions "b_score" ;
+				
+				transition "tab_score::forecolor" "$desktop::white_8" "$desktop::orange" "0" ; 
+				set "tab_score::textscale" "0.29" ; 
+				
+				set "cmd" "play main_menu_mouseover" ;	
+			}
+
+			onMouseExit {
+				if ("desktop::curr" != 3) {
+					transition "tab_score::forecolor"  "$desktop::orange" "$desktop::white_8" "300" ; 
+					transition "tab_score::textscale" "0.29" "0.28" "300" ;
+				}
+			}
+
+			onAction {
+				namedevent "p_btns::hide" ;
+				namedevent "p_btns::hideStats" ;
+				set "p_scoreboard::visible" "1" ;
+				set "desktop::curr" "3" ;
+				namedevent "p_btns::showBtns" ;
+				set "b_score::visible" "0" ;
+				
+				set "tab_summary::forecolor" "$desktop::white_8" ;
+				set "tab_summary::textscale" "0.28" ;
+				set "tab_stats::forecolor" "$desktop::white_8" ;
+				set "tab_stats::textscale" "0.28" ;
+				set "tab_score::forecolor" "$desktop::orange" ;
+				set "tab_score::textscale" "0.29" ;
+				
+				set "summ_tab::background" "gfx/guis/mainmenu/summ_tab3"  ;
+				
+				set "cmd" "play main_menu_selection" ;
+			}
+
+		}
+		windowDef stat_b_mgun
+		{
+			rect	284,171,32,42
+			visible	0
+			notime	1
+
+			onMouseEnter {
+				resettime "stat_b_mgun" "0" ;
+				
+				set "stat_ttip_icon::background" "gfx/guis/hud/icons/item_machinegun_colored" ;
+				set "stat_ttip_acc::text" "$gui::stat_1_pct" ;
+				set "stat_ttip_shots::text" "$gui::stat_1_shots" ;
+			}
+
+			onMouseExit {
+				set "stat_b_mgun::notime" "1" ;
+				stoptransitions "stat_b_mgun" ;
+				
+				set "p_stat_ttip::visible" "0" ;
+				set "stat_ttip_top::matcolor_w" "0" ;
+				set "stat_ttip_mid::matcolor_w" "0" ;
+				set "stat_ttip_btm::matcolor_w" "0" ;
+				set "stat_ttip_icon::matcolor_w" "0" ;
+				set "stat_ttip_acc::forecolor_w" "0" ;
+				set "stat_ttip_shots::forecolor_w" "0" ;
+			}
+
+			onTime 500 {
+				set "p_stat_ttip::visible" "1" ;
+				transition "stat_ttip_top::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_mid::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_btm::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_icon::matcolor_w" "0" "1" "250" ;
+				transition "stat_ttip_acc::forecolor_w" "0" "1" "250" ;
+				transition "stat_ttip_shots::forecolor_w" "0" "1" "250" ;
+			}
+
+		}
+		windowDef stat_b_shotgun
+		{
+			rect	340,171,32,42
+			visible	0
+			notime	1
+
+			onMouseEnter {
+				resettime "stat_b_shotgun" "0" ;
+				
+				set "stat_ttip_icon::background" "gfx/guis/hud/icons/item_shotgun_colored" ;
+				set "stat_ttip_acc::text" "$gui::stat_2_pct" ;
+				set "stat_ttip_shots::text" "$gui::stat_2_shots" ;
+			}
+
+			onMouseExit {
+				set "stat_b_shotgun::notime" "1" ;
+				stoptransitions "stat_b_shotgun" ;
+				
+				set "p_stat_ttip::visible" "0" ;
+				set "stat_ttip_top::matcolor_w" "0" ;
+				set "stat_ttip_mid::matcolor_w" "0" ;
+				set "stat_ttip_btm::matcolor_w" "0" ;
+				set "stat_ttip_icon::matcolor_w" "0" ;
+				set "stat_ttip_acc::forecolor_w" "0" ;
+				set "stat_ttip_shots::forecolor_w" "0" ;
+			}
+
+			onTime 500 {
+				set "p_stat_ttip::visible" "1" ;
+				transition "stat_ttip_top::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_mid::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_btm::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_icon::matcolor_w" "0" "1" "250" ;
+				transition "stat_ttip_acc::forecolor_w" "0" "1" "250" ;
+				transition "stat_ttip_shots::forecolor_w" "0" "1" "250" ;
+			}
+
+		}
+		windowDef stat_b_hyperblaster
+		{
+			rect	397,171,32,42
+			visible	0
+			notime	1
+
+			onMouseEnter {
+				resettime "stat_b_hyperblaster" "0" ;
+				
+				set "stat_ttip_icon::background" "gfx/guis/hud/icons/item_hyperblaster_colored" ;
+				set "stat_ttip_acc::text" "$gui::stat_3_pct" ;
+				set "stat_ttip_shots::text" "$gui::stat_3_shots" ;
+			}
+
+			onMouseExit {
+				set "stat_b_hyperblaster::notime" "1" ;
+				stoptransitions "stat_b_hyperblaster" ;
+				
+				set "p_stat_ttip::visible" "0" ;
+				set "stat_ttip_top::matcolor_w" "0" ;
+				set "stat_ttip_mid::matcolor_w" "0" ;
+				set "stat_ttip_btm::matcolor_w" "0" ;
+				set "stat_ttip_icon::matcolor_w" "0" ;
+				set "stat_ttip_acc::forecolor_w" "0" ;
+				set "stat_ttip_shots::forecolor_w" "0" ;
+			}
+
+			onTime 500 {
+				set "p_stat_ttip::visible" "1" ;
+				transition "stat_ttip_top::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_mid::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_btm::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_icon::matcolor_w" "0" "1" "250" ;
+				transition "stat_ttip_acc::forecolor_w" "0" "1" "250" ;
+				transition "stat_ttip_shots::forecolor_w" "0" "1" "250" ;
+			}
+
+		}
+		windowDef stat_b_grenade
+		{
+			rect	451,171,32,42
+			visible	0
+			notime	1
+
+			onMouseEnter {
+				resettime "stat_b_grenade" "0" ;
+				
+				set "stat_ttip_icon::background" "gfx/guis/hud/icons/item_grenade_colored" ;
+				set "stat_ttip_acc::text" "$gui::stat_4_pct" ;
+				set "stat_ttip_shots::text" "$gui::stat_4_shots" ;
+			}
+
+			onMouseExit {
+				set "stat_b_grenade::notime" "1" ;
+				stoptransitions "stat_b_grenade" ;
+				
+				set "p_stat_ttip::visible" "0" ;
+				set "stat_ttip_top::matcolor_w" "0" ;
+				set "stat_ttip_mid::matcolor_w" "0" ;
+				set "stat_ttip_btm::matcolor_w" "0" ;
+				set "stat_ttip_icon::matcolor_w" "0" ;
+				set "stat_ttip_acc::forecolor_w" "0" ;
+				set "stat_ttip_shots::forecolor_w" "0" ;
+			}
+
+			onTime 500 {
+				set "p_stat_ttip::visible" "1" ;
+				transition "stat_ttip_top::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_mid::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_btm::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_icon::matcolor_w" "0" "1" "250" ;
+				transition "stat_ttip_acc::forecolor_w" "0" "1" "250" ;
+				transition "stat_ttip_shots::forecolor_w" "0" "1" "250" ;
+			}
+
+		}
+		windowDef stat_b_nailgun
+		{
+			rect	503,171,32,42
+			visible	0
+			notime	1
+
+			onMouseEnter {
+				resettime "stat_b_nailgun" "0" ;
+				
+				set "stat_ttip_icon::background" "gfx/guis/hud/icons/item_nailgun_colored" ;
+				set "stat_ttip_acc::text" "$gui::stat_5_pct" ;
+				set "stat_ttip_shots::text" "$gui::stat_5_shots" ;
+			}
+
+			onMouseExit {
+				set "stat_b_nailgun::notime" "1" ;
+				stoptransitions "stat_b_nailgun" ;
+				
+				set "p_stat_ttip::visible" "0" ;
+				set "stat_ttip_top::matcolor_w" "0" ;
+				set "stat_ttip_mid::matcolor_w" "0" ;
+				set "stat_ttip_btm::matcolor_w" "0" ;
+				set "stat_ttip_icon::matcolor_w" "0" ;
+				set "stat_ttip_acc::forecolor_w" "0" ;
+				set "stat_ttip_shots::forecolor_w" "0" ;
+			}
+
+			onTime 500 {
+				set "p_stat_ttip::visible" "1" ;
+				transition "stat_ttip_top::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_mid::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_btm::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_icon::matcolor_w" "0" "1" "250" ;
+				transition "stat_ttip_acc::forecolor_w" "0" "1" "250" ;
+				transition "stat_ttip_shots::forecolor_w" "0" "1" "250" ;
+			}
+
+		}
+		windowDef stat_b_rocket
+		{
+			rect	284,220,32,42
+			visible	0
+			notime	1
+
+			onMouseEnter {
+				resettime "stat_b_rocket" "0" ;
+				
+				set "stat_ttip_icon::background" "gfx/guis/hud/icons/item_rocket_colored" ;
+				set "stat_ttip_acc::text" "$gui::stat_6_pct" ;
+				set "stat_ttip_shots::text" "$gui::stat_6_shots" ;
+			}
+
+			onMouseExit {
+				set "stat_b_rocket::notime" "1" ;
+				stoptransitions "stat_b_rocket" ;
+				
+				set "p_stat_ttip::visible" "0" ;
+				set "stat_ttip_top::matcolor_w" "0" ;
+				set "stat_ttip_mid::matcolor_w" "0" ;
+				set "stat_ttip_btm::matcolor_w" "0" ;
+				set "stat_ttip_icon::matcolor_w" "0" ;
+				set "stat_ttip_acc::forecolor_w" "0" ;
+				set "stat_ttip_shots::forecolor_w" "0" ;
+			}
+
+			onTime 500 {
+				set "p_stat_ttip::visible" "1" ;
+				transition "stat_ttip_top::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_mid::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_btm::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_icon::matcolor_w" "0" "1" "250" ;
+				transition "stat_ttip_acc::forecolor_w" "0" "1" "250" ;
+				transition "stat_ttip_shots::forecolor_w" "0" "1" "250" ;
+			}
+
+		}
+		windowDef stat_b_railgun
+		{
+			rect	340,220,32,42
+			visible	0
+			notime	1
+
+			onMouseEnter {
+				resettime "stat_b_railgun" "0" ;
+				
+				set "stat_ttip_icon::background" "gfx/guis/hud/icons/item_railgun_colored" ;
+				set "stat_ttip_acc::text" "$gui::stat_7_pct" ;
+				set "stat_ttip_shots::text" "$gui::stat_7_shots" ;
+			}
+
+			onMouseExit {
+				set "stat_b_railgun::notime" "1" ;
+				stoptransitions "stat_b_railgun" ;
+				
+				set "p_stat_ttip::visible" "0" ;
+				set "stat_ttip_top::matcolor_w" "0" ;
+				set "stat_ttip_mid::matcolor_w" "0" ;
+				set "stat_ttip_btm::matcolor_w" "0" ;
+				set "stat_ttip_icon::matcolor_w" "0" ;
+				set "stat_ttip_acc::forecolor_w" "0" ;
+				set "stat_ttip_shots::forecolor_w" "0" ;
+			}
+
+			onTime 500 {
+				set "p_stat_ttip::visible" "1" ;
+				transition "stat_ttip_top::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_mid::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_btm::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_icon::matcolor_w" "0" "1" "250" ;
+				transition "stat_ttip_acc::forecolor_w" "0" "1" "250" ;
+				transition "stat_ttip_shots::forecolor_w" "0" "1" "250" ;
+			}
+
+		}
+		windowDef stat_b_lgun
+		{
+			rect	397,220,32,42
+			visible	0
+			notime	1
+
+			onMouseEnter {
+				resettime "stat_b_lgun" "0" ;
+				
+				set "stat_ttip_icon::background" "gfx/guis/hud/icons/item_lightning_colored" ;
+				set "stat_ttip_acc::text" "$gui::stat_8_pct" ;
+				set "stat_ttip_shots::text" "$gui::stat_8_shots" ;
+			}
+
+			onMouseExit {
+				set "stat_b_lgun::notime" "1" ;
+				stoptransitions "stat_b_lgun" ;
+				
+				set "p_stat_ttip::visible" "0" ;
+				set "stat_ttip_top::matcolor_w" "0" ;
+				set "stat_ttip_mid::matcolor_w" "0" ;
+				set "stat_ttip_btm::matcolor_w" "0" ;
+				set "stat_ttip_icon::matcolor_w" "0" ;
+				set "stat_ttip_acc::forecolor_w" "0" ;
+				set "stat_ttip_shots::forecolor_w" "0" ;
+			}
+
+			onTime 500 {
+				set "p_stat_ttip::visible" "1" ;
+				transition "stat_ttip_top::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_mid::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_btm::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_icon::matcolor_w" "0" "1" "250" ;
+				transition "stat_ttip_acc::forecolor_w" "0" "1" "250" ;
+				transition "stat_ttip_shots::forecolor_w" "0" "1" "250" ;
+			}
+
+		}
+		windowDef stat_b_dmg
+		{
+			rect	451,220,32,42
+			visible	0
+			notime	1
+
+			onMouseEnter {
+				resettime "stat_b_dmg" "0" ;
+				
+				set "stat_ttip_icon::background" "gfx/guis/hud/icons/item_darkmatter_colored" ;
+				set "stat_ttip_acc::text" "$gui::stat_9_pct" ;
+				set "stat_ttip_shots::text" "$gui::stat_9_shots" ;
+			}
+
+			onMouseExit {
+				set "stat_b_dmg::notime" "1" ;
+				stoptransitions "stat_b_dmg" ;
+				
+				set "p_stat_ttip::visible" "0" ;
+				set "stat_ttip_top::matcolor_w" "0" ;
+				set "stat_ttip_mid::matcolor_w" "0" ;
+				set "stat_ttip_btm::matcolor_w" "0" ;
+				set "stat_ttip_icon::matcolor_w" "0" ;
+				set "stat_ttip_acc::forecolor_w" "0" ;
+				set "stat_ttip_shots::forecolor_w" "0" ;
+			}
+
+			onTime 500 {
+				set "p_stat_ttip::visible" "1" ;
+				transition "stat_ttip_top::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_mid::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_btm::matcolor_w" "0" "0.94" "250" ;
+				transition "stat_ttip_icon::matcolor_w" "0" "1" "250" ;
+				transition "stat_ttip_acc::forecolor_w" "0" "1" "250" ;
+				transition "stat_ttip_shots::forecolor_w" "0" "1" "250" ;
+			}
+
+		}
+		windowDef award_b_excellent
+		{
+			rect	280,301,32,40
+			visible	0
+			notime	1
+
+			onMouseEnter {
+				resettime "award_b_excellent" "0" ;
+				
+				set "award_ttip_icon::background" "gfx/mp/awards/excellent" ;
+				set "award_ttip_title::text" "#str_200985" ;
+				set "award_ttip_descript::text" "#str_200993" ;
+			}
+
+			onMouseExit {
+				set "award_b_excellent::notime" "1" ;
+				stoptransitions "award_b_excellent" ;
+				
+				set "p_award_ttip::visible" "0" ;
+				set "award_ttip_top::matcolor_w" "0" ;
+				set "award_ttip_mid::matcolor_w" "0" ;
+				set "award_ttip_btm::matcolor_w" "0" ;
+				set "award_ttip_icon::matcolor_w" "0" ;
+				set "award_ttip_title::forecolor_w" "0" ;
+				set "award_ttip_descript::forecolor_w" "0" ;
+			}
+
+			onTime 500 {
+				set "p_award_ttip::visible" "1" ;
+				transition "award_ttip_top::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_mid::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_btm::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_icon::matcolor_w" "0" "1" "250" ;
+				transition "award_ttip_title::forecolor_w" "0" "1" "250" ;
+				transition "award_ttip_descript::forecolor_w" "0" "1" "250" ;
+			}
+
+		}
+		windowDef award_b_impressive
+		{
+			rect	312,301,32,40
+			visible	0
+			notime	1
+
+			onMouseEnter {
+				resettime "award_b_impressive" "0" ;
+				
+				set "award_ttip_icon::background" "gfx/mp/awards/impressive" ;
+				set "award_ttip_title::text" "#str_200986" ;
+				set "award_ttip_descript::text" "#str_200994" ;
+			}
+
+			onMouseExit {
+				set "award_b_impressive::notime" "1" ;
+				stoptransitions "award_b_impressive" ;
+				
+				set "p_award_ttip::visible" "0" ;
+				set "award_ttip_top::matcolor_w" "0" ;
+				set "award_ttip_mid::matcolor_w" "0" ;
+				set "award_ttip_btm::matcolor_w" "0" ;
+				set "award_ttip_icon::matcolor_w" "0" ;
+				set "award_ttip_title::forecolor_w" "0" ;
+				set "award_ttip_descript::forecolor_w" "0" ;
+			}
+
+			onTime 500 {
+				set "p_award_ttip::visible" "1" ;
+				transition "award_ttip_top::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_mid::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_btm::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_icon::matcolor_w" "0" "1" "250" ;
+				transition "award_ttip_title::forecolor_w" "0" "1" "250" ;
+				transition "award_ttip_descript::forecolor_w" "0" "1" "250" ;
+			}
+
+		}
+		windowDef award_b_humiliation
+		{
+			rect	346,301,32,40
+			visible	0
+			notime	1
+
+			onMouseEnter {
+				resettime "award_b_humiliation" "0" ;
+				
+				set "award_ttip_icon::background" "gfx/mp/awards/humiliation" ;
+				set "award_ttip_title::text" "#str_200987" ;
+				set "award_ttip_descript::text" "#str_200995" ;
+			}
+
+			onMouseExit {
+				set "award_b_humiliation::notime" "1" ;
+				stoptransitions "award_b_humiliation" ;
+				
+				set "p_award_ttip::visible" "0" ;
+				set "award_ttip_top::matcolor_w" "0" ;
+				set "award_ttip_mid::matcolor_w" "0" ;
+				set "award_ttip_btm::matcolor_w" "0" ;
+				set "award_ttip_icon::matcolor_w" "0" ;
+				set "award_ttip_title::forecolor_w" "0" ;
+				set "award_ttip_descript::forecolor_w" "0" ;
+			}
+
+			onTime 500 {
+				set "p_award_ttip::visible" "1" ;
+				transition "award_ttip_top::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_mid::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_btm::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_icon::matcolor_w" "0" "1" "250" ;
+				transition "award_ttip_title::forecolor_w" "0" "1" "250" ;
+				transition "award_ttip_descript::forecolor_w" "0" "1" "250" ;
+			}
+
+		}
+		windowDef award_b_combokill
+		{
+			rect	379,301,32,40
+			visible	0
+			notime	1
+
+			onMouseEnter {
+				resettime "award_b_combokill" "0" ;
+				
+				set "award_ttip_icon::background" "gfx/mp/awards/combo_kill" ;
+				set "award_ttip_title::text" "#str_200988" ;
+				set "award_ttip_descript::text" "#str_200996" ;
+			}
+
+			onMouseExit {
+				set "award_b_combokill::notime" "1" ;
+				stoptransitions "award_b_combokill" ;
+				
+				set "p_award_ttip::visible" "0" ;
+				set "award_ttip_top::matcolor_w" "0" ;
+				set "award_ttip_mid::matcolor_w" "0" ;
+				set "award_ttip_btm::matcolor_w" "0" ;
+				set "award_ttip_icon::matcolor_w" "0" ;
+				set "award_ttip_title::forecolor_w" "0" ;
+				set "award_ttip_descript::forecolor_w" "0" ;
+			}
+
+			onTime 500 {
+				set "p_award_ttip::visible" "1" ;
+				transition "award_ttip_top::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_mid::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_btm::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_icon::matcolor_w" "0" "1" "250" ;
+				transition "award_ttip_title::forecolor_w" "0" "1" "250" ;
+				transition "award_ttip_descript::forecolor_w" "0" "1" "250" ;
+			}
+
+		}
+		windowDef award_b_rampage
+		{
+			rect	412,301,32,40
+			visible	0
+			notime	1
+
+			onMouseEnter {
+				resettime "award_b_rampage" "0" ;
+				
+				set "award_ttip_icon::background" "gfx/mp/awards/rampage" ;
+				set "award_ttip_title::text" "#str_200989" ;
+				set "award_ttip_descript::text" "#str_200997" ;
+			}
+
+			onMouseExit {
+				set "award_b_rampage::notime" "1" ;
+				stoptransitions "award_b_rampage" ;
+				
+				set "p_award_ttip::visible" "0" ;
+				set "award_ttip_top::matcolor_w" "0" ;
+				set "award_ttip_mid::matcolor_w" "0" ;
+				set "award_ttip_btm::matcolor_w" "0" ;
+				set "award_ttip_icon::matcolor_w" "0" ;
+				set "award_ttip_title::forecolor_w" "0" ;
+				set "award_ttip_descript::forecolor_w" "0" ;
+			}
+
+			onTime 500 {
+				set "p_award_ttip::visible" "1" ;
+				transition "award_ttip_top::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_mid::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_btm::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_icon::matcolor_w" "0" "1" "250" ;
+				transition "award_ttip_title::forecolor_w" "0" "1" "250" ;
+				transition "award_ttip_descript::forecolor_w" "0" "1" "250" ;
+			}
+
+		}
+		windowDef award_b_capture
+		{
+			rect	445,301,32,40
+			visible	0
+			notime	1
+
+			onMouseEnter {
+				resettime "award_b_capture" "0" ;
+				
+				set "award_ttip_icon::background" "gfx/mp/awards/capture" ;
+				set "award_ttip_title::text" "#str_200990" ;
+				set "award_ttip_descript::text" "#str_200998" ;
+			}
+
+			onMouseExit {
+				set "award_b_capture::notime" "1" ;
+				stoptransitions "award_b_capture" ;
+				
+				set "p_award_ttip::visible" "0" ;
+				set "award_ttip_top::matcolor_w" "0" ;
+				set "award_ttip_mid::matcolor_w" "0" ;
+				set "award_ttip_btm::matcolor_w" "0" ;
+				set "award_ttip_icon::matcolor_w" "0" ;
+				set "award_ttip_title::forecolor_w" "0" ;
+				set "award_ttip_descript::forecolor_w" "0" ;
+			}
+
+			onTime 500 {
+				set "p_award_ttip::visible" "1" ;
+				transition "award_ttip_top::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_mid::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_btm::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_icon::matcolor_w" "0" "1" "250" ;
+				transition "award_ttip_title::forecolor_w" "0" "1" "250" ;
+				transition "award_ttip_descript::forecolor_w" "0" "1" "250" ;
+			}
+
+		}
+		windowDef award_b_assist
+		{
+			rect	478,301,32,40
+			visible	0
+			notime	1
+
+			onMouseEnter {
+				resettime "award_b_assist" "0" ;
+				
+				set "award_ttip_icon::background" "gfx/mp/awards/assist" ;
+				set "award_ttip_title::text" "#str_200991" ;
+				set "award_ttip_descript::text" "#str_200999" ;
+			}
+
+			onMouseExit {
+				set "award_b_assist::notime" "1" ;
+				stoptransitions "award_b_assist" ;
+				
+				set "p_award_ttip::visible" "0" ;
+				set "award_ttip_top::matcolor_w" "0" ;
+				set "award_ttip_mid::matcolor_w" "0" ;
+				set "award_ttip_btm::matcolor_w" "0" ;
+				set "award_ttip_icon::matcolor_w" "0" ;
+				set "award_ttip_title::forecolor_w" "0" ;
+				set "award_ttip_descript::forecolor_w" "0" ;
+			}
+
+			onTime 500 {
+				set "p_award_ttip::visible" "1" ;
+				transition "award_ttip_top::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_mid::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_btm::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_icon::matcolor_w" "0" "1" "250" ;
+				transition "award_ttip_title::forecolor_w" "0" "1" "250" ;
+				transition "award_ttip_descript::forecolor_w" "0" "1" "250" ;
+			}
+
+		}
+		windowDef award_b_defense
+		{
+			rect	511,301,32,40
+			visible	0
+			notime	1
+
+			onMouseEnter {
+				resettime "award_b_defense" "0" ;
+				
+				set "award_ttip_icon::background" "gfx/mp/awards/defense" ;
+				set "award_ttip_title::text" "#str_200992" ;
+				set "award_ttip_descript::text" "#str_201000" ;
+			}
+
+			onMouseExit {
+				set "award_b_defense::notime" "1" ;
+				stoptransitions "award_b_defense" ;
+				
+				set "p_award_ttip::visible" "0" ;
+				set "award_ttip_top::matcolor_w" "0" ;
+				set "award_ttip_mid::matcolor_w" "0" ;
+				set "award_ttip_btm::matcolor_w" "0" ;
+				set "award_ttip_icon::matcolor_w" "0" ;
+				set "award_ttip_title::forecolor_w" "0" ;
+				set "award_ttip_descript::forecolor_w" "0" ;
+			}
+
+			onTime 500 {
+				set "p_award_ttip::visible" "1" ;
+				transition "award_ttip_top::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_mid::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_btm::matcolor_w" "0" "0.94" "250" ;
+				transition "award_ttip_icon::matcolor_w" "0" "1" "250" ;
+				transition "award_ttip_title::forecolor_w" "0" "1" "250" ;
+				transition "award_ttip_descript::forecolor_w" "0" "1" "250" ;
+			}
+
+		}
+	}
+}

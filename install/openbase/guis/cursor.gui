@@ -1,0 +1,463 @@
+windowDef Desktop
+{
+	rect	0,0,640,480
+	nocursor	1
+	
+	onInit {
+		set "crossCombat_16::matcolor_x" "1";
+		set "crossCombat_16::matcolor_y" "1";
+		set "crossCombat_16::matcolor_z" "1";
+		set "crossCombat_24::matcolor_x" "1";
+		set "crossCombat_24::matcolor_y" "1";
+		set "crossCombat_24::matcolor_z" "1";
+		set "crossCombat_32::matcolor_x" "1";
+		set "crossCombat_32::matcolor_y" "1";
+		set "crossCombat_32::matcolor_z" "1";
+		set "crossCombat_40::matcolor_x" "1";
+		set "crossCombat_40::matcolor_y" "1";
+		set "crossCombat_40::matcolor_z" "1";
+		set "crossCombat_48::matcolor_x" "1";
+		set "crossCombat_48::matcolor_y" "1";
+		set "crossCombat_48::matcolor_z" "1";
+	}
+
+	onNamedEvent crossHide {
+		set "crossUsable::visible" "0";
+		set "crossCombat::visible" "0";
+		set "crossTalk::visible" "0";
+		set "crossVehicle::visible" "0";
+		set "crossVehicleLocked::visible" "0";
+		set "crossGui::visible" "0";
+		set "crossName::visible" "0";		
+		set "crossDesc::visible" "0";	
+		set "crossFriendly::visible" "0";
+		
+		stoptransitions "crossVehicle" ;	
+		stoptransitions "crossVehicleLocked" ;	
+		stoptransitions "crossTalk" ;	
+		stoptransitions "crossFriendly" ;
+	}
+
+	onNamedEvent showCrossUsable {
+		set "crossUsable::notime" "1" ;
+		stoptransitions "crossUsable" ;
+		set "crossUsable::rect" "308,228,24,24" ; 
+		namedEvent "crossHide";
+		set "crossUsable::visible" "1";
+		resetTime "crossUsable" "0" ; 
+	}
+
+	onNamedEvent showCrossCombat {
+		namedEvent "crossHide";
+		set "crossCombat::visible" "1";
+	}
+
+	onNamedEvent showCrossTalk {
+		set "crossTalk::matcolor_w" "0"  ;
+		set "crossTalk::rect" "303,223,34,34" ; 
+		set "crossName::forecolor_w" "0" ;
+		set "crossDesc::forecolor_w" "0" ;
+		
+		if ("gui::npc_medictech" == 0) {
+			set "crosstalk::background" "gfx/guis/crosshairs/crosstalk" ;
+			set "crosstalk::matcolor" "1,0.5,0,1" ;
+		}else if ("gui::npc_medictech" == 1) {
+			set "crosstalk::background" "gfx/guis/crosshairs/cross_medic" ;
+			set "crosstalk::matcolor" "1,1,1,0" ;
+		}else {
+			set "crosstalk::background" "gfx/guis/crosshairs/cross_tech" ;
+			set "crosstalk::matcolor" "1,1,1,0" ;
+		}
+		
+		namedEvent "crossHide";
+		resetTime "crossTalk" "0" ; 
+		set "crossTalk::visible" "1";
+		set "crossName::visible" "1";		
+		set "crossDesc::visible" "1";	
+	}
+
+	onNamedEvent showCrossVehicle {
+		set "crossVehicle1::matcolor_w" "0"  ;
+		set "crossVehicle2::matcolor_w" "0"  ;
+		set "t_enter::forecolor_w" "0" ;
+		set "crossVehicle2::rect" "29,29,40,29" ;
+		
+		namedEvent "crossHide";
+		resetTime "crossVehicle" "0" ; 
+		set "crossVehicle::visible" "1";
+	}
+
+	onNamedEvent showCrossVehicleLocked {
+		set "crossVehicleLocked::matcolor_w" "0"  ;
+		set "crossVehicleLocked::rect" "303,223,34,34" ;
+		
+		namedEvent "crossHide";
+		resetTime "crossVehicleLocked" "0" ; 
+		set "crossVehicleLocked::visible" "1";
+	}
+
+	onNamedEvent deadMarine {
+		namedEvent "crossHide";
+		resetTime "crossVehicleLocked" "0" ; 
+		set "crossVehicleLocked::visible" "1";
+		set "crossName::visible" "1";		
+		set "crossDesc::visible" "1";	
+	}
+
+	onNamedEvent showCrossGui {
+		namedEvent "crossHide";
+		resetTime "crossGui" "0" ; 
+		set "crossGui::visible" "1";
+	}
+
+	onNamedEvent showCrossBuddy {
+		
+		namedEvent "crossHide";
+		set "crossFriendly::visible" "1";
+		resetTime "crossFriendly" "0" ;
+		set "crossFriendly::rect" "300,220,40,40" ;
+	}
+
+	onNamedEvent weaponChange {
+		set "crossCombat_16::matcolor" "$gui::crossColor";
+		set "crossCombat_24::matcolor" "$gui::crossColor";
+		set "crossCombat_32::matcolor" "$gui::crossColor";
+		set "crossCombat_40::matcolor" "$gui::crossColor";
+		set "crossCombat_48::matcolor" "$gui::crossColor";
+	}
+
+	onNamedEvent weaponHit {
+		stopTransitions "crossCombat_16";
+		resetTime "crossCombat_16" 0;
+		stopTransitions "crossCombat_24";
+		resetTime "crossCombat_24" 0;
+		stopTransitions "crossCombat_32";
+		resetTime "crossCombat_32" 0;
+		stopTransitions "crossCombat_40";
+		resetTime "crossCombat_40" 0;
+		stopTransitions "crossCombat_48";
+		resetTime "crossCombat_48" 0;
+	}
+
+	windowDef crossCombat
+	{	
+		rect	0,0,640,480
+		visible	1
+		windowDef crossCombat_16
+		{	
+			rect	312,232,16,16
+			background	"gui::crossImage"
+			visible	("gui::g_crosshairSize" == 16)	
+			notime 1
+	
+			onTime 0 {	
+				transition "rect" "$d_crossCombat_16::rect" "$crossCombat_16::rect" "150";
+					
+				if ("gui::mp" == 0) {
+					set "crossCombat_16::matcolor_x" "1";
+					set "crossCombat_16::matcolor_y" "0";
+					set "crossCombat_16::matcolor_z" "0";
+				}
+			}
+	
+			onTime +100 {
+				if ("gui::mp" == 0) {
+					set "crossCombat_16::matcolor" "$gui::crossColor"
+				}
+			}
+		}
+		windowDef d_crossCombat_16
+		{
+			rect	307,227,26,26
+			visible	0
+		}
+		
+		windowDef crossCombat_24
+		{	
+			rect	308,228,24,24
+			background	"gui::crossImage"
+			visible	("gui::g_crosshairSize" == 24)	
+			notime 1
+	
+			onTime 0 {	
+				transition "rect" "$d_crossCombat_24::rect" "$crossCombat_24::rect" "150";
+					
+				if ("gui::mp" == 0) {
+					set "crossCombat_24::matcolor_x" "1";
+					set "crossCombat_24::matcolor_y" "0";
+					set "crossCombat_24::matcolor_z" "0";
+				}
+			}
+	
+			onTime +100 {
+				if ("gui::mp" == 0) {
+					set "crossCombat_24::matcolor" "$gui::crossColor"
+				}
+			}
+		}
+		windowDef d_crossCombat_24
+		{
+			rect	303,223,34,34
+			visible	0
+		}
+		
+		windowDef crossCombat_32
+		{	
+			rect	304,224,32,32
+			background	"gui::crossImage"
+			visible	("gui::g_crosshairSize" == 32)	
+			notime 1
+	
+			onTime 0 {	
+				transition "rect" "$d_crossCombat_32::rect" "$crossCombat_32::rect" "150";
+					
+				if ("gui::mp" == 0) {
+					set "crossCombat_32::matcolor_x" "1";
+					set "crossCombat_32::matcolor_y" "0";
+					set "crossCombat_32::matcolor_z" "0";
+				}
+			}
+	
+			onTime +100 {
+				if ("gui::mp" == 0) {
+					set "crossCombat_32::matcolor" "$gui::crossColor"
+				}
+			}
+		}
+		windowDef d_crossCombat_32
+		{
+			rect	299,219,42,42
+			visible	0
+		}
+		
+		windowDef crossCombat_40
+		{	
+			rect	300,220,40,40
+			background	"gui::crossImage"
+			visible	("gui::g_crosshairSize" == 40)	
+			notime 1
+	
+			onTime 0 {	
+				transition "rect" "$d_crossCombat_40::rect" "$crossCombat_40::rect" "150";
+					
+				if ("gui::mp" == 0) {
+					set "crossCombat_40::matcolor_x" "1";
+					set "crossCombat_40::matcolor_y" "0";
+					set "crossCombat_40::matcolor_z" "0";
+				}
+			}
+	
+			onTime +100 {
+				if ("gui::mp" == 0) {
+					set "crossCombat_40::matcolor" "$gui::crossColor"
+				}
+			}
+		}
+		windowDef d_crossCombat_40
+		{
+			rect	295,215,50,50
+			visible	0
+		}	
+		
+		windowDef crossCombat_48
+		{	
+			rect	296,216,48,48
+			background	"gui::crossImage"
+			visible	("gui::g_crosshairSize" == 48)	
+			notime 1
+	
+			onTime 0 {	
+				transition "rect" "$d_crossCombat_48::rect" "$crossCombat_48::rect" "150";
+					
+				if ("gui::mp" == 0) {
+					set "crossCombat_48::matcolor_x" "1";
+					set "crossCombat_48::matcolor_y" "0";
+					set "crossCombat_48::matcolor_z" "0";
+				}
+			}
+	
+			onTime +100 {
+				if ("gui::mp" == 0) {
+					set "crossCombat_48::matcolor" "$gui::crossColor"
+				}
+			}
+		}
+		windowDef d_crossCombat_48
+		{
+			rect	291,211,58,58
+			visible	0
+		}			
+	}
+
+	windowDef crossUsable
+	{
+		rect	308 ,228 ,24 ,24
+		background	"gfx/guis/crosshairs/useitem.tga"
+		visible	0
+		matcolor	1 ,1 ,1 ,1
+		notime	1
+
+		onTime 0 {
+			transition "rect" "308,228,24,24" "306,226,28,28" "300" ;
+		}
+		
+		onTime 300 {
+			transition "rect" "306,226,28,28" "308,228,24,24" "300" ;
+		}
+		
+		onTime 600 {
+			resettime "0" ;
+		}
+	}
+	windowDef crossTalk
+	{
+		rect	303,223,34,34
+		background	"gfx/guis/crosshairs/crosstalk"
+		visible	0
+		matcolor	1,0.5,0,0
+		notime	1
+
+		onTime 0 {
+			transition "matcolor_w" "0" "1" "200" ;
+			transition "rect" "303,223,34,34" "309,229,22,22" "200" ; 
+			transition "crossName::forecolor_w" "0" "1" "200" ;
+			transition "crossDesc::forecolor_w" "0" "1" "200" ;
+			set "desktop::talk" "1" ;
+		}
+
+	}
+	windowDef crossVehicle
+	{
+		rect	271,195,100,100
+		visible	"gui::vehiclecursor"
+
+		onTime 0 {
+			transition "crossVehicle1::matcolor_w" "0" "1" "200" ;
+			transition "crossVehicle2::matcolor_w" "0" "1" "200" ;
+			transition "t_enter::forecolor_w" "0" "1" "200" ;
+		}
+
+		onTime 200 {
+			transition "crossVehicle1::matcolor_w" "1" "0.4" "750" ;
+			transition "crossVehicle2::rect" "$crossVehicle2::rect" "$d_crossVehicle2::rect" "500" ;
+			transition "crossVehicle2::matcolor_w" "1" "0" "500" ;
+		}
+
+		onTime 950 {
+			resettime "200" ;
+		}
+
+		windowDef crossVehicle1
+		{
+			rect	29,33,40,29
+			background	"gfx/guis/crosshairs/crossvehicle1"
+			visible	1
+			matcolor	1,1,0,1
+			notime	1
+		}
+		windowDef crossVehicle2
+		{
+			rect	29,29,40,29
+			background	"gfx/guis/crosshairs/crossvehicle2"
+			visible	1
+			matcolor	1,1,0,0.4
+			notime	1
+		}
+		windowDef d_crossVehicle2
+		{
+			rect	29,22,40,29
+			background	"gfx/guis/crosshairs/crossvehicle2"
+			visible	0
+			matcolor	1,1,0,0.5
+			notime	1
+		}
+		windowDef t_enter
+		{
+			rect	-2,59,100,18
+			visible	1
+			forecolor	1,1,1,1
+			text	"#str_200936"
+			textscale	0.22
+			font	"fonts/lowpixel"
+			textstyle	1
+			textalign	1
+		}
+	}
+	windowDef crossGui
+	{
+		rect	308 ,228 ,24 ,24
+		background	"gfx/guis/crosshairs/crossgui1"
+		visible	"gui::guicursor"
+		matcolor	1 ,0.80 ,0 ,1
+		notime	1
+
+		onTime 0 {
+			set	"background" "gfx/guis/crosshairs/crossgui1" ; 
+		}
+
+		onTime 50 {
+			set	"background" "gfx/guis/crosshairs/crossgui2" ; 
+		}
+
+		onTime 100 {
+			set	"background" "gfx/guis/crosshairs/crossgui3" ; 
+		}
+
+	}
+	windowDef test
+	{
+		visible	0
+		rect	0,0,640,480
+		text	"gui::crossImage"
+		forecolor	1,1,1,1
+	}
+	windowDef crossName
+	{
+		rect	331,222,309,18
+		visible	0
+		forecolor	1,1,1,0
+		text	"gui::npc"
+		textscale	0.31
+		font	"fonts/marine"
+		textstyle	1
+	}
+	windowDef crossDesc
+	{
+		rect	332,238,308,17
+		visible	0
+		forecolor	1,1,1,0
+		text	"gui::npcdesc"
+		textscale	0.22
+		font	"fonts/lowpixel"
+		textstyle	1
+	}
+	windowDef crossVehicleLocked
+	{
+		rect	303,223,34,34
+		background	"gfx/guis/crosshairs/cross_broken"
+		visible	0
+		matcolor	1,0,0,0
+		notime	1
+
+		onTime 0 {
+			transition "matcolor_w" "0" "1" "200" ;
+			transition "rect" "303,223,34,34" "309,229,22,22" "200" ; 
+			transition "crossName::forecolor_w" "0" "1" "200" ;
+			transition "crossDesc::forecolor_w" "0" "1" "200" ;
+		}
+
+	}
+	windowDef crossFriendly
+	{
+		rect	300,220,40,40
+		visible	0
+		background	"gfx/guis/crosshairs/crosshair_friendly"
+		notime	1
+		matcolor	0,1,0,1
+
+		onTime 0 {
+			transition "rect" "300,220,40,40" "303,223,34,34" "200" ; 
+		}
+
+	}
+}

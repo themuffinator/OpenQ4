@@ -1,0 +1,806 @@
+windowDef Desktop
+{
+	rect	0, 0, 640, 480
+	selected	0
+	menugui	1
+	visible	1
+	definevec4	"tabSelBackground"	0.5,0.5,0.5,0.5
+	definevec4	"tabSelForeground"	1,1,1,1
+	definevec4	"tabBackground"	0.1,0.1,0.1,0.5
+	definevec4	"tabForeground"	0.752,0.752,0.752,1
+
+	onESC {
+		set "cmd"	"close" ;
+		
+	}
+
+	onNamedEvent ResetButtons {
+		set "gameCVars::backcolor" "$desktop::tabBackground" ;
+		set "gameCVars::forecolor" "$desktop::tabForeground" ;
+		set "physicsCVars::backcolor" "$desktop::tabBackground" ;
+		set "physicsCVars::forecolor" "$desktop::tabForeground" ;
+		set "rendererCVars::backcolor" "$desktop::tabBackground" ;
+		set "rendererCVars::forecolor" "$desktop::tabForeground" ;
+		set "soundCVars::backcolor" "$desktop::tabBackground" ;
+		set "soundCVars::forecolor" "$desktop::tabForeground" ;
+		set "aiCVars::backcolor" "$desktop::tabBackground" ;
+		set "aiCVars::forecolor" "$desktop::tabForeground" ;
+	}
+
+	onNamedEvent ActivateGame {
+		namedevent "desktop::ResetButtons";
+		set "gameCVars::backcolor" "$desktop::tabSelBackground" ;
+		set "gameCVars::forecolor" "$desktop::tabSelForeground" ;
+		set "cmd" "SelectGame";
+	}
+
+	onNamedEvent ActivatePhysics {
+		namedevent "desktop::ResetButtons";
+		set "physicsCVars::backcolor" "$desktop::tabSelBackground" ;
+		set "physicsCVars::forecolor" "$desktop::tabSelForeground" ;
+		set "cmd" "SelectPhysics";
+	}
+
+	onNamedEvent ActivateRenderer {
+		namedevent "desktop::ResetButtons";
+		set "rendererCVars::backcolor" "$desktop::tabSelBackground" ;
+		set "rendererCVars::forecolor" "$desktop::tabSelForeground" ;
+		set "cmd" "SelectRenderer";
+	}
+
+	onNamedEvent ActivateSound {
+		namedevent "desktop::ResetButtons";
+		set "soundCVars::backcolor" "$desktop::tabSelBackground" ;
+		set "soundCVars::forecolor" "$desktop::tabSelForeground" ;
+		set "cmd" "SelectSound";
+	}
+
+	onNamedEvent ActivateAI {
+		namedevent "desktop::ResetButtons";
+		set "aiCVars::backcolor" "$desktop::tabSelBackground" ;
+		set "aiCVars::forecolor" "$desktop::tabSelForeground" ;
+		set "cmd" "SelectAI";
+	}
+
+	windowDef CVarBox
+	{
+		rect	205,60,425,407
+		backcolor	0.298,0.298,0.298,0.8
+		visible	1
+		bordersize	1
+		bordercolor	0.501,0.501,0.501,1
+		windowDef Caption
+		{
+			rect	0,0,424,21
+			visible	1
+			text	"Edit Cvars"
+			textalign	1
+			textscale	0.4
+			backcolor	0.749,0.749,0.749,0.874
+			forecolor	0,0,0,1
+			bordersize	1
+			bordercolor	0.490,0.490,0.490,1
+			font	"fonts/lowpixel"
+			windowDef Close
+			{
+				rect	402,1,17,17
+				visible	1
+				backcolor	0.494,0.494,0.494,0.494
+				bordersize	1
+				bordercolor	0,0,0,1
+				forecolor	0,0,0,1
+				text	"X"
+				textscale	.27
+				font	"fonts/lowpixel"
+				textalign	0
+
+				onAction {
+					set "cmd"	"close" ;
+				}
+
+			}
+		}
+		windowDef Tabs
+		{
+			rect	4,34,416,369
+			visible	1
+			windowDef aiCVars
+			{
+				rect	302,2,26,20
+				visible	1
+				backcolor	0.1,0.1,0.1,0.5
+				textscale	0.4
+				text	"AI"
+				forecolor	0.752,0.752,0.752,1
+				font	"fonts/lowpixel"
+
+				onAction {
+					namedevent "desktop::ActivateAI"
+				}
+
+			}
+			windowDef soundCVars
+			{
+				rect	234,2,61,20
+				visible	1
+				backcolor	0.1,0.1,0.1,0.5
+				textscale	0.4
+				text	"Sound"
+				forecolor	0.752,0.752,0.752,1
+				font	"fonts/lowpixel"
+
+				onAction {
+					namedevent "desktop::ActivateSound"
+				}
+
+			}
+			windowDef rendererCVars
+			{
+				rect	142,2,85,20
+				visible	1
+				backcolor	0.1,0.1,0.1,0.5
+				textscale	0.4
+				text	"Renderer"
+				forecolor	0.752,0.752,0.752,1
+				font	"fonts/lowpixel"
+
+				onAction {
+					namedevent "desktop::ActivateRenderer"
+				}
+
+			}
+			windowDef physicsCVars
+			{
+				rect	63,2,72,20
+				visible	1
+				backcolor	0.1,0.1,0.1,0.5
+				textscale	0.4
+				text	"Physics"
+				forecolor	0.752,0.752,0.752,1
+				font	"fonts/lowpixel"
+
+				onAction {
+					namedevent "desktop::ActivatePhysics"
+				}
+
+			}
+			windowDef gameCVars
+			{
+				rect	2,2,53,20
+				visible	1
+				backcolor	0.5,0.5,0.5,0.5
+				textscale	0.4
+				text	"Game"
+				forecolor	1,1,1,1
+				font	"fonts/lowpixel"
+
+				onAction {
+					namedevent "desktop::ActivateGame"
+				}
+
+			}
+			windowDef CVarList
+			{
+				rect	2,22,409,343
+				visible	1
+				backcolor	0.5,0.5,0.5,0.5
+				windowDef cvar2Bar
+				{
+					rect	6,21,397,15
+					visible	"gui::cvar2Visible"
+					backcolor	0,0,0,.1
+				}
+				windowDef cvar4Bar
+				{
+					rect	6,51,397,15
+					visible	"gui::cvar4Visible"
+					backcolor	0,0,0,.1
+				}
+				windowDef cvar6Bar
+				{
+					rect	6,82,398,15
+					visible	"gui::cvar6Visible"
+					backcolor	0,0,0,.1
+				}
+				windowDef cvar8Bar
+				{
+					rect	6,111,397,15
+					visible	"gui::cvar8Visible"
+					backcolor	0,0,0,.1
+				}
+				windowDef cvar10Bar
+				{
+					rect	6,141,397,15
+					visible	"gui::cvar10Visible"
+					backcolor	0,0,0,.1
+				}
+				windowDef cvar12Bar
+				{
+					rect	6,171,398,15
+					visible	"gui::cvar12Visible"
+					backcolor	0,0,0,.1
+				}
+				windowDef cvar14Bar
+				{
+					rect	6,201,398,15
+					visible	"gui::cvar14Visible"
+					backcolor	0,0,0,.1
+				}
+				windowDef cvar16Bar
+				{
+					rect	6,231,398,15
+					visible	"gui::cvar16Visible"
+					backcolor	0,0,0,.1
+				}
+				windowDef cvar18Bar
+				{
+					rect	6,261,398,15
+					visible	"gui::cvar18Visible"
+					backcolor	0,0,0,.1
+				}
+				windowDef cvar20Bar
+				{
+					rect	6,291,398,15
+					visible	"gui::cvar20Visible"
+					backcolor	0,0,0,.1
+				}
+				windowDef cvar22Bar
+				{
+					rect	6,321,398,15
+					visible	"gui::cvar22Visible"
+					backcolor	0,0,0,.1
+				}
+				windowDef cvar1
+				{
+					rect	6,6,221,15
+					visible	"gui::cvar1Visible"
+					textscale	0.35
+					text	"gui::cvar1Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value1
+				{
+					rect	234,6,169,15
+					visible	"gui::cvar1Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar1"
+					choices	"gui::cvar1Choices"
+					values	"gui::cvar1Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+				windowDef cvar2
+				{
+					rect	6,21,221,15
+					visible	"gui::cvar2Visible"
+					textscale	0.35
+					text	"gui::cvar2Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value2
+				{
+					rect	234,21,169,15
+					visible	"gui::cvar2Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar2"
+					choices	"gui::cvar2Choices"
+					values	"gui::cvar2Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+				windowDef cvar3
+				{
+					rect	6,36,221,15
+					visible	"gui::cvar3Visible"
+					textscale	0.35
+					text	"gui::cvar3Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value3
+				{
+					rect	234,36,169,15
+					visible	"gui::cvar3Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar3"
+					choices	"gui::cvar3Choices"
+					values	"gui::cvar3Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+				windowDef cvar4
+				{
+					rect	6,51,221,15
+					visible	"gui::cvar4Visible"
+					textscale	0.35
+					text	"gui::cvar4Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value4
+				{
+					rect	234,51,169,15
+					visible	"gui::cvar4Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar4"
+					choices	"gui::cvar4Choices"
+					values	"gui::cvar4Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+				windowDef cvar5
+				{
+					rect	6,66,221,15
+					visible	"gui::cvar5Visible"
+					textscale	0.35
+					text	"gui::cvar5Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value5
+				{
+					rect	234,66,169,15
+					visible	"gui::cvar5Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar5"
+					choices	"gui::cvar5Choices"
+					values	"gui::cvar5Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+				windowDef cvar6
+				{
+					rect	6,81,221,15
+					visible	"gui::cvar6Visible"
+					textscale	0.35
+					text	"gui::cvar6Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value6
+				{
+					rect	234,81,169,15
+					visible	"gui::cvar6Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar6"
+					choices	"gui::cvar6Choices"
+					values	"gui::cvar6Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+				windowDef cvar7
+				{
+					rect	6,96,221,15
+					visible	"gui::cvar7Visible"
+					textscale	0.35
+					text	"gui::cvar7Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value7
+				{
+					rect	234,96,169,15
+					visible	"gui::cvar7Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar7"
+					choices	"gui::cvar7Choices"
+					values	"gui::cvar7Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+				windowDef cvar8
+				{
+					rect	6,111,221,15
+					visible	"gui::cvar8Visible"
+					textscale	0.35
+					text	"gui::cvar8Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value8
+				{
+					rect	234,111,169,15
+					visible	"gui::cvar8Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar8"
+					choices	"gui::cvar8Choices"
+					values	"gui::cvar8Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+				windowDef cvar9
+				{
+					rect	6,126,221,15
+					visible	"gui::cvar9Visible"
+					textscale	0.35
+					text	"gui::cvar9Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value9
+				{
+					rect	234,126,169,15
+					visible	"gui::cvar9Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar9"
+					choices	"gui::cvar9Choices"
+					values	"gui::cvar9Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+				windowDef cvar10
+				{
+					rect	6,141,221,15
+					visible	"gui::cvar10Visible"
+					textscale	0.35
+					text	"gui::cvar10Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value10
+				{
+					rect	234,141,169,15
+					visible	"gui::cvar10Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar10"
+					choices	"gui::cvar10Choices"
+					values	"gui::cvar10Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+				windowDef cvar11
+				{
+					rect	6,156,221,15
+					visible	"gui::cvar11Visible"
+					textscale	0.35
+					text	"gui::cvar11Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value11
+				{
+					rect	234,156,169,15
+					visible	"gui::cvar11Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar11"
+					choices	"gui::cvar11Choices"
+					values	"gui::cvar11Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+				windowDef cvar12
+				{
+					rect	6,171,221,15
+					visible	"gui::cvar12Visible"
+					textscale	0.35
+					text	"gui::cvar12Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value12
+				{
+					rect	234,171,169,15
+					visible	"gui::cvar12Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar12"
+					choices	"gui::cvar12Choices"
+					values	"gui::cvar12Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+				windowDef cvar13
+				{
+					rect	6,186,221,15
+					visible	"gui::cvar13Visible"
+					textscale	0.35
+					text	"gui::cvar13Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value13
+				{
+					rect	234,186,169,15
+					visible	"gui::cvar13Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar13"
+					choices	"gui::cvar13Choices"
+					values	"gui::cvar13Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+				windowDef cvar14
+				{
+					rect	6,201,221,15
+					visible	"gui::cvar14Visible"
+					textscale	0.35
+					text	"gui::cvar14Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value14
+				{
+					rect	234,201,169,15
+					visible	"gui::cvar14Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar14"
+					choices	"gui::cvar14Choices"
+					values	"gui::cvar14Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+				windowDef cvar15
+				{
+					rect	6,216,221,15
+					visible	"gui::cvar15Visible"
+					textscale	0.35
+					text	"gui::cvar15Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value15
+				{
+					rect	234,216,169,15
+					visible	"gui::cvar15Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar15"
+					choices	"gui::cvar15Choices"
+					values	"gui::cvar15Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+				windowDef cvar16
+				{
+					rect	6,231,221,15
+					visible	"gui::cvar16Visible"
+					textscale	0.35
+					text	"gui::cvar16Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value16
+				{
+					rect	234,231,169,15
+					visible	"gui::cvar16Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar16"
+					choices	"gui::cvar16Choices"
+					values	"gui::cvar16Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+				windowDef cvar17
+				{
+					rect	6,246,221,15
+					visible	"gui::cvar17Visible"
+					textscale	0.35
+					text	"gui::cvar17Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value17
+				{
+					rect	234,246,169,15
+					visible	"gui::cvar17Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar17"
+					choices	"gui::cvar17Choices"
+					values	"gui::cvar17Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+				windowDef cvar18
+				{
+					rect	6,261,221,15
+					visible	"gui::cvar18Visible"
+					textscale	0.35
+					text	"gui::cvar18Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value18
+				{
+					rect	234,261,169,15
+					visible	"gui::cvar18Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar18"
+					choices	"gui::cvar18Choices"
+					values	"gui::cvar18Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+				windowDef cvar19
+				{
+					rect	6,276,221,15
+					visible	"gui::cvar19Visible"
+					textscale	0.35
+					text	"gui::cvar19Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value19
+				{
+					rect	234,276,169,15
+					visible	"gui::cvar19Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar19"
+					choices	"gui::cvar19Choices"
+					values	"gui::cvar19Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+				windowDef cvar20
+				{
+					rect	6,291,221,15
+					visible	"gui::cvar20Visible"
+					textscale	0.35
+					text	"gui::cvar20Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value20
+				{
+					rect	234,291,169,15
+					visible	"gui::cvar20Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar20"
+					choices	"gui::cvar20Choices"
+					values	"gui::cvar20Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+				windowDef cvar21
+				{
+					rect	6,306,221,15
+					visible	"gui::cvar21Visible"
+					textscale	0.35
+					text	"gui::cvar21Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value21
+				{
+					rect	234,306,169,15
+					visible	"gui::cvar21Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar21"
+					choices	"gui::cvar21Choices"
+					values	"gui::cvar21Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+				windowDef cvar22
+				{
+					rect	6,321,221,15
+					visible	"gui::cvar22Visible"
+					textscale	0.35
+					text	"gui::cvar22Friendly"
+					forecolor	1,1,1,1
+					textaligny	-4
+					textalign	2
+					font	"fonts/lowpixel"
+				}
+				choiceDef value22
+				{
+					rect	234,321,169,15
+					visible	"gui::cvar22Visible"
+					forecolor	1,1,0,1
+					text	""
+					textscale	0.35
+					textaligny	-4
+					cvar	"gui::cvar22"
+					choices	"gui::cvar22Choices"
+					values	"gui::cvar22Values"
+					choiceType	1
+					font	"fonts/lowpixel"
+				}
+			}
+		}
+	}
+}

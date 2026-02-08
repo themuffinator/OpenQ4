@@ -6,7 +6,7 @@
       "type": "cppvsdbg",
       "request": "launch",
       "preLaunchTask": "Build OpenQ4 (Meson Debug)",
-      "program": "${workspaceFolder}\\builddir\\OpenQ4.exe",
+      "program": "${workspaceFolder}\\install\\OpenQ4.exe",
       "args": [
         "+set",
         "logFile",
@@ -20,6 +20,9 @@
         "+set",
         "r_fullscreen",
         "0",
+        "+set",
+        "ui_aspectCorrection",
+        "1",
         "+set",
         "g_autoScreenshot",
         "0",
@@ -37,7 +40,10 @@
         "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Quake 4",
         "+set",
         "fs_devpath",
-        "",
+        "${workspaceFolder}\\install",
+        "+set",
+        "fs_game",
+        "openbase",
         "+set",
         "net_serverDedicated",
         "0",
@@ -56,7 +62,7 @@
         "+spawnServer",
         "mp/q4dm1"
       ],
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}\\install",
       "console": "integratedTerminal"
     }
   ]

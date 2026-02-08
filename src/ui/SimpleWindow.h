@@ -79,6 +79,10 @@ protected:
 	int 			textAlign;
 	float 			textAlignx;
 	float 			textAligny;
+	float			forceAspectWidth;
+	float			forceAspectHeight;
+	unsigned char	screenAlignX;
+	unsigned char	screenAlignY;
 	int				textShadow;
 
 	idWinStr		text;

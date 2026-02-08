@@ -41,6 +41,7 @@
 #define	CD_BASEDIR						"OpenQ4"
 #define	BASE_GAMEDIR					"q4base"
 #define	BASE_MPGAMEDIR					"q4mp"
+#define OPENQ4_GAMEDIR					"openbase"
 #define	DEMO_GAMEDIR					"demo"
 
 // filenames

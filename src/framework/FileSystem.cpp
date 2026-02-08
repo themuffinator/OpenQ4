@@ -875,7 +875,7 @@ idCVar	idFileSystemLocal::fs_homepath( "fs_homepath", "", CVAR_SYSTEM | CVAR_INI
 idCVar	idFileSystemLocal::fs_savepath( "fs_savepath", "", CVAR_SYSTEM | CVAR_INIT, "" );
 idCVar	idFileSystemLocal::fs_cdpath( "fs_cdpath", "", CVAR_SYSTEM | CVAR_INIT, "" );
 idCVar	idFileSystemLocal::fs_devpath( "fs_devpath", "", CVAR_SYSTEM | CVAR_INIT, "" );
-idCVar	idFileSystemLocal::fs_game( "fs_game", "", CVAR_SYSTEM | CVAR_INIT | CVAR_SERVERINFO, "mod path" );
+idCVar	idFileSystemLocal::fs_game( "fs_game", OPENQ4_GAMEDIR, CVAR_SYSTEM | CVAR_INIT | CVAR_SERVERINFO, "mod path" );
 idCVar  idFileSystemLocal::fs_game_base( "fs_game_base", "", CVAR_SYSTEM | CVAR_INIT | CVAR_SERVERINFO, "alternate mod path, searched after the main fs_game path, before the basedir" );
 #ifdef WIN32
 idCVar	idFileSystemLocal::fs_caseSensitiveOS( "fs_caseSensitiveOS", "0", CVAR_SYSTEM | CVAR_BOOL, "" );
@@ -4387,11 +4387,28 @@ void idFileSystemLocal::FindDLL( const char *name, char _dllPath[ MAX_OSPATH ], 
 #else
 	if ( !serverPaks.Num() ) {
 #endif
-		// from executable directory first - this is handy for developement
-		dllPath = Sys_EXEPath( );
-		dllPath.StripFilename( );
-		dllPath.AppendPath( dllName );
-		dllFile = OpenExplicitFileRead( dllPath );
+		idStr exeDir = Sys_EXEPath();
+		exeDir.StripFilename();
+
+		// Stage game modules under builddir/<gamedir>/ so the engine can load them
+		// without requiring copies into the executable root.
+		const char *moduleGameDir = fs_game.GetString();
+		if ( !moduleGameDir[0] ) {
+			moduleGameDir = OPENQ4_GAMEDIR;
+		}
+		if ( moduleGameDir[0] ) {
+			dllPath = exeDir;
+			dllPath.AppendPath( moduleGameDir );
+			dllPath.AppendPath( dllName );
+			dllFile = OpenExplicitFileRead( dllPath );
+		}
+
+		// Fallback: check the executable directory itself.
+		if ( !dllFile ) {
+			dllPath = exeDir;
+			dllPath.AppendPath( dllName );
+			dllFile = OpenExplicitFileRead( dllPath );
+		}
 	}
 	if ( !dllFile ) {
 		if ( !serverPaks.Num() ) {
@@ -4706,7 +4723,7 @@ void idFileSystemLocal::FindMapScreenshot( const char *path, char *buf, int len 
 	mapname.StripPath();
 	mapname.StripFileExtension();
 	
-	idStr::snPrintf( buf, len, "guis/assets/splash/%s.tga", mapname.c_str() );
+	idStr::snPrintf( buf, len, "gfx/guis/loadscreens/%s.tga", mapname.c_str() );
 	if ( ReadFile( buf, NULL, NULL ) == -1 ) {
 		// try to extract from an addon
 		file = OpenFileReadFlags( buf, FSFLAG_SEARCH_ADDONS );
@@ -4720,7 +4737,7 @@ void idFileSystemLocal::FindMapScreenshot( const char *path, char *buf, int len 
 			WriteFile( buf, data, dlen );
 			delete[] data;
 		} else {
-			idStr::Copynz( buf, "guis/assets/splash/pdtempa", len );
+			idStr::Copynz( buf, "gfx/guis/loadscreens/generic.tga", len );
 		}
 	}
 }

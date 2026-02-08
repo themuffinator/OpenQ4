@@ -46,6 +46,10 @@ idCVar *					idCVar::staticVars = NULL;
 
 idCVar com_forceGenericSIMD( "com_forceGenericSIMD", "0", CVAR_BOOL|CVAR_SYSTEM, "force generic platform independent SIMD" );
 
+int Sys_Milliseconds( void ) {
+	return sys ? sys->Milliseconds() : 0;
+}
+
 #endif
 
 idRenderWorld *				gameRenderWorld = NULL;		// all drawing is done to this world

@@ -759,11 +759,11 @@ int idDeviceContext::DrawText(float x, float y, float scale, idVec4 color, const
 	return count;
 }
 
-void idDeviceContext::SetSize(float width, float height) {
-	vidWidth = VIRTUAL_WIDTH;
-	vidHeight = VIRTUAL_HEIGHT;
-	xScale = yScale = 0.0f;
-	xOffset = yOffset = 0.0f;
+void idDeviceContext::CalcVirtualScaleOffset( float width, float height, float &outXScale, float &outYScale, float &outXOffset, float &outYOffset ) const {
+	outXScale = 0.0f;
+	outYScale = 0.0f;
+	outXOffset = 0.0f;
+	outYOffset = 0.0f;
 
 	if ( width <= 0.0f || height <= 0.0f ) {
 		return;
@@ -777,8 +777,8 @@ void idDeviceContext::SetSize(float width, float height) {
 	}
 
 	if ( windowWidth <= 0.0f || windowHeight <= 0.0f ) {
-		xScale = vidWidth * ( 1.0f / width );
-		yScale = vidHeight * ( 1.0f / height );
+		outXScale = static_cast<float>( VIRTUAL_WIDTH ) * ( 1.0f / width );
+		outYScale = static_cast<float>( VIRTUAL_HEIGHT ) * ( 1.0f / height );
 		return;
 	}
 
@@ -788,17 +788,35 @@ void idDeviceContext::SetSize(float width, float height) {
 		const float drawWidth = width * uniformPhysicalScale;
 		const float drawHeight = height * uniformPhysicalScale;
 
-		const float virtualPerPhysicalX = vidWidth / windowWidth;
-		const float virtualPerPhysicalY = vidHeight / windowHeight;
+		const float virtualPerPhysicalX = static_cast<float>( VIRTUAL_WIDTH ) / windowWidth;
+		const float virtualPerPhysicalY = static_cast<float>( VIRTUAL_HEIGHT ) / windowHeight;
 
-		xScale = uniformPhysicalScale * virtualPerPhysicalX;
-		yScale = uniformPhysicalScale * virtualPerPhysicalY;
-		xOffset = ( windowWidth - drawWidth ) * 0.5f * virtualPerPhysicalX;
-		yOffset = ( windowHeight - drawHeight ) * 0.5f * virtualPerPhysicalY;
+		outXScale = uniformPhysicalScale * virtualPerPhysicalX;
+		outYScale = uniformPhysicalScale * virtualPerPhysicalY;
+		outXOffset = ( windowWidth - drawWidth ) * 0.5f * virtualPerPhysicalX;
+		outYOffset = ( windowHeight - drawHeight ) * 0.5f * virtualPerPhysicalY;
 	} else {
-		xScale = vidWidth * ( 1.0f / width );
-		yScale = vidHeight * ( 1.0f / height );
+		outXScale = static_cast<float>( VIRTUAL_WIDTH ) * ( 1.0f / width );
+		outYScale = static_cast<float>( VIRTUAL_HEIGHT ) * ( 1.0f / height );
 	}
+}
+
+void idDeviceContext::GetVirtualScreenExpansion( float width, float height, float &xExpand, float &yExpand ) const {
+	float scaleX = 0.0f;
+	float scaleY = 0.0f;
+	float offsetX = 0.0f;
+	float offsetY = 0.0f;
+
+	CalcVirtualScaleOffset( width, height, scaleX, scaleY, offsetX, offsetY );
+	xExpand = ( scaleX > 0.0f ) ? ( offsetX / scaleX ) : 0.0f;
+	yExpand = ( scaleY > 0.0f ) ? ( offsetY / scaleY ) : 0.0f;
+}
+
+void idDeviceContext::SetSize(float width, float height) {
+	vidWidth = VIRTUAL_WIDTH;
+	vidHeight = VIRTUAL_HEIGHT;
+
+	CalcVirtualScaleOffset( width, height, xScale, yScale, xOffset, yOffset );
 }
 
 int idDeviceContext::CharWidth( const char c, float scale ) {

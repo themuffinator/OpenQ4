@@ -24,7 +24,7 @@
       "problemMatcher": []
     },
     {
-      "label": "Build OpenQ4 (Meson Debug)",
+      "label": "Compile OpenQ4 (Meson Debug)",
       "type": "shell",
       "command": "powershell",
       "args": [
@@ -37,13 +37,40 @@
         "-C",
         "${workspaceFolder}\\builddir"
       ],
+      "problemMatcher": [
+        "$msCompile"
+      ]
+    },
+    {
+      "label": "Stage OpenQ4 Install Tree (Meson Debug)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}\\tools\\build\\meson_setup.ps1",
+        "install",
+        "-C",
+        "${workspaceFolder}\\builddir",
+        "--no-rebuild",
+        "--skip-subprojects"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Build OpenQ4 (Meson Debug)",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Compile OpenQ4 (Meson Debug)",
+        "Stage OpenQ4 Install Tree (Meson Debug)"
+      ],
       "group": {
         "kind": "build",
         "isDefault": true
       },
-      "problemMatcher": [
-        "$msCompile"
-      ]
+      "problemMatcher": []
     }
   ]
 }

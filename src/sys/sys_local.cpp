@@ -123,12 +123,21 @@ void idSysLocal::DLL_Unload(intptr_t dllHandle ) {
 }
 
 void idSysLocal::DLL_GetFileName( const char *baseName, char *dllName, int maxLength ) {
+	const bool explicitGameModuleName = idStr::Icmpn( baseName, "game_", 5 ) == 0;
 #ifdef _WIN32
-	idStr::snPrintf( dllName, maxLength, "%s" CPUSTRING ".dll", baseName );
+	if ( explicitGameModuleName ) {
+		idStr::snPrintf( dllName, maxLength, "%s.dll", baseName );
+	} else {
+		idStr::snPrintf( dllName, maxLength, "%s" CPUSTRING ".dll", baseName );
+	}
 #elif defined( __linux__ )
-	idStr::snPrintf( dllName, maxLength, "%s" CPUSTRING ".so", baseName );
+	if ( explicitGameModuleName ) {
+		idStr::snPrintf( dllName, maxLength, "%s.so", baseName );
+	} else {
+		idStr::snPrintf( dllName, maxLength, "%s" CPUSTRING ".so", baseName );
+	}
 #elif defined( MACOS_X )
-	idStr::snPrintf( dllName, maxLength, "%s" ".dylib", baseName );
+	idStr::snPrintf( dllName, maxLength, "%s.dylib", baseName );
 #else
 #error OS define is required
 #endif

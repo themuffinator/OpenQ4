@@ -1,0 +1,621 @@
+	//--------------------------------------------------------------//
+	// Settings->Game Options->Free Look
+	//--------------------------------------------------------------//
+		windowDef set_game_freelook_hover
+		{
+			rect	245,49,361,20
+			visible	0
+
+			onMouseEnter {
+				if ("desktop::active" == 0) {
+					stoptransitions "set_game_freelook_background" ;
+					
+					set "set_game_freelook_background::matcolor_w" "1" ;
+					
+					set "cmd" "play main_menu_mouseover" ;	
+				}
+			}
+
+			onMouseExit {
+				if ("desktop::active" == 0) {
+					transition "set_game_freelook_background::matcolor_w" "1" "0.4" "300" ;
+				}
+			}
+
+		}
+	//==============================================================//
+				
+	//==============================================================//
+	// Settings->Game Options->Auto Weapon Reload
+	//--------------------------------------------------------------//
+		windowDef set_game_autoreload_hover
+		{
+			rect	245,73,361,20
+			visible	0
+
+			onMouseEnter {
+				if ("desktop::active" == 0) {
+					stoptransitions "set_game_autoreload_background" ;
+					
+					set "set_game_autoreload_background::matcolor_w" "1" ;
+					
+					set "cmd" "play main_menu_mouseover" ;	
+				}
+			}
+
+			onMouseExit {
+				if ("desktop::active" == 0) {
+					transition "set_game_autoreload_background::matcolor_w" "1" "0.4" "300" ;
+				}
+			}
+
+		}
+	//==============================================================//
+
+	//==============================================================//
+	// Settings->Game Options->Auto Weapon Switch
+	//--------------------------------------------------------------//
+		windowDef set_game_autoswitch_hover
+		{
+			rect	245,97,361,20
+			visible	0
+
+			onMouseEnter {
+				if ("desktop::active" == 0) {
+					stoptransitions "set_game_autoswitch_background" ;
+					
+					set "set_game_autoswitch_background::matcolor_w" "1" ;
+					
+					set "cmd" "play main_menu_mouseover" ;	
+				}
+			}
+
+			onMouseExit {
+				if ("desktop::active" == 0) {
+					transition "set_game_autoswitch_background::matcolor_w" "1" "0.4" "300" ;
+				}
+			}
+
+		}
+	//==============================================================//
+				
+	//==============================================================//
+	// Settings->Game Options->Show Decals
+	//--------------------------------------------------------------//
+		windowDef set_game_showdecals_hover
+		{
+			rect	245,121,361,20
+			visible	0
+
+			onMouseEnter {
+				if ("desktop::active" == 0) {
+					stoptransitions "set_game_showdecals_background_4" ;
+					
+					set "set_game_showdecals_background::matcolor_w" "1" ;
+					
+					set "cmd" "play main_menu_mouseover" ;	
+				}
+			}
+
+			onMouseExit {
+				if ("desktop::active" == 0) {
+					transition "set_game_showdecals_background::matcolor_w" "1" "0.4" "300" ;
+				}
+			}
+
+		}
+	//==============================================================//
+				
+	//==============================================================//
+	// Settings->Game Options->Show Gun
+	//--------------------------------------------------------------//
+		windowDef set_game_showgun_hover
+		{
+			rect	245,145,361,20
+			visible	0
+
+			onMouseEnter {
+				if ("desktop::active" == 0) {
+					stoptransitions "set_game_showgun_background" ;
+					
+					set "set_game_showgun_background::matcolor_w" "1" ;
+					
+					set "cmd" "play main_menu_mouseover" ;	
+				}
+			}
+
+			onMouseExit {
+				if ("desktop::active" == 0) {
+					transition "set_game_showgun_background::matcolor_w" "1" "0.4" "300" ;
+				}
+			}
+
+		}
+	//==============================================================//
+					
+	//==============================================================//
+	// Settings->Game Options->Gun Position							
+	//--------------------------------------------------------------//
+		windowDef set_game_gunXYZ_hover
+		{
+			rect  245,169,361,20
+			visible 0
+				
+			onMouseEnter {
+				if ("desktop::active" == 0) {
+					stoptransitions "set_game_gunXYZ_background" ;
+					set "set_game_gunXYZ_background::matcolor_w" "1" ;
+					set "cmd" "play main_menu_mouseover" ;
+				}
+			}
+			onMouseExit {
+				if ("desktop::active" == 0) {
+					transition "set_game_gunXYZ_background::matcolor_w" "1" "0.4" "300" ;
+				}
+			}
+		}
+	//==============================================================//
+	
+	//==============================================================//
+	// Settings->Game Options->Simple Items
+	//--------------------------------------------------------------//
+		windowDef set_game_simpleitems_hover
+		{
+			rect	245,193,361,20
+			visible	0
+
+			onMouseEnter {
+				if ("desktop::active" == 0) {
+					stoptransitions "set_game_simpleitems_background" ;
+					set "set_game_simpleitems_background::matcolor_w" "1" ;
+					set "cmd" "play main_menu_mouseover" ;	
+				}
+			}
+
+			onMouseExit {
+				if ("desktop::active" == 0) {
+					transition "set_game_simpleitems_background::matcolor_w" "1" "0.4" "300" ;
+				}
+			}
+		}
+	//==============================================================//
+		
+	//==============================================================//
+	// Settings->Game Options->Force Pro Skins						
+	//--------------------------------------------------------------//
+		windowDef set_game_forcemodel_hover
+		{
+			rect	245,217,361,20
+			visible	0
+
+			onMouseEnter {
+				if ("desktop::active" == 0) {
+					stoptransitions "set_game_forcemodel_background" ;
+					set "set_game_forcemodel_background::matcolor_w" "1" ;
+					set "cmd" "play main_menu_mouseover" ;	
+				}
+			}
+
+			onMouseExit {
+				if ("desktop::active" == 0) {
+					transition "set_game_forcemodel_background::matcolor_w" "1" "0.4" "300" ;
+				}
+			}
+		}
+	//==============================================================//
+				
+	//==============================================================//
+	// Settings->Game Options->Invert Mouse
+	//==============================================================//
+		windowDef set_game_mpitch_hover
+		{
+			rect	245,241,361,20
+			visible	0
+	
+			onMouseEnter {
+				if ("desktop::active" == 0) {
+					stoptransitions "set_game_mpitch_background" ;
+					set "set_game_mpitch_background::matcolor_w" "1" ;
+					set "cmd" "play main_menu_mouseover" ;	
+				}
+			}
+	
+			onMouseExit {
+				if ("desktop::active" == 0) {
+						transition "set_game_mpitch_background::matcolor_w" "1" "0.4" "300" ;
+					}
+				}
+		}	
+	//==============================================================//
+					
+	//==============================================================//
+	// Settings->Game Options->Mouse Smooth
+	//==============================================================//			
+		windowDef set_game_msmooth_hover
+		{
+			rect	245,265,361,20
+			visible	0
+
+			onMouseEnter {
+				if ("desktop::active" == 0) {
+					stoptransitions "set_game_msmooth_background8" ;
+					set "set_game_msmooth_background::matcolor_w" "1" ;
+					set "cmd" "play main_menu_mouseover" ;	
+				}
+			}
+
+			onMouseExit {
+				if ("desktop::active" == 0) {
+					transition "set_game_msmooth_background::matcolor_w" "1" "0.4" "300" ;
+				}
+			}
+
+		}
+	//==============================================================//
+					
+	//==============================================================//
+	// Settings->Game Options->Mouse Sensitivity
+	//==============================================================//
+		windowDef set_game_msensitivity_hover
+		{
+			rect	245,289,361,20
+			visible	0
+
+			onMouseEnter {
+				if ("desktop::active" == 0) {
+					stoptransitions "set_game_msensitivity_background" ;
+					
+					set "set_game_msensitivity_background::matcolor_w" "1" ;
+					
+					set "cmd" "play main_menu_mouseover" ;	
+				}
+			}
+
+			onMouseExit {
+				if ("desktop::active" == 0) {
+					transition "set_game_msensitivity_background::matcolor_w" "1" "0.4" "300" ;
+				}
+			}
+
+		}
+	//==============================================================//
+				
+	//==============================================================//
+	// Settings->Game Options->Use Custom Crosshair
+	//==============================================================//
+		windowDef set_game_customxhair_hover
+		{
+			rect	245,312,361,20
+			visible	0
+
+			onMouseEnter {
+				if ("desktop::active" == 0) {
+					stoptransitions "set_game_customxhair_background" ;
+					
+					set "set_game_customxhair_background::matcolor_w" "1" ;
+					
+					set "cmd" "play main_menu_mouseover" ;	
+				}
+			}
+
+			onMouseExit {
+				if ("desktop::active" == 0) {
+					transition "set_game_customxhair_background::matcolor_w" "1" "0.4" "300" ;
+				}
+			}
+		}
+	//==============================================================//
+				
+	//==============================================================//
+	// Settings->Game Options->Preview Crosshair
+	//==============================================================//
+		windowDef set_game_previewxhair_hover
+		{
+			rect	245,335,361,48
+			visible	0
+
+			onMouseEnter {
+				if ("desktop::active" == 0) {
+					stoptransitions "set_game_previewxhair_background" ;
+					
+					set "set_game_previewxhair_background::matcolor_w" "1" ;
+					
+					set "cmd" "play main_menu_mouseover" ;	
+				}
+			}
+
+			onMouseExit {
+				if ("desktop::active" == 0) {
+					transition "set_game_previewxhair_background::matcolor_w" "1" "0.4" "300" ;
+				}
+			}
+
+			onAction {
+				set "cmd" "chooseCrosshair" "1" ;
+				set "cmd" "play main_menu_selection" ;
+			}
+
+			onBackAction {
+				set "cmd" "chooseCrosshair" "-1" ;
+				set "cmd" "play main_menu_selection" ;
+			}
+
+		}
+	//==============================================================//
+				
+	//==============================================================//
+	// Settings->Game Options->Crosshair Size
+	//==============================================================//
+		windowDef set_game_xhairsize_hover
+		{
+			rect	245,384,361,20
+			visible	0
+
+			onMouseEnter {
+				if ("desktop::active" == 0) {
+					stoptransitions "set_game_xhairsize_background" ;
+					
+					set "set_game_xhairsize_background::matcolor_w" "1" ;
+					
+					set "cmd" "play main_menu_mouseover" ;	
+				}
+			}
+
+			onMouseExit {
+				if ("desktop::active" == 0) {
+					transition "set_game_xhairsize_background::matcolor_w" "1" "0.4" "300" ;
+				}
+			}
+
+		}
+	//==============================================================//
+				
+	//==============================================================//
+	// Settings->Game Options->Crosshair Color
+	//==============================================================//
+		windowDef set_game_xhaircolor_hover
+		{
+			rect	245,409,361,20
+			visible	0
+
+			onMouseEnter {
+				if ("desktop::active" == 0) {
+					stoptransitions "set_game_xhaircolor_background" ;
+					
+					set "set_game_xhaircolor_background::matcolor_w" "1" ;
+					
+					set "cmd" "play main_menu_mouseover" ;	
+				}
+			}
+
+			onMouseExit {
+				if ("desktop::active" == 0) {
+					transition "set_game_xhaircolor_background::matcolor_w" "1" "0.4" "300" ;
+				}
+			}
+			windowDef set_game_xhaircolor_hover_xcolor0
+			{
+				rect	227,8,12,12
+				visible	0
+	
+				onAction {
+					consoleCMD "g_crosshairColor 1 1 1 1" ;
+					
+					set "set_game_previewxhair_size_16::matcolor" "1,1,1,1" ;
+					set "set_game_previewxhair_size_24::matcolor" "1,1,1,1" ;
+					set "set_game_previewxhair_size_32::matcolor" "1,1,1,1" ;
+					set "set_game_previewxhair_size_40::matcolor" "1,1,1,1" ;
+					set "set_game_previewxhair_size_48::matcolor" "1,1,1,1" ;
+					
+					set "set_game_xhaircolor_xcolor0::bordercolor" "0.580,0.580,0.580,1" ;
+					set "set_game_xhaircolor_xcolor1::bordercolor" "0,0,0,1" ;
+					set "set_game_xhaircolor_xcolor2::bordercolor" "0,0,0,1" ;
+					set "set_game_xhaircolor_xcolor3::bordercolor" "0,0,0,1" ;
+					set "set_game_xhaircolor_xcolor4::bordercolor" "0,0,0,1" ;
+					set "set_game_xhaircolor_xcolor5::bordercolor" "0,0,0,1" ;
+					set "set_game_xhaircolor_xcolor6::bordercolor" "0,0,0,1" ;
+					set "set_game_xhaircolor_xcolor7::bordercolor" "0,0,0,1" ;
+					
+					set "set_game_xhaircolor_xcolor0::rect" "244,9,12,16" ;
+					set "set_game_xhaircolor_xcolor1::rect" "258,9,12,12" ;
+					set "set_game_xhaircolor_xcolor2::rect" "272,9,12,12" ;
+					set "set_game_xhaircolor_xcolor3::rect" "286,9,12,12" ;
+					set "set_game_xhaircolor_xcolor4::rect" "300,9,12,12" ;
+					set "set_game_xhaircolor_xcolor5::rect" "314,9,12,12" ;
+					set "set_game_xhaircolor_xcolor6::rect" "328,9,12,12" ;
+					set "set_game_xhaircolor_xcolor7::rect" "342,9,12,12" ;
+					
+					set "cmd" "play main_menu_selection" ;
+				}
+			}
+			windowDef set_game_xhaircolor_hover_xcolor1
+			{
+				rect	241,8,12,12
+				visible	0
+	
+				onAction {
+					consoleCMD "g_crosshairColor 1 0 0 1" ;
+					
+					set "set_game_previewxhair_size_16::matcolor" "1,0,0,1" ;
+					set "set_game_previewxhair_size_24::matcolor" "1,0,0,1" ;
+					set "set_game_previewxhair_size_32::matcolor" "1,0,0,1" ;
+					set "set_game_previewxhair_size_40::matcolor" "1,0,0,1" ;
+					set "set_game_previewxhair_size_48::matcolor" "1,0,0,1" ;
+					
+					set "set_game_xhaircolor_xcolor0::rect" "244,9,12,12" ;
+					set "set_game_xhaircolor_xcolor1::rect" "258,9,12,16" ;
+					set "set_game_xhaircolor_xcolor2::rect" "272,9,12,12" ;
+					set "set_game_xhaircolor_xcolor3::rect" "286,9,12,12" ;
+					set "set_game_xhaircolor_xcolor4::rect" "300,9,12,12" ;
+					set "set_game_xhaircolor_xcolor5::rect" "314,9,12,12" ;
+					set "set_game_xhaircolor_xcolor6::rect" "328,9,12,12" ;
+					set "set_game_xhaircolor_xcolor7::rect" "342,9,12,12" ;
+					
+					set "cmd" "play main_menu_selection" ;
+				}
+	
+			}
+			windowDef set_game_xhaircolor_hover_xcolor2
+			{
+				rect	255,8,12,12
+				visible	0
+	
+				onAction {
+					consoleCMD "g_crosshairColor 1 0.5 0 1" ;
+					
+					set "set_game_previewxhair_size_16::matcolor" "1,0.5,0,1" ;
+					set "set_game_previewxhair_size_24::matcolor" "1,0.5,0,1" ;
+					set "set_game_previewxhair_size_32::matcolor" "1,0.5,0,1" ;
+					set "set_game_previewxhair_size_40::matcolor" "1,0.5,0,1" ;
+					set "set_game_previewxhair_size_48::matcolor" "1,0.5,0,1" ;
+					
+					set "set_game_xhaircolor_xcolor0::rect" "244,9,12,12" ;
+					set "set_game_xhaircolor_xcolor1::rect" "258,9,12,12" ;
+					set "set_game_xhaircolor_xcolor2::rect" "272,9,12,16" ;
+					set "set_game_xhaircolor_xcolor3::rect" "286,9,12,12" ;
+					set "set_game_xhaircolor_xcolor4::rect" "300,9,12,12" ;
+					set "set_game_xhaircolor_xcolor5::rect" "314,9,12,12" ;
+					set "set_game_xhaircolor_xcolor6::rect" "328,9,12,12" ;
+					set "set_game_xhaircolor_xcolor7::rect" "342,9,12,12" ;
+					
+					set "cmd" "play main_menu_selection" ;
+				}
+	
+			}
+			windowDef set_game_xhaircolor_hover_xcolor3
+			{
+				rect	269,8,12,12
+				visible	0
+	
+				onAction {
+					consoleCMD "g_crosshairColor 1 1 0 1" ;
+					
+					set "set_game_previewxhair_size_16::matcolor" "1,1,0,1" ;
+					set "set_game_previewxhair_size_24::matcolor" "1,1,0,1" ;
+					set "set_game_previewxhair_size_32::matcolor" "1,1,0,1" ;
+					set "set_game_previewxhair_size_40::matcolor" "1,1,0,1" ;
+					set "set_game_previewxhair_size_48::matcolor" "1,1,0,1" ;
+					
+					set "set_game_xhaircolor_xcolor0::rect" "244,9,12,12" ;
+					set "set_game_xhaircolor_xcolor1::rect" "258,9,12,12" ;
+					set "set_game_xhaircolor_xcolor2::rect" "272,9,12,12" ;
+					set "set_game_xhaircolor_xcolor3::rect" "286,9,12,16" ;
+					set "set_game_xhaircolor_xcolor4::rect" "300,9,12,12" ;
+					set "set_game_xhaircolor_xcolor5::rect" "314,9,12,12" ;
+					set "set_game_xhaircolor_xcolor6::rect" "328,9,12,12" ;
+					set "set_game_xhaircolor_xcolor7::rect" "342,9,12,12" ;
+					
+					set "cmd" "play main_menu_selection" ;
+				}
+	
+			}
+			windowDef set_game_xhaircolor_hover_xcolor4
+			{
+				rect	283,8,12,12
+				visible	0
+	
+				onAction {
+					consoleCMD "g_crosshairColor 0 1 0 1" ;
+					
+					set "set_game_previewxhair_size_16::matcolor" "0,1,0,1" ;
+					set "set_game_previewxhair_size_24::matcolor" "0,1,0,1" ;
+					set "set_game_previewxhair_size_32::matcolor" "0,1,0,1" ;
+					set "set_game_previewxhair_size_40::matcolor" "0,1,0,1" ;
+					set "set_game_previewxhair_size_48::matcolor" "0,1,0,1" ;
+					
+					set "set_game_xhaircolor_xcolor0::rect" "244,9,12,12" ;
+					set "set_game_xhaircolor_xcolor1::rect" "258,9,12,12" ;
+					set "set_game_xhaircolor_xcolor2::rect" "272,9,12,12" ;
+					set "set_game_xhaircolor_xcolor3::rect" "286,9,12,12" ;
+					set "set_game_xhaircolor_xcolor4::rect" "300,9,12,16" ;
+					set "set_game_xhaircolor_xcolor5::rect" "314,9,12,12" ;
+					set "set_game_xhaircolor_xcolor6::rect" "328,9,12,12" ;
+					set "set_game_xhaircolor_xcolor7::rect" "342,9,12,12" ;
+					
+					set "cmd" "play main_menu_selection" ;
+				}
+	
+			}
+			windowDef set_game_xhaircolor_hover_xcolor5
+			{
+				rect	297,8,12,12
+				visible	0
+	
+				onAction {
+					consoleCMD "g_crosshairColor 0 1 1 1" ;
+					
+					set "set_game_previewxhair_size_16::matcolor" "0,1,1,1" ;
+					set "set_game_previewxhair_size_24::matcolor" "0,1,1,1" ;
+					set "set_game_previewxhair_size_32::matcolor" "0,1,1,1" ;
+					set "set_game_previewxhair_size_40::matcolor" "0,1,1,1" ;
+					set "set_game_previewxhair_size_48::matcolor" "0,1,1,1" ;
+					
+					set "set_game_xhaircolor_xcolor0::rect" "244,9,12,12" ;
+					set "set_game_xhaircolor_xcolor1::rect" "258,9,12,12" ;
+					set "set_game_xhaircolor_xcolor2::rect" "272,9,12,12" ;
+					set "set_game_xhaircolor_xcolor3::rect" "286,9,12,12" ;
+					set "set_game_xhaircolor_xcolor4::rect" "300,9,12,12" ;
+					set "set_game_xhaircolor_xcolor5::rect" "314,9,12,16" ;
+					set "set_game_xhaircolor_xcolor6::rect" "328,9,12,12" ;
+					set "set_game_xhaircolor_xcolor7::rect" "342,9,12,12" ;				
+	
+					set "cmd" "play main_menu_selection" ;
+				}
+	
+			}
+			windowDef set_game_xhaircolor_hover_xcolor6
+			{
+				rect	311,8,12,12
+				visible	0
+	
+				onAction {
+					consoleCMD "g_crosshairColor 0 0 1 1" ;
+					
+					set "set_game_previewxhair_size_16::matcolor" "0,0,1,1" ;
+					set "set_game_previewxhair_size_24::matcolor" "0,0,1,1" ;
+					set "set_game_previewxhair_size_32::matcolor" "0,0,1,1" ;
+					set "set_game_previewxhair_size_40::matcolor" "0,0,1,1" ;
+					set "set_game_previewxhair_size_48::matcolor" "0,0,1,1" ;
+					
+					set "set_game_xhaircolor_xcolor0::rect" "244,9,12,12" ;
+					set "set_game_xhaircolor_xcolor1::rect" "258,9,12,12" ;
+					set "set_game_xhaircolor_xcolor2::rect" "272,9,12,12" ;
+					set "set_game_xhaircolor_xcolor3::rect" "286,9,12,12" ;
+					set "set_game_xhaircolor_xcolor4::rect" "300,9,12,12" ;
+					set "set_game_xhaircolor_xcolor5::rect" "314,9,12,12" ;
+					set "set_game_xhaircolor_xcolor6::rect" "328,9,12,16" ;
+					set "set_game_xhaircolor_xcolor7::rect" "342,9,12,12" ;
+					
+					set "cmd" "play main_menu_selection" ;
+				}
+	
+			}
+			windowDef set_game_xhaircolor_hover_xcolor7
+			{
+				rect	325,8,12,12
+				visible	0
+
+				onAction {
+					consoleCMD "g_crosshairColor 1 0 0.5 1" ;
+					
+					set "set_game_previewxhair_size_16::matcolor" "1,0,0.5,1" ;
+					set "set_game_previewxhair_size_24::matcolor" "1,0,0.5,1" ;
+					set "set_game_previewxhair_size_32::matcolor" "1,0,0.5,1" ;
+					set "set_game_previewxhair_size_40::matcolor" "1,0,0.5,1" ;
+					set "set_game_previewxhair_size_48::matcolor" "1,0,0.5,1" ;
+					
+					set "set_game_xhaircolor_xcolor0::rect" "244,9,12,12" ;
+					set "set_game_xhaircolor_xcolor1::rect" "258,9,12,12" ;
+					set "set_game_xhaircolor_xcolor2::rect" "272,9,12,12" ;
+					set "set_game_xhaircolor_xcolor3::rect" "286,9,12,12" ;
+					set "set_game_xhaircolor_xcolor4::rect" "300,9,12,12" ;
+					set "set_game_xhaircolor_xcolor5::rect" "314,9,12,12" ;
+					set "set_game_xhaircolor_xcolor6::rect" "328,9,12,12" ;
+					set "set_game_xhaircolor_xcolor7::rect" "342,9,12,16" ;
+					
+					set "cmd" "play main_menu_selection" ;
+				}
+
+			}
+		}
+	//==============================================================//

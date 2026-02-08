@@ -1,0 +1,1205 @@
+windowDef Desktop
+{
+	rect	0,0,640,480
+	menugui	1
+	backcolor	0.501,0.501,0.501,0
+	visible	1
+	nocursor	1
+	float	"objdone"	0
+
+	onInit {
+		namedEvent "closeObjective";
+	}
+	
+	onNamedEvent saveMessage {
+		set "quicksave_msg::forecolor_w" "1" ;
+		set "quicksave_msg::visible" "1" ;
+		resettime "quicksave_msg" "0" ;
+	}
+
+	onNamedEvent objectiveFailed {
+		namedEvent "closeObjective";
+		set "objectives::visible" "1";
+		set "wristcomm::visible" "0";
+		set "p_failedobjective::visible" "1";
+	}
+	
+	onNamedEvent newObjective {
+		localSound	"guisounds_click" ;
+		set "p_objectives::visible" "1" ;
+		resettime "p_objectives" "0" ;
+		resettime "anim_obj_in" "0" ;
+		set "desktop::objdone" "1" ;
+	}
+
+	onNamedEvent newObjectiveComplete {
+		localSound	"guisounds_click" ;
+		set "p_compobjectives::visible" "1" ;
+		resettime "p_compobjectives" "0" ;
+		resettime "anim_compobj_in" "0" ;
+		set "desktop::objdone" "2" ;
+	}
+
+	onNamedEvent closeObjective {
+		if ("desktop::objdone" == 1) { 
+			resettime "anim_obj_out" "0" ;
+			set "objdone" "0" ;
+			
+		} else if ("desktop::objdone" == 2) { 
+			resettime "anim_compobj_out" "0" ;
+			set "objdone" "0" ;
+		}
+	}
+
+	onNamedEvent wristcommShow {
+		set "objectives::visible" "0";
+		set "wristcomm::visible" "1";
+		if ( "gui::objective1" == 1 && "gui::objective2" == 1 && "gui::objective3" == 1) {
+			stoptransitions "anim_obj1_in" ;
+			stoptransitions "anim_obj2_in" ;
+			stoptransitions "anim_obj3_in" ;
+			
+			transition "obj3_backbar::rect" "$d_obj3_backbar::rect" "$obj3_backbar::rect" "0" ;
+			set "obj3_backbar::matcolor_w" "0" ;
+			set "obj3_title::forecolor_w" "0" ;
+			set "obj3_title2::forecolor_w" "0" ;
+			set "obj1_3_ba::matcolor_w" "0" ;
+			set "obj1_3_b::matcolor_w" "0" ;
+			set "obj1_3_descript::forecolor_w" "0" ;
+			set "obj1_3_text::forecolor_w" "0" ;
+			set "obj1_3_corner::matcolor_w" "0" ;
+			set "obj1_3_ss::matcolor_w" "0" ;
+			set "obj1_3_ss::bordercolor_w" "0" ;
+			set "obj2_3_ba::matcolor_w" "0" ;
+			set "obj2_3_b::matcolor_w" "0" ;
+			set "obj2_3_descript::forecolor_w" "0" ;
+			set "obj2_3_text::forecolor_w" "0" ;
+			set "obj2_3_corner::matcolor_w" "0" ;
+			set "obj2_3_ss::matcolor_w" "0" ;
+			set "obj2_3_ss::bordercolor_w" "0" ;
+			set "obj3_3_ba::matcolor_w" "0" ;
+			set "obj3_3_b::matcolor_w" "0" ;
+			set "obj3_3_descript::forecolor_w" "0" ;
+			set "obj3_3_text::forecolor_w" "0" ;
+			set "obj3_3_corner::matcolor_w" "0" ;
+			set "obj3_3_ss::matcolor_w" "0" ;
+			set "obj3_3_ss::bordercolor_w" "0" ;
+			stoptransitions "anim_noObj_in" ;
+			
+			resettime "anim_obj3_in" "0" ;
+		} else	if ( "gui::objective1" == 1 && "gui::objective2" == 1) {
+			stoptransitions "anim_obj1_in" ;
+			stoptransitions "anim_obj2_in" ;
+			stoptransitions "anim_obj3_in" ;
+			stoptransitions "anim_noObj_in" ;
+			
+			transition "obj2_backbar::rect" "$d_obj2_backbar::rect" "$obj2_backbar::rect" "0" ;
+			set "obj2_backbar::matcolor_w" "0" ;
+			set "obj2_title::forecolor_w" "0" ;
+			set "obj2_title2::forecolor_w" "0" ;
+			set "obj1_2_ba::matcolor_w" "0" ;
+			set "obj1_2_b::matcolor_w" "0" ;
+			set "obj1_2_descript::forecolor_w" "0" ;
+			set "obj1_2_text::forecolor_w" "0" ;
+			set "obj1_2_corner::matcolor_w" "0" ;
+			set "obj1_2_ss::matcolor_w" "0" ;
+			set "obj1_2_ss::bordercolor_w" "0" ;
+			set "obj2_2_ba::matcolor_w" "0" ;
+			set "obj2_2_b::matcolor_w" "0" ;
+			set "obj2_2_descript::forecolor_w" "0" ;
+			set "obj2_2_text::forecolor_w" "0" ;
+			set "obj2_2_corner::matcolor_w" "0" ;
+			set "obj2_2_ss::matcolor_w" "0" ;
+			set "obj2_2_ss::bordercolor_w" "0" ;
+			
+			resettime "anim_obj2_in" "0" ;
+		} else if ( "gui::objective1" == 1 ){
+			stoptransitions "anim_obj1_in" ;
+			stoptransitions "anim_obj2_in" ;
+			stoptransitions "anim_obj3_in" ;
+			stoptransitions "anim_noObj_in" ;
+			
+			transition "obj1_backbar::rect" "$d_obj1_backbar::rect" "$obj1_backbar::rect" "0" ;
+			set "obj1_backbar::matcolor_w" "0" ;
+			set "obj1_title::forecolor_w" "0" ;
+			set "obj1_title2::forecolor_w" "0" ;
+			set "obj1_1_ba::matcolor_w" "0" ;
+			set "obj1_1_b::matcolor_w" "0" ;
+			set "obj1_1_descript::forecolor_w" "0" ;
+			set "obj1_1_text::forecolor_w" "0" ;
+			set "obj1_1_corner::matcolor_w" "0" ;
+			set "obj1_1_ss::matcolor_w" "0" ;
+			set "obj1_1_ss::bordercolor_w" "0" ;
+			
+			resettime "anim_obj1_in" "0" ;
+		} else {
+			stoptransitions "anim_obj1_in" ;
+			stoptransitions "anim_obj2_in" ;
+			stoptransitions "anim_obj3_in" ;
+			stoptransitions "anim_noObj_in" ;
+			
+			transition "noObj_backbar::rect" "$d_noObj_backbar::rect" "$noObj_backbar::rect" "0" ;
+			set "noObj_backbar::matcolor_w" "0" ;
+			set "noObj_title::forecolor_w" "0" ;
+			set "noObj_title2::forecolor_w" "0" ;
+			set "noObj_1_ba::matcolor_w" "0" ;
+			set "noObj_1_b::matcolor_w" "0" ;
+			set "noObj_1_text::forecolor_w" "0" ;
+			set "noObj_1_ss::matcolor_w" "0" ;
+			set "noObj_1_ss::bordercolor_w" "0" ;
+			
+			resettime "anim_noObj_in" "0" ;
+		}
+	}
+
+	onNamedEvent wristcommHide {
+		set "objectives::visible" "1";
+		set "wristcomm::visible" "0";
+	}
+
+	onEvent {
+		if ( "gui::objective1" == 1 && "gui::objective2" == 1 && "gui::objective3" == 1) {
+			set "p_obj1::visible" "0" ;	
+			set "p_obj2::visible" "0" ;	
+			set "p_obj3::visible" "1" ;
+			set "p_noObj::visible" "0" ;		
+		} else	if ( "gui::objective1" == 1 && "gui::objective2" == 1) {
+			set "p_obj1::visible" "0" ;	
+			set "p_obj2::visible" "1" ;	
+			set "p_obj3::visible" "0" ;
+			set "p_noObj::visible" "0" ;		
+		} else if ( "gui::objective1" == 1 ){
+			set "p_obj1::visible" "1" ;	
+			set "p_obj2::visible" "0" ;	
+			set "p_obj3::visible" "0" ;
+			set "p_noObj::visible" "0" ;		
+		} else {
+			set "p_obj1::visible" "0" ;	
+			set "p_obj2::visible" "0" ;	
+			set "p_obj3::visible" "0" ;
+			set "p_noObj::visible" "1" ;		
+		}
+	}
+
+	windowDef objectives
+	{
+		rect	0,0,640,480
+		visible	1
+		windowDef p_failedobjective
+		{
+			visible	0
+			rect	0,200,640,80
+			windowDef failedtext
+			{
+				rect	0,0,640,40
+				text	"#str_200271"
+				textscale	0.5
+				textalign	1
+				font	"fonts/marine"
+				forecolor	1,0,0,1
+				visible	1
+				textspacing	-2
+			}
+			windowDef failedtitle
+			{
+				rect	0,40,640,40
+				text	"gui::objectivetitle"
+				textscale	0.5
+				textalign	1
+				font	"fonts/marine"
+				forecolor	1,1,1,1
+				visible	1
+				textspacing	-2
+			}
+		}
+		windowDef p_objectives
+		{
+			rect	0,0,640,480
+			visible	1
+
+			windowDef d_obj_backbar
+			{
+				rect	-616,32,1057,175
+				visible	0
+				background	"gfx/guis/mainmenu/bg_darkgrad2"
+				matcolor	0,0,0,0.8
+				matscalex	-1
+			}
+			windowDef d_obj_ba
+			{
+				rect	6,52,279,127
+				visible	0
+				background	"gfx/guis/hud/obj_btn1"
+				matcolor	0.690,0.803,0.419,0.4
+			}
+			windowDef d_obj_b
+			{
+				rect	6,179,279,17
+				visible	0
+				background	"gfx/guis/hud/obj_btn2"
+				matcolor	0.690,0.803,0.419,0.4
+			}
+			windowDef obj_backbar
+			{
+				rect	-616,32,741,175
+				visible	1
+				background	"gfx/guis/mainmenu/bg_darkgrad2"
+				matcolor	0,0,0,0
+				matscalex	-1
+			}
+			windowDef obj_ba
+			{
+				rect	6,110,279,15
+				visible	1
+				background	"gfx/guis/hud/obj_btn1"
+				matcolor	0.690,0.803,0.419,0
+			}
+			windowDef obj_b
+			{
+				rect	6,125,279,17
+				visible	1
+				background	"gfx/guis/hud/obj_btn2"
+				matcolor	0.690,0.803,0.419,0
+			}
+			windowDef obj_title
+			{
+				rect	9,31,203,18
+				visible	1
+				forecolor	1,0.5,0,0
+				text	"#str_200274"
+				textscale	0.25
+				font	"fonts/marine"
+				textspacing	-1
+			}
+			windowDef obj_corner
+			{
+				rect	12,55,16,16
+				visible	1
+				background	"gfx/guis/mainmenu/corner"
+				matcolor	0.690,0.803,0.419,0
+			}
+			windowDef obj_descript
+			{
+				rect	26,55,136,27
+				visible	1
+				forecolor	1,1,1,0
+				text	"gui::objectivetitle"
+				textscale	0.2
+				font	"fonts/lowpixel"
+			}
+			windowDef obj_ss
+			{
+				rect	28,84,134,100
+				visible	1
+				background	"gui::screenshot"
+				matcolor	1,1,1,0
+				bordersize	1
+				bordercolor	0,0,0,0
+			}
+			windowDef obj_title2
+			{
+				rect	26,195,148,13
+				visible	1
+				forecolor	0.850,0.905,0.749,0
+				text	"#str_200275"
+				textscale	0.14
+				font	"fonts/marine"
+				textspacing	-1
+			}
+		}
+		windowDef p_compobjectives
+		{
+			rect	0,0,640,480
+			visible	1
+
+			windowDef d_compobj_backbar
+			{
+				rect	239,53,822,66
+				visible	0
+				background	"gfx/guis/mainmenu/bg_darkgrad2"
+				matcolor	0,0,0,0.8
+			}
+			windowDef d_compobj_ba
+			{
+				rect	412,75,279,22
+				visible	0
+				background	"gfx/guis/hud/obj_btn1"
+				matcolor	0.690,0.803,0.419,0.4
+			}
+			windowDef d_compobj_b
+			{
+				rect	412,97,279,17
+				visible	0
+				background	"gfx/guis/hud/obj_btn2"
+				matcolor	0.690,0.803,0.419,0.4
+			}
+			windowDef compobj_backbar
+			{
+				rect	553,53,508,66
+				visible	1
+				background	"gfx/guis/mainmenu/bg_darkgrad2"
+				matcolor	0,0,0,0
+			}
+			windowDef compobj_ba
+			{
+				rect	412,83,279,1
+				visible	1
+				background	"gfx/guis/hud/obj_btn1"
+				matcolor	0.690,0.803,0.419,0
+			}
+			windowDef compobj_b
+			{
+				rect	412,84,279,17
+				visible	1
+				background	"gfx/guis/hud/obj_btn2"
+				matcolor	0.690,0.803,0.419,0
+			}
+			windowDef compobj_title
+			{
+				rect	413,53,228,18
+				visible	1
+				forecolor	1,0.5,0,0
+				text	"#str_200276"
+				textscale	0.25
+				font	"fonts/marine"
+				textspacing	-1
+			}
+			windowDef compobj_corner
+			{
+				rect	416,79,16,16
+				visible	1
+				background	"gfx/guis/mainmenu/corner"
+				matcolor	0.690,0.803,0.419,0
+			}
+			windowDef compobj_descript
+			{
+				rect	431,79,178,30
+				visible	1
+				forecolor	1,1,1,0
+				text	"gui::objectivetitle"
+				textscale	0.2
+				font	"fonts/lowpixel"
+			}
+		}
+	}
+	windowDef wristcomm
+	{
+		rect	0,0,640,480
+		visible	0
+		windowDef p_obj3
+		{
+			rect	0,0,640,480
+			visible	0
+			windowDef d_obj3_backbar
+			{
+				rect	-618,10,1221,460
+				visible	0
+				background	"gfx/guis/mainmenu/bg_darkgrad2"
+				matcolor	0,0,0,0.8
+				matscalex	-1
+			}
+			windowDef obj3_backbar
+			{
+				rect	-836,10,1221,460
+				visible	1
+				background	"gfx/guis/mainmenu/bg_darkgrad2"
+				matcolor	0,0,0,0
+				matscalex	-1
+			}
+			windowDef obj3_title
+			{
+				rect	9,11,255,18
+				visible	1
+				forecolor	1,0.5,0,0
+				text	"#str_200291"
+				textscale	0.25
+				font	"fonts/marine"
+				textspacing	-1
+			}
+			windowDef obj3_title2
+			{
+				rect	26,456,268,12
+				visible	1
+				forecolor	0.850,0.905,0.749,0
+				text	"#str_200275"
+				textscale	0.14
+				font	"fonts/marine"
+				textspacing	-1
+			}
+			windowDef p_obj1_3
+			{
+				rect	0,0,640,480
+				visible	1
+				windowDef obj1_3_ba
+				{
+					rect	6,35,600,112
+					visible	1
+					background	"gfx/guis/hud/obj_btn3"
+					matcolor	0.690,0.803,0.419,0
+				}
+				windowDef obj1_3_b
+				{
+					rect	6,147,600,20
+					visible	1
+					background	"gfx/guis/hud/obj_btn4"
+					matcolor	0.690,0.803,0.419,0
+				}
+				windowDef obj1_3_corner
+				{
+					rect	12,36,16,16
+					visible	1
+					background	"gfx/guis/mainmenu/corner"
+					matcolor	0.690,0.803,0.419,0
+				}
+				windowDef obj1_3_descript
+				{
+					rect	26,36,308,15
+					visible	1
+					forecolor	1,1,1,0
+					text	"gui::objectivetitle1"
+					textscale	0.2
+					font	"fonts/lowpixel"
+				}
+				windowDef obj1_3_ss
+				{
+					rect	28,53,134,100
+					visible	1
+					background	"gui::objectiveshot1"
+					matcolor	1,1,1,0
+					bordersize	1
+					bordercolor	0,0,0,0
+				}
+				windowDef obj1_3_text
+				{
+					rect	170,52,180,100
+					visible	1
+					forecolor	0.815,0.870,0.713,0
+					text	"gui::objectivetext1"
+					textscale	0.2
+					font	"fonts/lowpixel"
+				}
+			}
+			windowDef p_obj2_3
+			{
+				rect	0,0,640,480
+				visible	1
+				windowDef obj2_3_ba
+				{
+					rect	6,178,600,112
+					visible	1
+					background	"gfx/guis/hud/obj_btn3"
+					matcolor	0.690,0.803,0.419,0
+				}
+				windowDef obj2_3_b
+				{
+					rect	6,290,600,20
+					visible	1
+					background	"gfx/guis/hud/obj_btn4"
+					matcolor	0.690,0.803,0.419,0
+				}
+				windowDef obj2_3_corner
+				{
+					rect	12,179,16,16
+					visible	1
+					background	"gfx/guis/mainmenu/corner"
+					matcolor	0.690,0.803,0.419,0
+				}
+				windowDef obj2_3_descript
+				{
+					rect	26,179,308,15
+					visible	1
+					forecolor	1,1,1,0
+					text	"gui::objectivetitle2"
+					textscale	0.2
+					font	"fonts/lowpixel"
+				}
+				windowDef obj2_3_ss
+				{
+					rect	28,196,134,100
+					visible	1
+					background	"gui::objectiveshot2"
+					matcolor	1,1,1,0
+					bordersize	1
+					bordercolor	0,0,0,0
+				}
+				windowDef obj2_3_text
+				{
+					rect	170,195,180,100
+					visible	1
+					forecolor	0.815,0.870,0.713,0
+					text	"gui::objectivetext2"
+					textscale	0.2
+					font	"fonts/lowpixel"
+				}
+			}
+			windowDef p_obj3_3
+			{
+				rect	0,0,640,480
+				visible	1
+				windowDef obj3_3_ba
+				{
+					rect	6,321,600,112
+					visible	1
+					background	"gfx/guis/hud/obj_btn3"
+					matcolor	0.690,0.803,0.419,0
+				}
+				windowDef obj3_3_b
+				{
+					rect	6,433,600,20
+					visible	1
+					background	"gfx/guis/hud/obj_btn4"
+					matcolor	0.690,0.803,0.419,0
+				}
+				windowDef obj3_3_corner
+				{
+					rect	12,322,16,16
+					visible	1
+					background	"gfx/guis/mainmenu/corner"
+					matcolor	0.690,0.803,0.419,0
+				}
+				windowDef obj3_3_descript
+				{
+					rect	26,322,308,15
+					visible	1
+					forecolor	1,1,1,0
+					text	"gui::objectivetitle3"
+					textscale	0.2
+					font	"fonts/lowpixel"
+				}
+				windowDef obj3_3_ss
+				{
+					rect	28,339,134,100
+					visible	1
+					background	"gui::objectiveshot3"
+					matcolor	1,1,1,0
+					bordersize	1
+					bordercolor	0,0,0,0
+				}
+				windowDef obj3_3_text
+				{
+					rect	170,338,180,101
+					visible	1
+					forecolor	0.815,0.870,0.713,0
+					text	"gui::objectivetext3"
+					textscale	0.2
+					font	"fonts/lowpixel"
+				}
+			}
+		}
+		windowDef p_obj2
+		{
+			rect	0,0,640,480
+			visible	0
+			windowDef d_obj2_backbar
+			{
+				rect	-616,82,1221,316
+				visible	0
+				background	"gfx/guis/mainmenu/bg_darkgrad2"
+				matcolor	0,0,0,0.8
+				matscalex	-1
+			}
+			windowDef obj2_backbar
+			{
+				rect	-836,82,1221,316
+				visible	1
+				background	"gfx/guis/mainmenu/bg_darkgrad2"
+				matcolor	0,0,0,0
+				matscalex	-1
+			}
+			windowDef obj2_title
+			{
+				rect	9,83,255,18
+				visible	1
+				forecolor	1,0.5,0,0
+				text	"#str_200291"
+				textscale	0.25
+				font	"fonts/marine"
+				textspacing	-1
+			}
+			windowDef obj2_title2
+			{
+				rect	26,384,268,12
+				visible	1
+				forecolor	0.850,0.905,0.749,0
+				text	"#str_200275"
+				textscale	0.14
+				font	"fonts/marine"
+				textspacing	-1
+			}
+			windowDef p_obj1_2
+			{
+				rect	0,0,640,480
+				visible	1
+				windowDef obj1_2_ba
+				{
+					rect	6,107,600,112
+					visible	1
+					background	"gfx/guis/hud/obj_btn3"
+					matcolor	0.690,0.803,0.419,0
+				}
+				windowDef obj1_2_b
+				{
+					rect	6,219,600,20
+					visible	1
+					background	"gfx/guis/hud/obj_btn4"
+					matcolor	0.690,0.803,0.419,0
+				}
+				windowDef obj1_2_corner
+				{
+					rect	12,108,16,16
+					visible	1
+					background	"gfx/guis/mainmenu/corner"
+					matcolor	0.690,0.803,0.419,0
+				}
+				windowDef obj1_2_descript
+				{
+					rect	26,108,308,15
+					visible	1
+					forecolor	1,1,1,0
+					text	"gui::objectivetitle1"
+					textscale	0.2
+					font	"fonts/lowpixel"
+				}
+				windowDef obj1_2_ss
+				{
+					rect	28,125,134,100
+					visible	1
+					background	"gui::objectiveshot1"
+					matcolor	1,1,1,0
+					bordersize	1
+					bordercolor	0,0,0,0
+				}
+				windowDef obj1_2_text
+				{
+					rect	170,124,180,100
+					visible	1
+					forecolor	0.815,0.870,0.713,0
+					text	"gui::objectivetext1"
+					textscale	0.2
+					font	"fonts/lowpixel"
+				}
+			}
+			windowDef p_obj2_2
+			{
+				rect	0,0,640,480
+				visible	1
+				windowDef obj2_2_ba
+				{
+					rect	6,249,600,112
+					visible	1
+					background	"gfx/guis/hud/obj_btn3"
+					matcolor	0.690,0.803,0.419,0
+				}
+				windowDef obj2_2_b
+				{
+					rect	6,361,600,20
+					visible	1
+					background	"gfx/guis/hud/obj_btn4"
+					matcolor	0.690,0.803,0.419,0
+				}
+				windowDef obj2_2_corner
+				{
+					rect	12,250,16,16
+					visible	1
+					background	"gfx/guis/mainmenu/corner"
+					matcolor	0.690,0.803,0.419,0
+				}
+				windowDef obj2_2_descript
+				{
+					rect	26,250,308,15
+					visible	1
+					forecolor	1,1,1,0
+					text	"gui::objectivetitle2"
+					textscale	0.2
+					font	"fonts/lowpixel"
+				}
+				windowDef obj2_2_ss
+				{
+					rect	28,267,134,100
+					visible	1
+					background	"gui::objectiveshot2"
+					matcolor	1,1,1,0
+					bordersize	1
+					bordercolor	0,0,0,0
+				}
+				windowDef obj2_2_text
+				{
+					rect	170,266,180,100
+					visible	1
+					forecolor	0.815,0.870,0.713,0
+					text	"gui::objectivetext2"
+					textscale	0.2
+					font	"fonts/lowpixel"
+				}
+			}
+		}
+		windowDef p_obj1
+		{
+			rect	0,0,640,480
+			visible	0
+			windowDef d_obj1_backbar
+			{
+				rect	-615,153,1221,175
+				visible	0
+				background	"gfx/guis/mainmenu/bg_darkgrad2"
+				matcolor	0,0,0,0.8
+				matscalex	-1
+			}
+			windowDef obj1_backbar
+			{
+				rect	-836,153,1221,175
+				visible	1
+				background	"gfx/guis/mainmenu/bg_darkgrad2"
+				matcolor	0,0,0,0
+				matscalex	-1
+			}
+			windowDef obj1_title
+			{
+				rect	9,154,255,18
+				visible	1
+				forecolor	1,0.5,0,0
+				text	"#str_200291"
+				textscale	0.25
+				font	"fonts/marine"
+				textspacing	-1
+			}
+			windowDef obj1_title2
+			{
+				rect	26,313,268,12
+				visible	1
+				forecolor	0.850,0.905,0.749,0
+				text	"#str_200275"
+				textscale	0.14
+				font	"fonts/marine"
+				textspacing	-1
+			}
+			windowDef p_obj1_1
+			{
+				rect	0,0,640,480
+				visible	1
+				windowDef obj1_1_ba
+				{
+					rect	6,178,600,112
+					visible	1
+					background	"gfx/guis/hud/obj_btn3"
+					matcolor	0.690,0.803,0.419,0
+				}
+				windowDef obj1_1_b
+				{
+					rect	6,290,600,20
+					visible	1
+					background	"gfx/guis/hud/obj_btn4"
+					matcolor	0.690,0.803,0.419,0
+				}
+				windowDef obj1_1_corner
+				{
+					rect	12,179,16,16
+					visible	1
+					background	"gfx/guis/mainmenu/corner"
+					matcolor	0.690,0.803,0.419,0
+				}
+				windowDef obj1_1_descript
+				{
+					rect	26,179,308,15
+					visible	1
+					forecolor	1,1,1,0
+					text	"gui::objectivetitle1"
+					textscale	0.2
+					font	"fonts/lowpixel"
+				}
+				windowDef obj1_1_ss
+				{
+					rect	28,196,134,100
+					visible	1
+					background	"gui::objectiveshot1"
+					matcolor	1,1,1,0
+					bordersize	1
+					bordercolor	0,0,0,0
+				}
+				windowDef obj1_1_text
+				{
+					rect	170,195,180,100
+					visible	1
+					forecolor	0.815,0.870,0.713,0
+					text	"gui::objectivetext1"
+					textscale	0.2
+					font	"fonts/lowpixel"
+				}
+			}
+		}
+		windowDef p_noObj
+		{
+			rect	0,0,640,480
+			visible	0
+			windowDef d_noObj_backbar
+			{
+				rect	-613,159,1221,162
+				visible	0
+				background	"gfx/guis/mainmenu/bg_darkgrad2"
+				matcolor	0,0,0,0.8
+				matscalex	-1
+			}
+			windowDef noObj_backbar
+			{
+				rect	-838,159,1221,162
+				visible	1
+				background	"gfx/guis/mainmenu/bg_darkgrad2"
+				matcolor	0,0,0,0
+				matscalex	-1
+			}
+			windowDef noObj_title
+			{
+				rect	9,161,255,18
+				visible	1
+				forecolor	1,0.5,0,0
+				text	"#str_200291"
+				textscale	0.25
+				font	"fonts/marine"
+				textspacing	-1
+			}
+			windowDef noObj_title2
+			{
+				rect	26,306,268,12
+				visible	1
+				forecolor	0.850,0.905,0.749,0
+				text	"#str_200275"
+				textscale	0.14
+				font	"fonts/marine"
+				textspacing	-1
+			}
+			windowDef p_noObj_1
+			{
+				rect	0,0,640,480
+				visible	1
+				windowDef noObj_1_ba
+				{
+					rect	6,183,600,101
+					visible	1
+					background	"gfx/guis/hud/obj_btn3"
+					matcolor	0.690,0.803,0.419,0
+				}
+				windowDef noObj_1_b
+				{
+					rect	6,284,600,20
+					visible	1
+					background	"gfx/guis/hud/obj_btn4"
+					matcolor	0.690,0.803,0.419,0
+				}
+				windowDef noObj_1_ss
+				{
+					rect	28,189,134,100
+					visible	1
+					background	"gfx/objectives/none"
+					matcolor	1,1,1,0
+					bordersize	1
+					bordercolor	0,0,0,0
+				}
+				windowDef noObj_1_text
+				{
+					rect	170,215,164,73
+					visible	1
+					forecolor	0.815,0.870,0.713,0
+					text	"#str_200935"
+					textscale	0.31
+					font	"fonts/lowpixel"
+				}
+			}
+		}
+	}
+	
+//-----------------------		
+// quicksave notice
+//-----------------------
+
+	windowDef quicksave_msg
+	{
+		rect	0,64,640,20
+		visible	0
+		forecolor	1,1,1,1
+		text	"#str_200908"
+		textscale	0.25
+		font	"fonts/lowpixel"
+		textspacing	0
+		textalign	1
+		textstyle	1
+
+		onTime 2000 {
+			transition "forecolor_w" "1" "0" "1000" ;
+		}
+		
+		onTime +1000 {
+			set "quicksave_msg::visible" "0" ;
+		}
+
+	}
+	
+	
+	windowDef anim_obj1_in
+	{
+		rect	0,0,1,1
+		visible	1
+		notime	1
+
+		onTime 0 {
+			stoptransitions "anim_obj1_in" ;
+			
+			transition "obj1_backbar::rect" "$obj1_backbar::rect" "$d_obj1_backbar::rect" "150" ;
+			transition "obj1_backbar::matcolor_w" "0" "0.8" "150" ;
+			
+			transition "obj1_1_ba::matcolor_w" "0" "0.5" "150" ;
+			transition "obj1_1_b::matcolor_w" "0" "0.5" "150" ;
+		}
+
+		onTime +150 {
+			transition "obj1_title::forecolor_w" "0" "1" "100" ;
+			transition "obj1_title2::forecolor_w" "0" "0.25" "100" ;
+			
+			transition "obj1_1_ba::matcolor_w" "0.5" "0.4" "100" ;
+			transition "obj1_1_b::matcolor_w" "0.5" "0.4" "100" ;
+			transition "obj1_1_descript::forecolor_w" "0" "1" "100" ;
+			transition "obj1_1_text::forecolor_w" "0" "1" "100" ;
+			transition "obj1_1_corner::matcolor_w" "0" "0.4" "100" ;
+			transition "obj1_1_ss::matcolor_w" "0" "1" "100" ;
+			transition "obj1_1_ss::bordercolor_w" "0" "1" "100" ;
+		}
+
+	}
+	windowDef anim_obj2_in
+	{
+		rect	0,0,1,1
+		visible	1
+		notime	1
+
+		onTime 0 {
+			stoptransitions "anim_obj2_in" ;
+			
+			transition "obj2_backbar::rect" "$obj2_backbar::rect" "$d_obj2_backbar::rect" "150" ;
+			transition "obj2_backbar::matcolor_w" "0" "0.8" "150" ;
+			
+			transition "obj1_2_ba::matcolor_w" "0" "0.5" "150" ;
+			transition "obj1_2_b::matcolor_w" "0" "0.5" "150" ;
+			
+			transition "obj2_2_ba::matcolor_w" "0" "0.5" "150" ;
+			transition "obj2_2_b::matcolor_w" "0" "0.5" "150" ;
+		}
+
+		onTime +150 {
+			transition "obj2_title::forecolor_w" "0" "1" "100" ;
+			transition "obj2_title2::forecolor_w" "0" "0.25" "100" ;
+			
+			transition "obj1_2_ba::matcolor_w" "0.5" "0.4" "100" ;
+			transition "obj1_2_b::matcolor_w" "0.5" "0.4" "100" ;
+			transition "obj1_2_descript::forecolor_w" "0" "1" "100" ;
+			transition "obj1_2_text::forecolor_w" "0" "1" "100" ;
+			transition "obj1_2_corner::matcolor_w" "0" "0.4" "100" ;
+			transition "obj1_2_ss::matcolor_w" "0" "1" "100" ;
+			transition "obj1_2_ss::bordercolor_w" "0" "1" "100" ;
+			
+			transition "obj2_2_ba::matcolor_w" "0.5" "0.4" "100" ;
+			transition "obj2_2_b::matcolor_w" "0.5" "0.4" "100" ;
+			transition "obj2_2_descript::forecolor_w" "0" "1" "100" ;
+			transition "obj2_2_text::forecolor_w" "0" "1" "100" ;
+			transition "obj2_2_corner::matcolor_w" "0" "0.4" "100" ;
+			transition "obj2_2_ss::matcolor_w" "0" "1" "100" ;
+			transition "obj2_2_ss::bordercolor_w" "0" "1" "100" ;
+		}
+
+	}
+	windowDef anim_obj3_in
+	{
+		rect	0,0,1,1
+		visible	1
+		notime	1
+
+		onTime 0 {
+			stoptransitions "anim_obj3_in" ;
+			
+			transition "obj3_backbar::rect" "$obj3_backbar::rect" "$d_obj3_backbar::rect" "150" ;
+			transition "obj3_backbar::matcolor_w" "0" "0.8" "150" ;
+			
+			transition "obj1_3_ba::matcolor_w" "0" "0.5" "150" ;
+			transition "obj1_3_b::matcolor_w" "0" "0.5" "150" ;
+			
+			transition "obj2_3_ba::matcolor_w" "0" "0.5" "150" ;
+			transition "obj2_3_b::matcolor_w" "0" "0.5" "150" ;
+			
+			transition "obj3_3_ba::matcolor_w" "0" "0.5" "150" ;
+			transition "obj3_3_b::matcolor_w" "0" "0.5" "150" ;
+		}
+
+		onTime +150 {
+			transition "obj3_title::forecolor_w" "0" "1" "100" ;
+			transition "obj3_title2::forecolor_w" "0" "0.25" "100" ;
+			
+			transition "obj1_3_ba::matcolor_w" "0.5" "0.4" "100" ;
+			transition "obj1_3_b::matcolor_w" "0.5" "0.4" "100" ;
+			transition "obj1_3_descript::forecolor_w" "0" "1" "100" ;
+			transition "obj1_3_text::forecolor_w" "0" "1" "100" ;
+			transition "obj1_3_corner::matcolor_w" "0" "0.4" "100" ;
+			transition "obj1_3_ss::matcolor_w" "0" "1" "100" ;
+			transition "obj1_3_ss::bordercolor_w" "0" "1" "100" ;
+			
+			transition "obj2_3_ba::matcolor_w" "0.5" "0.4" "100" ;
+			transition "obj2_3_b::matcolor_w" "0.5" "0.4" "100" ;
+			transition "obj2_3_descript::forecolor_w" "0" "1" "100" ;
+			transition "obj2_3_text::forecolor_w" "0" "1" "100" ;
+			transition "obj2_3_corner::matcolor_w" "0" "0.4" "100" ;
+			transition "obj2_3_ss::matcolor_w" "0" "1" "100" ;
+			transition "obj2_3_ss::bordercolor_w" "0" "1" "100" ;
+			
+			transition "obj3_3_ba::matcolor_w" "0.5" "0.4" "100" ;
+			transition "obj3_3_b::matcolor_w" "0.5" "0.4" "100" ;
+			transition "obj3_3_descript::forecolor_w" "0" "1" "100" ;
+			transition "obj3_3_text::forecolor_w" "0" "1" "100" ;
+			transition "obj3_3_corner::matcolor_w" "0" "0.4" "100" ;
+			transition "obj3_3_ss::matcolor_w" "0" "1" "100" ;
+			transition "obj3_3_ss::bordercolor_w" "0" "1" "100" ;
+		}
+
+	}
+	windowDef anim_obj_in
+	{
+		rect	0,0,1,1
+		visible	1
+		notime	1
+
+		onTime 0 {
+			stoptransitions "anim_obj_in" ;
+			stoptransitions "p_objectives" ;
+			
+			transition "obj_backbar::rect" "$obj_backbar::rect" "$d_obj_backbar::rect" "150" ;
+			transition "obj_ba::rect" "$obj_ba::rect" "$d_obj_ba::rect" "150" ;
+			transition "obj_b::rect" "$obj_b::rect" "$d_obj_b::rect" "150" ;
+			
+			transition "obj_backbar::matcolor_w" "0" "0.8" "150" ;
+			transition "obj_ba::matcolor_w" "0" "0.8" "150" ;
+			transition "obj_b::matcolor_w" "0" "0.8" "150" ;
+		}
+
+		onTime +150 {
+			transition "obj_ba::matcolor_w" "0.8" "0.4" "100" ;
+			transition "obj_b::matcolor_w" "0.8" "0.4" "100" ;
+			transition "obj_title::forecolor_w" "0" "1" "100" ;
+			transition "obj_title2::forecolor_w" "0" "0.25" "100" ;
+			transition "obj_descript::forecolor_w" "0" "1" "100" ;
+			transition "obj_corner::matcolor_w" "0" "0.4" "100" ;
+			transition "obj_ss::matcolor_w" "0" "1" "100" ;
+			transition "obj_ss::bordercolor_w" "0" "1" "100" ;
+		}
+	}
+	windowDef anim_compobj_in
+	{
+		rect	0,0,1,1
+		visible	1
+		notime	1
+
+		onTime 0 {
+			stoptransitions "anim_compobj_in" ;
+			stoptransitions "p_compobjectives" ;
+			
+			transition "compobj_backbar::rect" "$compobj_backbar::rect" "$d_compobj_backbar::rect" "150" ;
+			transition "compobj_ba::rect" "$compobj_ba::rect" "$d_compobj_ba::rect" "150" ;
+			transition "compobj_b::rect" "$compobj_b::rect" "$d_compobj_b::rect" "150" ;
+			
+			transition "compobj_backbar::matcolor_w" "0" "0.8" "150" ;
+			transition "compobj_ba::matcolor_w" "0" "0.8" "150" ;
+			transition "compobj_b::matcolor_w" "0" "0.8" "150" ;
+		}
+
+		onTime +150 {
+			transition "compobj_ba::matcolor_w" "0.8" "0.4" "100" ;
+			transition "compobj_b::matcolor_w" "0.8" "0.4" "100" ;
+			transition "compobj_title::forecolor_w" "0" "1" "100" ;
+			transition "compobj_descript::forecolor_w" "0" "1" "100" ;
+			transition "compobj_corner::matcolor_w" "0" "0.4" "100" ;
+		}
+
+	}
+	windowDef anim_obj_out
+	{
+		rect	0,0,1,1
+		visible	1
+		notime	1
+
+		onTime 0 {
+			stoptransitions "anim_obj_in" ;
+			stoptransitions "anim_obj_out" ;
+			stoptransitions "p_objectives" ;
+			
+			transition "obj_backbar::rect" "$d_obj_backbar::rect" "$obj_backbar::rect" "100" ;
+			transition "obj_ba::rect" "$d_obj_ba::rect" "$obj_ba::rect" "100" ;
+			transition "obj_b::rect" "$d_obj_b::rect" "$obj_b::rect" "100" ;
+			
+			transition "obj_ba::matcolor_w" "0.8" "0" "100" ;
+			transition "obj_b::matcolor_w" "0.8" "0" "100" ;
+			transition "obj_backbar::matcolor_w" "0.8" "0" "100" ;
+			transition "obj_title::forecolor_w" "1" "0" "50" ;
+			transition "obj_title2::forecolor_w" "0.25" "00" "50" ;
+			transition "obj_descript::forecolor_w" "1" "0" "50" ;
+			transition "obj_corner::matcolor_w" "0.4" "0" "50" ;
+			transition "obj_ss::matcolor_w" "1" "0" "20" ;
+			transition "obj_ss::bordercolor_w" "1" "0" "20" ;
+		}
+
+		onTime +100 {
+			set "p_objectives::visible" "0" ; 
+		}
+
+	}
+	windowDef anim_compobj_out
+	{
+		rect	0,0,1,1
+		visible	1
+		notime	1
+
+		onTime 0 {
+			stoptransitions "anim_compobj_in" ;
+			stoptransitions "anim_compobj_out" ;
+			stoptransitions "p_compobjectives" ;
+			
+			transition "compobj_backbar::rect" "$d_compobj_backbar::rect" "$compobj_backbar::rect" "100" ;
+			transition "compobj_ba::rect" "$d_compobj_ba::rect" "$compobj_ba::rect" "100" ;
+			transition "compobj_b::rect" "$d_compobj_b::rect" "$compobj_b::rect" "100" ;
+			
+			transition "compobj_ba::matcolor_w" "0.8" "0" "100" ;
+			transition "compobj_b::matcolor_w" "0.8" "0" "100" ;
+			transition "compobj_backbar::matcolor_w" "0.8" "0" "100" ;
+			transition "compobj_title::forecolor_w" "1" "0" "50" ;
+			transition "compobj_descript::forecolor_w" "1" "0" "50" ;
+			transition "compobj_corner::matcolor_w" "0.4" "0" "50" ;
+		}
+
+		onTime +100 {
+			set "p_compobjectives::visible" "0" ; 
+		}
+
+	}
+	windowDef anim_noObj_in
+	{
+		rect	0,0,1,1
+		visible	1
+		notime	1
+
+		onTime 0 {
+			stoptransitions "anim_noObj_in" ;
+			
+			transition "noObj_backbar::rect" "$obj1_backbar::rect" "$d_obj1_backbar::rect" "150" ;
+			transition "noObj_backbar::matcolor_w" "0" "0.8" "150" ;
+			
+			transition "noObj_1_ba::matcolor_w" "0" "0.5" "150" ;
+			transition "noObj_1_b::matcolor_w" "0" "0.5" "150" ;
+		}
+
+		onTime +150 {
+			transition "noObj_title::forecolor_w" "0" "1" "100" ;
+			transition "noObj_title2::forecolor_w" "0" "0.25" "100" ;
+			
+			transition "noObj_1_ba::matcolor_w" "0.5" "0.4" "100" ;
+			transition "noObj_1_b::matcolor_w" "0.5" "0.4" "100" ;
+			transition "noObj_1_text::forecolor_w" "0" "1" "100" ;
+			transition "noObj_1_ss::matcolor_w" "0" "1" "100" ;
+			transition "noObj_1_ss::bordercolor_w" "0" "1" "100" ;
+		}
+
+	}
+}

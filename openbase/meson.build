@@ -1,0 +1,33 @@
+if build_game_sp
+  shared_module(
+    'game_sp',
+    game_sources,
+    include_directories: src_include_dir,
+    link_with: game_idlib_library,
+    cpp_args: game_common_cpp_args,
+    c_args: game_common_c_args,
+    cpp_pch: ['../src/idlib/precompiled.h'],
+    link_args: game_module_link_args,
+    vs_module_defs: '../src/game/Game.def',
+    name_prefix: '',
+    install: true,
+    install_dir: install_openbase_dir,
+  )
+endif
+
+if build_game_mp
+  shared_module(
+    'game_mp',
+    game_sources,
+    include_directories: src_include_dir,
+    link_with: game_idlib_library,
+    cpp_args: game_common_cpp_args + ['-DGAME_MPAPI'],
+    c_args: game_common_c_args,
+    cpp_pch: ['../src/idlib/precompiled.h'],
+    link_args: game_module_link_args,
+    vs_module_defs: '../src/game/Game.def',
+    name_prefix: '',
+    install: true,
+    install_dir: install_openbase_dir,
+  )
+endif

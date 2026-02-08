@@ -216,6 +216,18 @@ public:
 		ADJUST_BOTTOMLEFT
 	};
 
+	enum {
+		SCREEN_ALIGN_X_MIDDLE = 0,
+		SCREEN_ALIGN_X_LEFT,
+		SCREEN_ALIGN_X_RIGHT
+	};
+
+	enum {
+		SCREEN_ALIGN_Y_MIDDLE = 0,
+		SCREEN_ALIGN_Y_TOP,
+		SCREEN_ALIGN_Y_BOTTOM
+	};
+
 	static const char *ScriptNames[SCRIPT_COUNT];
 
 	static const idRegEntry RegisterVars[];
@@ -411,6 +423,8 @@ protected:
 	float borderSize;
 	float textAlignx;
 	float textAligny;
+	unsigned char screenAlignX;
+	unsigned char screenAlignY;
 	idStr	name;
 	idStr	comment;
 	idVec2	shear;

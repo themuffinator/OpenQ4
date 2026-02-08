@@ -1,0 +1,94 @@
+windowDef Desktop
+{
+	rect	0, 0, 640, 480
+	backcolor	0, 0, 0, 0.3
+	selected	0
+	menugui	1
+
+	onActivate {
+		setFocus 	"Note";
+	}
+
+	onESC {
+		set "cmd"	"close" ;
+		
+		set "filterAssignedToList::visible" "0" ;
+		set "filterCategoryList::visible" "0" ;
+		set "filterCompletedList::visible" "0" ;
+		set "CategoryList::visible" "0" ;
+		set "AssignedToList::visible" "0" ;
+		
+		set "outOfBoundsBtn::visible" "0" ;
+	}
+
+	windowDef NoteBox
+	{
+		rect	17,203,603,243
+		textscale	0.25
+		bordersize	1
+		bordercolor	0.698,1,1,1
+		backcolor	0,0,0,0.313
+		visible	1
+		listDef notes
+		{
+			rect	7,8,259,226
+			visible	1
+			bordersize	1
+			bordercolor	1,0,0.494,1
+			backcolor	0,0,0,0.239
+			forecolor	1,1,1,1
+			listname	"notes"
+			textscale	0.25
+			scrollbar	1
+
+			onAction {
+				set	"cmd"	"notes" ;
+			}
+
+		}
+		windowDef next
+		{
+			rect	341,214,68,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"Next"
+			textscale	0.25
+			bordersize	1
+			bordercolor	1,0,0.498,1
+			textalign	1
+			backcolor	0,0,0,0.239
+
+			OnAction {
+				set "cmd"	"next" ;
+			}
+
+		}
+		windowDef previous
+		{
+			rect	270,214,68,20
+			visible	1
+			forecolor	1,1,1,1
+			text	"Previous"
+			textscale	0.25
+			bordersize	1
+			bordercolor	1,0,0.498,1
+			backcolor	0,0,0,0.239
+
+			onAction {
+				set "cmd"	"previous" ;
+			}
+
+		}
+		windowDef description
+		{
+			rect	270,8,325,200
+			visible	1
+			backcolor	0,0,0,0.239
+			bordersize	1
+			bordercolor	1,0,0.501,1
+			forecolor	1,1,1,1
+			text	"gui::description"
+			textscale	0.25
+		}
+	}
+}

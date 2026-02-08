@@ -31,6 +31,7 @@ OpenQ4 is moving toward a **complete code replacement** (engine + game code) to 
   - `game_sp` (single-player)
   - `game_mp` (multiplayer)
 - The engine selects SP/MP seamlessly; these are not treated as two separate “mods”.
+- Runtime module selection uses `si_gameType` (`singleplayer` -> `game_sp`, otherwise `game_mp`) and reloads the engine when a mode transition requires swapping modules.
 - Configuration is unified in one place instead of split SP/MP setups.
 
 **Build (Meson + Ninja)**
@@ -43,6 +44,15 @@ OpenQ4 is moving toward a **complete code replacement** (engine + game code) to 
 - Recommended workflow (inspired by WORR-2):
   - `powershell -ExecutionPolicy Bypass -File tools/build/meson_setup.ps1 setup --wipe builddir . --backend ninja --buildtype debug --wrap-mode=forcefallback`
   - `powershell -ExecutionPolicy Bypass -File tools/build/meson_setup.ps1 compile -C builddir`
+- Build toggles:
+  - `-Dbuild_engine=true|false` (build `OpenQ4` / `OpenQ4-ded`)
+  - `-Dbuild_games=true|false` (build game modules)
+  - `-Dbuild_game_sp=true|false` (build `game_sp`)
+  - `-Dbuild_game_mp=true|false` (build `game_mp`)
+- Install/package staging:
+  - `powershell -ExecutionPolicy Bypass -File tools/build/meson_setup.ps1 install -C builddir --no-rebuild --skip-subprojects`
+  - Stages a release-style package tree under `install/`.
+  - `install/` is intended to be the complete distributable root for OpenQ4 binaries, with future project-owned assets added under `install/openbase/`.
 - `tools/build/meson_setup.ps1` auto-loads Visual Studio build tools when needed (prefers VS 2026+/major 18 when available), and exports `WINDRES` via `tools/build/rc.cmd`.
 - `tools/build/meson_setup.ps1 compile` now auto-regenerates `builddir` if it is missing or stale, which resolves "not a meson build directory" errors.
 - Non-Windows wrapper: `tools/build/meson_setup.sh` (passes through to `meson`).
@@ -53,9 +63,17 @@ OpenQ4 is moving toward a **complete code replacement** (engine + game code) to 
 - Equivalent commands from an already-open VS Developer shell:
   - `meson setup --wipe builddir . --backend ninja --buildtype debug --wrap-mode=forcefallback`
   - `meson compile -C builddir`
-- Output binaries:
+- Output binaries (build tree):
   - `builddir/OpenQ4.exe`
   - `builddir/OpenQ4-ded.exe` (dedicated server build, compiled with `ID_DEDICATED`)
+  - `builddir/openbase/game_sp.dll`
+  - `builddir/openbase/game_mp.dll`
+- Output binaries (staged install tree):
+  - `install/OpenQ4.exe`
+  - `install/OpenQ4-ded.exe`
+  - `install/openbase/game_sp.dll`
+  - `install/openbase/game_mp.dll`
+- `install/` can be used as `fs_devpath` for local overlays and future in-tree packaged content.
 - Debug crash diagnostics:
   - `_DEBUG` builds install a Win32 unhandled-exception filter.
   - On crash, OpenQ4 writes a timestamped `.log` and `.dmp` under `builddir/crashes/`.

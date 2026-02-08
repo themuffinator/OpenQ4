@@ -74,6 +74,7 @@ public:
 
 	void				SetSize(float width, float height);
 	void				SetAspectCorrection( bool enabled );
+	void				GetVirtualScreenExpansion( float width, float height, float &xExpand, float &yExpand ) const;
 
 	const idMaterial	*GetScrollBarImage(int index);
 
@@ -131,6 +132,7 @@ public:
 	static idVec4 colorNone;
 
 private:
+	void				CalcVirtualScaleOffset( float width, float height, float &outXScale, float &outYScale, float &outXOffset, float &outYOffset ) const;
 	int					DrawText(float x, float y, float scale, idVec4 color, const char *text, float adjust, int limit, int style, int cursor = -1);
 	void				PaintChar(float x,float y,float width,float height,float scale,float	s,float	t,float	s2,float t2,const idMaterial *hShader);
 	void				SetFontByScale( float scale );

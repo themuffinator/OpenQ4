@@ -303,6 +303,18 @@ void idAsyncNetwork::SpawnServer_f( const idCmdArgs &args ) {
 	if ( idStr::Icmp( cvarSystem->GetCVarString( "si_gameType" ), "singleplayer" ) == 0 ) {
 		cvarSystem->SetCVarString( "si_gameType", "dm" );
 	}
+
+	const char *activeModule = cvarSystem->GetCVarString( "com_activeGameModule" );
+	if ( idStr::Icmp( activeModule, "game_mp" ) != 0 ) {
+		idCmdArgs reloadArgs;
+		reloadArgs.AppendArg( "spawnServer" );
+		if ( args.Argc() > 1 ) {
+			reloadArgs.AppendArg( args.Argv( 1 ) );
+		}
+		cmdSystem->SetupReloadEngine( reloadArgs );
+		return;
+	}
+
 	com_asyncInput.SetBool( false );
 	// make sure the current system state is compatible with net_serverDedicated
 	switch ( cvarSystem->GetCVarInteger( "net_serverDedicated" ) ) {
@@ -352,6 +364,17 @@ void idAsyncNetwork::Connect_f( const idCmdArgs &args ) {
 		common->Printf( "USAGE: connect <serverName>\n" );
 		return;
 	}
+
+	const char *activeModule = cvarSystem->GetCVarString( "com_activeGameModule" );
+	if ( idStr::Icmp( activeModule, "game_mp" ) != 0 ) {
+		cvarSystem->SetCVarString( "si_gameType", "dm" );
+		idCmdArgs reloadArgs;
+		reloadArgs.AppendArg( "connect" );
+		reloadArgs.AppendArg( args.Argv( 1 ) );
+		cmdSystem->SetupReloadEngine( reloadArgs );
+		return;
+	}
+
 	com_asyncInput.SetBool( false );
 	client.ConnectToServer( args.Argv( 1 ) );
 }
@@ -362,6 +385,15 @@ idAsyncNetwork::Reconnect_f
 ==================
 */
 void idAsyncNetwork::Reconnect_f( const idCmdArgs &args ) {
+	const char *activeModule = cvarSystem->GetCVarString( "com_activeGameModule" );
+	if ( idStr::Icmp( activeModule, "game_mp" ) != 0 ) {
+		cvarSystem->SetCVarString( "si_gameType", "dm" );
+		idCmdArgs reloadArgs;
+		reloadArgs.AppendArg( "reconnect" );
+		cmdSystem->SetupReloadEngine( reloadArgs );
+		return;
+	}
+
 	client.Reconnect();
 }
 

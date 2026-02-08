@@ -1,0 +1,835 @@
+//**************************************************************//
+// [Begin] Settings->Game Options:
+//**************************************************************//
+
+			windowDef p_settings_game
+			{
+				rect	0,0,640,480
+				visible	0
+
+	//--------------------------------------------------------------//
+	// Settings->Game Options->Free Look
+	//--------------------------------------------------------------//
+				
+				windowDef set_game_freelook
+				{
+					rect  228,47,403,25
+					visible 1
+											
+					windowDef set_game_freelook_background
+					{
+						rect	0,0,377,25
+						visible	1
+						background	"gfx/guis/mainmenu/b3_light"
+						matcolor	0.545,0.588,0.294,0.4
+					}
+										
+					windowDef set_game_freelook_description
+					{
+						rect	31,3,210,18
+						visible	1
+						forecolor	1,1,1,0.8
+						text	"#str_200133"
+						textscale	0.24
+						font	"fonts/lowpixel"
+					}
+					choiceDef set_game_freelook_value
+					{
+							rect	240,3,162,18
+							visible	1
+							forecolor	1,0.745,0.137,0.8
+							cvar	in_freeLook
+							textscale	0.24
+							font	"fonts/lowpixel"
+							choices	"#str_200059"
+							choiceType	0
+		
+							onAction {
+								set "cmd" "play main_menu_selection" ;
+							}
+					}					
+				}
+	//==============================================================//
+				
+	//==============================================================//
+	// Settings->Game Options->Auto Weapon Reload
+	//--------------------------------------------------------------//
+				
+				windowDef set_game_autoreload
+				{
+					rect  228,71,403,25
+					visible 1
+											
+					windowDef set_game_autoreload_background
+					{
+						rect	0,0,377,25
+						visible	1
+						background	"gfx/guis/mainmenu/b3_light"
+						matcolor	0.545,0.588,0.294,0.4
+					}
+										
+					windowDef set_game_autoreload_description
+					{
+						rect	31,3,210,18
+						visible	1
+						forecolor	1,1,1,0.8
+						text	"#str_200134"
+						textscale	0.24
+						font	"fonts/lowpixel"
+					}
+					choiceDef set_game_autoreload_value
+					{
+							rect	240,3,162,18
+							visible	1
+							forecolor	1,0.745,0.137,0.8
+							cvar	ui_autoReload
+							textscale	0.24
+							font	"fonts/lowpixel"
+							choices	"#str_200059"
+							choiceType	0
+		
+							onAction {
+								set "cmd" "play main_menu_selection" ;
+							}
+					}					
+				}
+	//==============================================================//
+
+	//==============================================================//
+	// Settings->Game Options->Auto Weapon Switch
+	//--------------------------------------------------------------//
+				
+				windowDef set_game_autoswitch
+				{
+					rect  228,95,403,25
+					visible 1
+											
+					windowDef set_game_autoswitch_background
+					{
+						rect	0,0,377,25
+						visible	1
+						background	"gfx/guis/mainmenu/b3_light"
+						matcolor	0.545,0.588,0.294,0.4
+					}
+										
+					windowDef set_game_autoswitch_description
+					{
+						rect	31,3,210,18
+						visible	1
+						forecolor	1,1,1,0.8
+						text	"#str_200135"
+						textscale	0.24
+						font	"fonts/lowpixel"
+					}
+					choiceDef set_game_autoswitch_value
+					{
+							rect	240,3,162,18
+							visible	1
+							forecolor	1,0.745,0.137,0.8
+							cvar	ui_autoSwitch
+							textscale	0.24
+							font	"fonts/lowpixel"
+							choices	"#str_200059"
+							choiceType	0
+		
+							onAction {
+								set "cmd" "play main_menu_selection" ;
+							}
+					}					
+				}
+	//==============================================================//
+				
+	//==============================================================//
+	// Settings->Game Options->Show Decals
+	//--------------------------------------------------------------//
+				
+				windowDef set_game_showdecals
+				{
+					rect  228,119,403,25
+					visible 1
+											
+					windowDef set_game_showdecals_background
+					{
+						rect	0,0,377,25
+						visible	1
+						background	"gfx/guis/mainmenu/b3_light"
+						matcolor	0.545,0.588,0.294,0.4
+					}
+										
+					windowDef set_game_showdecals_description
+					{
+						rect	31,3,210,18
+						visible	1
+						forecolor	1,1,1,0.8
+						text	"#str_200136"
+						textscale	0.24
+						font	"fonts/lowpixel"
+					}
+					choiceDef set_game_showdecals_value
+					{
+							rect	240,3,162,18
+							visible	1
+							forecolor	1,0.745,0.137,0.8
+							cvar	g_decals
+							textscale	0.24
+							font	"fonts/lowpixel"
+							choices	"#str_200059"
+							choiceType	0
+		
+							onAction {
+								set "cmd" "play main_menu_selection" ;
+							}
+					}					
+				}
+	//==============================================================//
+				
+	//==============================================================//
+	// Settings->Game Options->Show Gun
+	//--------------------------------------------------------------//
+				
+				windowDef set_game_showgun
+				{
+					rect  228,143,403,25
+					visible 1
+											
+					windowDef set_game_showgun_background
+					{
+						rect	0,0,377,25
+						visible	1
+						background	"gfx/guis/mainmenu/b3_light"
+						matcolor	0.545,0.588,0.294,0.4
+					}
+										
+					windowDef set_game_showgun_description
+					{
+						rect	31,3,210,18
+						visible	1
+						forecolor	1,1,1,0.8
+						text	"#str_200138"
+						textscale	0.24
+						font	"fonts/lowpixel"
+					}
+					choiceDef set_game_showgun_value
+					{
+							rect	240,3,162,18
+							visible	1
+							forecolor	1,0.745,0.137,0.8
+							cvar	ui_showGun
+							textscale	0.24
+							font	"fonts/lowpixel"
+							choices	"#str_200059"
+							choiceType	0
+		
+							onAction {
+								set "cmd" "play main_menu_selection" ;
+							}
+					}					
+				}
+	//==============================================================//
+					
+	//==============================================================//
+	// Settings->Game Options->Gun Position							
+	//--------------------------------------------------------------//
+				
+				windowDef set_game_gunXYZ
+				{
+					rect  228,167,403,25
+					visible 1
+											
+					windowDef set_game_gunXYZ_background
+					{
+						rect	0,0,377,25
+						visible	1
+						background	"gfx/guis/mainmenu/b3_light"
+						matcolor	0.545,0.588,0.294,0.4
+					}
+					windowDef set_game_gunXYZ_description
+					{
+						rect	31,3,210,18
+						visible	1
+						forecolor	1,1,1,0.8
+						text	"#str_223007"
+						textscale	0.24
+						font	"fonts/lowpixel"
+					}
+					choiceDef set_game_gunXYZ_value
+					{
+							rect	240,3,162,18
+							visible	1
+							textscale	0.24
+							forecolor	1,0.745,0.137,0.8
+							gui	"g_gunXYZ"
+							font	"fonts/lowpixel"
+							choiceType	1
+							choices	"#str_223008"
+							values	"0;1;2"
+							
+							onAction {
+								if ("gui::g_gunXYZ" == 0) {
+								   consoleCMD "g_gunX 2";
+								   consoleCMD "g_gunY 2";
+								   consoleCMD "g_gunZ -2";
+								   consoleCMD "g_weaponFovEffect 1";
+								} else if ("gui::g_gunXYZ" == 1) {
+								   consoleCMD "g_gunX 2";
+								   consoleCMD "g_gunY -5";
+								   consoleCMD "g_gunZ -2";
+								   consoleCMD "g_weaponFovEffect 1";
+								} else {
+								   consoleCMD "g_gunX 0";
+								   consoleCMD "g_gunY 0";
+								   consoleCMD "g_gunZ 0";
+								   consoleCMD "g_weaponFovEffect 1";
+								}
+								set "cmd" "play main_menu_selection" ; 
+							}
+					}
+				}
+	//==============================================================//
+	
+	//==============================================================//
+	// Settings->Game Options->Simple Items
+	//--------------------------------------------------------------//
+				
+				windowDef set_game_simpleitems
+				{
+					rect  228,191,403,25
+					visible 1
+											
+					windowDef set_game_simpleitems_background
+					{
+						rect	0,0,377,25
+						visible	1
+						background	"gfx/guis/mainmenu/b3_light"
+						matcolor	0.545,0.588,0.294,0.4
+					}
+					windowDef set_game_simpleitems_description
+					{
+						rect	31,3,210,18
+						visible	1
+						forecolor	1,1,1,0.8
+						text	"#str_223000"
+						textscale	0.24
+						font	"fonts/lowpixel"
+					}
+					choiceDef set_game_simpleitems_value
+					{
+							rect	240,3,162,18
+							visible	1
+							forecolor	1,0.745,0.137,0.8
+							cvar	g_simpleItems
+							textscale	0.24
+							font	"fonts/lowpixel"
+							choices	"#str_200059"
+							choiceType	0
+		
+							onAction {
+								set "cmd" "play main_menu_selection" ;
+							}
+					}					
+				}
+	//==============================================================//
+		
+	//==============================================================//
+	// Settings->Game Options->Force Pro Skins						
+	//--------------------------------------------------------------//
+				
+				windowDef set_game_forcemodel
+				{
+					rect  228,215,403,25
+					visible 1
+					
+					
+					windowDef set_game_forcemodel_background
+					{
+						rect	0,0,377,25
+						visible	1
+						background	"gfx/guis/mainmenu/b3_light"
+						matcolor	0.545,0.588,0.294,0.4
+					}	
+					windowDef set_game_forcemodel_description
+					{
+						rect	31,3,210,18
+						visible	1
+						forecolor	1,1,1,0.8
+						text	"#str_223006"
+						textscale	0.24
+						font	"fonts/lowpixel"
+					}					
+					choiceDef set_game_forcemodel_value
+					{
+							rect	240,3,162,18
+							visible	1
+							forecolor	1,0.745,0.137,0.8
+							gui 		"ui_proskins"
+							values	"0;1"
+							choiceType	1					
+							textscale	0.24
+							font		"fonts/lowpixel"
+							choices	"#str_200059"
+			
+							onAction {
+								if ("gui::ui_proskins" == "1")
+								{
+								   consoleCMD "g_forceModel model_player_marine_helmeted_bright";
+								   consoleCMD "g_forceMarineModel model_player_marine_helmeted_bright";
+									   consoleCMD "g_forcestroggmodel model_player_tactical_transfer_bright";
+								} else	{
+								   consoleCMD "g_forceModel null";
+								   consoleCMD "g_forceMarineModel null";
+								   consoleCMD "g_forcestroggmodel null";
+								}
+								set "cmd" "play main_menu_selection" ; 
+							}
+					}					
+				}
+	//==============================================================//
+				
+	//==============================================================//
+	// Settings->Game Options->Invert Mouse
+	//==============================================================//
+				
+				windowDef set_game_mpitch
+				{
+					rect  228,239,403,25
+					visible 1
+											
+					windowDef set_game_mpitch_background
+					{
+						rect	0,0,377,25
+						visible	1
+						background	"gfx/guis/mainmenu/b3_light"
+						matcolor	0.545,0.588,0.294,0.4
+					}
+					windowDef set_game_mpitch_description
+					{
+						rect	31,3,210,18
+						visible	1
+						forecolor	1,1,1,0.8
+						text	"#str_200139"
+						textscale	0.24
+						font	"fonts/lowpixel"
+					}
+					choiceDef set_game_mpitch_value
+					{
+							rect	240,3,162,18
+							visible	1
+							forecolor	1,0.745,0.137,0.8
+							cvar	m_pitch
+							textscale	0.24
+							font	"fonts/lowpixel"
+							choices	"#str_200059"
+							values	"0.022;-0.022"
+							choiceType	1
+		
+							onAction {
+								set "cmd" "play main_menu_selection" ;
+							}
+					}					
+				}
+
+	//==============================================================//
+					
+	//==============================================================//
+	// Settings->Game Options->Mouse Smooth
+	//==============================================================//
+
+				windowDef set_game_msmooth
+				{
+					rect	228,263,377,25
+					visible	1
+				
+					windowDef set_game_msmooth_background
+					{
+						rect	0,0,377,25
+						visible	1
+						background	"gfx/guis/mainmenu/b3_light"
+						matcolor	0.545,0.588,0.294,0.4
+					}
+					windowDef set_game_msmooth_description
+					{
+						rect	31,3,210,18
+						visible	1
+						forecolor	1,1,1,0.8
+						text	"#str_200140"
+						textscale	0.24
+						font	"fonts/lowpixel"
+					}
+					windowDef set_game_msmooth_slider_bg
+					{
+						rect	244,8,128,16
+						background	"gfx/guis/mainmenu/slider_bg"
+						matcolor	1,0.745,0.137,0.8
+						noevents	1
+						visible	1
+					}
+					sliderDef set_game_msmooth_slider_bar
+					{
+						rect	244,9,71,8
+						forecolor	1,0.745,0.137,0.8
+						matcolor	1,0.745,0.137,0.8
+						low	1
+						high	8
+						step	1
+						thumbShader	"gfx/guis/mainmenu/slider_bar"
+						cvar	m_smooth
+						visible	1
+					}	
+					editDef set_game_msmooth_value
+					{
+						rect	322,4,100,18
+						visible	1
+						cvar	m_smooth
+						textscale	0.24
+						maxchars	1
+						forecolor	1,0.745,0.137,0.8
+						font	"fonts/lowpixel"
+				
+						onEnter {
+							setfocus "mp_b_set_back" ;
+						}
+				
+						onAction {
+							set "cmd" "play main_menu_selection" ;
+						}
+					}
+				}	
+	//==============================================================//
+					
+	//==============================================================//
+	// Settings->Game Options->Mouse Sensitivity
+	//==============================================================//
+
+				windowDef set_game_msensitivity
+				{
+					rect	228,287,377,25
+					visible	1
+				
+					windowDef set_game_msensitivity_background
+					{
+						rect	0,0,377,25
+						visible	1
+						background	"gfx/guis/mainmenu/b3_light"
+						matcolor	0.545,0.588,0.294,0.4
+					}
+					windowDef set_game_msensitivity_description
+					{
+						rect	31,3,210,18
+						visible	1
+						forecolor	1,1,1,0.8
+						text	"#str_200141"
+						textscale	0.24
+						font	"fonts/lowpixel"
+					}
+					windowDef set_game_msensitivity_slider_bg
+					{
+						rect	244,8,128,16
+						background	"gfx/guis/mainmenu/slider_bg"
+						matcolor	1,0.745,0.137,0.8
+						noevents	1
+						visible	1
+					}
+					sliderDef set_game_msensitivity_slider_bar
+					{
+						rect	244,9,71,8
+						forecolor	1,0.745,0.137,0.8
+						matcolor	1,0.745,0.137,0.8
+						low	1
+						high	8
+						step	1
+						thumbShader	"gfx/guis/mainmenu/slider_bar"
+						cvar	sensitivity
+						visible	1
+					}	
+					editDef set_game_msensitivity_value
+					{
+						rect	322,4,100,18
+						visible	1
+						cvar	sensitivity
+						textscale	0.24
+						maxchars	1
+						forecolor	1,0.745,0.137,0.8
+						font	"fonts/lowpixel"
+				
+						onEnter {
+							setfocus "mp_b_set_back" ;
+						}
+				
+						onAction {
+							set "cmd" "play main_menu_selection" ;
+						}
+					}
+				}	
+	//==============================================================//
+				
+	//==============================================================//
+	// Settings->Game Options->Use Custom Crosshair
+	//==============================================================//
+				
+				windowDef set_game_customxhair
+				{
+					rect  228,311,403,25
+					visible 1
+											
+					windowDef set_game_customxhair_background
+					{
+						rect	0,0,377,25
+						visible	1
+						background	"gfx/guis/mainmenu/b3_light"
+						matcolor	0.545,0.588,0.294,0.4
+					}
+					windowDef set_game_customxhair_description
+					{
+						rect	31,3,210,18
+						visible	1
+						forecolor	1,1,1,0.8
+						text	"#str_200307"
+						textscale	0.24
+						font	"fonts/lowpixel"
+					}
+					choiceDef set_game_customxhair_value
+					{
+						rect	240,3,162,18
+						visible	1
+						forecolor	1,0.745,0.137,0.8
+						textscale	0.24
+						font	"fonts/lowpixel"
+						cvar	g_crosshairCustom
+						choices	"#str_200296"
+						choiceType	0
+
+						onAction {
+							set "cmd" "play main_menu_selection" ;
+						}
+	
+						onActionRelease {
+							if ( "gui::g_crosshairCustom" == 1 ) {
+								set "set_game_previewxhair_background::matcolor" "$desktop::corner" ;
+								set "set_game_previewxhair_description::forecolor" "$desktop::white_8" ;				
+								set "set_game_previewxhair::visible" "1" ;
+								set "set_game_previewxhair_hover::visible" "1" ;
+								set "set_game_previewxhair::noevents" "0" ;
+								set "set_game_previewxhair_hover::noevents" "0" ;
+							} else {
+								set "set_game_previewxhair_background::matcolor" "$desktop::grey1_4" ;
+								set "set_game_previewxhair_description::forecolor" "$desktop::white_4" ;				
+								set "set_game_previewxhair::visible" "1" ;
+								set "set_game_previewxhair_hover::visible" "0" ;
+								set "set_game_previewxhair::noevents" "1" ;
+								set "set_game_previewxhair_hover::noevents" "1" ;
+							}
+						}
+					}					
+				}
+	//==============================================================//
+				
+	//==============================================================//
+	// Settings->Game Options->Preview Crosshair
+	//==============================================================//
+			
+				windowDef set_game_previewxhair
+				{
+					rect	228,335,377,48
+					visible	1
+				
+					windowDef set_game_previewxhair_background
+					{
+						rect		0,12,337,25
+						visible	1
+						background	"gfx/guis/mainmenu/b3_light"
+						matcolor	0.545,0.588,0.294,0.4
+					}
+					windowDef set_game_previewxhair_description
+					{
+						rect	31,15,210,18
+						visible	1
+						forecolor	1,1,1,0.8
+						text	"#str_200308"
+						textscale	0.24
+						font	"fonts/lowpixel"
+					}
+					windowDef set_game_previewxhair_size_16
+					{
+						rect	252,16,16,16
+						visible	0
+						background	"gui::crossImage"
+						matcolor	1,1,1,1
+					}
+					windowDef set_game_previewxhair_size_24
+					{
+						rect	248,12,24,24
+						visible	0
+						background	"gui::crossImage"
+						matcolor	1,1,1,1
+					}
+					windowDef set_game_previewxhair_size_32
+					{
+						rect	244,8,32,32
+						visible	0
+						background	"gui::crossImage"
+						matcolor	1,1,1,1
+					}
+					windowDef set_game_previewxhair_size_40
+					{
+						rect	240,4,40,40
+						visible	0
+						background	"gui::crossImage"
+						matcolor	1,1,1,1
+					}
+					windowDef set_game_previewxhair_size_48
+					{
+						rect	236,0,48,48
+						visible	0
+						background	"gui::crossImage"
+						matcolor	1,1,1,1
+					}
+				}
+	//==============================================================//
+				
+	//==============================================================//
+	// Settings->Game Options->Crosshair Size
+	//==============================================================//
+
+				windowDef set_game_xhairsize
+				{
+					rect  228,383,377,25
+					visible 1
+											
+					windowDef set_game_xhairsize_background
+					{
+						rect	0,0,377,25
+						visible	1
+						background	"gfx/guis/mainmenu/b3_light"
+						matcolor	0.545,0.588,0.294,0.4
+					}
+					windowDef set_game_xhairsize_description
+					{
+						rect	31,3,210,18
+						visible	1
+						forecolor	1,1,1,0.8
+						text	"#str_201010"
+						textscale	0.24
+						font	"fonts/lowpixel"
+					}
+					choiceDef set_game_xhairsize_value
+					{
+							rect	240,3,162,18
+							visible	1
+							forecolor	1,0.745,0.137,0.8
+							cvar	g_simpleItems
+							textscale	0.24
+							font	"fonts/lowpixel"
+							cvar	g_crosshairSize
+							choices	"#str_201022"
+							choiceType	1
+							values	"16;24;32;40;48"
+							notime	1
+		
+							onAction {
+								set "cmd" "play main_menu_selection" ;
+							}
+		
+							onActionRelease {
+								resettime "set_game_xhairsize_value" "0" ;
+							}
+		
+							onTime 0 {
+								set "cmd" "GetCVarValue g_crosshairSize cvar_g_crosshairSize" ;
+							}
+		
+							onTime +50 {
+								namedevent "p_settings::crosshairSize" ;
+							}
+					}					
+				}
+	//==============================================================//
+				
+	//==============================================================//
+	// Settings->Game Options->Crosshair Color
+	//==============================================================//
+
+				windowDef set_game_xhaircolor
+				{
+					rect  228,408,377,25
+					visible 1
+											
+					windowDef set_game_xhaircolor_background
+					{
+						rect	0,0,377,25
+						visible	1
+						background	"gfx/guis/mainmenu/b3_light"
+						matcolor	0.545,0.588,0.294,0.4
+					}
+					windowDef set_game_xhaircolor_description
+					{
+						rect	31,3,210,18
+						visible	1
+						forecolor	1,1,1,0.8
+						text	"#str_200299"
+						textscale	0.24
+						font	"fonts/lowpixel"
+					}
+					windowDef set_game_xhaircolor_xcolor0
+					{
+						rect	244,9,12,12
+						visible	1
+						background	"gfx/guis/common/32_sqsolid"
+						matcolor	1,1,1,1
+					}
+					windowDef set_game_xhaircolor_xcolor1
+					{
+						rect	258,9,12,12
+						visible	1
+						background	"gfx/guis/common/32_sqsolid"
+						matcolor	1,0,0,1
+					}
+					windowDef set_game_xhaircolor_xcolor2
+					{
+						rect	272,9,12,12
+						visible	1
+						background	"gfx/guis/common/32_sqsolid"
+						matcolor	1,0.501,0,1
+					}
+					windowDef set_game_xhaircolor_xcolor3
+					{
+						rect	286,9,12,12
+						visible	1
+						background	"gfx/guis/common/32_sqsolid"
+						matcolor	1,1,0,1
+					}
+					windowDef set_game_xhaircolor_xcolor4
+					{
+						rect	300,9,12,12
+						visible	1
+						background	"gfx/guis/common/32_sqsolid"
+						matcolor	0,1,0,1
+					}
+					windowDef set_game_xhaircolor_xcolor5
+					{
+						rect	314,9,12,12
+						visible	1
+						background	"gfx/guis/common/32_sqsolid"
+						matcolor	0,1,1,1
+					}
+					windowDef set_game_xhaircolor_xcolor6
+					{
+						rect	328,9,12,12
+						visible	1
+						background	"gfx/guis/common/32_sqsolid"
+						matcolor	0,0,1,1
+					}
+					windowDef set_game_xhaircolor_xcolor7
+					{
+						rect	342,9,12,12
+						visible	1
+						background	"gfx/guis/common/32_sqsolid"
+						matcolor	1,0,0.501,1
+					}
+				}
+	//==============================================================//
+
+			}
+
+//**************************************************************//
+// [End] Settings->Game Options:
+//**************************************************************//

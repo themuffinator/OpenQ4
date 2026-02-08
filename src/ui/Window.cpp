@@ -152,6 +152,46 @@ const char *idWindow::ScriptNames[] = {
 // jmarshall end
 };
 
+static bool ParseScreenAlignXToken( const idToken &token, unsigned char &outAlign ) {
+	if ( token.IsNumeric() ) {
+		outAlign = static_cast<unsigned char>( idMath::ClampInt( idWindow::SCREEN_ALIGN_X_MIDDLE, idWindow::SCREEN_ALIGN_X_RIGHT, atoi( token.c_str() ) ) );
+		return true;
+	}
+	if ( token.Icmp( "middle" ) == 0 || token.Icmp( "center" ) == 0 || token.Icmp( "default" ) == 0 ) {
+		outAlign = idWindow::SCREEN_ALIGN_X_MIDDLE;
+		return true;
+	}
+	if ( token.Icmp( "left" ) == 0 ) {
+		outAlign = idWindow::SCREEN_ALIGN_X_LEFT;
+		return true;
+	}
+	if ( token.Icmp( "right" ) == 0 ) {
+		outAlign = idWindow::SCREEN_ALIGN_X_RIGHT;
+		return true;
+	}
+	return false;
+}
+
+static bool ParseScreenAlignYToken( const idToken &token, unsigned char &outAlign ) {
+	if ( token.IsNumeric() ) {
+		outAlign = static_cast<unsigned char>( idMath::ClampInt( idWindow::SCREEN_ALIGN_Y_MIDDLE, idWindow::SCREEN_ALIGN_Y_BOTTOM, atoi( token.c_str() ) ) );
+		return true;
+	}
+	if ( token.Icmp( "middle" ) == 0 || token.Icmp( "center" ) == 0 || token.Icmp( "default" ) == 0 ) {
+		outAlign = idWindow::SCREEN_ALIGN_Y_MIDDLE;
+		return true;
+	}
+	if ( token.Icmp( "top" ) == 0 ) {
+		outAlign = idWindow::SCREEN_ALIGN_Y_TOP;
+		return true;
+	}
+	if ( token.Icmp( "bottom" ) == 0 ) {
+		outAlign = idWindow::SCREEN_ALIGN_Y_BOTTOM;
+		return true;
+	}
+	return false;
+}
+
 /*
 ================
 idWindow::CommonInit
@@ -176,6 +216,8 @@ void idWindow::CommonInit() {
 	textAlign = 0;
 	textAlignx = 0;
 	textAligny = 0;
+	screenAlignX = SCREEN_ALIGN_X_MIDDLE;
+	screenAlignY = SCREEN_ALIGN_Y_MIDDLE;
 	noEvents = false;
 	rotate = 0;
 	shear.Zero();
@@ -1491,6 +1533,28 @@ void idWindow::CalcClientRect(float xofs, float yofs) {
 	drawRect.x += xofs;
 	drawRect.y += yofs;
 
+	if ( dc != NULL ) {
+		float xExpand = 0.0f;
+		float yExpand = 0.0f;
+		dc->GetVirtualScreenExpansion( forceAspectWidth, forceAspectHeight, xExpand, yExpand );
+
+		if ( xExpand > 0.0f ) {
+			if ( screenAlignX == SCREEN_ALIGN_X_LEFT ) {
+				drawRect.x -= xExpand;
+			} else if ( screenAlignX == SCREEN_ALIGN_X_RIGHT ) {
+				drawRect.x += xExpand;
+			}
+		}
+
+		if ( yExpand > 0.0f ) {
+			if ( screenAlignY == SCREEN_ALIGN_Y_TOP ) {
+				drawRect.y -= yExpand;
+			} else if ( screenAlignY == SCREEN_ALIGN_Y_BOTTOM ) {
+				drawRect.y += yExpand;
+			}
+		}
+	}
+
 	clientRect = drawRect;
 	if (rect.h() > 0.0 && rect.w() > 0.0) {
 
@@ -2221,6 +2285,26 @@ bool idWindow::ParseInternalVar(const char *_name, idParser *src) {
 	}
 	if (idStr::Icmp(_name, "textaligny") == 0) {
 		textAligny = src->ParseFloat();
+		return true;
+	}
+	if ( idStr::Icmp( _name, "screenalignx" ) == 0 || idStr::Icmp( _name, "screenalignh" ) == 0 ) {
+		idToken token;
+		if ( !src->ReadToken( &token ) ) {
+			return false;
+		}
+		if ( !ParseScreenAlignXToken( token, screenAlignX ) ) {
+			src->Warning( "Unknown screenAlignX value '%s' in window '%s' (expected: middle|left|right)", token.c_str(), GetName() );
+		}
+		return true;
+	}
+	if ( idStr::Icmp( _name, "screenaligny" ) == 0 || idStr::Icmp( _name, "screenalignv" ) == 0 ) {
+		idToken token;
+		if ( !src->ReadToken( &token ) ) {
+			return false;
+		}
+		if ( !ParseScreenAlignYToken( token, screenAlignY ) ) {
+			src->Warning( "Unknown screenAlignY value '%s' in window '%s' (expected: middle|top|bottom)", token.c_str(), GetName() );
+		}
 		return true;
 	}
 	if (idStr::Icmp(_name, "shear") == 0) {

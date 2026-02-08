@@ -1,0 +1,374 @@
+windowDef Desktop
+{
+	rect	0,0,640,480
+	nocursor	1
+	visible	1
+	backcolor	0,0,0,0
+
+	onNamedEvent logoStart {
+		resetTime "anim_logo" "0";
+		set "ammo_amount::forecolor" "0,0,0,0" ;
+	}
+
+	onNamedEvent ammo_6 {
+		set "ammo_amount::text" "6" ;
+	}
+
+	onNamedEvent ammo_5 {
+		set "ammo_amount::text" "5" ;
+	}
+
+	onNamedEvent ammo_4 {
+		set "ammo_amount::text" "4" ;
+	}
+
+	onNamedEvent ammo_3 {
+		set "ammo_amount::text" "3" ;
+	}
+
+	onNamedEvent ammo_2 {
+		set "ammo_amount::text" "2" ;
+	}
+
+	onNamedEvent ammo_1 {
+		set "ammo_amount::text" "1" ;
+	}
+
+	onNamedEvent ammo_0 {
+		set "ammo_amount::text" "0" ;
+	}
+
+	windowDef p_armor
+	{
+		rect	0,0,640,480
+		visible	1
+		windowDef health_backbar
+		{
+			rect	71,420,125,59
+			visible	1
+			background	"gfx/guis/hud/veh_backbar"
+			matcolor	0,0,0,0.5
+			shear	0,-.22
+		}
+		windowDef health_valbar
+		{
+			rect	71,420,125,59
+			visible	1
+			background	"gfx/guis/hud/veh_arbar"
+			matcolor	0.701,0.815,0.431,0.2
+			shear	0,-.22
+		}
+		windowDef p_health_val
+		{
+			rect	71,420,125,59
+			visible	1
+			shear	0,-.22
+			windowDef health_val
+			{
+				rect	0,0,125,59
+				visible	1
+				background	"gfx/guis/hud/veh_valbar"
+				matcolor	0.701,0.815,0.431,0.35
+				shear	0,-.22
+			}
+		}
+		windowDef icon_health
+		{
+			rect	169,458,16,16
+			visible	1
+			background	"gfx/guis/hud/icons/item_health"
+			matcolor	0.658,0.639,0.376,0.6
+		}
+		windowDef t_armor
+		{
+			rect	110,453,52,13
+			visible	1
+			forecolor	0.658,0.639,0.376,0.6
+			text	"#str_200911"
+			textscale	0.14
+			font	"fonts/lowpixel"
+		}
+	}
+	windowDef p_shields
+	{
+		rect	0,0,640,480
+		visible	1
+		windowDef armor_backbar
+		{
+			rect	164,420,125,59
+			visible	1
+			background	"gfx/guis/hud/veh_backbar"
+			matcolor	0,0,0,0.5
+			shear	0,-.22
+		}
+		windowDef armor_valbar
+		{
+			rect	164,420,125,59
+			visible	1
+			background	"gfx/guis/hud/veh_valbar"
+			matcolor	0.698,0.811,0.427,0.2
+			shear	0,-.22
+		}
+		windowDef p_armor_val
+		{
+			rect	164,420,125,59
+			visible	1
+			shear	0,-.22
+			windowDef armor_val
+			{
+				rect	0,0,125,59
+				visible	1
+				background	"gfx/guis/hud/veh_valbar"
+				matcolor	0.698,0.811,0.427,0.349
+				shear	0,-.22
+			}
+		}
+		windowDef icon_armorvest
+		{
+			rect	262,458,16,16
+			visible	1
+			background	"gfx/guis/hud/icons/item_armor"
+			matcolor	0.658,0.639,0.376,0.6
+		}
+		windowDef t_shields
+		{
+			rect	203,453,52,13
+			visible	1
+			forecolor	0.658,0.639,0.376,0.6
+			text	"#str_200912"
+			textscale	0.14
+			font	"fonts/lowpixel"
+		}
+	}
+	windowDef p_ammo
+	{
+		rect	0,0,640,480
+		visible	1
+		windowDef ammo_backbar
+		{
+			rect	9,403,152,74
+			visible	1
+			background	"gfx/guis/hud/veh_backbar2"
+			matcolor	0,0,0,0.5
+			shear	0,-.22
+		}
+	}
+	windowDef p_rockets
+	{
+		rect	0,0,640,480
+		visible	1
+		windowDef rocket
+		{
+			rect	14,437,56,26
+			background	"gfx/guis/vehicles/veh_rocket"
+			visible	1
+			matcolor	0.658,0.639,0.376,0.8
+		}
+		windowDef rocket_mgun
+		{
+			rect	23,409,49,19
+			background	"gfx/guis/vehicles/veh_mgun"
+			visible	1
+			matcolor	0.658,0.639,0.376,0.4
+		}
+		windowDef ammo_amount
+		{
+			rect	70,429,27,41
+			visible	1
+			forecolor	0.850,0.905,0.749,1
+			text	"6"
+			textscale	0.7
+			shear	0,-.22
+			font	"fonts/chain"
+			textalign	2
+		}
+	}
+
+	windowDef p_weapcharge
+	{
+		rect	0,0,640,480
+		visible	1
+		windowDef weapon_charge_bg
+		{
+			rect	9,465,85,8
+			visible	1
+			background	"gfx/guis/vehicles/bar2"
+			matcolor	0.701,0.815,0.431,0.3
+			shear	0,-.22
+		}
+		windowDef p_weapon_charge
+		{
+			rect	15,467,74,4
+			visible	1
+			windowDef weapon_charge
+			{
+				rect	0,0,74,4
+				visible	1
+				background	"gfx/guis/vehicles/bar2"
+				matcolor	1,0.621,.1,1
+				shear	0,-.22
+			}
+		}
+	}
+	windowDef fade
+	{
+		rect	0,0,640,480
+		visible	1
+		backcolor	0,0,0,0
+	}
+	windowDef move
+	{
+		rect	0,0,640,480
+		visible	1
+		windowDef q4logo2
+		{
+			rect	0,0,640,480
+			visible	1
+			background	"gfx/guis/mainmenu/e3_2"
+			matcolor	1,1,1,0
+		}
+		windowDef q4logo1
+		{
+			rect	0,0,640,480
+			visible	1
+			background	"gfx/guis/mainmenu/e3_1"
+			matcolor	1,1,1,0
+		}
+		windowDef q4logo0
+		{
+			rect	220,165,200,150
+			visible	1
+			background	"gfx/guis/mainmenu/e3_0"
+			matcolor	1,1,1,0
+		}
+		windowDef q4logo_add
+		{
+			rect	220,165,200,150
+			visible	1
+			background	"gfx/guis/mainmenu/e3_0_add"
+			matcolor	0,0,0,1
+		}
+	}
+	windowDef q4text
+	{
+		rect	77,-1,487,117
+		visible	1
+		background	"gfx/guis/mainmenu/q4text"
+		matcolor	0,0,0,1
+	}
+	windowDef static1
+	{
+		visible	1
+		rect	0,0,640,480
+		background	"gfx/guis/common/img_static3"
+		matcolor	0.768,1,0.733,0
+	}
+	windowDef static2
+	{
+		visible	1
+		rect	0,0,640,480
+		background	"gfx/guis/common/static1"
+		matcolor	0.850,0.996,0.580,0
+	}
+	windowDef move1
+	{
+		rect	-19,17,640,480
+		visible	0
+	}
+	windowDef move2
+	{
+		rect	148,-12,640,480
+		visible	0
+	}
+	windowDef move3
+	{
+		rect	-20,-60,640,480
+		visible	0
+	}
+	windowDef anim_logo
+	{
+		rect	0,0,1,1
+		visible	1
+		notime	1
+
+		onTime 0 {
+			set "p_armor::visible" "0" ;
+			set "p_health::visible" "0" ;
+			set "p_ammo::visible" "0" ;
+			set "p_rockets::visible" "0" ;
+			set "p_mgun::visible" "0" ;
+			set "weapon_charge_bg::visible" "0" ;
+			set "p_weapon_charge::visible" "0" ;
+			set "fade::backcolor" "0,0,0,1" ;
+		}
+
+		onTime +250 {
+			transition "q4logo0::rect" "$q4logo0::rect" "$q4logo1::rect" "100" ;
+			transition "q4logo0::matcolor_w" "0" "1" "100" ;
+			transition "q4logo_add::rect" "$q4logo_add::rect" "$q4logo1::rect" "100" ;
+			transition "q4logo_add::matcolor" "1,1,1,1" "0,0,0,1" "200" ;
+			transition "static1::matcolor_w" "0" "0.2" "100" ;
+			transition "static2::matcolor_w" "0" "0.1" "100" ;
+			
+			transition "q4text::matcolor" "0,0,0,1" "1,1,1,1" "200" ;
+		}
+
+		onTime +100 {
+			set "move::rect" "$move1::rect" ;
+			set "q4text::rect" "$q4text1::rect" ;
+			
+			set "q4logo1::matcolor_w" "1" ;
+			transition "q4logo0::matcolor_w" "1" "0" "200" ;
+			transition "static1::matcolor_w" "0.2" "0" "200" ;
+			transition "static2::matcolor_w" "0.1" "0" "200" ;
+		}
+
+		onTime +50 {
+			set "move::rect" "0,0,640,480" ;
+		}
+
+		onTime +100 {
+			set "move::rect" "$move2::rect" ;
+			
+			transition "q4logo_add::matcolor" "1,1,1,1" "0,0,0,1" "50" ;
+			transition "static1::matcolor_w" "0.6" "0" "50" ;
+			transition "static2::matcolor_w" "0.4" "0" "50" ;
+		}
+
+		onTime +50 {
+			set "move::rect" "0,0,640,480" ;
+		}
+
+		onTime +300 {
+			set "move::rect" "$move3::rect" ;
+			
+			transition "q4logo_add::matcolor" "1,1,1,1" "0,0,0,1" "500" ;
+			transition "static1::matcolor_w" "0.4" "0" "500" ;
+			transition "static2::matcolor_w" "0.2" "0" "500" ;
+		}
+
+		onTime +50 {
+			set "move::rect" "0,0,640,480" ;
+		}
+
+		onTime +500 {
+			set "move::rect" "$move1::rect" ;
+			
+			transition "q4logo_add::matcolor" "1,1,1,1" "0,0,0,1" "200" ;
+			transition "static1::matcolor_w" "0.2" "0" "200" ;
+			transition "static2::matcolor_w" "0.1" "0.05" "200" ;
+		}
+
+		onTime +200 {
+			set "move::rect" "$move2::rect" ;
+			
+			set "q4logo2::matcolor_w" "1" ;
+			transition "q4logo1::matcolor_w" "1" "0" "200" ;
+		}
+
+		onTime +50 {
+			set "move::rect" "0,0,640,480" ;
+		}
+
+	}
+}

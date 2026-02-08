@@ -6,6 +6,34 @@ option(
 )
 
 option(
+  'build_engine',
+  type: 'boolean',
+  value: true,
+  description: 'Build engine executables (OpenQ4/OpenQ4-ded).',
+)
+
+option(
+  'build_games',
+  type: 'boolean',
+  value: true,
+  description: 'Build game modules (game_sp/game_mp).',
+)
+
+option(
+  'build_game_sp',
+  type: 'boolean',
+  value: true,
+  description: 'Build the single-player game module (game_sp).',
+)
+
+option(
+  'build_game_mp',
+  type: 'boolean',
+  value: true,
+  description: 'Build the multiplayer game module (game_mp).',
+)
+
+option(
   'platform_backend',
   type: 'combo',
   choices: ['sdl3', 'legacy_win32'],

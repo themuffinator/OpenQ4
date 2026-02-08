@@ -1,0 +1,4327 @@
+windowDef Desktop
+{
+	rect	0,0,640,480
+	visible	1
+	noclip	1
+	nocursor	1
+	menugui	1
+	float	"chatCount"	0
+	float	"igOffset"	282-((32*"gui::ig_awards")/2)
+	definevec4	"white"	1,1,1,1
+	definevec4	"white_5"	1,1,1,0.5
+	definevec4	"white_0"	1,1,1,0
+	definevec4	"orange"	1,0.5,0,1
+	definevec4	"blue"	0.243,0.341,0.717,1
+	definevec4	"blue_4"	0.243,0.341,0.717,0.4
+	definevec4	"blue_0"	0.243,0.341,0.717,0
+	definevec4	"aqua"	0.368,0.725,0.529,1
+	definevec4	"aqua_4"	0.368,0.725,0.529,0.4
+	definevec4	"aqua_0"	0.368,0.725,0.529,0
+	definevec4	"ctfoneflag_color"	1,1,1,1
+	definevec4	"neutral"	1,1,.552,0.8
+	definevec4	"offensive_color"	1,1,1,1
+	definevec4	"defensive_color"	1,1,1,1
+	definevec4	"aim_text_color"	1,1,1,1
+	definevec4	"aim_fade_color"	1,1,1,0
+  	float		"aim_fade_time"		10000 - "gui::main_notice_duration"
+  	float		"frag_fade_time"	10000 - "gui::frag_notice_duration"
+  	float	"round1_bracket1_done"	0
+  	float	"round1_bracket2_done"	0
+  	float	"round1_bracket3_done"	0
+  	float	"round1_bracket4_done"	0
+  	float	"round1_bracket5_done"	0
+  	float	"round1_bracket6_done"	0
+  	float	"round1_bracket7_done"	0
+  	float	"round1_bracket8_done"	0
+  	float	"round2_bracket1_done"	0
+  	float	"round2_bracket2_done"	0
+  	float	"round2_bracket3_done"	0
+  	float	"round2_bracket4_done"	0
+  	float	"round3_bracket1_done"	0
+  	float	"round3_bracket2_done"	0
+  	float	"round4_bracket1_done"	0
+  	
+  	defineicon	"teh"	"gfx/guis/hud/icons/teammate_health"
+  	defineicon	"tea"	"gfx/guis/hud/icons/teammate_armor"
+
+	onInit {	
+		namedEvent "InitHud";
+	}
+
+	onNamedEvent arenaInit {
+		// moved to subwindow to get around
+		// gui script window character limitation
+		
+		namedevent "event_arenaInit::arenaInit" ;
+	}
+
+	onNamedEvent arenaDone {
+		// moved to subwindow to get around
+		// gui script window character limitation
+		
+		namedevent "event_arenaDone::arenaDone" ;
+	}
+
+	onNamedEvent arenaFocus {
+		// moved to subwindow to get around
+		// gui script window character limitation
+		
+		namedevent "event_arenaFocus::arenaFocus" ;
+	}
+	
+	onNamedEvent roundTransitionIn {
+		if ( "gui::round" == 1 ) {
+			set "tourn_title1::text" "#str_200943" ;
+			set "tourn_title2::text" "#str_200286" ;
+		}	else if ( "gui::round" == 2 ) {
+			set "tourn_title1::text" "#str_200944" ;
+			set "tourn_title2::text" "#str_200287" ;	
+		}	else if ( "gui::round" == 3 ) {
+			set "tourn_title1::text" "#str_200945" ;
+			set "tourn_title2::text" "#str_200288" ;	
+		}	else if ( "gui::round" == 4 ) {
+			set "tourn_title1::text" "#str_200946" ;
+			set "tourn_title2::text" "#str_200289" ;	
+		}
+		
+		resettime "anim_transitionIn" "0" ;
+	}
+
+	onNamedEvent roundTransitionOut {
+		if ( "gui::round" == 1 ) {
+			set "p_round1::visible" "1" ;
+			set "p_round2::visible" "0" ;
+			set "p_round3::visible" "0" ;
+			set "p_round4::visible" "0" ;
+		} else if ( "gui::round" == 2 ) {
+			set "p_round1::visible" "0" ;
+			set "p_round2::visible" "1" ;
+			set "p_round3::visible" "0" ;
+			set "p_round4::visible" "0" ;
+		} else if ( "gui::round" == 3 ) {
+			set "p_round1::visible" "0" ;
+			set "p_round2::visible" "0" ;
+			set "p_round3::visible" "1" ;
+			set "p_round4::visible" "0" ;
+		} else if ( "gui::round" == 4 ) {
+			set "p_round1::visible" "0" ;
+			set "p_round2::visible" "0" ;
+			set "p_round3::visible" "0" ;
+			set "p_round4::visible" "1" ;
+		}
+		
+		transition "tourn_overbar::rect" "$tourn_overbar::rect" "$d_tourn_overbar::rect" "500" ;
+	}
+
+	onNamedEvent warmupTransitionIn {
+		set "tourn_topbar::visible" "0" ;
+		set "p_round1::visible" "0" ;
+		set "p_round2::visible" "0" ;
+		set "p_round3::visible" "0" ;
+		set "p_round4::visible" "0" ;
+		
+		transition "tourn_warmupbar::rect" "tourn_warmupbar::rect" "$d_tourn_warmupbar::rect" "500" ;
+	}
+
+	onNamedEvent warmupTransitionOut {
+		if ( "gui::round" == 1 ) {
+			set "p_round1::visible" "1" ;
+			set "p_round2::visible" "0" ;
+			set "p_round3::visible" "0" ;
+			set "p_round4::visible" "0" ;
+		} else if ( "gui::round" == 2 ) {
+			set "p_round1::visible" "0" ;
+			set "p_round2::visible" "1" ;
+			set "p_round3::visible" "0" ;
+			set "p_round4::visible" "0" ;
+		} else if ( "gui::round" == 3 ) {
+			set "p_round1::visible" "0" ;
+			set "p_round2::visible" "0" ;
+			set "p_round3::visible" "1" ;
+			set "p_round4::visible" "0" ;
+		} else if ( "gui::round" == 4 ) {
+			set "p_round1::visible" "0" ;
+			set "p_round2::visible" "0" ;
+			set "p_round3::visible" "0" ;
+			set "p_round4::visible" "1" ;
+		}
+		
+		set "tourn_topbar::visible" "1" ;
+		
+		transition "tourn_warmupbar::rect" "$d_tourn_warmupbar::rect" "$tourn_warmupbar::rect" "500" ;
+	}
+
+	onNamedEvent aim_text {
+		stopTransitions "aimtext";
+		resetTime "aimtext" "0";
+		set "aimText::notime" "1";
+		
+		stopTransitions "aimtextHealth";
+		resetTime "aimtextHealth" "0";
+		set "aimTextHealth::notime" "1";
+				
+		set "desktop::aim_text_color" "1,1,1,0.75";
+		set "desktop::aim_fade_color" "1,1,1,0";
+		
+		// RITUAL BEGIN
+		// squirrel: added DeadZone multiplayer mode
+		if( "gui::gametype" == 3 ||
+			"gui::gametype" == 4 ||
+			"gui::gametype" == 5 ||
+			"gui::gametype" == 6 ||
+			"gui::gametype" == 7 ||
+			"gui::gametype" == 8 ||
+			"gui::gametype" == 9  ) {
+			// RITUAL END
+			if( "gui::aim_player_team" == 0 ) {
+				set "desktop::aim_text_color" "0.627,0.862,0.317,0.8";
+				set "desktop::aim_fade_color" "0.627,0.862,0.317,0";
+			} else {
+				set "desktop::aim_text_color" "1,0.517,0,0.8";
+				set "desktop::aim_fade_color" "1,0.517,0,0";
+			}
+		}
+		
+		set "d_aimtext2::notime" "1";
+		stopTransitions "d_aimtext2";
+		resetTime "d_aimtext2" "0";
+		
+		//set "aimText::forecolor" "$desktop::aim_text_color";
+	}
+
+	onNamedEvent aim_fade {
+		set "d_aimtext2::notime" "1";
+		stopTransitions "d_aimtext2";
+		
+		stopTransitions "aimtext";
+		resetTime "aimText" "0";
+		
+		stopTransitions "aimtextHealth";
+		resetTime "aimTextHealth" "0";		
+	}
+
+	onNamedEvent aim_hit {
+	//	resetTime "d_aimText" "0";
+	}
+
+	onNamedEvent main_notice {
+		stoptransitions "mainNotice" ;
+		if( "gui::main_notice_persist" == 1 ) {
+			stopTransitions "mainNotice";
+			set "mainNotice::notime" "1";
+			set "mainNotice::visible" "1";
+			set "mainNotice::forecolor_w" "1";
+		} else {
+			set "mainNotice::visible" "1";
+			set "mainNotice::forecolor_w" "1";
+			resetTime "mainNotice" "0";
+		}
+	}
+
+	onNamedEvent frag_notice {
+		stoptransitions "fragNotice" ;
+		if( "gui::frag_notice_persist" == 1 ) {
+			set "fragNotice::notime" "1";
+			set "fragNotice::visible" "1";
+			set "fragNotice::forecolor_w" "1";
+		} else {
+			set "fragNotice::visible" "1";
+			set "fragNotice::forecolor_w" "1";		
+			resetTime "fragNotice" "0";
+		}
+	}
+
+	onNamedEvent giveIGA {
+		set "ig_awards::notime" "1" ;
+		stoptransitions "ig_awards" ;
+		set "ig_award_1::matcolor_w" "1";		
+		set "ig_award_2::matcolor_w" "1";		
+		set "ig_award_3::matcolor_w" "1";		
+		set "ig_award_4::matcolor_w" "1";		
+		set "ig_award_5::matcolor_w" "1";		
+		set "ig_award_6::matcolor_w" "1";		
+		set "ig_award_7::matcolor_w" "1";		
+		set "ig_award_8::matcolor_w" "1";		
+		set "ig_award_9::matcolor_w" "1";		
+		set "ig_award_10::matcolor_w" "1";
+		set "ig_award_num::forecolor_w" "1";		
+		
+		resetTime "ig_awards" "0";
+	}
+
+	onNamedEvent clearIGA {
+		set "gui::ig_awards_1" "0";
+		set "gui::ig_awards_2" "0";
+		set "gui::ig_awards_3" "0";
+		set "gui::ig_awards_4" "0";
+		set "gui::ig_awards_5" "0";
+		set "gui::ig_awards_6" "0";
+		set "gui::ig_awards_7" "0";
+		set "gui::ig_awards_8" "0";
+		set "gui::ig_awards_9" "0";
+		set "gui::ig_awards_10" "0";
+		set "ig_award_num::forecolor_w" "0";
+	}
+
+	onNamedEvent InitHud {
+		// 0 = singleplayer
+		// 1 = deathmatch
+		// 2 = tournament
+		// 3 = team deathmatch
+		// 4 = capture the flag
+		// 5 = one flag CTF
+		// 6 = arena CTF
+		// 7 = arena one flag CTF
+		// 8 = deadzone
+		
+		namedEvent "clearIGA" ;
+		
+		set "p_ctf::visible" "0";
+		set "p_ctf_2::visible" "0";
+		set "p_onectf::visible" "0";
+		set "p_ffa::visible" "1";
+		set "p_tourney::visible" "0";
+		set "p_tourntop::visible" "0";
+
+		if ( "gui::gametype" == 4 || "gui::gametype" == 6 ) {
+			set "p_ctf::visible" "1";
+			set "p_ctf_2::visible" "1";
+			set "p_onectf::visible" "0";
+			set "p_ffa::visible" "0";
+			set "p_tourntop::visible" "0";
+		} else if ( "gui::gametype" == 2 ) {
+			set "p_tourney::visible" "0";
+			set "p_ffa::visible" "0";
+			set "p_tourntop::visible" "1";
+		} else if ( "gui::gametype" == 5 ) {
+			set "p_ctf::visible" "1";
+			set "p_ctf_2::visible" "0";
+			set "p_onectf::visible" "1";
+			set "p_ffa::visible" "0";
+			set "p_tourntop::visible" "0";
+		} else if ( "gui::gametype" == 3 ) {
+			set "p_ctf::visible" "1";
+			set "p_ctf_2::visible" "0";
+			set "p_onectf::visible" "0";
+			set "p_ffa::visible" "0";
+			set "p_tourntop::visible" "0";
+		} else if ( "gui::gametype" == 8 ) {
+			set "p_ctf::visible" "1";
+			set "p_ctf_2::visible" "0";
+			set "p_onectf::visible" "0";
+			set "p_ffa::visible" "0";
+			set "p_tourntop::visible" "0";
+		}
+	}
+
+	onNamedEvent TeamChange {
+		if ( "gui::playerteam" == 0 ) {
+			set "ctf_clan1_score_marine::visible" "1";
+			set "ctf_clan2_score_marine::visible" "0";
+			
+			set "ctf_clan1_score_strogg::visible" "0";
+			set "ctf_clan2_score_strogg::visible" "1";			
+			
+			set "defensive_color" "1,0.482,0.0156,0.8";			
+			set "offensive_color" "0.415,0.643,0.168,0.8";
+			
+			set "ctf_clan1_logo::background" "gfx/guis/mainmenu/marinelogo"  ;
+			set "ctf_clan2_logo::background" "gfx/guis/mainmenu/strogglogo"  ;
+		} else {
+			set "ctf_clan1_score_marine::visible" "0";
+			set "ctf_clan2_score_marine::visible" "1";
+			
+			set "ctf_clan1_score_strogg::visible" "1";
+			set "ctf_clan2_score_strogg::visible" "0";	
+			
+			set "offensive_color" "1,0.482,0.0156,0.8";					
+			set "defensive_color" "0.415,0.643,0.168,0.8";	
+			
+			set "ctf_clan1_logo::background" "gfx/guis/mainmenu/strogglogo"  ;
+			set "ctf_clan2_logo::background" "gfx/guis/mainmenu/marinelogo"  ;
+		}
+		
+		set "ctf_clan1_flag::matcolor" "$desktop::offensive_color";
+		set "ctf_clan2_flag::matcolor" "$desktop::defensive_color";
+		set "ctf_clan1_bgcolor::matcolor" "$desktop::offensive_color";
+		set "ctf_clan2_bgcolor::matcolor" "$desktop::defensive_color";
+		
+	}
+
+	onNamedEvent flagDrop {
+		if ( "gui::gametype" == 4 || "gui::gametype" == 6 ) {
+			if ( "gui::playerteam" == 0 ) {
+				if ( "gui::team" == 0 ) {
+					set "d_ctf_clan1_flag::notime" "1" ;
+					stoptransitions "d_ctf_clan1_flag" ;
+					set "ctf_clan1_flag::rect"	"86,11,28,28";
+					set "ctf_clan1_flag_status::text" "?" ;
+				} else {
+					set "d_ctf_flag2::notime" "1" ;
+					stoptransitions "d_ctf_clan2_flag" ;
+					set "ctf_clan2_flag::rect"	"86,55,28,28";
+					set "ctf_clan2_flag_status::text" "?" ;
+				}
+			} else {
+				if ( "gui::team" == 0 ) {
+					set "d_ctf_clan2_flag::notime" "1" ;
+					stoptransitions "d_ctf_clan2_flag" ;
+					set "ctf_clan2_flag::rect"	"86,55,28,28";
+					set "ctf_clan2_flag_status::text" "?" ;
+				} else {
+					set "d_ctf_clan1_flag::notime" "1" ;
+					stoptransitions "d_ctf_clan1_flag" ;
+					set "ctf_clan1_flag::rect"	"86,11,28,28";
+					set "ctf_clan1_flag_status::text" "?" ;
+				}	
+			}
+		} else if ( "gui::gametype" == 5 ) {
+			set "d_ctfone_flag::notime" "1" ;
+			stoptransitions "d_ctfone_flag" ;
+			set "ctfone_flag::rect"	"97,33,28,28";
+			set "ctfone_flag_status::text" "?" ;
+			set "ctfone_flag::matcolor" "$desktop::neutral";
+		}
+	}
+
+	onNamedEvent flagTaken {
+		if ( "gui::gametype" == 4 || "gui::gametype" == 6 ) {
+			if ( "gui::playerteam" == 0 ) {
+				if ( "gui::team" == 0 ) {
+					resettime "d_ctf_clan1_flag" "0" ;
+					set "ctf_clan1_flag_status::text" "!" ;
+				} else {
+					resettime "d_ctf_clan2_flag" "0" ;
+					set "ctf_clan2_flag_status::text" "!" ;
+				}
+			} else {
+				if ( "gui::team" == 0 ) {
+					resettime "d_ctf_clan2_flag" "0" ;
+					set "ctf_clan2_flag_status::text" "!" ;
+				} else {
+					resettime "d_ctf_clan1_flag" "0" ;
+					set "ctf_clan1_flag_status::text" "!" ;
+				}	
+			}
+		} else if ( "gui::gametype" == 5 ) {
+			resettime "d_ctfone_flag" "0" ;
+			set "ctfone_flag_status::text" "!" ;
+			if( "gui::team" == 0 ) {
+				set "ctfoneflag_color" "0.415,0.643,0.168,0.8";
+			} else {
+				set "ctfoneflag_color" "1,0.482,0.0156,0.8";
+			}
+		}
+	}
+
+	onNamedEvent flagReturn {
+		if ( "gui::gametype" == 4 || "gui::gametype" == 6 ) {
+			if ( "gui::playerteam" == 0 ) {
+				if ( "gui::team" == 0 ) {
+					set "d_ctf_clan1_flag::notime" "1" ;
+					stoptransitions "d_ctf_clan1_flag" ;
+					set "ctf_clan1_flag::rect"	"86,11,28,28";
+					set "ctf_clan1_flag_status::text" "" ;
+				} else {
+					set "d_ctf_clan2_flag::notime" "1" ;
+					stoptransitions "d_ctf_clan2_flag" ;
+					set "ctf_clan2_flag::rect"	"86,55,28,28";
+					set "ctf_clan2_flag_status::text" "" ;
+				}
+			} else {
+				if ( "gui::team" == 0 ) {
+					set "d_ctf_clan2_flag::notime" "1" ;
+					stoptransitions "d_ctf_clan2_flag" ;
+					set "ctf_clan2_flag::rect"	"86,55,28,28";
+					set "ctf_clan2_flag_status::text" "" ;
+				} else {
+					set "d_ctf_clan1_flag::notime" "1" ;
+					stoptransitions "d_ctf_clan1_flag" ;
+					set "ctf_clan1_flag::rect"	"86,11,28,28";
+					set "ctf_clan1_flag_status::text" "" ;
+				}	
+			}
+		} else if ( "gui::gametype" == 5 ) {
+			set "d_ctfone_flag::notime" "1" ;
+			stoptransitions "d_ctfone_flag" ;
+			set "ctfone_flag::rect"	"97,33,28,28";
+			set "ctfone_flag_status::text" "" ;
+			set "ctfone_flag::matcolor" "$desktop::neutral";
+		}
+	}
+
+	onNamedEvent removeChatLine {
+		set "history1::text" "$history2::text";
+		set "history1_fade::text" "$history2::text";
+		set "history2::text" "$history3::text";
+		set "history3::text" "$history4::text";
+		if ( "desktop::chatCount" >= 4 ) {
+			set "desktop::chatCount" "3";
+			set "history4::visible" "0";
+			resetTime "anim_remove" "0";
+		} else if ( "desktop::chatCount" == 3 ) {
+			set "desktop::chatCount" "2";
+			set "history3::visible" "0";
+			resetTime "anim_remove" "0";
+		} else if ( "desktop::chatCount" == 2 ) {
+			set "desktop::chatCount" "1";
+			set "history2::visible" "0";
+			resetTime "anim_remove" "0";
+		} else if ( "desktop::chatCount" <= 1 ) {
+			set "desktop::chatCount" "0";
+			set "history1::visible" "0";
+		}		
+	}
+
+	onNamedEvent addChatLine {
+		if ( "desktop::chatCount" >= 4 ) {
+			namedEvent "desktop::removechatline";
+		}
+		
+		if ( "desktop::chatCount" == 3 ) {
+			set "history4::text" "$gui::chattext";
+			set "history4::visible" "1";
+			set "desktop::chatCount" "4";
+		} else if ( "desktop::chatCount" == 2 ) { 		
+			set "history3::text" "$gui::chattext";
+			set "history3::visible" "1";
+			set "desktop::chatCount" "3";
+		} else if ( "desktop::chatCount" == 1 ) { 		
+			set "history2::text" "$gui::chattext";
+			set "history2::visible" "1";
+			set "desktop::chatCount" "2";
+		} else {
+			set "history1::text" "$gui::chattext";
+			set "history1_fade::text" "$gui::chattext";
+			set "history1::visible" "1";
+			set "desktop::chatCount" "1";
+			resetTime "anim_remove" "0";
+		}		
+	}
+
+	onNamedEvent show_transmit_self {
+		set "p_aud1::visible" "1";
+	}
+
+	onNamedEvent hide_transmit_self {
+		set "p_aud1::visible" "0";
+	}
+
+	onNamedEvent show_transmit {
+		set "p_aud2::visible" "1";
+	}
+
+	onNamedEvent hide_transmit {
+		set "p_aud2::visible" "0";
+	}
+	windowDef event_arenaInit
+	{
+		rect	0,0,1,1
+		visible	1
+
+		onNamedEvent arenaInit {
+			if ( "gui::round" == 1 ) {
+				if ( "gui::bracket" == 1 ) {
+					set "hover_round1_bracket1::matcolor" "$desktop::blue_0" ;
+					set "sel1_round1_bracket1::matcolor" "$desktop::blue_0" ;
+					set "sel2_round1_bracket1::matcolor" "$desktop::blue_0" ;
+					set "desktop::round1_bracket1_done" "0" ;
+					if ( "gui::empty" == 1 ) {	
+						set "name1_round1_bracket1::visible" "0" ;
+						set "score1_round1_bracket1::visible" "0" ;
+						set "name2_round1_bracket1::visible" "0" ;
+						set "score2_round1_bracket1::visible" "0" ;
+						set "empty_round1_bracket1::visible" "1" ;
+					}else {	
+						set "name1_round1_bracket1::forecolor" "$desktop::white" ;
+						set "score1_round1_bracket1::forecolor" "$desktop::orange" ;
+						set "name2_round1_bracket1::forecolor" "$desktop::white" ;
+						set "score2_round1_bracket1::forecolor" "$desktop::orange" ;
+						set "name1_round1_bracket1::visible" "1" ;
+						set "score1_round1_bracket1::visible" "1" ;
+						set "name2_round1_bracket1::visible" "1" ;
+						set "score2_round1_bracket1::visible" "1" ;
+						set "empty_round1_bracket1::visible" "0" ;
+					}
+				} else if ( "gui::bracket" == 2 ) {
+					set "hover_round1_bracket2::matcolor" "$desktop::blue_0" ;
+					set "sel1_round1_bracket2::matcolor" "$desktop::blue_0" ;
+					set "sel2_round1_bracket2::matcolor" "$desktop::blue_0" ;
+					set "desktop::round1_bracket2_done" "0" ;
+					if ( "gui::empty" == 1 ) {	
+						set "name1_round1_bracket2::visible" "0" ;
+						set "score1_round1_bracket2::visible" "0" ;
+						set "name2_round1_bracket2::visible" "0" ;
+						set "score2_round1_bracket2::visible" "0" ;
+						set "empty_round1_bracket2::visible" "1" ;
+					}else {	
+						set "name1_round1_bracket2::forecolor" "$desktop::white" ;
+						set "score1_round1_bracket2::forecolor" "$desktop::orange" ;
+						set "name2_round1_bracket2::forecolor" "$desktop::white" ;
+						set "score2_round1_bracket2::forecolor" "$desktop::orange" ;
+						set "name1_round1_bracket2::visible" "1" ;
+						set "score1_round1_bracket2::visible" "1" ;
+						set "name2_round1_bracket2::visible" "1" ;
+						set "score2_round1_bracket2::visible" "1" ;
+						set "empty_round1_bracket2::visible" "0" ;
+					}
+				} else if ( "gui::bracket" == 3 ) {
+					set "hover_round1_bracket3::matcolor" "$desktop::blue_0" ;
+					set "sel1_round1_bracket3::matcolor" "$desktop::blue_0" ;
+					set "sel2_round1_bracket3::matcolor" "$desktop::blue_0" ;
+					set "desktop::round1_bracket3_done" "0" ;
+					if ( "gui::empty" == 1 ) {	
+						set "name1_round1_bracket3::visible" "0" ;
+						set "score1_round1_bracket3::visible" "0" ;
+						set "name2_round1_bracket3::visible" "0" ;
+						set "score2_round1_bracket3::visible" "0" ;
+						set "empty_round1_bracket3::visible" "1" ;
+					}else {	
+						set "name1_round1_bracket3::forecolor" "$desktop::white" ;
+						set "score1_round1_bracket3::forecolor" "$desktop::orange" ;
+						set "name2_round1_bracket3::forecolor" "$desktop::white" ;
+						set "score2_round1_bracket3::forecolor" "$desktop::orange" ;
+						set "name1_round1_bracket3::visible" "1" ;
+						set "score1_round1_bracket3::visible" "1" ;
+						set "name2_round1_bracket3::visible" "1" ;
+						set "score2_round1_bracket3::visible" "1" ;
+						set "empty_round1_bracket3::visible" "0" ;
+					}
+				} else if ( "gui::bracket" == 4 ) {
+					set "hover_round1_bracket4::matcolor" "$desktop::blue_0" ;
+					set "sel1_round1_bracket4::matcolor" "$desktop::blue_0" ;
+					set "sel2_round1_bracket4::matcolor" "$desktop::blue_0" ;
+					set "desktop::round1_bracket4_done" "0" ;
+					if ( "gui::empty" == 1 ) {	
+						set "name1_round1_bracket4::visible" "0" ;
+						set "score1_round1_bracket4::visible" "0" ;
+						set "name2_round1_bracket4::visible" "0" ;
+						set "score2_round1_bracket4::visible" "0" ;
+						set "empty_round1_bracket4::visible" "1" ;
+					}else {	
+						set "name1_round1_bracket4::forecolor" "$desktop::white" ;
+						set "score1_round1_bracket4::forecolor" "$desktop::orange" ;
+						set "name2_round1_bracket4::forecolor" "$desktop::white" ;
+						set "score2_round1_bracket4::forecolor" "$desktop::orange" ;
+						set "name1_round1_bracket4::visible" "1" ;
+						set "score1_round1_bracket4::visible" "1" ;
+						set "name2_round1_bracket4::visible" "1" ;
+						set "score2_round1_bracket4::visible" "1" ;
+						set "empty_round1_bracket4::visible" "0" ;
+					}
+				} else if ( "gui::bracket" == 5 ) {
+					set "hover_round1_bracket5::matcolor" "$desktop::blue_0" ;
+					set "sel1_round1_bracket5::matcolor" "$desktop::blue_0" ;
+					set "sel2_round1_bracket5::matcolor" "$desktop::blue_0" ;
+					set "desktop::round1_bracket5_done" "0" ;
+					if ( "gui::empty" == 1 ) {	
+						set "name1_round1_bracket5::visible" "0" ;
+						set "score1_round1_bracket5::visible" "0" ;
+						set "name2_round1_bracket5::visible" "0" ;
+						set "score2_round1_bracket5::visible" "0" ;
+						set "empty_round1_bracket5::visible" "1" ;
+					}else {	
+						set "name1_round1_bracket5::forecolor" "$desktop::white" ;
+						set "score1_round1_bracket5::forecolor" "$desktop::orange" ;
+						set "name2_round1_bracket5::forecolor" "$desktop::white" ;
+						set "score2_round1_bracket5::forecolor" "$desktop::orange" ;
+						set "name1_round1_bracket5::visible" "1" ;
+						set "score1_round1_bracket5::visible" "1" ;
+						set "name2_round1_bracket5::visible" "1" ;
+						set "score2_round1_bracket5::visible" "1" ;
+						set "empty_round1_bracket5::visible" "0" ;
+					}	
+				} else if ( "gui::bracket" == 6 ) {
+					set "hover_round1_bracket6::matcolor" "$desktop::blue_0" ;
+					set "sel1_round1_bracket6::matcolor" "$desktop::blue_0" ;
+					set "sel2_round1_bracket6::matcolor" "$desktop::blue_0" ;
+					set "desktop::round1_bracket6_done" "0" ;
+					if ( "gui::empty" == 1 ) {	
+						set "name1_round1_bracket6::visible" "0" ;
+						set "score1_round1_bracket6::visible" "0" ;
+						set "name2_round1_bracket6::visible" "0" ;
+						set "score2_round1_bracket6::visible" "0" ;
+						set "empty_round1_bracket6::visible" "1" ;
+					}else {	
+						set "name1_round1_bracket6::forecolor" "$desktop::white" ;
+						set "score1_round1_bracket6::forecolor" "$desktop::orange" ;
+						set "name2_round1_bracket6::forecolor" "$desktop::white" ;
+						set "score2_round1_bracket6::forecolor" "$desktop::orange" ;
+						set "name1_round1_bracket6::visible" "1" ;
+						set "score1_round1_bracket6::visible" "1" ;
+						set "name2_round1_bracket6::visible" "1" ;
+						set "score2_round1_bracket6::visible" "1" ;
+						set "empty_round1_bracket6::visible" "0" ;
+					}
+				} else if ( "gui::bracket" == 7 ) {
+					set "hover_round1_bracket7::matcolor" "$desktop::blue_0" ;
+					set "sel1_round1_bracket7::matcolor" "$desktop::blue_0" ;
+					set "sel2_round1_bracket7::matcolor" "$desktop::blue_0" ;
+					set "desktop::round1_bracket7_done" "0" ;
+					if ( "gui::empty" == 1 ) {	
+						set "name1_round1_bracket7::visible" "0" ;
+						set "score1_round1_bracket7::visible" "0" ;
+						set "name2_round1_bracket7::visible" "0" ;
+						set "score2_round1_bracket7::visible" "0" ;
+						set "empty_round1_bracket7::visible" "1" ;
+					}else {	
+						set "name1_round1_bracket7::forecolor" "$desktop::white" ;
+						set "score1_round1_bracket7::forecolor" "$desktop::orange" ;
+						set "name2_round1_bracket7::forecolor" "$desktop::white" ;
+						set "score2_round1_bracket7::forecolor" "$desktop::orange" ;
+						set "name1_round1_bracket7::visible" "1" ;
+						set "score1_round1_bracket7::visible" "1" ;
+						set "name2_round1_bracket7::visible" "1" ;
+						set "score2_round1_bracket7::visible" "1" ;
+						set "empty_round1_bracket7::visible" "0" ;
+					}
+				} else if ( "gui::bracket" == 8 ) {
+					set "hover_round1_bracket8::matcolor" "$desktop::blue_0" ;
+					set "sel1_round1_bracket8::matcolor" "$desktop::blue_0" ;
+					set "sel2_round1_bracket8::matcolor" "$desktop::blue_0" ;
+					set "desktop::round1_bracket8_done" "0" ;
+					if ( "gui::empty" == 1 ) {	
+						set "name1_round1_bracket8::visible" "0" ;
+						set "score1_round1_bracket8::visible" "0" ;
+						set "name2_round1_bracket8::visible" "0" ;
+						set "score2_round1_bracket8::visible" "0" ;
+						set "empty_round1_bracket8::visible" "1" ;
+					}else {	
+						set "name1_round1_bracket8::forecolor" "$desktop::white" ;
+						set "score1_round1_bracket8::forecolor" "$desktop::orange" ;
+						set "name2_round1_bracket8::forecolor" "$desktop::white" ;
+						set "score2_round1_bracket8::forecolor" "$desktop::orange" ;
+						set "name1_round1_bracket8::visible" "1" ;
+						set "score1_round1_bracket8::visible" "1" ;
+						set "name2_round1_bracket8::visible" "1" ;
+						set "score2_round1_bracket8::visible" "1" ;
+						set "empty_round1_bracket8::visible" "0" ;
+					}	
+				}		
+				
+			} else if ( "gui::round" == 2 ) {
+				if ( "gui::bracket" == 1 ) {
+					set "hover_round2_bracket1::matcolor" "$desktop::blue_0" ;
+					set "sel1_round2_bracket1::matcolor" "$desktop::blue_0" ;
+					set "sel2_round2_bracket1::matcolor" "$desktop::blue_0" ;
+					set "desktop::round2_bracket1_done" "0" ;
+					if ( "gui::empty" == 1 ) {	
+						set "name1_round2_bracket1::visible" "0" ;
+						set "score1_round2_bracket1::visible" "0" ;
+						set "name2_round2_bracket1::visible" "0" ;
+						set "score2_round2_bracket1::visible" "0" ;
+						set "empty_round2_bracket1::visible" "1" ;
+					}else {	
+						set "name1_round2_bracket1::forecolor" "$desktop::white" ;
+						set "score1_round2_bracket1::forecolor" "$desktop::orange" ;
+						set "name2_round2_bracket1::forecolor" "$desktop::white" ;
+						set "score2_round2_bracket1::forecolor" "$desktop::orange" ;
+						set "name1_round2_bracket1::visible" "1" ;
+						set "score1_round2_bracket1::visible" "1" ;
+						set "name2_round2_bracket1::visible" "1" ;
+						set "score2_round2_bracket1::visible" "1" ;
+						set "empty_round2_bracket1::visible" "0" ;
+					}
+				} else if ( "gui::bracket" == 2 ) {
+					set "hover_round2_bracket2::matcolor" "$desktop::blue_0" ;
+					set "sel1_round2_bracket2::matcolor" "$desktop::blue_0" ;
+					set "sel2_round2_bracket2::matcolor" "$desktop::blue_0" ;
+					set "desktop::round2_bracket2_done" "0" ;
+					if ( "gui::empty" == 1 ) {	
+						set "name1_round2_bracket2::visible" "0" ;
+						set "score1_round2_bracket2::visible" "0" ;
+						set "name2_round2_bracket2::visible" "0" ;
+						set "score2_round2_bracket2::visible" "0" ;
+						set "empty_round2_bracket2::visible" "1" ;
+					}else {	
+						set "name1_round2_bracket2::forecolor" "$desktop::white" ;
+						set "score1_round2_bracket2::forecolor" "$desktop::orange" ;
+						set "name2_round2_bracket2::forecolor" "$desktop::white" ;
+						set "score2_round2_bracket2::forecolor" "$desktop::orange" ;
+						set "name1_round2_bracket2::visible" "1" ;
+						set "score1_round2_bracket2::visible" "1" ;
+						set "name2_round2_bracket2::visible" "1" ;
+						set "score2_round2_bracket2::visible" "1" ;
+						set "empty_round2_bracket2::visible" "0" ;
+					}
+				} else if ( "gui::bracket" == 3 ) {
+					set "hover_round2_bracket3::matcolor" "$desktop::blue_0" ;
+					set "sel1_round2_bracket3::matcolor" "$desktop::blue_0" ;
+					set "sel2_round2_bracket3::matcolor" "$desktop::blue_0" ;
+					set "desktop::round2_bracket3_done" "0" ;
+					if ( "gui::empty" == 1 ) {	
+						set "name1_round2_bracket3::visible" "0" ;
+						set "score1_round2_bracket3::visible" "0" ;
+						set "name2_round2_bracket3::visible" "0" ;
+						set "score2_round2_bracket3::visible" "0" ;
+						set "empty_round2_bracket3::visible" "1" ;
+					}else {	
+						set "name1_round2_bracket3::forecolor" "$desktop::white" ;
+						set "score1_round2_bracket3::forecolor" "$desktop::orange" ;
+						set "name2_round2_bracket3::forecolor" "$desktop::white" ;
+						set "score2_round2_bracket3::forecolor" "$desktop::orange" ;
+						set "name1_round2_bracket3::visible" "1" ;
+						set "score1_round2_bracket3::visible" "1" ;
+						set "name2_round2_bracket3::visible" "1" ;
+						set "score2_round2_bracket3::visible" "1" ;
+						set "empty_round2_bracket3::visible" "0" ;
+					}
+				} else if ( "gui::bracket" == 4 ) {
+					set "hover_round2_bracket4::matcolor" "$desktop::blue_0" ;
+					set "sel1_round2_bracket4::matcolor" "$desktop::blue_0" ;
+					set "sel2_round2_bracket4::matcolor" "$desktop::blue_0" ;
+					set "desktop::round2_bracket4_done" "0" ;
+					if ( "gui::empty" == 1 ) {	
+						set "name1_round2_bracket4::visible" "0" ;
+						set "score1_round2_bracket4::visible" "0" ;
+						set "name2_round2_bracket4::visible" "0" ;
+						set "score2_round2_bracket4::visible" "0" ;
+						set "empty_round2_bracket4::visible" "1" ;
+					}else {	
+						set "name1_round2_bracket4::forecolor" "$desktop::white" ;
+						set "score1_round2_bracket4::forecolor" "$desktop::orange" ;
+						set "name2_round2_bracket4::forecolor" "$desktop::white" ;
+						set "score2_round2_bracket4::forecolor" "$desktop::orange" ;
+						set "name1_round2_bracket4::visible" "1" ;
+						set "score1_round2_bracket4::visible" "1" ;
+						set "name2_round2_bracket4::visible" "1" ;
+						set "score2_round2_bracket4::visible" "1" ;
+						set "empty_round2_bracket4::visible" "0" ;
+					}	
+				} 
+				
+			} else if ( "gui::round" == 3 ) {
+				if ( "gui::bracket" == 1 ) {
+					set "hover_round3_bracket1::matcolor" "$desktop::blue_0" ;
+					set "sel1_round3_bracket1::matcolor" "$desktop::blue_0" ;
+					set "sel2_round3_bracket1::matcolor" "$desktop::blue_0" ;
+					set "desktop::round3_bracket1_done" "0" ;
+					if ( "gui::empty" == 1 ) {	
+						set "name1_round3_bracket1::visible" "0" ;
+						set "score1_round3_bracket1::visible" "0" ;
+						set "name2_round3_bracket1::visible" "0" ;
+						set "score2_round3_bracket1::visible" "0" ;
+						set "empty_round3_bracket1::visible" "1" ;
+						set "vs_round3_bracket1::visible" "0" ;
+					}else {	
+						set "name1_round3_bracket1::forecolor" "$desktop::white" ;
+						set "score1_round3_bracket1::forecolor" "$desktop::orange" ;
+						set "name2_round3_bracket1::forecolor" "$desktop::white" ;
+						set "score2_round3_bracket1::forecolor" "$desktop::orange" ;
+						set "name1_round3_bracket1::visible" "1" ;
+						set "score1_round3_bracket1::visible" "1" ;
+						set "name2_round3_bracket1::visible" "1" ;
+						set "score2_round3_bracket1::visible" "1" ;
+						set "empty_round3_bracket1::visible" "0" ;
+						set "vs_round3_bracket1::visible" "1" ;
+					}
+				} else if ( "gui::bracket" == 2 ) {
+					set "hover_round3_bracket2::matcolor" "$desktop::blue_0" ;
+					set "sel1_round3_bracket2::matcolor" "$desktop::blue_0" ;
+					set "sel2_round3_bracket2::matcolor" "$desktop::blue_0" ;
+					set "desktop::round3_bracket2_done" "0" ;
+					if ( "gui::empty" == 1 ) {	
+						set "name1_round3_bracket2::visible" "0" ;
+						set "score1_round3_bracket2::visible" "0" ;
+						set "name2_round3_bracket2::visible" "0" ;
+						set "score2_round3_bracket2::visible" "0" ;
+						set "empty_round3_bracket2::visible" "1" ;
+						set "vs_round3_bracket2::visible" "0" ;
+					}else {	
+						set "name1_round3_bracket2::forecolor" "$desktop::white" ;
+						set "score1_round3_bracket2::forecolor" "$desktop::orange" ;
+						set "name2_round3_bracket2::forecolor" "$desktop::white" ;
+						set "score2_round3_bracket2::forecolor" "$desktop::orange" ;
+						set "name1_round3_bracket2::visible" "1" ;
+						set "score1_round3_bracket2::visible" "1" ;
+						set "name2_round3_bracket2::visible" "1" ;
+						set "score2_round3_bracket2::visible" "1" ;
+						set "empty_round3_bracket2::visible" "0" ;
+						set "vs_round3_bracket2::visible" "1" ;
+					}
+				} 
+				
+			} else if ( "gui::round" == 4 ) {
+				if( "gui::bracket" == 1 ) {
+					set "hover_round4_bracket1::matcolor" "$desktop::blue_0" ;
+					set "sel1_round4_bracket1::matcolor" "$desktop::blue_0" ;
+					set "sel2_round4_bracket1::matcolor" "$desktop::blue_0" ;
+					set "desktop::round4_bracket1_done" "0" ;
+					if ( "gui::empty" == 1 ) {	
+						set "name1_round4_bracket1::visible" "0" ;
+						set "score1_round4_bracket1::visible" "0" ;
+						set "name2_round4_bracket1::visible" "0" ;
+						set "score2_round4_bracket1::visible" "0" ;
+						set "empty_round4_bracket1::visible" "1" ;
+						set "vs_round4_bracket1::visible" "0" ;
+					}else {	
+						set "name1_round4_bracket1::forecolor" "$desktop::white" ;
+						set "score1_round4_bracket1::forecolor" "$desktop::orange" ;
+						set "name2_round4_bracket1::forecolor" "$desktop::white" ;
+						set "score2_round4_bracket1::forecolor" "$desktop::orange" ;
+						set "name1_round4_bracket1::visible" "1" ;
+						set "score1_round4_bracket1::visible" "1" ;
+						set "name2_round4_bracket1::visible" "1" ;
+						set "score2_round4_bracket1::visible" "1" ;
+						set "empty_round4_bracket1::visible" "0" ;
+						set "vs_round4_bracket1::visible" "1" ;
+					}		
+				}
+			}
+		}
+
+	}
+	windowDef event_arenaDone
+	{
+		rect	0,0,1,1
+		visible	1
+
+		onNamedEvent arenaDone {
+			if ( "gui::round" == 1 ) {
+				if ( "gui::bracket" == 1 ) {
+					transition "hover_round1_bracket1::matcolor" "$desktop::blue" "$desktop::blue_4" "500" ;
+					set "sel1_round1_bracket1::matcolor" "$desktop::blue_0" ;
+					set "sel2_round1_bracket1::matcolor" "$desktop::blue_0" ;
+					set "desktop::round1_bracket1_done" "1" ;
+					if ( "gui::winner" == 1 ) {
+						transition "score1_round1_bracket1::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name2_round1_bracket1::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score2_round1_bracket1::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}else if ( "gui::winner" == 2 ) {
+						transition "score2_round1_bracket1::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name1_round1_bracket1::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score1_round1_bracket1::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}				
+				} else if ( "gui::bracket" == 2 ) {
+					transition "hover_round1_bracket2::matcolor" "$desktop::blue" "$desktop::blue_4" "500" ;
+					set "sel1_round1_bracket2::matcolor" "$desktop::blue_0" ;
+					set "sel2_round1_bracket2::matcolor" "$desktop::blue_0" ;
+					set "desktop::round1_bracket2_done" "1" ;
+					if ( "gui::winner" == 1 ) {
+						transition "score1_round1_bracket2::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name2_round1_bracket2::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score2_round1_bracket2::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}else if ( "gui::winner" == 2 ) {
+						transition "score2_round1_bracket2::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name1_round1_bracket2::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score1_round1_bracket2::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}				
+				} else if ( "gui::bracket" == 3 ) {
+					transition "hover_round1_bracket3::matcolor" "$desktop::blue" "$desktop::blue_4" "500" ;
+					set "sel1_round1_bracket3::matcolor" "$desktop::blue_0" ;
+					set "sel2_round1_bracket3::matcolor" "$desktop::blue_0" ;
+					set "desktop::round1_bracket3_done" "1" ;
+					if ( "gui::winner" == 1 ) {
+						transition "score1_round1_bracket3::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name2_round1_bracket3::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score2_round1_bracket3::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}else if ( "gui::winner" == 2 ) {
+						transition "score2_round1_bracket3::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name1_round1_bracket3::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score1_round1_bracket3::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}				
+				} else if ( "gui::bracket" == 4 ) {
+					transition "hover_round1_bracket4::matcolor" "$desktop::blue" "$desktop::blue_4" "500" ;
+					set "sel1_round1_bracket4::matcolor" "$desktop::blue_0" ;
+					set "sel2_round1_bracket4::matcolor" "$desktop::blue_0" ;
+					set "desktop::round1_bracket4_done" "1" ;
+					if ( "gui::winner" == 1 ) {
+						transition "score1_round1_bracket4::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name2_round1_bracket4::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score2_round1_bracket4::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}else if ( "gui::winner" == 2 ) {
+						transition "score2_round1_bracket4::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name1_round1_bracket4::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score1_round1_bracket4::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}				
+				} else if ( "gui::bracket" == 5 ) {
+					transition "hover_round1_bracket5::matcolor" "$desktop::blue" "$desktop::blue_4" "500" ;
+					set "sel1_round1_bracket5::matcolor" "$desktop::blue_0" ;
+					set "sel2_round1_bracket5::matcolor" "$desktop::blue_0" ;
+					set "desktop::round1_bracket5_done" "1" ;
+					if ( "gui::winner" == 1 ) {
+						transition "score1_round1_bracket5::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name2_round1_bracket5::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score2_round1_bracket5::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}else if ( "gui::winner" == 2 ) {
+						transition "score2_round1_bracket5::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name1_round1_bracket5::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score1_round1_bracket5::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}				
+				} else if ( "gui::bracket" == 6 ) {
+					transition "hover_round1_bracket6::matcolor" "$desktop::blue" "$desktop::blue_4" "500" ;
+					set "sel1_round1_bracket6::matcolor" "$desktop::blue_0" ;
+					set "sel2_round1_bracket6::matcolor" "$desktop::blue_0" ;
+					set "desktop::round1_bracket6_done" "1" ;
+					if ( "gui::winner" == 1 ) {
+						transition "score1_round1_bracket6::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name2_round1_bracket6::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score2_round1_bracket6::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}else if ( "gui::winner" == 2 ) {
+						transition "score2_round1_bracket6::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name1_round1_bracket6::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score1_round1_bracket6::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}				
+				} else if ( "gui::bracket" == 7 ) {
+					transition "hover_round1_bracket7::matcolor" "$desktop::blue" "$desktop::blue_4" "500" ;
+					set "sel1_round1_bracket7::matcolor" "$desktop::blue_0" ;
+					set "sel2_round1_bracket7::matcolor" "$desktop::blue_0" ;
+					set "desktop::round1_bracket7_done" "1" ;
+					if ( "gui::winner" == 1 ) {
+						transition "score1_round1_bracket7::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name2_round1_bracket7::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score2_round1_bracket7::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}else if ( "gui::winner" == 2 ) {
+						transition "score2_round1_bracket7::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name1_round1_bracket7::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score1_round1_bracket7::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}				
+				} else if ( "gui::bracket" == 8 ) {
+					transition "hover_round1_bracket8::matcolor" "$desktop::blue" "$desktop::blue_4" "500" ;
+					set "sel1_round1_bracket8::matcolor" "$desktop::blue_0" ;
+					set "sel2_round1_bracket8::matcolor" "$desktop::blue_0" ;
+					set "desktop::round1_bracket8_done" "1" ;
+					if ( "gui::winner" == 1 ) {
+						transition "score1_round1_bracket8::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name2_round1_bracket8::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score2_round1_bracket8::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}else if ( "gui::winner" == 2 ) {
+						transition "score2_round1_bracket8::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name1_round1_bracket8::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score1_round1_bracket8::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}	
+				}
+				
+			} else if ( "gui::round" == 2 ) {
+				if ( "gui::bracket" == 1 ) {
+					transition "hover_round2_bracket1::matcolor" "$desktop::blue" "$desktop::blue_4" "500" ;
+					set "sel1_round2_bracket1::matcolor" "$desktop::blue_0" ;
+					set "sel2_round2_bracket1::matcolor" "$desktop::blue_0" ;
+					set "desktop::round2_bracket1_done" "1" ;
+					if ( "gui::winner" == 1 ) {
+						transition "score1_round2_bracket1::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name2_round2_bracket1::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score2_round2_bracket1::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}else if ( "gui::winner" == 2 ) {
+						transition "score2_round2_bracket1::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name1_round2_bracket1::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score1_round2_bracket1::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}	
+				} else if ( "gui::bracket" == 2 ) {
+					transition "hover_round2_bracket2::matcolor" "$desktop::blue" "$desktop::blue_4" "500" ;
+					set "sel1_round2_bracket2::matcolor" "$desktop::blue_0" ;
+					set "sel2_round2_bracket2::matcolor" "$desktop::blue_0" ;
+					set "desktop::round2_bracket2_done" "1" ;
+					if ( "gui::winner" == 1 ) {
+						transition "score1_round2_bracket2::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name2_round2_bracket2::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score2_round2_bracket2::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}else if ( "gui::winner" == 2 ) {
+						transition "score2_round2_bracket2::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name1_round2_bracket2::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score1_round2_bracket2::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}	
+				} else if ( "gui::bracket" == 3 ) {
+					transition "hover_round2_bracket3::matcolor" "$desktop::blue" "$desktop::blue_4" "500" ;
+					set "sel1_round2_bracket3::matcolor" "$desktop::blue_0" ;
+					set "sel2_round2_bracket3::matcolor" "$desktop::blue_0" ;
+					set "desktop::round2_bracket3_done" "1" ;
+					if ( "gui::winner" == 1 ) {
+						transition "score1_round2_bracket3::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name2_round2_bracket3::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score2_round2_bracket3::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}else if ( "gui::winner" == 2 ) {
+						transition "score2_round2_bracket3::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name1_round2_bracket3::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score1_round2_bracket3::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}	
+				} else if ( "gui::bracket" == 4 ) {
+					transition "hover_round2_bracket4::matcolor" "$desktop::blue" "$desktop::blue_4" "500" ;
+					set "sel1_round2_bracket4::matcolor" "$desktop::blue_0" ;
+					set "sel2_round2_bracket4::matcolor" "$desktop::blue_0" ;
+					set "desktop::round2_bracket4_done" "1" ;
+					if ( "gui::winner" == 1 ) {
+						transition "score1_round2_bracket4::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name2_round2_bracket4::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score2_round2_bracket4::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}else if ( "gui::winner" == 2 ) {
+						transition "score2_round2_bracket4::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name1_round2_bracket4::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score1_round2_bracket4::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}	
+				} 
+				
+			} else if ( "gui::round" == 3 ) {
+				if ( "gui::bracket" == 1 ) {
+					transition "hover_round3_bracket1::matcolor" "$desktop::blue" "$desktop::blue_4" "500" ;
+					set "sel1_round3_bracket1::matcolor" "$desktop::blue_0" ;
+					set "sel2_round3_bracket1::matcolor" "$desktop::blue_0" ;
+					set "desktop::round3_bracket1_done" "1" ;
+					if ( "gui::winner" == 1 ) {
+						transition "score1_round3_bracket1::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name2_round3_bracket1::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score2_round3_bracket1::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}else if ( "gui::winner" == 2 ) {
+						transition "score2_round3_bracket1::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name1_round3_bracket1::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score1_round3_bracket1::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}	
+				} else if ( "gui::bracket" == 2 ) {
+					transition "hover_round3_bracket2::matcolor" "$desktop::blue" "$desktop::blue_4" "500" ;
+					set "sel1_round3_bracket2::matcolor" "$desktop::blue_0" ;
+					set "sel2_round3_bracket2::matcolor" "$desktop::blue_0" ;
+					set "desktop::round3_bracket2_done" "1" ;
+					if ( "gui::winner" == 1 ) {
+						transition "score1_round3_bracket2::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name2_round3_bracket2::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score2_round3_bracket2::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}else if ( "gui::winner" == 2 ) {
+						transition "score2_round3_bracket2::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+						transition "name1_round3_bracket2::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+						transition "score1_round3_bracket2::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+					}	
+				} 
+				
+			} else if ( "gui::round" == 4 ) {
+				transition "hover_round4_bracket1::matcolor" "$desktop::blue" "$desktop::blue_4" "500" ;
+				set "sel1_round4_bracket1::matcolor" "$desktop::blue_0" ;
+				set "sel2_round4_bracket1::matcolor" "$desktop::blue_0" ;
+				set "desktop::round4_bracket1_done" "1" ;
+				if ( "gui::winner" == 1 ) {
+					transition "score1_round4_bracket1::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+					transition "name2_round4_bracket1::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+					transition "score2_round4_bracket1::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+				}else if ( "gui::winner" == 2 ) {
+					transition "score2_round4_bracket1::forecolor" "$desktop::orange" "$desktop::white" "500" ;
+					transition "name1_round4_bracket1::forecolor" "$desktop::white" "$desktop::white_5" "500" ;
+					transition "score1_round4_bracket1::forecolor" "$desktop::orange" "$desktop::white_5" "500" ;
+				}	
+			}
+		}
+
+	}
+	windowDef event_arenaFocus
+	{
+		rect	0,0,1,1
+		visible	1
+
+		onNamedEvent arenaFocus {
+			if ( "desktop::round1_bracket1_done" == 0 ) {
+				set "hover_round1_bracket1::matcolor" "$desktop::blue_0" ;
+				set "sel1_round1_bracket1::matcolor" "$desktop::aqua_0" ;
+				set "sel2_round1_bracket1::matcolor" "$desktop::aqua_0" ;
+			}
+			
+			if ( "desktop::round1_bracket2_done" == 0 ) {
+				set "hover_round1_bracket2::matcolor" "$desktop::blue_0" ;
+				set "sel1_round1_bracket2::matcolor" "$desktop::aqua_0" ;
+				set "sel2_round1_bracket2::matcolor" "$desktop::aqua_0" ;
+			}
+			
+			if ( "desktop::round1_bracket3_done" == 0 ) {
+				set "hover_round1_bracket3::matcolor" "$desktop::blue_0" ;
+				set "sel1_round1_bracket3::matcolor" "$desktop::aqua_0" ;
+				set "sel2_round1_bracket3::matcolor" "$desktop::aqua_0" ;
+			}
+			
+			if ( "desktop::round1_bracket4_done" == 0 ) {
+				set "hover_round1_bracket4::matcolor" "$desktop::blue_0" ;
+				set "sel1_round1_bracket4::matcolor" "$desktop::aqua_0" ;
+				set "sel2_round1_bracket4::matcolor" "$desktop::aqua_0" ;
+			}
+			
+			if ( "desktop::round1_bracket5_done" == 0 ) {
+				set "hover_round1_bracket5::matcolor" "$desktop::blue_0" ;
+				set "sel1_round1_bracket5::matcolor" "$desktop::aqua_0" ;
+				set "sel2_round1_bracket5::matcolor" "$desktop::aqua_0" ;
+			}
+			
+			if ( "desktop::round1_bracket6_done" == 0 ) {
+				set "hover_round1_bracket6::matcolor" "$desktop::blue_0" ;
+				set "sel1_round1_bracket6::matcolor" "$desktop::aqua_0" ;
+				set "sel2_round1_bracket6::matcolor" "$desktop::aqua_0" ;
+			}
+			
+			if ( "desktop::round1_bracket7_done" == 0 ) {
+				set "hover_round1_bracket7::matcolor" "$desktop::blue_0" ;
+				set "sel1_round1_bracket7::matcolor" "$desktop::aqua_0" ;
+				set "sel2_round1_bracket7::matcolor" "$desktop::aqua_0" ;
+			}
+			
+			if ( "desktop::round1_bracket8_done" == 0 ) {
+				set "hover_round1_bracket8::matcolor" "$desktop::blue_0" ;
+				set "sel1_round1_bracket8::matcolor" "$desktop::aqua_0" ;
+				set "sel2_round1_bracket8::matcolor" "$desktop::aqua_0" ;
+			}
+		
+		
+		
+			if ( "gui::round" == 1 ) {
+				if ( "gui::bracket" == 1 ) {
+					if ( "desktop::round1_bracket1_done" == 0 ) {
+						if ( "gui::sel" == 1 ) {
+							set "sel1_round1_bracket1::matcolor" "$desktop::aqua_4" ;
+						}else if ( "gui::sel" == 2 ) {
+							set "sel2_round1_bracket1::matcolor" "$desktop::aqua_4" ;
+						}else {
+							set "hover_round1_bracket1::matcolor" "$desktop::aqua_4" ;
+						}	
+					} else {
+						set "hover_round1_bracket1::matcolor" "$desktop::blue_4" ;
+						set "sel1_round1_bracket1::matcolor" "$desktop::aqua_0" ;
+						set "sel2_round1_bracket1::matcolor" "$desktop::aqua_0" ;
+					}	
+						
+				} else if ( "gui::bracket" == 2 ) {
+					if ( "desktop::round1_bracket2_done" == 0 ) {
+						if ( "gui::sel" == 1 ) {
+							set "sel1_round1_bracket2::matcolor" "$desktop::aqua_4" ;
+						}else if ( "gui::sel" == 2 ) {
+							set "sel2_round1_bracket2::matcolor" "$desktop::aqua_4" ;
+						}else {
+							set "hover_round1_bracket2::matcolor" "$desktop::aqua_4" ;
+						}	
+					} else {
+						set "hover_round1_bracket2::matcolor" "$desktop::blue_4" ;
+						set "sel1_round1_bracket2::matcolor" "$desktop::aqua_0" ;
+						set "sel2_round1_bracket2::matcolor" "$desktop::aqua_0" ;
+					}		
+				} else if ( "gui::bracket" == 3 ) {
+					if ( "desktop::round1_bracket3_done" == 0 ) {
+						if ( "gui::sel" == 1 ) {
+							set "sel1_round1_bracket3::matcolor" "$desktop::aqua_4" ;
+						}else if ( "gui::sel" == 2 ) {
+							set "sel2_round1_bracket3::matcolor" "$desktop::aqua_4" ;
+						}else {
+							set "hover_round1_bracket3::matcolor" "$desktop::aqua_4" ;
+						}	
+					} else {
+						set "hover_round1_bracket3::matcolor" "$desktop::blue_4" ;
+						set "sel1_round1_bracket3::matcolor" "$desktop::aqua_0" ;
+						set "sel2_round1_bracket3::matcolor" "$desktop::aqua_0" ;
+					}		
+				} else if ( "gui::bracket" == 4 ) {
+					if ( "desktop::round1_bracket4_done" == 0 ) {
+						if ( "gui::sel" == 1 ) {
+							set "sel1_round1_bracket4::matcolor" "$desktop::aqua_4" ;
+						}else if ( "gui::sel" == 2 ) {
+							set "sel2_round1_bracket4::matcolor" "$desktop::aqua_4" ;
+						}else {
+							set "hover_round1_bracket4::matcolor" "$desktop::aqua_4" ;
+						}	
+					} else {
+						set "hover_round1_bracket4::matcolor" "$desktop::blue_4" ;
+						set "sel1_round1_bracket4::matcolor" "$desktop::aqua_0" ;
+						set "sel2_round1_bracket4::matcolor" "$desktop::aqua_0" ;
+					}		
+				} else if ( "gui::bracket" == 5 ) {
+					if ( "desktop::round1_bracket5_done" == 0 ) {
+						if ( "gui::sel" == 1 ) {
+							set "sel1_round1_bracket5::matcolor" "$desktop::aqua_4" ;
+						}else if ( "gui::sel" == 2 ) {
+							set "sel2_round1_bracket5::matcolor" "$desktop::aqua_4" ;
+						}else {
+							set "hover_round1_bracket5::matcolor" "$desktop::aqua_4" ;
+						}	
+					} else {
+						set "hover_round1_bracket5::matcolor" "$desktop::blue_4" ;
+						set "sel1_round1_bracket5::matcolor" "$desktop::aqua_0" ;
+						set "sel2_round1_bracket5::matcolor" "$desktop::aqua_0" ;
+					}		
+				} else if ( "gui::bracket" == 6 ) {
+					if ( "desktop::round1_bracket6_done" == 0 ) {
+						if ( "gui::sel" == 1 ) {
+							set "sel1_round1_bracket6::matcolor" "$desktop::aqua_4" ;
+						}else if ( "gui::sel" == 2 ) {
+							set "sel2_round1_bracket6::matcolor" "$desktop::aqua_4" ;
+						}else {
+							set "hover_round1_bracket6::matcolor" "$desktop::aqua_4" ;
+						}	
+					} else {
+						set "hover_round1_bracket6::matcolor" "$desktop::blue_4" ;
+						set "sel1_round1_bracket6::matcolor" "$desktop::aqua_0" ;
+						set "sel2_round1_bracket6::matcolor" "$desktop::aqua_0" ;
+					}		
+				} else if ( "gui::bracket" == 7 ) {
+					if ( "desktop::round1_bracket7_done" == 0 ) {
+						if ( "gui::sel" == 1 ) {
+							set "sel1_round1_bracket7::matcolor" "$desktop::aqua_4" ;
+						}else if ( "gui::sel" == 2 ) {
+							set "sel2_round1_bracket7::matcolor" "$desktop::aqua_4" ;
+						}else {
+							set "hover_round1_bracket7::matcolor" "$desktop::aqua_4" ;
+						}	
+					} else {
+						set "hover_round1_bracket7::matcolor" "$desktop::blue_4" ;
+						set "sel1_round1_bracket7::matcolor" "$desktop::aqua_0" ;
+						set "sel2_round1_bracket7::matcolor" "$desktop::aqua_0" ;
+					}		
+				} else if ( "gui::bracket" == 8 ) {
+					if ( "desktop::round1_bracket8_done" == 0 ) {
+						if ( "gui::sel" == 1 ) {
+							set "sel1_round1_bracket8::matcolor" "$desktop::aqua_4" ;
+						}else if ( "gui::sel" == 2 ) {
+							set "sel2_round1_bracket8::matcolor" "$desktop::aqua_4" ;
+						}else {
+							set "hover_round1_bracket8::matcolor" "$desktop::aqua_4" ;
+						}	
+					} else {
+						set "hover_round1_bracket8::matcolor" "$desktop::blue_4" ;
+						set "sel1_round1_bracket8::matcolor" "$desktop::aqua_0" ;
+						set "sel2_round1_bracket8::matcolor" "$desktop::aqua_0" ;
+					}		
+				}		
+				
+			} else if ( "gui::round" == 2 ) {
+			
+				if ( "desktop::round2_bracket1_done" == 0 ) {
+					set "hover_round2_bracket1::matcolor" "$desktop::blue_0" ;
+					set "sel1_round2_bracket1::matcolor" "$desktop::aqua_0" ;
+					set "sel2_round2_bracket1::matcolor" "$desktop::aqua_0" ;
+				}
+				
+				if ( "desktop::round2_bracket2_done" == 0 ) {
+					set "hover_round2_bracket2::matcolor" "$desktop::blue_0" ;
+					set "sel1_round2_bracket2::matcolor" "$desktop::aqua_0" ;
+					set "sel2_round2_bracket2::matcolor" "$desktop::aqua_0" ;
+				}
+				
+				if ( "desktop::round2_bracket3_done" == 0 ) {
+					set "hover_round2_bracket3::matcolor" "$desktop::blue_0" ;
+					set "sel1_round2_bracket3::matcolor" "$desktop::aqua_0" ;
+					set "sel2_round2_bracket3::matcolor" "$desktop::aqua_0" ;
+				}
+				
+				if ( "desktop::round2_bracket4_done" == 0 ) {
+					set "hover_round2_bracket4::matcolor" "$desktop::blue_0" ;
+					set "sel1_round2_bracket4::matcolor" "$desktop::aqua_0" ;
+					set "sel2_round2_bracket4::matcolor" "$desktop::aqua_0" ;
+				}
+			
+				if ( "gui::bracket" == 1 ) {
+					if ( "desktop::round2_bracket1_done" == 0 ) {
+						if ( "gui::sel" == 1 ) {
+							set "sel1_round2_bracket1::matcolor" "$desktop::aqua_4" ;
+						}else if ( "gui::sel" == 2 ) {
+							set "sel2_round2_bracket1::matcolor" "$desktop::aqua_4" ;
+						}else {
+							set "hover_round2_bracket1::matcolor" "$desktop::aqua_4" ;
+						}	
+					} else {
+						set "hover_round2_bracket1::matcolor" "$desktop::blue_4" ;
+						set "sel1_round2_bracket1::matcolor" "$desktop::aqua_0" ;
+						set "sel2_round2_bracket1::matcolor" "$desktop::aqua_0" ;
+					}			
+				} else if ( "gui::bracket" == 2 ) {
+					if ( "desktop::round2_bracket2_done" == 0 ) {
+						if ( "gui::sel" == 1 ) {
+							set "sel1_round2_bracket2::matcolor" "$desktop::aqua_4" ;
+						}else if ( "gui::sel" == 2 ) {
+							set "sel2_round2_bracket2::matcolor" "$desktop::aqua_4" ;
+						}else {
+							set "hover_round2_bracket2::matcolor" "$desktop::aqua_4" ;
+						}	
+					} else {
+						set "hover_round2_bracket2::matcolor" "$desktop::blue_4" ;
+						set "sel1_round2_bracket2::matcolor" "$desktop::aqua_0" ;
+						set "sel2_round2_bracket2::matcolor" "$desktop::aqua_0" ;
+					}	
+				} else if ( "gui::bracket" == 3 ) {
+					if ( "desktop::round2_bracket3_done" == 0 ) {
+						if ( "gui::sel" == 1 ) {
+							set "sel1_round2_bracket3::matcolor" "$desktop::aqua_4" ;
+						}else if ( "gui::sel" == 2 ) {
+							set "sel2_round2_bracket3::matcolor" "$desktop::aqua_4" ;
+						}else {
+							set "hover_round2_bracket3::matcolor" "$desktop::aqua_4" ;
+						}	
+					} else {
+						set "hover_round2_bracket3::matcolor" "$desktop::blue_4" ;
+						set "sel1_round2_bracket3::matcolor" "$desktop::aqua_0" ;
+						set "sel2_round2_bracket3::matcolor" "$desktop::aqua_0" ;
+					}	
+				} else if ( "gui::bracket" == 4 ) {
+					if ( "desktop::round2_bracket4_done" == 0 ) {
+						if ( "gui::sel" == 1 ) {
+							set "sel1_round2_bracket4::matcolor" "$desktop::aqua_4" ;
+						}else if ( "gui::sel" == 2 ) {
+							set "sel2_round2_bracket4::matcolor" "$desktop::aqua_4" ;
+						}else {
+							set "hover_round2_bracket4::matcolor" "$desktop::aqua_4" ;
+						}	
+					} else {
+						set "hover_round2_bracket4::matcolor" "$desktop::blue_4" ;
+						set "sel1_round2_bracket4::matcolor" "$desktop::aqua_0" ;
+						set "sel2_round2_bracket4::matcolor" "$desktop::aqua_0" ;
+					}	
+				} 
+				
+			} else if ( "gui::round" == 3 ) {
+			
+				if ( "desktop::round3_bracket1_done" == 0 ) {
+					set "hover_round3_bracket1::matcolor" "$desktop::blue_0" ;
+					set "sel1_round3_bracket1::matcolor" "$desktop::aqua_0" ;
+					set "sel2_round3_bracket1::matcolor" "$desktop::aqua_0" ;
+				}
+				
+				if ( "desktop::round3_bracket2_done" == 0 ) {
+					set "hover_round3_bracket2::matcolor" "$desktop::blue_0" ;
+					set "sel1_round3_bracket2::matcolor" "$desktop::aqua_0" ;
+					set "sel2_round3_bracket2::matcolor" "$desktop::aqua_0" ;
+				}
+				
+				if ( "gui::bracket" == 1 ) {
+					if ( "desktop::round3_bracket1_done" == 0 ) {
+						if ( "gui::sel" == 1 ) {
+							set "sel1_round3_bracket1::matcolor" "$desktop::aqua_4" ;
+						}else if ( "gui::sel" == 2 ) {
+							set "sel2_round3_bracket1::matcolor" "$desktop::aqua_4" ;
+						}else {
+							set "hover_round3_bracket1::matcolor" "$desktop::aqua_4" ;
+						}		
+					} else {
+						set "hover_round3_bracket1::matcolor" "$desktop::blue_4" ;
+						set "sel1_round3_bracket1::matcolor" "$desktop::aqua_0" ;
+						set "sel2_round3_bracket1::matcolor" "$desktop::aqua_0" ;
+					}
+				} else if ( "gui::bracket" == 2 ) {
+					if ( "desktop::round3_bracket2_done" == 0 ) {
+						if ( "gui::sel" == 1 ) {
+							set "sel1_round3_bracket2::matcolor" "$desktop::aqua_4" ;
+						}else if ( "gui::sel" == 2 ) {
+							set "sel2_round3_bracket2::matcolor" "$desktop::aqua_4" ;
+						}else {
+							set "hover_round3_bracket2::matcolor" "$desktop::aqua_4" ;
+						}	
+					} else {
+						set "hover_round3_bracket2::matcolor" "$desktop::blue_4" ;
+						set "sel1_round3_bracket2::matcolor" "$desktop::aqua_0" ;
+						set "sel2_round3_bracket2::matcolor" "$desktop::aqua_0" ;
+					}		
+				} 
+			} else if ( "gui::round" == 4 ) {
+			
+				if ( "desktop::round4_bracket1_done" == 0 ) {
+					set "hover_round4_bracket1::matcolor" "$desktop::blue_0" ;
+					set "sel1_round4_bracket1::matcolor" "$desktop::aqua_0" ;
+					set "sel2_round4_bracket1::matcolor" "$desktop::aqua_0" ;
+				}
+			
+				if ( "desktop::round4_bracket1_done" == 0 ) {
+					if ( "gui::sel" == 1 ) {
+						set "sel1_round4_bracket1::matcolor" "$desktop::aqua_4" ;
+					}else if ( "gui::sel" == 2 ) {
+						set "sel2_round4_bracket1::matcolor" "$desktop::aqua_4" ;
+					}else {
+						set "hover_round4_bracket1::matcolor" "$desktop::aqua_4" ;
+					}	
+				} else {
+					set "hover_round4_bracket1::matcolor" "$desktop::blue_4" ;
+					set "sel1_round4_bracket1::matcolor" "$desktop::aqua_0" ;
+					set "sel2_round4_bracket1::matcolor" "$desktop::aqua_0" ;
+				}		
+			}
+		}
+	}
+	windowDef p_tourntop
+	{
+		rect	0,0,640,480
+		screenalignx	middle
+		screenaligny	top
+		visible	1
+		windowDef tourn_topbar
+		{
+			rect	-99,-29,840,62
+			visible	0
+			background	"gfx/guis/common/128_sqsolid"
+			matcolor	0,0,0,0.6
+		}
+		windowDef tourn_topmsg
+		{
+			rect	0,34,640,32
+			visible	1
+			background	"gfx/guis/hud/tourntop_msg"
+			matcolor	0,0,0,0.6
+		}
+		windowDef tourn_stopwatch
+		{
+			rect	4,57,20,20
+			visible	1
+			background	"gfx/guis/hud/icons/icon_stopwatch"
+			matcolor	1,1,0.552,1
+		}
+		windowDef tourn_time
+		{
+			rect	23,59,120,20
+			visible	("gui::infinity" == 0)
+			forecolor	1,1,1,1
+			text	"gui::timeleft"
+			textscale	.25
+			textstyle	1
+			font	"fonts/lowpixel"
+		}
+		windowDef tourn_infinity
+		{
+			rect	25,59,20,19
+			visible	("gui::infinity" == 1)
+			background	"gfx/guis/hud/icons/icon_infinity"
+			matcolor	1,1,1,1
+		}		
+		windowDef tourn_arenaInfo_1
+		{
+			rect	4,36,632,16
+			visible	1
+			forecolor	1,1,1,1
+			text	"gui::spectatetext0"
+			textscale	.22
+			textstyle	1
+			font	"fonts/lowpixel"
+		}
+		windowDef tourn_arenaInfo_2
+		{
+			rect	4,77,632,16
+			visible	1
+			forecolor	1,1,0.552,1
+			text	"gui::spectatetext1"
+			textscale	0.2
+			textstyle	1
+			font	"fonts/lowpixel"
+		}
+		windowDef tourn_arenaInfo_3
+		{
+			rect	4,91,632,16
+			visible	1
+			forecolor	1,1,0.552,1
+			text	"gui::spectatetext2"
+			textscale	0.2
+			textstyle	1
+			font	"fonts/lowpixel"
+		}
+		windowDef p_round1
+		{
+			rect	0,0,640,32
+			visible	0
+			windowDef round1_sep1
+			{
+				rect	77,0,8,32
+				visible	1
+				background	"gfx/guis/hud/tourn_sep"
+				matcolor	1,1,1,0.5
+			}
+			windowDef round1_sep2
+			{
+				rect	157,0,8,32
+				visible	1
+				background	"gfx/guis/hud/tourn_sep"
+				matcolor	1,1,1,0.5
+			}
+			windowDef round1_sep3
+			{
+				rect	237,0,8,32
+				visible	1
+				background	"gfx/guis/hud/tourn_sep"
+				matcolor	1,1,1,0.5
+			}
+			windowDef round1_sep4
+			{
+				rect	317,0,8,32
+				visible	1
+				background	"gfx/guis/hud/tourn_sep"
+				matcolor	1,1,1,0.5
+			}
+			windowDef round1_sep5
+			{
+				rect	397,0,8,32
+				visible	1
+				background	"gfx/guis/hud/tourn_sep"
+				matcolor	1,1,1,0.5
+			}
+			windowDef round1_sep6
+			{
+				rect	477,0,8,32
+				visible	1
+				background	"gfx/guis/hud/tourn_sep"
+				matcolor	1,1,1,0.5
+			}
+			windowDef round1_sep7
+			{
+				rect	557,0,8,32
+				visible	1
+				background	"gfx/guis/hud/tourn_sep"
+				matcolor	1,1,1,0.5
+			}
+			windowDef p_round1_bracket1
+			{
+				rect	0,0,80,32
+				visible	1
+				windowDef hover_round1_bracket1
+				{
+					rect	1,0,128,32
+					visible	1
+					background	"gfx/guis/hud/tourntop_over"
+					matcolor	0.243,0.341,0.717,0
+				}
+				windowDef sel1_round1_bracket1
+				{
+					rect	1,1,128,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef sel2_round1_bracket1
+				{
+					rect	1,15,128,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef name1_round1_bracket1
+				{
+					rect	2,0,66,15
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name1_round1_bracket1"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score1_round1_bracket1
+				{
+					rect	66,0,11,15
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score1_round1_bracket1"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef name2_round1_bracket1
+				{
+					rect	2,13,66,15
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name2_round1_bracket1"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score2_round1_bracket1
+				{
+					rect	66,13,11,15
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score2_round1_bracket1"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef empty_round1_bracket1
+				{
+					rect	0,6,80,15
+					visible	0
+					forecolor	1,1,1,0.4
+					text	"#str_200952"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	1
+				}
+			}
+			windowDef p_round1_bracket2
+			{
+				rect	80,0,80,32
+				visible	1
+				windowDef hover_round1_bracket2
+				{
+					rect	1,0,128,32
+					visible	1
+					background	"gfx/guis/hud/tourntop_over"
+					matcolor	0.243,0.341,0.717,0
+				}
+				windowDef sel1_round1_bracket2
+				{
+					rect	1,1,128,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef sel2_round1_bracket2
+				{
+					rect	1,15,128,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef name1_round1_bracket2
+				{
+					rect	2,0,66,15
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name1_round1_bracket2"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score1_round1_bracket2
+				{
+					rect	66,0,11,15
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score1_round1_bracket2"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef name2_round1_bracket2
+				{
+					rect	2,13,66,15
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name2_round1_bracket2"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score2_round1_bracket2
+				{
+					rect	66,13,11,15
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score2_round1_bracket2"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef empty_round1_bracket2
+				{
+					rect	0,6,80,15
+					visible	0
+					forecolor	1,1,1,0.4
+					text	"#str_200952"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	1
+				}
+			}
+			windowDef p_round1_bracket3
+			{
+				rect	160,0,80,32
+				visible	1
+				windowDef hover_round1_bracket3
+				{
+					rect	1,0,128,32
+					visible	1
+					background	"gfx/guis/hud/tourntop_over"
+					matcolor	0.243,0.341,0.717,0
+				}
+				windowDef sel1_round1_bracket3
+				{
+					rect	1,1,128,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef sel2_round1_bracket3
+				{
+					rect	1,15,128,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef name1_round1_bracket3
+				{
+					rect	2,0,66,15
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name1_round1_bracket3"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score1_round1_bracket3
+				{
+					rect	66,0,11,15
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score1_round1_bracket3"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef name2_round1_bracket3
+				{
+					rect	2,13,66,15
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name2_round1_bracket3"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score2_round1_bracket3
+				{
+					rect	66,13,11,15
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score2_round1_bracket3"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef empty_round1_bracket3
+				{
+					rect	0,6,80,15
+					visible	0
+					forecolor	1,1,1,0.4
+					text	"#str_200952"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	1
+				}
+			}
+			windowDef p_round1_bracket4
+			{
+				rect	240,0,80,32
+				visible	1
+				windowDef hover_round1_bracket4
+				{
+					rect	1,0,128,32
+					visible	1
+					background	"gfx/guis/hud/tourntop_over"
+					matcolor	0.243,0.341,0.717,0
+				}
+				windowDef sel1_round1_bracket4
+				{
+					rect	1,1,128,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef sel2_round1_bracket4
+				{
+					rect	1,15,128,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef name1_round1_bracket4
+				{
+					rect	2,0,66,15
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name1_round1_bracket4"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score1_round1_bracket4
+				{
+					rect	66,0,11,15
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score1_round1_bracket4"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef name2_round1_bracket4
+				{
+					rect	2,13,66,15
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name2_round1_bracket4"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score2_round1_bracket4
+				{
+					rect	66,13,11,15
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score2_round1_bracket4"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef empty_round1_bracket4
+				{
+					rect	0,6,80,15
+					visible	0
+					forecolor	1,1,1,0.4
+					text	"#str_200952"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	1
+				}
+			}
+			windowDef p_round1_bracket5
+			{
+				rect	320,0,80,32
+				visible	1
+				windowDef hover_round1_bracket5
+				{
+					rect	1,0,128,32
+					visible	1
+					background	"gfx/guis/hud/tourntop_over"
+					matcolor	0.243,0.341,0.717,0
+				}
+				windowDef sel1_round1_bracket5
+				{
+					rect	1,1,128,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef sel2_round1_bracket5
+				{
+					rect	1,15,128,15
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef name1_round1_bracket5
+				{
+					rect	2,0,66,15
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name1_round1_bracket5"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score1_round1_bracket5
+				{
+					rect	66,0,11,15
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score1_round1_bracket5"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef name2_round1_bracket5
+				{
+					rect	2,13,66,15
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name2_round1_bracket5"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score2_round1_bracket5
+				{
+					rect	66,13,11,15
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score2_round1_bracket5"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef empty_round1_bracket5
+				{
+					rect	0,6,80,15
+					visible	0
+					forecolor	1,1,1,0.4
+					text	"#str_200952"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	1
+				}
+			}
+			windowDef p_round1_bracket6
+			{
+				rect	400,0,80,32
+				visible	1
+				windowDef hover_round1_bracket6
+				{
+					rect	1,0,128,32
+					visible	1
+					background	"gfx/guis/hud/tourntop_over"
+					matcolor	0.243,0.341,0.717,0
+				}
+				windowDef sel1_round1_bracket6
+				{
+					rect	1,1,128,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef sel2_round1_bracket6
+				{
+					rect	1,15,128,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef name1_round1_bracket6
+				{
+					rect	2,0,66,15
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name1_round1_bracket6"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score1_round1_bracket6
+				{
+					rect	66,0,11,15
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score1_round1_bracket6"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef name2_round1_bracket6
+				{
+					rect	2,13,66,15
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name2_round1_bracket6"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score2_round1_bracket6
+				{
+					rect	66,13,11,15
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score2_round1_bracket6"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef empty_round1_bracket6
+				{
+					rect	0,6,80,15
+					visible	0
+					forecolor	1,1,1,0.4
+					text	"#str_200952"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	1
+				}
+			}
+			windowDef p_round1_bracket7
+			{
+				rect	480,0,80,32
+				visible	1
+				windowDef hover_round1_bracket7
+				{
+					rect	1,0,128,32
+					visible	1
+					background	"gfx/guis/hud/tourntop_over"
+					matcolor	0.243,0.341,0.717,0
+				}
+				windowDef sel1_round1_bracket7
+				{
+					rect	1,1,128,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef sel2_round1_bracket7
+				{
+					rect	1,15,128,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef name1_round1_bracket7
+				{
+					rect	2,0,66,15
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name1_round1_bracket7"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score1_round1_bracket7
+				{
+					rect	66,0,11,15
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score1_round1_bracket7"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef name2_round1_bracket7
+				{
+					rect	2,13,66,15
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name2_round1_bracket7"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score2_round1_bracket7
+				{
+					rect	66,13,11,15
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score2_round1_bracket7"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef empty_round1_bracket7
+				{
+					rect	0,6,80,15
+					visible	0
+					forecolor	1,1,1,0.4
+					text	"#str_200952"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	1
+				}
+			}
+			windowDef p_round1_bracket8
+			{
+				rect	560,0,80,32
+				visible	1
+				windowDef hover_round1_bracket8
+				{
+					rect	1,0,128,32
+					visible	1
+					background	"gfx/guis/hud/tourntop_over"
+					matcolor	0.243,0.341,0.717,0
+				}
+				windowDef sel1_round1_bracket8
+				{
+					rect	1,1,128,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef sel2_round1_bracket8
+				{
+					rect	1,15,128,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef name1_round1_bracket8
+				{
+					rect	2,0,66,15
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name1_round1_bracket8"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score1_round1_bracket8
+				{
+					rect	66,0,11,15
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score1_round1_bracket8"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef name2_round1_bracket8
+				{
+					rect	2,13,66,15
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name2_round1_bracket8"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score2_round1_bracket8
+				{
+					rect	66,13,11,15
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score2_round1_bracket8"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef empty_round1_bracket8
+				{
+					rect	0,6,80,15
+					visible	0
+					forecolor	1,1,1,0.4
+					text	"#str_200952"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	1
+				}
+			}
+		}
+		windowDef p_round2
+		{
+			rect	0,0,640,32
+			visible	0
+			windowDef round2_sep
+			{
+				rect	157,0,8,32
+				visible	1
+				background	"gfx/guis/hud/tourn_sep"
+				matcolor	1,1,1,0.5
+			}
+			windowDef round2_sep2
+			{
+				rect	317,0,8,32
+				visible	1
+				background	"gfx/guis/hud/tourn_sep"
+				matcolor	1,1,1,0.5
+			}
+			windowDef round2_sep3
+			{
+				rect	477,0,8,32
+				visible	1
+				background	"gfx/guis/hud/tourn_sep"
+				matcolor	1,1,1,0.5
+			}
+			windowDef p_round2_bracket1
+			{
+				rect	0,0,160,32
+				visible	1
+				windowDef hover_round2_bracket1
+				{
+					rect	1,0,256,32
+					visible	1
+					background	"gfx/guis/hud/tourntop_over2"
+					matcolor	0.243,0.341,0.717,0
+				}
+				windowDef sel1_round2_bracket1
+				{
+					rect	1,1,256,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel2"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef sel2_round2_bracket1
+				{
+					rect	1,15,256,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel2"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef name1_round2_bracket1
+				{
+					rect	2,0,140,15
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name1_round2_bracket1"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score1_round2_bracket1
+				{
+					rect	146,0,11,16
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score1_round2_bracket1"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef name2_round2_bracket1
+				{
+					rect	2,13,140,15
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name2_round2_bracket1"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score2_round2_bracket1
+				{
+					rect	146,13,11,16
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score2_round2_bracket1"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef empty_round2_bracket1
+				{
+					rect	0,6,160,15
+					visible	0
+					forecolor	1,1,1,0.4
+					text	"#str_200952"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	1
+				}
+			}
+			windowDef p_round2_bracket2
+			{
+				rect	160,0,160,32
+				visible	1
+				windowDef hover_round2_bracket2
+				{
+					rect	1,0,256,32
+					visible	1
+					background	"gfx/guis/hud/tourntop_over2"
+					matcolor	0.243,0.341,0.717,0
+				}
+				windowDef sel1_round2_bracket2
+				{
+					rect	1,1,256,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel2"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef sel2_round2_bracket2
+				{
+					rect	1,15,256,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel2"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef name1_round2_bracket2
+				{
+					rect	3,0,140,16
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name1_round2_bracket2"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score1_round2_bracket2
+				{
+					rect	146,0,11,16
+					visible	1
+					forecolor	1,0.5,0,1
+					text	"gui::score1_round2_bracket2"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef name2_round2_bracket2
+				{
+					rect	2,13,140,16
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name2_round2_bracket2"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score2_round2_bracket2
+				{
+					rect	146,13,11,16
+					visible	1
+					forecolor	1,0.5,0,1
+					text	"gui::score2_round2_bracket2"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef empty_round2_bracket2
+				{
+					rect	0,6,160,15
+					visible	0
+					forecolor	1,1,1,0.4
+					text	"#str_200952"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	1
+				}
+			}
+			windowDef p_round2_bracket3
+			{
+				rect	320,0,160,32
+				visible	1
+				windowDef hover_round2_bracket3
+				{
+					rect	1,0,256,32
+					visible	1
+					background	"gfx/guis/hud/tourntop_over2"
+					matcolor	0.243,0.341,0.717,0
+				}
+				windowDef sel1_round2_bracket3
+				{
+					rect	1,1,256,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel2"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef sel2_round2_bracket3
+				{
+					rect	1,15,256,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel2"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef name1_round2_bracket3
+				{
+					rect	2,0,140,16
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name1_round2_bracket3"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score1_round2_bracket3
+				{
+					rect	146,0,11,16
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score1_round2_bracket3"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef name2_round2_bracket3
+				{
+					rect	2,13,140,15
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name2_round2_bracket3"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score2_round2_bracket3
+				{
+					rect	146,13,11,16
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score2_round2_bracket3"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef empty_round2_bracket3
+				{
+					rect	0,6,160,15
+					visible	0
+					forecolor	1,1,1,0.4
+					text	"#str_200952"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	1
+				}
+			}
+			windowDef p_round2_bracket4
+			{
+				rect	480,0,160,32
+				visible	1
+				windowDef hover_round2_bracket4
+				{
+					rect	0,0,256,32
+					visible	1
+					background	"gfx/guis/hud/tourntop_over2"
+					matcolor	0.243,0.341,0.717,0
+				}
+				windowDef sel1_round2_bracket4
+				{
+					rect	1,1,256,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel2"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef sel2_round2_bracket4
+				{
+					rect	1,15,256,16
+					visible	1
+					background	"gfx/guis/hud/tourntop_sel2"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef name1_round2_bracket4
+				{
+					rect	2,0,140,15
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name1_round2_bracket4"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score1_round2_bracket4
+				{
+					rect	146,0,11,16
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score1_round2_bracket4"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef name2_round2_bracket4
+				{
+					rect	2,13,140,15
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name2_round2_bracket4"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score2_round2_bracket4
+				{
+					rect	146,13,11,16
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score2_round2_bracket4"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef empty_round2_bracket4
+				{
+					rect	0,6,160,15
+					visible	0
+					forecolor	1,1,1,0.4
+					text	"#str_200952"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	1
+				}
+			}
+		}
+		windowDef p_round3
+		{
+			rect	0,0,640,32
+			visible	0
+			windowDef round3_sep
+			{
+				rect	312,0,16,32
+				visible	1
+				background	"gfx/guis/hud/tourn_sep2"
+				matcolor	1,1,1,0.5
+			}
+			windowDef p_round3_bracket1
+			{
+				rect	0,0,320,32
+				visible	1
+				windowDef hover_round3_bracket1
+				{
+					rect	1,0,315,32
+					visible	1
+					background	"gfx/guis/hud/tourntop_over3"
+					matcolor	0.243,0.341,0.717,0
+				}
+				windowDef sel1_round3_bracket1
+				{
+					rect	1,0,220,32
+					visible	1
+					background	"gfx/guis/hud/tourntop_over2"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef sel2_round3_bracket1
+				{
+					rect	179,0,220,32
+					visible	1
+					background	"gfx/guis/hud/tourntop_over2"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef name1_round3_bracket1
+				{
+					rect	3,6,102,14
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name1_round3_bracket1"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score1_round3_bracket1
+				{
+					rect	108,3,17,22
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score1_round3_bracket1"
+					textscale	0.33
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef name2_round3_bracket1
+				{
+					rect	182,6,102,14
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name2_round3_bracket1"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score2_round3_bracket1
+				{
+					rect	285,3,17,22
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score2_round3_bracket1"
+					textscale	0.33
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef empty_round3_bracket1
+				{
+					rect	0,4,320,20
+					visible	0
+					forecolor	1,1,1,0.4
+					text	"#str_200952"
+					textscale	0.33
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	1
+				}
+				windowDef vs_round3_bracket1
+				{
+					rect	144,6,29,17
+					visible	1
+					forecolor	1,1,1,0.6
+					text	"#str_200290"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+			}
+			windowDef p_round3_bracket2
+			{
+				rect	320,0,320,32
+				visible	1
+				windowDef hover_round3_bracket2
+				{
+					rect	4,0,315,32
+					visible	1
+					background	"gfx/guis/hud/tourntop_over3"
+					matcolor	0.243,0.341,0.717,0
+				}
+				windowDef sel1_round3_bracket2
+				{
+					rect	4,0,220,32
+					visible	1
+					background	"gfx/guis/hud/tourntop_over2"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef sel2_round3_bracket2
+				{
+					rect	182,0,220,32
+					visible	1
+					background	"gfx/guis/hud/tourntop_over2"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef name1_round3_bracket2
+				{
+					rect	7,6,112,13
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name1_round3_bracket2"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score1_round3_bracket2
+				{
+					rect	111,3,17,21
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score1_round3_bracket2"
+					textscale	0.33
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef name2_round3_bracket2
+				{
+					rect	186,6,112,13
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name2_round3_bracket2"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score2_round3_bracket2
+				{
+					rect	288,3,17,22
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score2_round3_bracket2"
+					textscale	0.33
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef empty_round3_bracket2
+				{
+					rect	0,4,320,20
+					visible	0
+					forecolor	1,1,1,0.4
+					text	"#str_200952"
+					textscale	0.33
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	1
+				}
+				windowDef vs_round3_bracket2
+				{
+					rect	147,6,29,16
+					visible	1
+					forecolor	1,1,1,0.6
+					text	"#str_200290"
+					textscale	0.22
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+			}
+		}
+		windowDef p_round4
+		{
+			rect	0,0,640,32
+			visible	0
+			windowDef p_round4_bracket1
+			{
+				rect	0,0,640,32
+				visible	1
+				windowDef hover_round4_bracket1
+				{
+					rect	0,0,640,32
+					visible	1
+					background	"gfx/guis/hud/tourntop_over3"
+					matcolor	0.243,0.341,0.717,0
+				}
+				windowDef sel1_round4_bracket1
+				{
+					rect	1,0,284,32
+					visible	1
+					background	"gfx/guis/hud/tourntop_over3"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef sel2_round4_bracket1
+				{
+					rect	354,0,284,32
+					visible	1
+					background	"gfx/guis/hud/tourntop_over3"
+					matcolor	0.368,0.725,0.529,0
+				}
+				windowDef name1_round4_bracket1
+				{
+					rect	6,4,224,22
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name1_round4_bracket1"
+					textscale	0.31
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score1_round4_bracket1
+				{
+					rect	248,2,17,25
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score1_round4_bracket1"
+					textscale	0.4
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef name2_round4_bracket1
+				{
+					rect	378,4,224,22
+					visible	1
+					forecolor	1,1,1,1
+					text	"gui::name2_round4_bracket1"
+					textscale	0.31
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+				windowDef score2_round4_bracket1
+				{
+					rect	610,2,17,25
+					visible	1
+					forecolor	1,0.501,0,1
+					text	"gui::score2_round4_bracket1"
+					textscale	0.4
+					font	"fonts/lowpixel"
+					textstyle	1
+					textalign	2
+				}
+				windowDef vs_round4_bracket1
+				{
+					rect	298,2,44,25
+					visible	1
+					forecolor	1,1,1,0.6
+					text	"#str_200290"
+					textscale	0.4
+					font	"fonts/lowpixel"
+					textstyle	1
+				}
+			}
+		}
+		windowDef tourn_overbar
+		{
+			rect	-100,-62,840,62
+			visible	1
+			background	"gfx/guis/common/128_sqsolid"
+			matcolor	0,0,0,1
+			notime	1
+			windowDef tourn_title1
+			{
+				rect	100,32,318,25
+				visible	1
+				forecolor	1,1,1,1
+				text	"#str_200943"
+				textscale	0.4
+				font	"fonts/lowpixel"
+				textstyle	1
+				textalign	2
+			}
+			windowDef tourn_title2
+			{
+				rect	422,32,318,25
+				visible	1
+				forecolor	1,0.5,0,1
+				text	"#str_200286"
+				textscale	0.4
+				font	"fonts/lowpixel"
+				textstyle	1
+			}
+		}
+		windowDef d_tourn_overbar
+		{
+			rect	-100,-28,840,62
+			visible	0
+			background	"gfx/guis/common/128_sqsolid"
+			matcolor	0,0,0,1
+		}
+		windowDef tourn_warmupbar
+		{
+			rect	-100,-62,840,62
+			visible	1
+			background	"gfx/guis/common/128_sqsolid"
+			matcolor	0,0,0,1
+			notime	1
+			windowDef tourn_warmup_title
+			{
+				rect	98,32,640,25
+				visible	1
+				forecolor	1,1,1,1
+				text	"#str_200953"
+				textscale	0.4
+				font	"fonts/lowpixel"
+				textstyle	1
+				textalign	1
+			}
+		}
+		windowDef d_tourn_warmupbar
+		{
+			rect	-100,-28,840,62
+			visible	0
+			background	"gfx/guis/common/128_sqsolid"
+			matcolor	0,0,0,1
+			notime	1
+		}
+	}
+	
+	windowDef d_aimText
+	{
+		rect	0,0,640,480
+		notime	1
+		visible	1
+
+		onTime 0 {
+			transition "aimText::forecolor" "1,0,0,1" "$desktop::aim_text_color" "400";
+			transition "aimTextHealth::forecolor" "1,0,0,1" "$desktop::aim_text_color" "400";
+		}
+
+		onTime 500 {
+			set "notime" "1";
+		}
+
+	}
+	windowDef d_aimText2
+	{
+		rect	0,0,640,480
+		notime	1
+		visible	1
+
+		onTime 100 {
+			transition "aimText::forecolor_w" "0" "0.8" "200";
+			transition "aimTextHealth::forecolor_w" "0" "0.8" "200";
+		}
+
+	}
+	windowDef aimText
+	{
+		rect	207,260,215,38
+		screenalignx	middle
+		screenaligny	bottom
+		visible	1
+		text	"gui::aim_text"
+		textscale	0.22
+		textalign	1
+		forecolor	1,1,1,0
+		notime	1
+		textstyle	1
+		font	"fonts/lowpixel"
+
+		onTime 0 {
+			transition "aimText::forecolor" "$aimText::forecolor" "$desktop::aim_fade_color" "500";
+		}
+
+		onTime +500 {
+			set "notime" "1";
+		}
+
+	}
+	windowDef aimTextHealth
+	{
+		rect	207,298,215,38
+		screenalignx	middle
+		screenaligny	bottom
+		visible	1
+		text	"gui::aim_teammate_health"
+		textscale	0.22
+		textalign	1
+		forecolor	1,1,1,0
+		notime	1
+		textstyle	1
+		font	"fonts/lowpixel"
+
+		onTime 0 {
+			transition "aimTextHealth::forecolor" "$aimTextHealth::forecolor" "$desktop::aim_fade_color" "500";
+		}
+
+		onTime +500 {
+			set "notime" "1";
+		}
+
+	}
+	windowDef mainNotice
+	{
+		rect	120,102,400,30
+		screenalignx	middle
+		screenaligny	top
+		visible	1
+		text	"gui::main_notice_text"
+		font	"fonts/lowpixel"
+		textscale	0.32
+		textstyle	1
+		textalign	1
+		forecolor	1,1,0.549,1
+		notime	1
+
+		onTime 0 {
+			set "visible" "1";
+			set "forecolor_w" "1";
+		}
+
+		onTime +2000 {
+			transition "mainNotice::forecolor_w" "1" "0" "500";
+		}
+
+		onTime +2500 {
+			set "visible" "0";
+			set "notime" "1";
+		}
+
+	}
+	windowDef fragNotice
+	{
+		rect	100,81,440,30
+		screenalignx	middle
+		screenaligny	top
+		visible	0
+		text	"gui::frag_notice_text"
+		font	"fonts/lowpixel"
+		textscale	0.36
+		textstyle	1
+		textalign	1
+		forecolor	1,1,.552,1
+		notime	1
+
+		onTime 0 {
+			set "visible" "1";
+			set "forecolor_w" "1";
+		}
+
+		onTime +2000 {
+			transition "fragNotice::forecolor_w" "1" "0" "500";
+		}
+
+		onTime +2500 {
+			set "visible" "0";
+			set "notime" "1";
+		}
+
+	}
+	windowDef p_ctf
+	{
+		rect	0,0,640,480
+		screenalignx	left
+		screenaligny	top
+		backcolor 0,0,0,0
+		visible	0
+		windowDef ctf_clan1_bg
+		{
+			rect	1,-3,102,58
+			background	"gfx/guis/hud/ctf_bgbar"
+			visible	1
+			matcolor	0,0,0,1
+		}
+		windowDef ctf_clan1_bgcolor
+		{
+			rect	1,-3,101,58
+			background	"gfx/guis/hud/ctf_bgbar2"
+			visible	1
+			matcolor	0.415,0.643,0.168,0.8
+		}
+		windowDef ctf_clan1_logo
+		{
+			rect	6,14,24,24
+			visible	1
+			background	"gfx/guis/mainmenu/marinelogo"
+			matcolor	1,1,1,1
+		}
+		windowDef ctf_clan1_score_marine
+		{
+			rect	36,13,43,24
+			visible	0
+			forecolor	(1-"gui::marine_pulse_amount"),1,(1-"gui::marine_pulse_amount"),1
+			text	"gui::marine_score"
+			textscale	0.36
+			font	"fonts/lowpixel"
+		}
+		windowDef ctf_clan1_score_strogg
+		{
+			rect	36,13,43,24
+			visible	0
+			forecolor	1,(1-(0.5*"gui::strogg_pulse_amount")),(1-"gui::strogg_pulse_amount"),1
+			text	"gui::strogg_score"
+			textscale	0.36
+			font	"fonts/lowpixel"
+		}
+		windowDef ctf_clan2_bg
+		{
+			rect	1,41,102,58
+			background	"gfx/guis/hud/ctf_bgbar"
+			visible	1
+			matcolor	0,0,0,1
+		}
+		windowDef ctf_clan2_bgcolor
+		{
+			rect	1,41,101,58
+			background	"gfx/guis/hud/ctf_bgbar2"
+			visible	1
+			matcolor	1,0.482,0.0156,0.8
+		}
+		windowDef ctf_clan2_logo
+		{
+			rect	6,57,24,24
+			visible	1
+			background	"gfx/guis/mainmenu/strogglogo"
+			matcolor	1,1,1,1
+		}
+		windowDef ctf_clan2_score_marine
+		{
+			rect	36,57,43,24
+			visible	0
+			forecolor	(1-"gui::marine_pulse_amount"),1,(1-"gui::marine_pulse_amount"),1
+			text	"gui::marine_score"
+			textscale	0.36
+			font	"fonts/lowpixel"
+		}
+		windowDef ctf_clan2_score_strogg
+		{
+			rect	36,57,43,24
+			visible	0
+			forecolor	1,(1-(0.5*"gui::strogg_pulse_amount")),(1-"gui::strogg_pulse_amount"),1
+			text	"gui::strogg_score"
+			textscale	0.36
+			font	"fonts/lowpixel"
+		}
+		windowDef p_ctf_2
+		{
+			rect	0,0,640,480
+			visible	0
+			backcolor 0,0,0,0
+			windowDef ctf_clan1_flag
+			{
+				rect	86,11,28,28
+				visible	1
+				background	"gfx/guis/hud/ctf_flag"
+				matcolor	0.415,0.643,0.168,0.8
+				shear	0,-.22
+			}
+			windowDef d_ctf_clan1_flag
+			{
+				rect	83,8,34,34
+				visible	0
+				background	"gfx/guis/hud/ctf_flag"
+				matcolor	0.415,0.643,0.168,0.8
+				shear	0,-.22
+
+				onTime 0 {
+					transition "ctf_clan1_flag::rect" "$ctf_clan1_flag::rect" "$d_ctf_clan1_flag::rect" "250" ;
+				}
+
+				onTime 250 {
+					transition "ctf_clan1_flag::rect" "$d_ctf_clan1_flag::rect" "$ctf_clan1_flag::rect" "750" ;
+				}
+
+				onTime 1000 {
+					resettime "0" ;
+				}
+
+			}
+			windowDef ctf_clan1_flag_status
+			{
+				rect	87,10,20,30
+				visible	1
+				forecolor	1,1,1,1
+				text	""
+				textscale	0.5
+				font	"fonts/lowpixel"
+				textalign	1
+				textstyle	1
+			}
+			windowDef ctf_clan2_flag
+			{
+				rect	86,55,28,28
+				visible	1
+				background	"gfx/guis/hud/ctf_flag"
+				matcolor	1,0.482,0.0156,0.8
+				shear	0,-.22
+			}
+			windowDef d_ctf_clan2_flag
+			{
+				rect	83,52,34,34
+				visible	0
+				background	"gfx/guis/hud/ctf_flag"
+				matcolor	1,0.482,0.0156,0.8
+				shear	0,-.22
+
+				onTime 0 {
+					transition "ctf_clan2_flag::rect" "$ctf_clan2_flag::rect" "$d_ctf_clan2_flag::rect" "250" ;
+				}
+
+				onTime 250 {
+					transition "ctf_clan2_flag::rect" "$d_ctf_clan2_flag::rect" "$ctf_clan2_flag::rect" "750" ;
+				}
+
+				onTime 1000 {
+					resettime "0" ;
+				}
+
+			}
+			windowDef ctf_clan2_flag_status
+			{
+				rect	87,54,20,30
+				visible	1
+				forecolor	1,1,1,1
+				text	""
+				textscale	0.5
+				font	"fonts/lowpixel"
+				textalign	1
+				textstyle	1
+			}
+		}
+		windowDef p_onectf
+		{
+			rect	0,0,640,480
+			visible	0
+			windowDef ctfone_arc
+			{
+				rect	83,13,37,70
+				visible	1
+				background	"gfx/guis/hud/onectf_arc"
+				matcolor	0.584,0.584,0.584,0.8
+				shear	0,-.06
+			}
+			windowDef ctfone_flag
+			{
+				rect	97,33,28,28
+				visible	1
+				background	"gfx/guis/hud/ctf_flag"
+				matcolor	1,1,.552,0.8
+				shear	0,-.22
+			}
+			windowDef d_ctfone_flag
+			{
+				rect	94,30,34,34
+				visible	0
+				background	"gfx/guis/hud/ctf_flag"
+				matcolor	1,1,.552,0.8
+				shear	0,-.22
+
+				onTime 0 {
+					transition "ctfone_flag::rect" "$ctfone_flag::rect" "$d_ctfone_flag::rect" "250" ;
+					transition "ctfone_flag::matcolor" "$desktop::neutral" "$desktop::ctfoneflag_color" "250" ;
+				}
+
+				onTime 250 {
+					transition "ctfone_flag::rect" "$d_ctfone_flag::rect" "$ctfone_flag::rect" "750" ;
+					transition "ctfone_flag::matcolor" "$desktop::ctfoneflag_color" "$desktop::neutral" "750" ;
+				}
+
+				onTime 1000 {
+					resettime "0" ;
+				}
+
+			}
+			windowDef ctfone_flag_status
+			{
+				rect	98,31,20,30
+				visible	1
+				forecolor	1,1,1,1
+				text	""
+				textscale	0.5
+				font	"fonts/lowpixel"
+				textalign	1
+				textstyle	1
+			}
+		}
+		windowDef ctf_stopwatch
+		{
+			rect	4,94,20,20
+			visible	1
+			background	"gfx/guis/hud/icons/icon_stopwatch"
+			matcolor	1,1,0.552,1
+		}
+		windowDef ctf_time
+		{
+			rect	23,96,120,20
+			visible	("gui::infinity" == 0)
+			forecolor	1,1,1,1
+			text	"gui::timeleft"
+			textscale	.25
+			textstyle	1
+			font	"fonts/lowpixel"
+		}
+		windowDef ctf_infinity
+		{
+			rect	25,96,20,20
+			visible	("gui::infinity" == 1)
+			background	"gfx/guis/hud/icons/icon_infinity"
+			matcolor	1,1,1,1
+		}
+	}
+	windowDef p_ffa
+	{
+		rect	0,0,640,480
+		screenalignx	left
+		screenaligny	top
+		visible	0
+		windowDef p_tourney
+		{
+			rect	0,0,640,480
+			visible	1
+			windowDef tourn_roundarr1
+			{
+				rect	2,2,17,16
+				visible	1
+				forecolor	0.588,0.588,0.588,1
+				text	">"
+				textscale	0.3
+				textstyle	1
+				font	"fonts/lowpixel"
+			}
+			windowDef tourn_roundnum
+			{
+				rect	19,4,103,16
+				visible	1
+				forecolor	1,1,0.552,1
+				text	"gui::tourney_round"
+				textscale	.25
+				textstyle	1
+				font	"fonts/lowpixel"
+			}
+			windowDef tourn_roundarr2
+			{
+				rect	121,2,17,16
+				visible	1
+				forecolor	0.588,0.588,0.588,1
+				text	">"
+				textscale	0.3
+				textstyle	1
+				font	"fonts/lowpixel"
+			}
+			windowDef tourn_arenanum
+			{
+				rect	138,4,160,16
+				visible	1
+				forecolor	1,1,1,1
+				text	"gui::tourney_arena"
+				textscale	.25
+				textstyle	1
+				font	"fonts/lowpixel"
+			}
+			windowDef tourn_hint
+			{
+				rect	3,18,261,16
+				visible	1
+				forecolor	1,1,1,0.6
+				text	"#str_200269"
+				textscale	0.22
+				textstyle	1
+				font	"fonts/lowpixel"
+			}
+		}
+		windowDef ffa_player1_bg
+		{
+			rect	0,35,242,28
+			background	"gfx/guis/hud/ffa_bgbar"
+			visible	1
+			matcolor	0,0,0,1
+		}
+		windowDef ffa_player1_bgcolor
+		{
+//			rect	0,35,242,28
+			rect	0, (35-(4*"gui::player1_pulse_amount")),242+(4*"gui::player1_pulse_amount"),28+(8*"gui::player1_pulse_amount")
+			background	"gfx/guis/hud/ffa_bgbar2"
+			visible	1
+			matcolor	1,1,0.552,0.4
+//			matcolor	"gui::player1_color_r", "gui::player1_color_g", "gui::player1_color_b", "gui::player1_color_a"
+		}
+		windowDef ffa_player2_bg
+		{
+			rect	0,64,242,28
+			background	"gfx/guis/hud/ffa_bgbar"
+			visible	1
+			matcolor	0,0,0,1
+		}
+		windowDef ffa_player2_bgcolor1
+		{
+//			rect	0,64,242,28
+			rect	0, (64-(4*"gui::player2_pulse_amount")),242+(4*"gui::player2_pulse_amount"),28+(8*"gui::player2_pulse_amount")
+			background	"gfx/guis/hud/ffa_bgbar2"
+			visible	1
+			matcolor	1,1,0.552,0.4
+//			matcolor	"gui::player2_color_r", "gui::player2_color_g", "gui::player2_color_b", "gui::player2_color_a"
+		}
+		windowDef ffa_player1_rank
+		{
+			rect	3,39,20,16
+			visible	1
+			forecolor	1,1,1,1
+			text	"gui::player1_rank"
+			textscale	0.22
+			textstyle	1
+			font	"fonts/lowpixel"
+			textalign	2
+		}
+		windowDef ffa_player1_name
+		{
+			rect	23,39,112,16
+			visible	1
+			forecolor	1,1,1,1
+			text	"gui::player1_name"
+			textscale	.22
+			textstyle	1
+			font	"fonts/lowpixel"
+		}
+		windowDef ffa_player1_score
+		{
+			rect	136,39,27,16
+			visible	1
+			forecolor	1,1,0.552,1
+//			forecolor	"gui::player1_color_r", "gui::player1_color_g", "gui::player1_color_b", 1
+//			forecolor	1,1,0.552 + ((1-0.552)*"gui::player1_pulse_amount"),1
+			text	"gui::player1_score"
+			textscale	0.22
+			textstyle	1
+			font	"fonts/lowpixel"
+			textalign	2
+		}
+		windowDef ffa_stopwatch
+		{
+			rect	4,92,20,20
+			visible	1
+			background	"gfx/guis/hud/icons/icon_stopwatch"
+			matcolor	1,1,0.552,1
+		}
+		windowDef ffa_time
+		{
+			rect	23,94,120,20
+			visible	("gui::infinity" == 0)
+			forecolor	1,1,1,1
+			text	"gui::timeleft"
+			textscale	.25
+			textstyle	1
+			font	"fonts/lowpixel"
+		}
+		windowDef ffa_infinity
+		{
+			rect	25,94,20,19
+			visible ("gui::infinity" == 1)
+			background	"gfx/guis/hud/icons/icon_infinity"
+			matcolor	1,1,1,1
+		}
+		windowDef ffa_player2_rank
+		{
+			rect	3,68,20,16
+			visible	1
+			forecolor	1,1,1,1
+			text	"gui::player2_rank"
+			textscale	0.22
+			textstyle	1
+			font	"fonts/lowpixel"
+			textalign	2
+		}
+		windowDef ffa_player2_name
+		{
+			rect	23,68,112,16
+			visible	1
+			forecolor	1,1,1,1
+			text	"gui::player2_name"
+			textscale	.22
+			textstyle	1
+			font	"fonts/lowpixel"
+		}
+		windowDef ffa_player2_score
+		{
+			rect	136,69,27,16
+			visible	1
+			forecolor	1,1,0.552,1
+//			forecolor	"gui::player2_color_r", "gui::player2_color_g", "gui::player2_color_b", 1
+//			forecolor	1,1,0.552 + ((1-0.552)*"gui::player2_pulse_amount"),1
+			text	"gui::player2_score"
+			textscale	0.22
+			textstyle	1
+			font	"fonts/lowpixel"
+			textalign	2
+		}
+	}
+	windowDef p_mframes
+	{
+		rect	576, 0, 64, 64
+		screenalignx	right
+		screenaligny	top
+		background	"gfx/mp/frowny"
+		visible	"gui::mult_frames"
+	}
+	windowDef p_mframesn
+	{
+		rect	576, 64, 64, 32
+		screenalignx	right
+		screenaligny	top
+		visible	"gui::mult_frames"
+		text	"gui::num_frames"
+		textalign	1
+	}
+	windowDef p_stats
+	{
+		rect	474,0,166,480
+		screenalignx	right
+		screenaligny	top
+		visible	"gui::stat_visible"
+		windowDef statgrad
+		{
+			rect	-24,70,462,360
+			visible	1
+			background	"gfx/guis/mainmenu/scoregrad2"
+			matcolor	0,0,0,0.8
+		}
+		windowDef players_t_kills
+		{
+			rect	35,100,53,13
+			text	"#str_200201"
+			textscale	0.2
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,1,0.8
+			textstyle	1
+		}
+		windowDef players_t_deaths
+		{
+			rect	108,100,53,13
+			text	"#str_200202"
+			textscale	0.2
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,1,0.8
+			textstyle	1
+		}
+		windowDef players_kills
+		{
+			rect	35,112,41,23
+			text	"gui::stat_frags"
+			textscale	0.35
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,0.552,1
+			textstyle	1
+		}
+		windowDef players_deaths
+		{
+			rect	108,112,41,22
+			text	"gui::stat_deaths"
+			textscale	0.35
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,0.549,1
+			textstyle	1
+		}
+		windowDef players_t_acc
+		{
+			rect	35,141,79,13
+			text	"#str_200203"
+			textscale	0.2
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,1,0.8
+			textstyle	1
+		}
+		windowDef players_t_awards
+		{
+			rect	108,141,81,13
+			text	"#str_200204"
+			textscale	0.2
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,1,0.8
+			textstyle	1
+		}
+		windowDef players_stats_horizline1
+		{
+			rect	35,112,126,3
+			visible	1
+			background	"gfx/guis/mainmenu/horiz_line2"
+			matcolor	1,1,1,.3
+		}
+		windowDef players_stats_horizline2
+		{
+			rect	35,154,126,3
+			visible	1
+			background	"gfx/guis/mainmenu/horiz_line2"
+			matcolor	1,1,1,.3
+		}
+		windowDef acc_shotgun
+		{
+			rect	39,186,16,16
+			visible	1
+			background	"gfx/guis/hud/icons/item_shotgun_colored"
+			matcolor	1,1,1,1
+		}
+		windowDef acc_mgun
+		{
+			rect	39,162,16,16
+			visible	1
+			background	"gfx/guis/hud/icons/item_machinegun_colored"
+			matcolor	1,1,1,1
+		}
+		windowDef acc_hblaster
+		{
+			rect	39,210,16,16
+			visible	1
+			background	"gfx/guis/hud/icons/item_hyperblaster_colored"
+			matcolor	1,1,1,1
+		}
+		windowDef acc_grenade
+		{
+			rect	38,235,16,16
+			visible	1
+			background	"gfx/guis/hud/icons/item_grenade_colored"
+			matcolor	1,1,1,1
+		}
+		windowDef acc_nailgun
+		{
+			rect	39,260,16,16
+			visible	1
+			background	"gfx/guis/hud/icons/item_nailgun_colored"
+			matcolor	1,1,1,1
+		}
+		windowDef acc_rocket
+		{
+			rect	39,283,16,16
+			visible	1
+			background	"gfx/guis/hud/icons/item_rocket_colored"
+			matcolor	1,1,1,1
+		}
+		windowDef acc_railgun
+		{
+			rect	39,308,16,16
+			visible	1
+			background	"gfx/guis/hud/icons/item_railgun_colored"
+			matcolor	1,1,1,1
+		}
+		windowDef acc_lgun
+		{
+			rect	39,332,16,16
+			visible	1
+			background	"gfx/guis/hud/icons/item_lightning_colored"
+			matcolor	1,1,1,1
+		}
+		windowDef acc_dmg
+		{
+			rect	39,357,16,16
+			visible	1
+			background	"gfx/guis/hud/icons/item_darkmatter_colored"
+			matcolor	1,1,1,1
+		}
+		windowDef acc_napalmlauncher
+		{
+			rect	39,381,16,16
+			visible	1
+			background	"gfx/guis/hud/icons/item_fire_colored"
+			matcolor	1,1,1,1
+		}
+		windowDef mgun_pct
+		{
+			rect	57,162,60,13
+			text	"gui::stat_1_pct"
+			textscale	0.2
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,0.552,1
+			textstyle	1
+			textspacing	-1
+		}
+		windowDef shotgun_pct
+		{
+			rect	57,187,60,13
+			text	"gui::stat_2_pct"
+			textscale	0.2
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,0.552,1
+			textstyle	1
+			textspacing	-1
+		}
+		windowDef hblaster_pct
+		{
+			rect	57,210,60,13
+			text	"gui::stat_3_pct"
+			textscale	0.2
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,0.552,1
+			textstyle	1
+			textspacing	-1
+		}
+		windowDef grenade_pct
+		{
+			rect	57,235,60,13
+			text	"gui::stat_4_pct"
+			textscale	0.2
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,0.552,1
+			textstyle	1
+			textspacing	-1
+		}
+		windowDef nailgun_pct
+		{
+			rect	57,261,60,13
+			text	"gui::stat_5_pct"
+			textscale	0.2
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,0.552,1
+			textstyle	1
+			textspacing	-1
+		}
+		windowDef rocket_pct
+		{
+			rect	57,284,60,13
+			text	"gui::stat_6_pct"
+			textscale	0.2
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,0.552,1
+			textstyle	1
+			textspacing	-1
+		}
+		windowDef railgun_pct
+		{
+			rect	57,309,60,13
+			text	"gui::stat_7_pct"
+			textscale	0.2
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,0.552,1
+			textstyle	1
+			textspacing	-1
+		}
+		windowDef lgun_pct
+		{
+			rect	57,333,60,13
+			text	"gui::stat_8_pct"
+			textscale	0.2
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,0.552,1
+			textstyle	1
+			textspacing	-1
+		}
+		windowDef dmg_pct
+		{
+			rect	58,358,60,13
+			text	"gui::stat_9_pct"
+			textscale	0.2
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,0.552,1
+			textstyle	1
+			textspacing	-1
+		}
+		windowDef napalmlauncher_pct
+		{
+			rect	58,382,60,13
+			text	"gui::stat_10_pct"
+			textscale	0.2
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,0.552,1
+			textstyle	1
+			textspacing	-1
+		}
+		windowDef aw_excellent
+		{
+			rect	110,162,24,24
+			visible	1
+			background	"gfx/mp/awards/excellent"
+			matcolor	1,1,1,1
+		}
+		windowDef aw_impressive
+		{
+			rect	110,191,24,24
+			visible	1
+			background	"gfx/mp/awards/impressive"
+			matcolor	1,1,1,1
+		}
+		windowDef aw_humiliation
+		{
+			rect	110,221,24,24
+			visible	1
+			background	"gfx/mp/awards/humiliation"
+			matcolor	1,1,1,1
+		}
+		windowDef aw_comboKill
+		{
+			rect	110,252,24,24
+			visible	1
+			background	"gfx/mp/awards/combo_kill"
+			matcolor	1,1,1,1
+		}
+		windowDef aw_rampage
+		{
+			rect	110,283,24,24
+			visible	1
+			background	"gfx/mp/awards/rampage"
+			matcolor	1,1,1,1
+		}
+		windowDef aw_capture
+		{
+			rect	110,313,24,24
+			visible	"gui::ctf_awards"
+			background	"gfx/mp/awards/capture"
+			matcolor	1,1,1,1
+		}
+		windowDef aw_assist
+		{
+			rect	110,344,24,24
+			visible	"gui::ctf_awards"
+			background	"gfx/mp/awards/assist"
+			matcolor	1,1,1,1
+		}
+		windowDef aw_defense
+		{
+			rect	110,374,24,24
+			visible	"gui::ctf_awards"
+			background	"gfx/mp/awards/defense"
+			matcolor	1,1,1,1
+		}
+		windowDef excellent_num
+		{
+			rect	139,164,21,16
+			text	"gui::excellent"
+			textscale	0.24
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,0.545,1
+			textstyle	1
+			textspacing	-1
+		}
+		windowDef impressive_num
+		{
+			rect	139,194,21,16
+			text	"gui::impressive"
+			textscale	0.24
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,0.545,1
+			textstyle	1
+			textspacing	-1
+		}
+		windowDef humiliation_num
+		{
+			rect	139,224,21,16
+			text	"gui::humiliation"
+			textscale	0.24
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,0.545,1
+			textstyle	1
+			textspacing	-1
+		}
+		windowDef comboKill_num
+		{
+			rect	139,255,21,16
+			text	"gui::combo_kill"
+			textscale	0.24
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,0.545,1
+			textstyle	1
+			textspacing	-1
+		}
+		windowDef rampage_num
+		{
+			rect	139,285,21,16
+			text	"gui::rampage"
+			textscale	0.24
+			font	"fonts/lowpixel"
+			visible	1
+			forecolor	1,1,0.545,1
+			textstyle	1
+			textspacing	-1
+		}
+		windowDef capture_num
+		{
+			rect	139,316,21,16
+			text	"gui::capture"
+			textscale	0.24
+			font	"fonts/lowpixel"
+			visible	"gui::ctf_awards"
+			forecolor	1,1,0.545,1
+			textstyle	1
+			textspacing	-1
+		}
+		windowDef assist_num
+		{
+			rect	139,347,21,16
+			text	"gui::assist"
+			textscale	0.24
+			font	"fonts/lowpixel"
+			visible	"gui::ctf_awards"
+			forecolor	1,1,0.545,1
+			textstyle	1
+			textspacing	-1
+		}
+		windowDef defense_num
+		{
+			rect	139,377,21,16
+			text	"gui::defense"
+			textscale	0.24
+			font	"fonts/lowpixel"
+			visible	"gui::ctf_awards"
+			forecolor	1,1,0.545,1
+			textstyle	1
+			textspacing	-1
+		}
+	}
+	windowDef p_history
+	{
+		rect	8,302,549,65
+		screenalignx	left
+		screenaligny	bottom
+		visible	1
+		nocursor	1
+		windowDef history1
+		{
+			rect	0,0,549,18
+			forecolor	1,1,.552,1
+			textscale	0.25
+			font	"fonts/lowpixel"
+			visible	0
+			textstyle	1
+		}
+		windowDef history1_fade
+		{
+			rect	0,0,549,18
+			forecolor	1,1,.552,1
+			textscale	0.25
+			font	"fonts/lowpixel"
+			visible	0
+			textstyle	1
+		}
+		windowDef history2
+		{
+			rect	0,15,549,18
+			forecolor	1,1,.552,1
+			textscale	0.25
+			font	"fonts/lowpixel"
+			visible	0
+			textstyle	1
+		}
+		windowDef history3
+		{
+			rect	0,30,549,18
+			forecolor	1,1,.552,1
+			textscale	0.25
+			font	"fonts/lowpixel"
+			visible	0
+			textstyle	1
+		}
+		windowDef history4
+		{
+			rect	0,45,549,18
+			forecolor	1,1,.552,1
+			textscale	0.25
+			font	"fonts/lowpixel"
+			visible	0
+			textstyle	1
+		}
+	}
+	windowDef anim_remove
+	{
+		visible	0
+		rect	0,0,1,1
+
+		onTime 0 {
+			set "history1::visible" "1";
+			set "history1_fade::visible" "0";
+		}
+
+		onTime +2000 {
+			set "history1::visible" "0";
+			set "history1_fade::visible" "1";
+			set "history1_fade::forecolor" "1,1,.552,1";
+			transition "history1_fade::forecolor_w" "1" "0" 1000;
+		}
+
+		onTime +1100 {
+			//			set "history1::visible" "1";
+			set "history1_fade::visible" "0";
+			namedEvent "removeChatLine";
+		}
+
+	}
+	windowDef ig_awards
+	{
+		rect	38,132,561,74
+		screenalignx	middle
+		screenaligny	top
+		visible	"gui::ig_awards"
+		notime	1
+
+		onTime 2500 {
+			transition "ig_award_1::matcolor_w" "1" "0" "500";	
+			transition "ig_award_2::matcolor_w" "1" "0" "500";		
+			transition "ig_award_3::matcolor_w" "1" "0" "500";		
+			transition "ig_award_4::matcolor_w" "1" "0" "500";		
+			transition "ig_award_5::matcolor_w" "1" "0" "500";		
+			transition "ig_award_6::matcolor_w" "1" "0" "500";		
+			transition "ig_award_7::matcolor_w" "1" "0" "500";		
+			transition "ig_award_8::matcolor_w" "1" "0" "500";		
+			transition "ig_award_9::matcolor_w" "1" "0" "500";		
+			transition "ig_award_10::matcolor_w" "1" "0" "500";
+			transition "ig_award_num::forecolor_w" "1" "0" "500";		
+		}
+
+		onTime 3000 {
+			set "gui::ig_awards" "0";
+		}
+
+		windowDef ig_award_1
+		{
+			rect	"desktop::igOffset",11,32,32
+			visible	"gui::ig_awards_1"
+			background	"gui::ig_award"
+			matcolor	1,1,1,1
+		}
+		windowDef ig_award_2
+		{
+			rect	"desktop::igOffset"+32,11,32,32
+			visible	"gui::ig_awards_2"
+			background	"gui::ig_award"
+			matcolor	1,1,1,1
+		}
+		windowDef ig_award_3
+		{
+			rect	"desktop::igOffset"+32*2,11,32,32
+			visible	"gui::ig_awards_3"
+			background	"gui::ig_award"
+			matcolor	1,1,1,1
+		}
+		windowDef ig_award_4
+		{
+			rect	"desktop::igOffset"+32*3,11,32,32
+			visible	"gui::ig_awards_4"
+			background	"gui::ig_award"
+			matcolor	1,1,1,1
+		}
+		windowDef ig_award_5
+		{
+			rect	"desktop::igOffset"+32*4,11,32,32
+			visible	"gui::ig_awards_5"
+			background	"gui::ig_award"
+			matcolor	1,1,1,1
+		}
+		windowDef ig_award_6
+		{
+			rect	"desktop::igOffset"+32*5,11,32,32
+			visible	"gui::ig_awards_6"
+			background	"gui::ig_award"
+			matcolor	1,1,1,1
+		}
+		windowDef ig_award_7
+		{
+			rect	"desktop::igOffset"+32*6,11,32,32
+			visible	"gui::ig_awards_7"
+			background	"gui::ig_award"
+			matcolor	1,1,1,1
+		}
+		windowDef ig_award_8
+		{
+			rect	"desktop::igOffset"+32*7,11,32,32
+			visible	"gui::ig_awards_8"
+			background	"gui::ig_award"
+			matcolor	1,1,1,1
+		}
+		windowDef ig_award_9
+		{
+			rect	"desktop::igOffset"+32*8,11,32,32
+			visible	"gui::ig_awards_9"
+			background	"gui::ig_award"
+			matcolor	1,1,1,1
+		}
+		windowDef ig_award_10
+		{
+			rect	"desktop::igOffset"+32*9,11,32,32
+			visible	"gui::ig_awards_10"
+			background	"gui::ig_award"
+			matcolor	1,1,1,1
+		}
+		windowDef ig_award_num
+		{
+			rect	0,44,561,30
+			visible	1
+			text	"gui::ig_award_num"
+			font	"fonts/lowpixel"
+			textscale	0.38
+			textstyle	1
+			textalign	1
+			forecolor	1,1,1,1
+		}
+	}
+	windowDef p_aud1
+	{
+		rect	4,263,158,16
+		screenalignx	left
+		screenaligny	bottom
+		visible	0
+		windowDef aud1_backbar
+		{
+			rect	0,0,176,18
+			visible	1
+			background	"gfx/guis/hud/aud_wavbg"
+			matcolor	0,0,0,0.498
+		}
+		windowDef aud1_name
+		{
+			rect	15,1,127,16
+			visible	1
+			forecolor	1,1,1,1
+			text	"#str_200270"
+			textscale	0.2
+			font	"fonts/lowpixel"
+			textspacing	0
+			textstyle	1
+		}
+		windowDef aud1_wave
+		{
+			rect	4,3,10,12
+			visible	1
+			background	"gfx/guis/hud/mp_waveform"
+			matcolor	1,1,.552,1
+		}
+	}
+	windowDef p_aud2
+	{
+		rect	4,286,158,16
+		screenalignx	left
+		screenaligny	bottom
+		visible	0
+		windowDef aud2_backbar
+		{
+			rect	0,0,176,18
+			visible	1
+			background	"gfx/guis/hud/aud_wavbg"
+			matcolor	0,0,0,0.498
+		}
+		windowDef aud2_name
+		{
+			rect	15,1,127,16
+			visible	1
+			forecolor	1,1,1,1
+			text	"gui::audio_name"
+			textscale	0.2
+			font	"fonts/lowpixel"
+			textspacing	0
+			textstyle	1
+		}
+		windowDef aud2_wave
+		{
+			rect	4,3,10,12
+			visible	1
+			background	"gfx/guis/hud/mp_waveform"
+			matcolor	1,1,.552,1
+		}
+	}
+	windowDef Spectate0
+	{
+		text	"gui::spectatetext0"
+		font	"fonts/lowpixel"
+		rect	0,123,640,40
+		screenalignx	middle
+		screenaligny	top
+		forecolor	1,1,0.549,1
+		textscale	0.38
+		visible	("gui::gametype" != 2)
+		textalign	1
+		textstyle	1
+		textspacing	-1
+
+		onTime 0 {
+			transition "forecolor_w" "1" "0.5" "800" ;
+		}
+
+		onTime 500 {
+			transition "forecolor_w" "0.5" "1" "100" ;
+		}
+
+		onTime 900 {
+			resetTime "0" ;
+		}
+
+	}
+	windowDef Spectate1
+	{
+		text	"gui::spectatetext1"
+		font	"fonts/lowpixel"
+		rect	0,141,640,40
+		screenalignx	middle
+		screenaligny	top
+		forecolor	1,1,0.549,1
+		textscale	0.31
+		visible	("gui::gametype" != 2)
+		textalign	1
+		textstyle	1
+		textspacing	-1
+
+		onTime 0 {
+			transition "forecolor_w" "1" "0.5" "800" ;
+		}
+
+		onTime 500 {
+			transition "forecolor_w" "0.5" "1" "100" ;
+		}
+
+		onTime 900 {
+			resetTime "0" ;
+		}
+
+	}	
+	windowDef voteNotice
+	{
+		rect	4,145,632,31
+		screenalignx	middle
+		screenaligny	top
+		visible	"gui::voteNotice"
+		forecolor	1,1,.552,1
+		text	"gui::voteNoticeText"
+		textscale	0.2
+		font	"fonts/lowpixel"
+		textstyle	1
+	}
+	windowDef voteInfo_1
+	{
+		rect	4,173,632,16
+		screenalignx	middle
+		screenaligny	top
+		visible	"gui::voteNotice"
+		forecolor	1,1,1,1
+		text	"gui::voteInfo_1"
+		textscale	0.2
+		font	"fonts/lowpixel"
+		textstyle	1
+	}
+	windowDef voteInfo_2
+	{
+		rect	4,187,632,16
+		screenalignx	middle
+		screenaligny	top
+		visible	"gui::voteNotice"
+		forecolor	1,1,1,1
+		text	"gui::voteInfo_2"
+		textscale	0.2
+		font	"fonts/lowpixel"
+		textstyle	1
+	}
+	windowDef voteInfo_3
+	{
+		rect	4,201,632,16
+		screenalignx	middle
+		screenaligny	top
+		visible	"gui::voteNotice"
+		forecolor	1,1,1,1
+		text	"gui::voteInfo_3"
+		textscale	0.2
+		font	"fonts/lowpixel"
+		textstyle	1
+	}
+	windowDef voteInfo_4
+	{
+		rect	4,215,632,16
+		screenalignx	middle
+		screenaligny	top
+		visible	"gui::voteNotice"
+		forecolor	1,1,1,1
+		text	"gui::voteInfo_4"
+		textscale	0.2
+		font	"fonts/lowpixel"
+		textstyle	1
+	}
+	windowDef voteInfo_5
+	{
+		rect	4,229,632,16
+		screenalignx	middle
+		screenaligny	top
+		visible	"gui::voteNotice"
+		forecolor	1,1,1,1
+		text	"gui::voteInfo_5"
+		textscale	0.2
+		font	"fonts/lowpixel"
+		textstyle	1
+	}
+	windowDef voteInfo_6
+	{
+		rect	4,243,632,16
+		screenalignx	middle
+		screenaligny	top
+		visible	"gui::voteNotice"
+		forecolor	1,1,1,1
+		text	"gui::voteInfo_6"
+		textscale	0.2
+		font	"fonts/lowpixel"
+		textstyle	1
+	}
+	windowDef voteInfo_7
+	{
+		rect	4,257,632,16
+		screenalignx	middle
+		screenaligny	top
+		visible	"gui::voteNotice"
+		forecolor	1,1,1,1
+		text	"gui::voteInfo_7"
+		textscale	0.2
+		font	"fonts/lowpixel"
+		textstyle	1
+	}
+	
+	windowDef sq_credits
+   	{
+  		rect	3,110,167,17
+ 		screenalignx	left
+ 		screenaligny	top
+  		visible	1
+   		forecolor	1,1,1,1
+  		text	"gui::credits"
+  		font "fonts/lowpixel"
+   		textscale	0.2
+   	}
+
+	windowDef sq_gameStatus
+   	{
+  		rect	3,127,167,17
+ 		screenalignx	left
+ 		screenaligny	top
+  		visible	1
+   		forecolor	1,1,1,1
+  		text	"gui::gameStatus"
+  		font "fonts/lowpixel"
+   		textscale	0.2
+	}
+		
+	windowDef anim_transitionIn
+	{
+		rect	0,0,1,1
+		visible	1
+		notime	1
+
+		onTime 0 {
+			transition "tourn_overbar::rect" "$tourn_overbar::rect" "$d_tourn_overbar::rect" "500" ;
+		}
+
+		onTime 2950 {
+			if ( "gui::round" == 1 ) {
+				set "p_round1::visible" "1" ;
+				set "p_round2::visible" "0" ;
+				set "p_round3::visible" "0" ;
+				set "p_round4::visible" "0" ;
+			} else if ( "gui::round" == 2 ) {
+				set "p_round1::visible" "0" ;
+				set "p_round2::visible" "1" ;
+				set "p_round3::visible" "0" ;
+				set "p_round4::visible" "0" ;
+			} else if ( "gui::round" == 3 ) {
+				set "p_round1::visible" "0" ;
+				set "p_round2::visible" "0" ;
+				set "p_round3::visible" "1" ;
+				set "p_round4::visible" "0" ;
+			} else if ( "gui::round" == 4 ) {
+				set "p_round1::visible" "0" ;
+				set "p_round2::visible" "0" ;
+				set "p_round3::visible" "0" ;
+				set "p_round4::visible" "1" ;
+			}
+		}
+
+		onTime 3000 {	
+			transition "tourn_overbar::rect" "$d_tourn_overbar::rect" "$tourn_overbar::rect" "500" ;
+		}
+
+	}
+}

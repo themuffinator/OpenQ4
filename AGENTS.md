@@ -24,6 +24,12 @@ This file describes project goals, rules, and upstream credits for anyone workin
 - Prefer changes that match Quake 4 SDK expectations and shipped content behavior.
 - Document significant changes in the documentation and keep `README.md` accurate.
 - Use `builddir/` as the standard Meson build output directory for local builds, VS Code tasks, and launch configurations.
+- Treat `install/` as the release-style package root; stage built binaries into `install/` and `install/openbase/`.
+- Keep game-module outputs available under both `builddir/openbase/` (direct run) and `install/openbase/` (staged package).
+- Keep `install/` focused on runtime/staged content: engine executables in `install/`, game DLLs and staged overrides/assets in `install/openbase/`.
+- Do not rely on `install/` as a linker artifact store; keep compiler/linker intermediates and development-only outputs in `builddir/`.
+- MSVC import libraries (`*.lib`) are not runtime requirements for OpenQ4 execution; prefer keeping them in `builddir/` (or other developer artifact output), not in release-style `install/` packages.
+- Use `meson install -C builddir --no-rebuild --skip-subprojects` (via `tools/build/meson_setup.ps1`) when staging `install/` to avoid third-party subproject installs outside the package tree.
 - On Windows, do not invoke raw `meson ...` from an arbitrary shell; use `tools/build/meson_setup.ps1 ...` (or run `tools/build/openq4_devcmd.cmd` first) so `cl.exe`/MSVC tools are always available.
 - Prefer platform abstractions through SDL3 and avoid introducing new platform-specific dependencies in shared engine code when an SDL3 path exists.
 - Keep Meson as the primary build entry point and keep dependency management through Meson subprojects.
@@ -33,9 +39,15 @@ This file describes project goals, rules, and upstream credits for anyone workin
 - Any existing custom `q4base/` content is treated as an expedient bootstrap, not a long-term solution. The goal is to remove this reliance by fixing engine compatibility issues rather than shipping replacement assets.
 - For investigations, reference the log file written by `logFileName` (VS Code launch uses `logs/openq4.log`), located under `fs_savepath\<gameDir>\` (e.g. `%LOCALAPPDATA%\OpenQ4\openbase\logs\openq4.log`).
 
+**install/ Folder Layout (Staging Target)**
+- `install/` is the runtime package root used by local staging and `fs_devpath` overlays.
+- Keep executable/runtime artifacts here (for example `install/OpenQ4.exe`, `install/OpenQ4-ded.exe`, `install/openbase/game_sp.dll`, `install/openbase/game_mp.dll`).
+- Stage editable override content under `install/openbase/` (for example GUI scripts in `install/openbase/guis/`).
+- Avoid shipping build-only linker artifacts in `install/`; keep `*.lib` in `builddir/` unless intentionally producing a developer SDK artifact set.
+
 **Development Procedure (Correct Direction)**
 1. Develop against the installed Quake 4 assets only (base PK4s), not repo `q4base/` content.
-2. Keep `fs_devpath` empty or pointed to a non-content location unless explicitly testing a temporary overlay.
+2. Prefer `fs_devpath` set to repo `install/` for staged OpenQ4 overlays; keep it empty only when intentionally testing stock-only behavior.
 3. If something is missing or broken, fix the engine/game/loader/parser rather than shipping new material/decl/shader assets.
 4. If engine-side shaders are needed, prefer internal defaults or generated resources that ship with the executable.
 5. Re-run Procedure 1 after each fix to verify clean initialization without custom content.
