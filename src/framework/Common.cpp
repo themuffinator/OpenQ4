@@ -664,6 +664,8 @@ public:
 	virtual void				StartupVariable( const char *match, bool once );
 	virtual int					GetUserCmdHz( void ) const;
 	virtual int					GetUserCmdMSec( void ) const;
+	virtual void				SetGameTimeScale( float scale );
+	virtual float				GetGameTimeScale( void ) const;
 	virtual int					GetUserCmdTime( int ticNumber ) const;
 	virtual int					GetUserCmdDeltaMsec( int ticNumber ) const;
 	virtual int					GetFrameTime( void ) const;
@@ -1835,6 +1837,27 @@ idCommonLocal::GetUserCmdMSec
 */
 int idCommonLocal::GetUserCmdMSec( void ) const {
 	return USERCMD_MSEC;
+}
+
+static std::atomic<float> openQ4_gameTimeScale( 1.0f );
+
+void idCommonLocal::SetGameTimeScale( float scale ) {
+	if ( FLOAT_IS_NAN( scale ) || FLOAT_IS_INF( scale ) ) {
+		scale = 1.0f;
+	}
+	scale = idMath::ClampFloat( 0.01f, 1.0f, scale );
+	openQ4_gameTimeScale.store( scale, std::memory_order_release );
+
+	if ( soundSystem != NULL ) {
+		idSoundWorld *soundWorld = soundSystem->GetPlayingSoundWorld();
+		if ( soundWorld != NULL ) {
+			soundWorld->SetSlowmoSpeed( scale );
+		}
+	}
+}
+
+float idCommonLocal::GetGameTimeScale( void ) const {
+	return openQ4_gameTimeScale.load( std::memory_order_acquire );
 }
 
 /*
@@ -5871,13 +5894,13 @@ void openQ4_GetAsyncTimingStats( openq4AsyncTimingStats_t &stats, int maxSamples
 // only bit of module state needed by the timer after game->Init() completes.
 static std::atomic<bool> openQ4_singleplayerGameModuleReady( false );
 
-static bool openQ4_ShouldUseSmoothSingleplayerSlowTime( void ) {
+static bool openQ4_ShouldUseSmoothSingleplayerSlowTime( float effectiveTimeScale ) {
 	if ( !openQ4_singleplayerGameModuleReady.load( std::memory_order_acquire ) ||
 		 idAsyncNetwork::IsActive() ) {
 		return false;
 	}
 
-	return com_timescale.GetFloat() < 0.999f;
+	return effectiveTimeScale < 0.999f;
 }
 
 void idCommonLocal::SingleAsyncTic( void ) {
@@ -5937,9 +5960,10 @@ void idCommonLocal::Async( void ) {
 
 	double ticMsec = GetUserCmdMsecFloat();
 
-	// the number of msec per tic can be varies with the timescale cvar
-	float timescale = com_timescale.GetFloat();
-	const bool smoothSlowTime = openQ4_ShouldUseSmoothSingleplayerSlowTime();
+	// Accelerated time produces more tics. Slow time keeps the normal tic cadence
+	// and lets the single-player game advance simulation by a smaller delta.
+	float timescale = com_timescale.GetFloat() * openQ4_gameTimeScale.load( std::memory_order_acquire );
+	const bool smoothSlowTime = openQ4_ShouldUseSmoothSingleplayerSlowTime( timescale );
 	if ( !smoothSlowTime && timescale != 1.0f ) {
 		ticMsec /= timescale;
 		if ( ticMsec < 1.0 ) {
@@ -6208,6 +6232,7 @@ idCommonLocal::LoadGameDLL
 */
 void idCommonLocal::LoadGameDLL( void ) {
 	openQ4_singleplayerGameModuleReady.store( false, std::memory_order_release );
+	SetGameTimeScale( 1.0f );
 	gameShutdownCalled = false;
 	gameShutdownAfterDeclsCalled = false;
 	const char *gameModuleBaseName = openQ4_SelectGameModuleBaseName();
@@ -6934,6 +6959,7 @@ void idCommonLocal::ShutdownGame( bool reloading ) {
 	// Stop advertising a ready single-player module before any shutdown work can
 	// race the async thread or mutate game-owned state.
 	openQ4_singleplayerGameModuleReady.store( false, std::memory_order_release );
+	SetGameTimeScale( 1.0f );
 
 	// kill sound first
 	//idSoundWorld *sw = soundSystem->GetPlayingSoundWorld();

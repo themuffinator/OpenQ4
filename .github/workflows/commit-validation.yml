@@ -134,6 +134,7 @@ jobs:
             tools/tests/loading_continue_input.py \
             tools/tests/loading_pacifier_pacing.py \
             tools/tests/map_entity_strings.py \
+            tools/tests/weapon_wheel_time_scale.py \
             tools/tests/macos_apple_gl21_arb2_corridor.py \
             tools/tests/macos_dedicated_server_smoke.py \
             tools/tests/macos_dedicated_server_smoke_contract.py \
@@ -292,6 +293,7 @@ jobs:
           python tools/tests/loading_continue_input.py
           python tools/tests/loading_pacifier_pacing.py
           python tools/tests/map_entity_strings.py
+          python tools/tests/weapon_wheel_time_scale.py
           python tools/tests/macos_apple_gl21_arb2_corridor.py
           python tools/tests/macos_dedicated_server_smoke_contract.py
           python tools/tests/macos_evidence_plumbing.py

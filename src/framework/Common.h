@@ -238,6 +238,10 @@ public:
 
 	virtual int					GetUserCmdHz(void) const = 0;
 	virtual int					GetUserCmdMSec(void) const = 0;
+	// Transient game-owned simulation scale. This is separate from the public
+	// timescale CVar so gameplay features never overwrite a user's setting.
+	virtual void				SetGameTimeScale(float scale) = 0;
+	virtual float				GetGameTimeScale(void) const = 0;
 	virtual int					GetUserCmdTime(int ticNumber) const {
 		if ( ticNumber <= 0 ) {
 			return 0;
