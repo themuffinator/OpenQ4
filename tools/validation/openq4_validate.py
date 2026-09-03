@@ -491,6 +491,7 @@ def run_python_tests(args: argparse.Namespace, root: Path, env: dict[str, str]) 
         root / "tools" / "tests" / "mp_bot_navigation.py",
         root / "tools" / "tests" / "mp_bot_server_menu.py",
         root / "tools" / "tests" / "mp_client_combat_effects.py",
+        root / "tools" / "tests" / "mp_lag_compensation_contract.py",
         root / "tools" / "tests" / "mp_weapon_switch_contract.py",
         root / "tools" / "tests" / "multiview_demo.py",
         root / "tools" / "tests" / "mvd_server_api_contract.py",

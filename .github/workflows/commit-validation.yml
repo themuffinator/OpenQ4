@@ -174,6 +174,7 @@ jobs:
             tools/tests/mp_bot_navigation.py \
             tools/tests/mp_bot_server_menu.py \
             tools/tests/mp_client_combat_effects.py \
+            tools/tests/mp_lag_compensation_contract.py \
             tools/tests/mp_weapon_switch_contract.py \
             tools/tests/multiview_demo.py \
             tools/tests/mvd_server_api_contract.py \
@@ -338,6 +339,7 @@ jobs:
           python tools/tests/mp_bot_navigation.py
           python tools/tests/mp_bot_server_menu.py
           python tools/tests/mp_client_combat_effects.py
+          python tools/tests/mp_lag_compensation_contract.py
           python tools/tests/mp_weapon_switch_contract.py
           python tools/tests/multiview_demo.py
           python tools/tests/mvd_server_api_contract.py

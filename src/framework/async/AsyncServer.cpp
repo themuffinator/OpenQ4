@@ -1605,6 +1605,13 @@ void idAsyncServer::ProcessUnreliableClientMessage( int clientNum, const idBitMs
 					return;
 				}
 				userCmds[index][clientNum].gameFrame = i;
+				// openQ4: gameTime is authored by the client and reaches the game unchecked, where
+				// anything that measures a command's age against the server clock becomes a dial
+				// the client can turn.  An honest client sends exactly this value, so overwriting
+				// it costs nothing and closes the hole permanently.  Staleness detection is
+				// unaffected: a slot that was never received still holds a stamp from a whole
+				// backup window ago.
+				userCmds[index][clientNum].gameTime = i * common->GetUserCmdMSec();
 				userCmds[index][clientNum].duplicateCount = 0;
 				if ( idAsyncNetwork::UsercmdInputChanged( userCmds[( i - 1 ) & ( MAX_USERCMD_BACKUP - 1 )][clientNum], userCmds[index][clientNum] ) ) {
 					client.lastInputTime = serverTime;
